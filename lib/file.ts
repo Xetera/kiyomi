@@ -1,0 +1,110 @@
+import { Readable } from "stream";
+import { imageHash as imageHashCallback } from "image-hash";
+import multer from "multer";
+import { NextApiRequest } from "next";
+import { promisify } from "util";
+import { createHash } from "crypto";
+import { MimeType } from "@prisma/client";
+
+const imageHash = promisify(imageHashCallback);
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+/**
+ * Format bytes as human-readable text.
+ *
+ * @param bytes Number of bytes.
+ * @param dp Number of decimal places to display.
+ *
+ * @return Formatted string.
+ */
+export function humanFileSize(bytes: number, dp = 1) {
+  const thresh = 1000;
+
+  if (Math.abs(bytes) < thresh) {
+    return bytes + " B";
+  }
+
+  const units = ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  let u = -1;
+  const r = 10 ** dp;
+
+  do {
+    bytes /= thresh;
+    ++u;
+  } while (
+    Math.round(Math.abs(bytes) * r) / r >= thresh &&
+    u < units.length - 1
+  );
+
+  return bytes.toFixed(dp) + " " + units[u];
+}
+
+export type ImageMetadata = { width: number; height: number; type: string };
+
+export type FileDetails = {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  buffer: Buffer;
+  size: number;
+};
+
+export type FormData = {
+  fields: Record<string, string>;
+  files: FileDetails[];
+};
+
+export function parseFiles(
+  req: NextApiRequest,
+  { name = "file" } = {}
+): Promise<FormData> {
+  return new Promise(function (resolve, reject) {
+    upload.array(name)(req as any, null, (err: any) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve({
+        // @ts-ignore
+        files: req.files,
+        // @ts-ignore
+        fields: req.body,
+      });
+    });
+  });
+}
+
+export const mimetypeMappings: Record<string, MimeType> = {
+  jpg: "JPG",
+  jpeg: "JPG",
+  png: "PNG",
+  gif: "GIF",
+  webm: "WEBM",
+  webp: "WEBP",
+  avif: "AVIF",
+  mp4: "MP4",
+};
+
+export function sha256Hash(buff: Buffer) {
+  return new Promise((res, rej) => {
+    const hash = createHash("sha256");
+    hash.write(buff, "utf-8", (err) => {
+      if (err) {
+        return rej(err);
+      }
+      return res(hash.digest("hex"));
+    });
+  });
+}
+
+export function perceptualHash(data: Buffer, mimetype: string) {
+  console.log(mimetype);
+  const HASH_BIT_SIZE = 32;
+  const USE_PRECISE_HASH = true;
+  return imageHash(
+    { data, ext: mimetype, encoding: "utf-8" },
+    HASH_BIT_SIZE,
+    USE_PRECISE_HASH
+  );
+}

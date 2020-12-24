@@ -1,0 +1,18 @@
+version: "3.5"
+
+volumes:
+  sp_pg:
+
+services:
+  pg:
+    container_name: sp_pg
+    restart: on-failure
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: test
+      POSTGRES_DATABASE: simp
+      POSTGRES_USER: postgres
+    volumes:
+      - sp_pg

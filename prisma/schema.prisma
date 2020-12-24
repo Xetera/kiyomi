@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model Account {
+  id                 Int       @id @default(autoincrement())
+  compoundId         String    @unique @map("compound_id")
+  userId             Int       @map("user_id")
+  providerType       String    @map("provider_type")
+  providerId         String    @map("provider_id")
+  providerAccountId  String    @map("provider_account_id")
+  refreshToken       String?   @map("refresh_token")
+  accessToken        String?   @map("access_token")
+  accessTokenExpires DateTime? @map("access_token_expires")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @default(now()) @map("updated_at")
+
+  @@index([providerAccountId], name: "provider_account_id")
+  @@index([providerId], name: "provider_id")
+  @@index([userId], name: "user_id")
+  @@map("accounts")
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String
+  source    TagSource
+  image     Image     @relation(fields: [imageId], references: [id])
+  imageId   Int       @map(name: "image_id")
+  addedBy   User?     @relation(fields: [addedById], references: [id])
+  addedById Int?      @map(name: "added_by_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@index([imageId], name: "image.index")
+  @@index([addedById], name: "user.index")
+  @@map("tags")
+}
+
+model Alias {
+  id       Int    @id @default(autoincrement())
+  name     String
+  person   Person @relation(fields: [personId], references: [id])
+  personId Int
+
+  @@map("aliases")
+}
+
+model Person {
+  id        Int     @id @default(autoincrement())
+  name      String
+  appearsIn Face[]  @relation("face_person")
+  aliases   Alias[]
+
+  @@index([name], name: "person.name.index")
+  @@map("persons")
+}
+
+model Face {
+  id         Int     @id @default(autoincrement())
+  image      Image   @relation("image_faces", fields: [imageId], references: [id])
+  person     Person? @relation("face_person", fields: [personId], references: [id])
+  personId   Int?    @map(name: "person_id")
+  imageId    Int     @map(name: "image_id")
+  x          Float
+  y          Float
+  height     Float
+  width      Float
+  // Face descriptor for recognition
+  descriptor Float[]
+
+  @@index([imageId], name: "face.image_id.index")
+  @@map("faces")
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @map("user_id")
+  expires      DateTime
+  sessionToken String   @unique @map("session_token")
+  accessToken  String   @unique @map("access_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  @@map("sessions")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  token         String?   @unique
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @map("updated_at")
+  images        Image[]
+  cratedTags    Tag[]
+
+  @@index([token], name: "user.token.index")
+  @@map("users")
+}
+
+model VerificationRequest {
+  id         Int      @id @default(autoincrement())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+
+  @@map("verification_requests")
+}
+
+model Image {
+  id         Int        @id @default(autoincrement())
+  slug       String     @unique
+  width      Int?
+  height     Int?
+  fileName   String?    @map("file_name")
+  uploadType UploadType @map("upload_type")
+  createdAt  DateTime   @default(now()) @map(name: "created_at")
+  updatedAt  DateTime   @default(now()) @map(name: "updated_at")
+  userId     Int?       @map("user_id")
+  mimetype   MimeType
+  hash       String
+  // null if unsupported type
+  pHash      String?    @map(name: "p_hash")
+  user       User?      @relation(fields: [userId], references: [id])
+  faces      Face[]     @relation(name: "image_faces")
+  tags       Tag[]
+
+  @@index([slug], name: "images.slug_index")
+  @@map("images")
+}
+
+enum UploadType {
+  WEBSITE
+  TOKEN
+}
+
+enum TagSource {
+  USER
+}
+
+enum MimeType {
+  PNG
+  JPG
+  SVG
+  WEBP
+  WEBM
+  AVIF
+  GIF
+  MP4
+}
