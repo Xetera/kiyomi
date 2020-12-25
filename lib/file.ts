@@ -5,40 +5,13 @@ import { NextApiRequest } from "next";
 import { promisify } from "util";
 import { createHash } from "crypto";
 import { MimeType } from "@prisma/client";
+import getColors from "get-image-colors";
+
+// const thief = new Thief();
 
 const imageHash = promisify(imageHashCallback);
 
 const upload = multer({ storage: multer.memoryStorage() });
-
-/**
- * Format bytes as human-readable text.
- *
- * @param bytes Number of bytes.
- * @param dp Number of decimal places to display.
- *
- * @return Formatted string.
- */
-export function humanFileSize(bytes: number, dp = 1) {
-  const thresh = 1000;
-
-  if (Math.abs(bytes) < thresh) {
-    return bytes + " B";
-  }
-
-  const units = ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  let u = -1;
-  const r = 10 ** dp;
-
-  do {
-    bytes /= thresh;
-    ++u;
-  } while (
-    Math.round(Math.abs(bytes) * r) / r >= thresh &&
-    u < units.length - 1
-  );
-
-  return bytes.toFixed(dp) + " " + units[u];
-}
 
 export type ImageMetadata = { width: number; height: number; type: string };
 
@@ -98,8 +71,13 @@ export function sha256Hash(buff: Buffer) {
   });
 }
 
+const supportedPHashMimetypes = new Set(["jpeg", "png", "jpg"]);
+
+export function canPerceptualHash(mimetype: string): boolean {
+  return supportedPHashMimetypes.has(mimetype);
+}
+
 export function perceptualHash(data: Buffer, mimetype: string) {
-  console.log(mimetype);
   const HASH_BIT_SIZE = 32;
   const USE_PRECISE_HASH = true;
   return imageHash(
@@ -107,4 +85,12 @@ export function perceptualHash(data: Buffer, mimetype: string) {
     HASH_BIT_SIZE,
     USE_PRECISE_HASH
   );
+}
+
+export async function dominantColors(
+  data: Buffer,
+  type: string
+): Promise<number[]> {
+  const colors = await getColors(data, { type, count: 5 });
+  return colors.map((color: any) => color.num());
 }

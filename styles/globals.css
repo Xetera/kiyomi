@@ -1,16 +1,17 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply text-blueGray-300;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+pre {
+  font-family: 'Jetbrains Mono', monospace;
 }
 
-* {
-  box-sizing: border-box;
+hr {
+  border-color: gray;
+  @apply bg-blueGray-800;
 }

@@ -19,6 +19,7 @@ let loaded = false;
 
 async function loadIfNotLoaded() {
   if (!loaded) {
+    console.log("loading weights");
     await Promise.all([
       faceapi.nets.faceRecognitionNet.loadFromDisk("./weights"),
       faceapi.nets.ssdMobilenetv1.loadFromDisk("./weights"),
@@ -32,6 +33,18 @@ export type FaceDetect = WithFaceDescriptor<
   WithFaceLandmarks<{ detection: FaceDetection }>
 >;
 
+export const supportedFaceDetectionMimetypes = new Set([
+  "jpeg",
+  "png",
+  "jpg",
+  "webp",
+  "avif",
+]);
+
+export function canDetectFaces(mimetype: string) {
+  return supportedFaceDetectionMimetypes.has(mimetype);
+}
+
 export async function detectFaces(
   buf: Buffer,
   { width, height }: { width: number; height: number }
@@ -42,6 +55,7 @@ export async function detectFaces(
   image.height = height;
   image.width = width;
 
+  console.log("detecting faces");
   const detections = await faceapi
     // @ts-ignore
     .detectAllFaces(image)

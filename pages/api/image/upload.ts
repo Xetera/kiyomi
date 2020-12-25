@@ -1,6 +1,7 @@
 import { handle, withFileUpload, withUser } from "@/lib/middleware";
 import {
-  humanFileSize,
+  canPerceptualHash,
+  dominantColors,
   mimetypeMappings,
   perceptualHash,
   sha256Hash,
@@ -8,9 +9,14 @@ import {
 import { uploadParsedFiles } from "@/lib/wasabi";
 import mimeType from "mime-types";
 import sizeOf from "image-size";
-import { detectFaces, FaceDetect } from "@/lib/face-recognition";
-import util from "util";
+import {
+  canDetectFaces,
+  detectFaces,
+  FaceDetect,
+} from "@/lib/face-recognition";
 import idgen from "nanoid";
+import { transformImage } from "@/lib/utils/transformer";
+import { humanFileSize } from "@/lib/utils/shared";
 
 export const config = {
   api: {
@@ -20,42 +26,47 @@ export const config = {
 
 export default handle(
   withUser(
-    withFileUpload(async (req, res, { upload, db, user }) => {
+    withFileUpload(async (_req, res, { upload, db, user, contextType }) => {
       try {
         const { files, fields } = upload;
         const [file] = files;
-        const slug = idgen.nanoid(3);
 
         const tags = fields.tags ? fields.tags.split(",") : [];
+        const isPublic = fields?.public === "true" ?? false;
+        const nsfw = fields?.nsfw === "true" ?? false;
 
         if (!file) {
           return res.status(400).json({ error: "'file' missing" });
         }
 
-        console.time("size");
         const metadata = sizeOf(file.buffer);
-        console.timeEnd("size");
+
+        const slug = idgen.nanoid(16);
+        const slugWithExtension = `${slug}.${metadata.type}`;
 
         const mime = mimeType.lookup(metadata.type);
 
-        console.log(metadata);
-
-        const [pHash, hash, faces] = await Promise.all([
-          mime === false
-            ? Promise.resolve()
-            : perceptualHash(file.buffer, mime),
+        const [pHash, hash, faces, palette] = await Promise.all([
+          mime !== false && canPerceptualHash(metadata.type)
+            ? perceptualHash(file.buffer, mime)
+            : Promise.resolve(),
           sha256Hash(file.buffer),
-          detectFaces(file.buffer, {
-            width: metadata.width,
-            height: metadata.height,
-          }).catch((err) => {
-            console.log("something went wrong with detecting faces", err);
-            return [] as FaceDetect[];
+          mime !== false && canDetectFaces(metadata.type)
+            ? detectFaces(file.buffer, {
+                width: metadata.width,
+                height: metadata.height,
+              }).catch((err) => {
+                console.log("something went wrong with detecting faces", err);
+                return [] as FaceDetect[];
+              })
+            : Promise.resolve([] as FaceDetect[]),
+          dominantColors(file.buffer, file.mimetype).catch((err) => {
+            console.log(err);
           }),
           uploadParsedFiles([
             {
               ...file,
-              path: slug,
+              path: slugWithExtension,
             },
           ]),
         ]);
@@ -76,17 +87,26 @@ export default handle(
             .json({ error: `unsupported type '${metadata.type}'` });
         }
 
-        await db.image.create({
+        const image = await db.image.create({
           data: {
             fileName: file.originalname,
-            // @TODO: pass this data from useUser
-            uploadType: "TOKEN",
+            width: metadata.width,
+            height: metadata.height,
+            uploadType: contextType,
             mimetype: databaseType,
             pHash: pHash as string | undefined,
             hash: hash as string,
+            public: isPublic,
+            bytes: file.size,
+            isNsfw: nsfw,
             slug,
+            ...(palette
+              ? {
+                  palette,
+                }
+              : {}),
             user: {
-              connect: { id: 1 },
+              connect: { email: user.email },
             },
             tags: {
               create: tags.map((tag) => {
@@ -118,17 +138,8 @@ export default handle(
         console.log(facesDims);
 
         res.json({
-          url: `https://my.simp.pics/${file.originalname}`,
-          tags,
-          width: metadata.width,
-          height: metadata.height,
-          mimetype: metadata.type,
-          filename: file.originalname,
-          bytes: file.size,
+          ...transformImage(image),
           bytesHuman: humanFileSize(file.size),
-          faces: facesDims,
-          hash,
-          perceptualHash: pHash,
         });
       } catch (err) {
         console.log(err);

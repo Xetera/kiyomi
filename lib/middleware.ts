@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UploadType } from "@prisma/client";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { getSession, Session } from "next-auth/client";
 import { prisma as db } from "@/lib/db";
@@ -41,10 +41,10 @@ export function makeMiddleware<T extends BaseContext, K>(
   };
 }
 
-export type CtxSession = { user: User };
+export type CtxSession = { user: User; contextType: UploadType };
 
 export function withUser<T extends BaseContext>(
-  f: Middleware<T & { user?: User }>,
+  f: Middleware<T & { user?: User; contextType: UploadType }>,
   opts?: { strict: false }
 ): Middleware<T>;
 export function withUser<T extends BaseContext>(
@@ -56,21 +56,25 @@ export function withUser<T extends BaseContext>(
   { strict = true }: { strict: boolean } = { strict: true }
 ): Middleware<T> {
   return async (req, res, ctx) => {
-    const next = (user: User) => {
-      console.log(`Got a request from ${user.name}`);
-      return f(req, res, { ...ctx, user });
+    const next = (user?: User, opts?: { contextType: UploadType }) => {
+      console.log(`Got a request from ${user ? user.name : "Anonymous User"}`);
+      return f(req, res, { ...ctx, contextType: opts.contextType, user });
     };
-    const error = () => res.status(403).end();
+
     const auth = req.headers.authorization;
+
     if (auth) {
       const user = await getUserFromToken(auth, ctx.db);
-      return next(user);
+      return next(user, { contextType: "TOKEN" });
     }
+
     const session = await getSession({ req });
+
     if (!session && strict) {
-      return error();
+      return res.status(403).end();
     }
-    return next(session.user);
+
+    return next(session?.user, { contextType: "WEBSITE" });
   };
 }
 

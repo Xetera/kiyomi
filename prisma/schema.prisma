@@ -58,6 +58,9 @@ model Person {
   appearsIn Face[]  @relation("face_person")
   aliases   Alias[]
 
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
   @@index([name], name: "person.name.index")
   @@map("persons")
 }
@@ -74,6 +77,9 @@ model Face {
   width      Float
   // Face descriptor for recognition
   descriptor Float[]
+
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
 
   @@index([imageId], name: "face.image_id.index")
   @@map("faces")
@@ -98,10 +104,11 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   token         String?   @unique
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @map("updated_at")
   images        Image[]
   cratedTags    Tag[]
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @map("updated_at")
 
   @@index([token], name: "user.token.index")
   @@map("users")
@@ -124,18 +131,27 @@ model Image {
   width      Int?
   height     Int?
   fileName   String?    @map("file_name")
+  caption    String?
+  views      Int        @default(0)
+  isNsfw     Boolean    @default(false) @map(name: "is_nsfw")
+  source     String?
   uploadType UploadType @map("upload_type")
-  createdAt  DateTime   @default(now()) @map(name: "created_at")
-  updatedAt  DateTime   @default(now()) @map(name: "updated_at")
   userId     Int?       @map("user_id")
   mimetype   MimeType
+  public     Boolean    @default(false)
+  bytes Int @default(0)
   hash       String
   // null if unsupported type
   pHash      String?    @map(name: "p_hash")
   user       User?      @relation(fields: [userId], references: [id])
   faces      Face[]     @relation(name: "image_faces")
+  // dominant color palette used by the image
+  // denormalized as color palettes are immutable
+  palette    Int[]
   tags       Tag[]
 
+  createdAt  DateTime   @default(now()) @map(name: "created_at")
+  updatedAt  DateTime   @default(now()) @map(name: "updated_at")
   @@index([slug], name: "images.slug_index")
   @@map("images")
 }
@@ -149,6 +165,8 @@ enum TagSource {
   USER
 }
 
+// IMPORTANT: used as extension when serving files
+// make sure these are valid extensions
 enum MimeType {
   PNG
   JPG
