@@ -30,22 +30,16 @@ export default handle(
       try {
         const { files, fields } = upload;
         const [file] = files;
-
         const tags = fields.tags ? fields.tags.split(",") : [];
         const isPublic = fields?.public === "true" ?? false;
         const nsfw = fields?.nsfw === "true" ?? false;
-
         if (!file) {
           return res.status(400).json({ error: "'file' missing" });
         }
-
         const metadata = sizeOf(file.buffer);
-
         const slug = idgen.nanoid(16);
         const slugWithExtension = `${slug}.${metadata.type}`;
-
         const mime = mimeType.lookup(metadata.type);
-
         const [pHash, hash, faces, palette] = await Promise.all([
           mime !== false && canPerceptualHash(metadata.type)
             ? perceptualHash(file.buffer, mime)
@@ -70,7 +64,6 @@ export default handle(
             },
           ]),
         ]);
-
         const facesDims = faces.map(({ detection }) => ({
           score: detection.score,
           x: detection.box.x,
@@ -78,15 +71,12 @@ export default handle(
           width: detection.box.width,
           height: detection.box.height,
         }));
-
         const databaseType = mimetypeMappings[metadata.type];
-
         if (!databaseType) {
           return res
             .status(400)
             .json({ error: `unsupported type '${metadata.type}'` });
         }
-
         const image = await db.image.create({
           data: {
             fileName: file.originalname,
@@ -124,6 +114,7 @@ export default handle(
             faces: {
               create: faces.map(({ detection, descriptor }) => {
                 return {
+                  score: detection.score,
                   descriptor: Array.from(descriptor),
                   x: detection.box.x,
                   y: detection.box.y,
@@ -134,9 +125,7 @@ export default handle(
             },
           },
         });
-
         console.log(facesDims);
-
         res.json({
           ...transformImage(image),
           bytesHuman: humanFileSize(file.size),

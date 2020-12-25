@@ -1,22 +1,29 @@
 import React from "react";
-import { prisma } from "@/lib/db";
 import { GetServerSideProps } from "next";
 import { useSession } from "next-auth/client";
-import Head from "next/head";
 import { Gallery } from "../components/gallery";
 import { MyDropzone } from "@/components/upload";
-import useSWR from "swr";
-import { fetcher } from "@/lib/utils/data-fetching";
+import { fetcher, useGet } from "@/lib/utils/shared";
+import { useSWRInfinite } from "swr";
 
 export default function Home({ images }) {
+  function getKey(index: number, prevData: any) {
+    if (!prevData?.length) {
+      return null;
+    }
+    if (!index) {
+      return `/api/image`;
+    }
+    return `/api/image?cursor=${index}`;
+  }
   const [sess] = useSession();
-  const { data } = useSWR("/api/image", fetcher, { initialData: images });
+  const { data } = useSWRInfinite(getKey, fetcher, { initialData: images });
   console.log(data);
   return (
     <>
+      <MyDropzone />
       <Gallery images={data} />
       <pre style={{ whiteSpace: "pre" }}>{JSON.stringify(images, null, 2)}</pre>
-      <MyDropzone />
     </>
   );
 }

@@ -1,37 +1,12 @@
 import React from "react";
+import { motion } from "framer-motion";
+import { FaceContext } from "@/models/contexts";
 
-const createImage = (url) =>
-  new Promise((resolve, reject) => {
-    const image = new Image();
-    image.addEventListener("load", () => resolve(image));
-    image.addEventListener("error", (error) => reject(error));
-    image.crossOrigin = "anonymous";
-    image.src = url;
-  });
-
-export const getCroppedImg = async (imageSrc, crop) => {
-  const image = (await createImage(imageSrc)) as any;
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  canvas.setAttribute("crossorigin", "anonymous");
-
-  /* setting canvas width & height allows us to 
-    resize from the original image resolution */
-  canvas.width = 250;
-  canvas.height = 250;
-
-  return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(blob);
-    }, "image/jpeg");
-  });
-};
-
-export function PersonPortrait({ allPortraitHeights, src, crop, ...rest }) {
-  const [blob, setBlob] = React.useState(null);
-  const ref = React.createRef<HTMLCanvasElement>();
+export function PersonPortrait({ src, face, index, ...rest }) {
+  const ref = React.useRef<HTMLCanvasElement>();
+  const { setFace } = React.useContext(FaceContext);
   const width = 100;
-  const scale = width / crop.width;
+  const scale = width / face.width;
   React.useEffect(() => {
     // getCroppedImg(src, crop).then((e) => setBlob(e));
     const image = new Image();
@@ -40,31 +15,34 @@ export function PersonPortrait({ allPortraitHeights, src, crop, ...rest }) {
       const ctx = ref.current.getContext("2d");
       ctx.drawImage(
         image,
-        crop.x,
-        crop.y,
-        crop.width,
-        crop.height,
+        face.x,
+        face.y,
+        face.width,
+        face.height,
         0,
         0,
         width,
-        Math.round(crop.height * scale)
+        Math.round(face.height * scale)
       );
     };
   }, []);
-  // @ts-ignore
   return (
-    <>
+    <motion.div
+      className={`flex flex-col text-xs ${rest.className}`}
+      onMouseEnter={() => setFace(index)}
+      onMouseLeave={() => setFace(-1)}
+    >
       <canvas
-        className={`rounded ${rest.className}`}
-        width="100px"
-        height={`${Math.round(crop.height * scale)}px`}
+        className={`rounded mb-2`}
+        width={width}
+        height={`${Math.round(face.height * scale)}px`}
         style={{
-          height: Math.round(crop.height.scale),
+          height: Math.round(face.height * scale),
           width: 100,
         }}
         ref={(r) => (ref.current = r)}
       ></canvas>
-      {/* {blob && <img src={blob} />} */}
-    </>
+      <p>Cute girl</p>
+    </motion.div>
   );
 }

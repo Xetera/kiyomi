@@ -6,12 +6,12 @@ function decimalToHex(num: number) {
 
 export function PaletteColor({ color }: { color: number }) {
   return (
-    <div className="flex flex-col hover:text-blueGray-300">
+    <div className="flex flex-row items-center">
       <span
         style={{ background: decimalToHex(color) }}
-        className="w-28 h-10 rounded border-red mb-2"
+        className="w-full h-1 hover:h-6 animate"
       />
-      <p className="text-blueGray-500">#{color}</p>
+      {/* <p className="text-blueGray-500 text-sm font-semibold">#{color}</p> */}
     </div>
   );
 }
@@ -21,10 +21,14 @@ export function Palette({
   ...rest
 }: HTMLAttributes<HTMLDivElement> & { colors: number[] }) {
   return (
-    <div className="grid grid-flow-col gap-4 w-min" {...rest}>
+    <section
+      className="grid grid-flow-col mt-2 border-theme border-2"
+      {...rest}
+    >
+      {/* <h2 className="mb-2 font-semibold">Color Palette</h2> */}
       {colors.map((color) => (
         <PaletteColor color={color} key={color} />
       ))}
-    </div>
+    </section>
   );
 }

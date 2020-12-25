@@ -1,1 +1,5 @@
-module.exports = {};
+module.exports = {
+  images: {
+    domains: ["my.simp.pics"],
+  },
+};

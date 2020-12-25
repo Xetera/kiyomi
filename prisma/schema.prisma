@@ -75,6 +75,7 @@ model Face {
   y          Float
   height     Float
   width      Float
+  score Float @default(0)
   // Face descriptor for recognition
   descriptor Float[]
 

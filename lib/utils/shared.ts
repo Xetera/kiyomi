@@ -1,3 +1,5 @@
+import useSWR, { ConfigInterface } from "swr";
+
 /**
  * Format bytes as human-readable text.
  *
@@ -26,4 +28,14 @@ export function humanFileSize(bytes: number, dp = 1) {
   );
 
   return bytes.toFixed(dp) + " " + units[u];
+}
+
+export function fetcher(url: string, init?: RequestInit) {
+  return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`, init).then((r) =>
+    r.json()
+  );
+}
+
+export function useGet<T, K>(url: string, config: ConfigInterface<T, K>) {
+  return useSWR(url, fetcher, config);
 }
