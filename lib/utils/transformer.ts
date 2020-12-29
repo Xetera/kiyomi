@@ -4,6 +4,7 @@ import { pick } from "lodash";
 export const publicImageFields: Array<keyof Image | string> = [
   "userId",
   "slug",
+  "public",
   "caption",
   "source",
   "height",

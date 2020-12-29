@@ -1,3 +1,4 @@
+import { rgbToHsl } from "@/lib/utils/shared";
 import { HTMLAttributes } from "react";
 
 function decimalToHex(num: number) {
@@ -5,13 +6,14 @@ function decimalToHex(num: number) {
 }
 
 export function PaletteColor({ color }: { color: number }) {
+  const colorHex = color.toString(16);
   return (
     <div className="flex flex-row items-center">
       <span
         style={{ background: decimalToHex(color) }}
-        className="w-full h-1 hover:h-6 animate"
+        className="h-6 w-6 hover:h-6 animate rounded border-1 border-theme-light"
       />
-      {/* <p className="text-blueGray-500 text-sm font-semibold">#{color}</p> */}
+      <pre className="ml-2 text-sm">#{colorHex}</pre>
     </div>
   );
 }
@@ -22,10 +24,9 @@ export function Palette({
 }: HTMLAttributes<HTMLDivElement> & { colors: number[] }) {
   return (
     <section
-      className="grid grid-flow-col mt-2 border-theme border-2"
+      className="grid grid-flow-row mt-2 border-theme border-2 gap-2 text-blueGray-400"
       {...rest}
     >
-      {/* <h2 className="mb-2 font-semibold">Color Palette</h2> */}
       {colors.map((color) => (
         <PaletteColor color={color} key={color} />
       ))}

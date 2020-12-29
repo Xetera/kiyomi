@@ -18,6 +18,7 @@ export const imageFindOptions: Partial<Prisma.FindUniqueImageArgs> = {
     },
     faces: {
       select: {
+        id: true,
         score: true,
         person: true,
         x: true,

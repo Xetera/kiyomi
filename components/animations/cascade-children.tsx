@@ -4,10 +4,15 @@ import { motion } from "framer-motion";
 export function CascadeChildren({
   children,
   className,
-}: React.PropsWithChildren<{ className?: string }>) {
+  style,
+}: React.PropsWithChildren<{
+  className?: string;
+  style?: React.CSSProperties;
+}>) {
   return (
     <motion.section
       className={className}
+      style={style}
       initial="hidden"
       animate="show"
       variants={{
@@ -22,6 +27,7 @@ export function CascadeChildren({
     >
       {React.Children.map(children, (child) => (
         <motion.div
+          key={child.toString()}
           variants={{
             hidden: { opacity: 0 },
             show: { opacity: 1 },

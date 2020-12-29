@@ -1,4 +1,3 @@
-import { Readable } from "stream";
 import { imageHash as imageHashCallback } from "image-hash";
 import multer from "multer";
 import { NextApiRequest } from "next";
@@ -6,6 +5,7 @@ import { promisify } from "util";
 import { createHash } from "crypto";
 import { MimeType } from "@prisma/client";
 import getColors from "get-image-colors";
+import mimetypes from "mime-types";
 
 // const thief = new Thief();
 
@@ -19,10 +19,24 @@ export type FileDetails = {
   fieldname: string;
   originalname: string;
   encoding: string;
-  mimetype: string;
   buffer: Buffer;
   size: number;
 };
+
+async function fileFromUrl(url: URL, fieldname: string): Promise<FileDetails> {
+  const DEFAULT_MIMETYPE = "?/?";
+  const res = await fetch(url.toString()).then();
+  console.log(res);
+  console.log(res.headers);
+  const arrayBuffer = await res.arrayBuffer();
+  return {
+    encoding: "7bit",
+    originalname: "",
+    fieldname,
+    buffer: Buffer.from(arrayBuffer),
+    size: arrayBuffer.byteLength,
+  };
+}
 
 export type FormData = {
   fields: Record<string, string>;
@@ -34,15 +48,27 @@ export function parseFiles(
   { name = "file" } = {}
 ): Promise<FormData> {
   return new Promise(function (resolve, reject) {
-    upload.array(name)(req as any, null, (err: any) => {
+    upload.array(name)(req as any, null, async (err: any) => {
       if (err) {
         return reject(err);
       }
+      // @ts-ignore
+      let files = req.files;
+      // @ts-ignore
+      const fields = req.body;
+      if (!files.length) {
+        let url: URL;
+        try {
+          url = new URL(fields[name]);
+        } catch (_) {
+          return reject(new Error("Uploaded file is not valid"));
+        }
+        const file = await fileFromUrl(url, name);
+        files = [file];
+      }
       return resolve({
-        // @ts-ignore
-        files: req.files,
-        // @ts-ignore
-        fields: req.body,
+        files,
+        fields,
       });
     });
   });

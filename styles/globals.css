@@ -9,9 +9,23 @@ pre {
 
 hr {
   border-color: gray;
-  @apply bg-blueGray-800;
+  @apply bg-theme-light;
 }
 
 .responsive-image-wrapper > div {
-  width: 100%;
+width: 100%;
+}
+
+.faded-bottom {
+  mask-image: -webkit-gradient(linear, 0% 4%, 0% 60%, from(rgb(0, 0, 0)), to(rgba(0, 0, 0, 0)));
+  -webkit-mask-image: -webkit-gradient(linear, 0% 4%, 0% 60%, from(rgb(0, 0, 0)), to(rgba(0, 0, 0, 0)));
+}
+
+a.selected {
+  @apply text-blueGray-300 font-semibold;
+}
+
+.faces-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }

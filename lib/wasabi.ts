@@ -16,6 +16,7 @@ export const wasabi = new S3({
 
 export type UploadableFile = FileDetails & {
   path: string;
+  mimetype: string;
 };
 
 const UPLOAD_CONFIG = {

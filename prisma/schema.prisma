@@ -30,13 +30,12 @@ model Tag {
   id        Int       @id @default(autoincrement())
   name      String
   source    TagSource
-  image     Image     @relation(fields: [imageId], references: [id])
-  imageId   Int       @map(name: "image_id")
+  imageId   Int       @map("image_id")
+  addedById Int?      @map("added_by_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
   addedBy   User?     @relation(fields: [addedById], references: [id])
-  addedById Int?      @map(name: "added_by_id")
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  image     Image     @relation(fields: [imageId], references: [id])
 
   @@index([imageId], name: "image.index")
   @@index([addedById], name: "user.index")
@@ -44,43 +43,44 @@ model Tag {
 }
 
 model Alias {
-  id       Int    @id @default(autoincrement())
-  name     String
-  person   Person @relation(fields: [personId], references: [id])
-  personId Int
+  id        Int      @id @default(autoincrement())
+  name      String
+  person    Person   @relation(fields: [personId], references: [id])
+  personId  Int      @map(name: "person_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 
   @@map("aliases")
 }
 
 model Person {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  description String?
   name      String
-  appearsIn Face[]  @relation("face_person")
   aliases   Alias[]
-
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @map("updated_at")
+  appearsIn Face[]   @relation("face_person")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 
   @@index([name], name: "person.name.index")
   @@map("persons")
 }
 
 model Face {
-  id         Int     @id @default(autoincrement())
-  image      Image   @relation("image_faces", fields: [imageId], references: [id])
-  person     Person? @relation("face_person", fields: [personId], references: [id])
-  personId   Int?    @map(name: "person_id")
-  imageId    Int     @map(name: "image_id")
-  x          Float
-  y          Float
-  height     Float
-  width      Float
-  score Float @default(0)
-  // Face descriptor for recognition
-  descriptor Float[]
-
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  x         Float
+  y         Float
+  height    Float
+  width     Float
+  // This type is currently not supported.
+  // descriptor cube?
+  personId  Int?     @map("person_id")
+  imageId   Int      @map("image_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  score     Float    @default(0)
+  image     Image    @relation("image_faces", fields: [imageId], references: [id])
+  person    Person?  @relation("face_person", fields: [personId], references: [id])
 
   @@index([imageId], name: "face.image_id.index")
   @@map("faces")
@@ -105,11 +105,10 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   token         String?   @unique
-  images        Image[]
-  cratedTags    Tag[]
-
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @default(now()) @map("updated_at")
+  images        Image[]
+  cratedTags    Tag[]
 
   @@index([token], name: "user.token.index")
   @@map("users")
@@ -127,32 +126,29 @@ model VerificationRequest {
 }
 
 model Image {
-  id         Int        @id @default(autoincrement())
   slug       String     @unique
   width      Int?
   height     Int?
   fileName   String?    @map("file_name")
+  uploadType UploadType @map("upload_type")
+  mimetype   MimeType
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @default(now()) @map("updated_at")
+  userId     Int?       @map("user_id")
+  id         Int        @id @default(autoincrement())
+  hash       String
+  pHash      String?    @map("p_hash")
+  public     Boolean    @default(false)
+  palette    Int[]
   caption    String?
   views      Int        @default(0)
-  isNsfw     Boolean    @default(false) @map(name: "is_nsfw")
+  isNsfw     Boolean    @default(false) @map("is_nsfw")
   source     String?
-  uploadType UploadType @map("upload_type")
-  userId     Int?       @map("user_id")
-  mimetype   MimeType
-  public     Boolean    @default(false)
-  bytes Int @default(0)
-  hash       String
-  // null if unsupported type
-  pHash      String?    @map(name: "p_hash")
+  bytes      Int        @default(0)
   user       User?      @relation(fields: [userId], references: [id])
-  faces      Face[]     @relation(name: "image_faces")
-  // dominant color palette used by the image
-  // denormalized as color palettes are immutable
-  palette    Int[]
+  faces      Face[]     @relation("image_faces")
   tags       Tag[]
 
-  createdAt  DateTime   @default(now()) @map(name: "created_at")
-  updatedAt  DateTime   @default(now()) @map(name: "updated_at")
   @@index([slug], name: "images.slug_index")
   @@map("images")
 }
@@ -166,8 +162,7 @@ enum TagSource {
   USER
 }
 
-// IMPORTANT: used as extension when serving files
-// make sure these are valid extensions
+///
 enum MimeType {
   PNG
   JPG

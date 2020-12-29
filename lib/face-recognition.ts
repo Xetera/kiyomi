@@ -10,23 +10,23 @@ import {
   WithFaceLandmarks,
   FaceDetection,
 } from "face-api.js";
+import { Face, PrismaClient } from "@prisma/client";
 
 const { Canvas, Image, ImageData } = canvas;
 // @ts-ignore
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
-let loaded = false;
-
-async function loadIfNotLoaded() {
-  if (!loaded) {
-    console.log("loading weights");
+async function checkWeights() {
+  // @ts-ignore
+  if (!global.loadedWeights) {
     await Promise.all([
       faceapi.nets.faceRecognitionNet.loadFromDisk("./weights"),
       faceapi.nets.ssdMobilenetv1.loadFromDisk("./weights"),
       faceapi.nets.faceLandmark68Net.loadFromDisk("./weights"),
     ]);
-    loaded = true;
   }
+  // @ts-ignore
+  global.loadedWeights = true;
 }
 
 export type FaceDetect = WithFaceDescriptor<
@@ -49,7 +49,7 @@ export async function detectFaces(
   buf: Buffer,
   { width, height }: { width: number; height: number }
 ) {
-  await loadIfNotLoaded();
+  await checkWeights();
   const image = new Image();
   image.src = buf;
   image.height = height;
@@ -76,4 +76,26 @@ export async function detectFaces(
     out.toBuffer("image/jpeg")
   );
   return detections;
+}
+
+export async function findClosestMatchingPerson(
+  faceIds: number[],
+  { db, findCount = 5 }: { db: PrismaClient; findCount: number }
+): Promise<Array<{ face: number; matches: Face[] }>> {
+  return Promise.all(
+    faceIds.map(async (faceId) => {
+      return {
+        face: faceId,
+        matches: await db.$queryRaw`
+        SELECT i.slug, row_to_json(p.*) as person, ((1 - ((SELECT descriptor from faces where id = ${faceId}) <-> m.descriptor)) * 100) as "predictionScore"
+        FROM faces m
+          INNER JOIN images i on i.id = m.image_id
+          inner join persons p on p.id = m.person_id
+        where m.id != ${faceId}
+        ORDER BY "predictionScore" DESC
+        LIMIT ${findCount};
+        `,
+      };
+    })
+  );
 }

@@ -14,9 +14,11 @@ import {
   detectFaces,
   FaceDetect,
 } from "@/lib/face-recognition";
+import { Person, raw } from "@prisma/client";
 import idgen from "nanoid";
 import { transformImage } from "@/lib/utils/transformer";
 import { humanFileSize } from "@/lib/utils/shared";
+import SQL from "sql-template-strings";
 
 export const config = {
   api: {
@@ -31,6 +33,10 @@ export default handle(
         const { files, fields } = upload;
         const [file] = files;
         const tags = fields.tags ? fields.tags.split(",") : [];
+        const personId = fields.person_id;
+        const personName = fields.person_name;
+        const source = fields.source;
+        const personAliases = fields.person_aliases;
         const isPublic = fields?.public === "true" ?? false;
         const nsfw = fields?.nsfw === "true" ?? false;
         if (!file) {
@@ -54,13 +60,16 @@ export default handle(
                 return [] as FaceDetect[];
               })
             : Promise.resolve([] as FaceDetect[]),
-          dominantColors(file.buffer, file.mimetype).catch((err) => {
-            console.log(err);
-          }),
+          mime !== false
+            ? dominantColors(file.buffer, mime).catch((err) => {
+                console.log(err);
+              })
+            : [],
           uploadParsedFiles([
             {
               ...file,
               path: slugWithExtension,
+              mimetype: mime || "image/jpg",
             },
           ]),
         ]);
@@ -88,13 +97,10 @@ export default handle(
             hash: hash as string,
             public: isPublic,
             bytes: file.size,
+            source,
             isNsfw: nsfw,
             slug,
-            ...(palette
-              ? {
-                  palette,
-                }
-              : {}),
+            ...(palette ? { palette } : {}),
             user: {
               connect: { email: user.email },
             },
@@ -111,20 +117,38 @@ export default handle(
                 };
               }),
             },
-            faces: {
-              create: faces.map(({ detection, descriptor }) => {
-                return {
-                  score: detection.score,
-                  descriptor: Array.from(descriptor),
-                  x: detection.box.x,
-                  y: detection.box.y,
-                  width: detection.box.width,
-                  height: detection.box.height,
-                };
-              }),
-            },
           },
         });
+
+        db.face.create;
+
+        let targetPerson: string | number;
+        let existingPerson: Person | undefined = personId
+          ? await db.person.findUnique({ where: { id: Number(personId) } })
+          : undefined;
+        if (faces.length === 1 && personName && !existingPerson) {
+          existingPerson = await db.person.create({
+            data: {
+              name: personName,
+            },
+          });
+        }
+        console.log(targetPerson);
+
+        const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, person_id) VALUES`;
+        const templatedString = faces
+          .map(({ detection, descriptor }) => {
+            const { x, y, height, width } = detection.box;
+            const cube = descriptor.join(",");
+            const linkedPerson = existingPerson?.id ?? "NULL";
+            return `(${image.id}, ${detection.score}, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${linkedPerson})`;
+          })
+          .join(",");
+
+        console.log(templatedString);
+        if (faces.length > 0) {
+          await db.$executeRaw`${raw(BASE_STRING + templatedString)}`;
+        }
         console.log(facesDims);
         res.json({
           ...transformImage(image),

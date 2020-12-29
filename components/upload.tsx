@@ -26,12 +26,13 @@ export function MyDropzone() {
     <div {...getRootProps()}>
       <form onSubmit={(e) => e.preventDefault()}>
         <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>Drop the files here ...</p>
-        ) : (
-          <p>Drag 'n' drop some files here, or click to select files</p>
-        )}
-        <button type="submit">Send</button>
+        <div className="">
+          {isDragActive ? (
+            <p>Drop the files here ...</p>
+          ) : (
+            <p>Drag 'n' drop some files here, or click to select files</p>
+          )}
+        </div>
       </form>
     </div>
   );

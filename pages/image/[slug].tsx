@@ -4,10 +4,11 @@ import { fetcher, useGet } from "@/lib/utils/shared";
 import { GetServerSideProps } from "next";
 import ImageDisplay from "@/components/image-display";
 import ImageSidebar from "@/components/image-sidebar";
-import { Palette } from "@/components/palette-color";
-import { PersonPortrait } from "@/components/person-preview";
 import { FaceContext } from "@/models/contexts";
 import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/navbar";
+import { FaUserLock } from "react-icons/fa";
+import { RiSpyLine } from "react-icons/ri";
 
 const imageUrl = (slug: string) => `/api/image/${slug}`;
 
@@ -16,17 +17,24 @@ export default function Image({ images, slug }) {
   const { data } = useGet(imageUrl(slug), { initialData: images });
   return (
     <FaceContext.Provider value={{ face, setFace }}>
-      <div className="justify-center max-w-6xl mx-auto">
-        <article className="mt-24 flex gap-8">
-          <div className="flex flex-col">
+      <Navbar />
+      {!data.public && (
+        <div className="mb-4 rounded border-b-1 border-theme-light bg-theme-alt text-sm lg:text-base">
+          <div className="max-w-7xl mx-auto py-3 px-4 flex items-center font-semibold text-blueGray-400">
+            <RiSpyLine className="mr-2" />
+            This image is unlisted and can only be viewed with a link.
+          </div>
+        </div>
+      )}
+      <div className="justify-center mx-auto max-w-7xl px-4 lg:my-24 my-4">
+        <article className="flex gap-8 justify-center md:flex-row flex-col">
+          <div className="flex">
             {data.caption && (
               <h1 className="text-2xl font-black mb-2 text-blueGray-500">
                 {data.caption}
               </h1>
             )}
-            <div className="flex flex-1 flex-col">
-              <ImageDisplay image={data} />
-            </div>
+            <ImageDisplay image={data} />
           </div>
           <div
             style={{ height: "min-content", minWidth: "250px" }}
@@ -35,8 +43,8 @@ export default function Image({ images, slug }) {
             <ImageSidebar image={data} />
           </div>
         </article>
-        <Footer />
       </div>
+      <Footer />
     </FaceContext.Provider>
   );
 }

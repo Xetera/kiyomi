@@ -1,0 +1,17 @@
+docker_network_name: kiyominet
+
+domain: "simp.pics"
+hasura_url: "https://api.{{ domain }}"
+
+ssh:
+  username:
+
+postgres:
+  name: postgres
+  datadog_username: datadog
+  datadog_password: "{{ lookup('env', 'DATADOG_POSTGRES_PASSWORD') }}"
+  password: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+  # host: postgres # "{{ lookup('env', 'POSTGRES_HOST') }}"
+  username: postgres
+  region: eu-west-3
+  database: kiyomi

@@ -4,6 +4,7 @@
   - You are about to drop the `Face` table. If the table is not empty, all the data it contains will be lost.
 
 */
+CREATE EXTENSION IF NOT EXISTS cube;
 -- DropForeignKey
 ALTER TABLE "Face" DROP CONSTRAINT "Face_imageId_fkey";
 
@@ -15,7 +16,7 @@ CREATE TABLE "faces" (
     "y" INTEGER NOT NULL,
     "height" INTEGER NOT NULL,
     "width" INTEGER NOT NULL,
-    "descriptor" DECIMAL(65,30)[],
+    "descriptor" CUBE,
 
     PRIMARY KEY ("id")
 );

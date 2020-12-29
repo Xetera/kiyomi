@@ -1,0 +1,102 @@
+- include_vars: secret.yaml
+
+- set_fact:
+    network: &network
+      networks:
+        - name: "{{ docker_network_name }}"
+    restart_rules: &restart_rules
+      restart_policy: always
+    traefik_labels: &traefik
+      traefik.enable: "true"
+      traefik.docker.network: "{{ docker_network_name }}"
+    healthcheck: &healthcheck_opts
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# - name: Install restic
+#   apt:
+#     name: restic
+
+# - name: Copy over backup script
+#   template:
+#     src: restic_backup.sh
+#     dest: ~/restic_backup.sh
+
+# - name: Set backup cron job for every day
+#   cron:
+#     name: kiyomi-backup
+#     hour: "0"
+#     minute: "0"
+#     job: "/bin/sh ~/restic_backup.sh >> /var/log/backups.log 2>&1"
+
+# shared by traefik
+- name: Create network between hasura <-> auth
+  docker_network:
+    name: "{{ docker_network_name }}"
+
+- name: Ensure traefik is in network
+  docker_network:
+    name: "{{ docker_network_name }}"
+    containers:
+      - traefik
+
+- name: Create database volume
+  docker_volume:
+    name: "{{ postgres.name }}-volume"
+
+- name: Ensure Docker database is running
+  docker_container:
+    name: "{{ postgres.name }}"
+    image: xetera/postgres-13-2kd
+    restart_policy: always
+    networks:
+      - name: "{{ docker_network_name }}"
+    volumes:
+      - "{{ postgres.name }}-volume"
+    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
+    env:
+      POSTGRES_USER: "{{ postgres.username }}"
+      POSTGRES_PASSWORD: "{{ postgres.password }}"
+      POSTGRES_DB: "{{ postgres.database }}"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "{{ docker_network_name }}"
+      traefik.tcp.services.postgres.loadbalancer.server.port: "5432"
+      traefik.tcp.routers.postgres.entrypoints: "postgres"
+      traefik.tcp.routers.postgres.rule: HostSNI(`db.simp.pics`)
+      traefik.tcp.routers.postgres.service: postgres
+    healthcheck:
+      <<: *healthcheck_opts
+      test: "pg_isready -U {{ postgres.username }}"
+
+- name: Creating Webserver
+  docker_container:
+    name: "{{ simp.name }}"
+    image: xetera/simp
+    pull: true
+    restart_policy: always
+    networks:
+      - name: "{{ docker_network_name }}"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "{{ docker_network_name }}"
+      traefik.http.routers.simp.rule: "Host(`{{ domain }}`)"
+      traefik.http.routers.simp.tls.certresolver: cert
+      traefik.http.routers.simp.tls: "true"
+      traefik.http.routers.simp.entrypoints: websecure
+      traefik.http.services.simp.loadbalancer.server.port: "{{ auth.port }}"
+      traefik.http.services.simp.loadbalancer.healthcheck.path: /api/health
+    env:
+      WASABI_ACCESS_KEY: "{{  auth.wasabi_access_key }}"
+      WASABI_SECRET_KEY: "{{  auth.wasabi_secret_key }}"
+      NODE_ENV: production
+      REDIRECT_URL: "{{ simp.discord.redirect_url }}"
+      CLIENT_ID: "{{ simp.discord.client_id }}"
+      CLIENT_SECRET: "{{ simp.discord.client_secret }}"
+      CALLBACK_URL: "{{ simp.discord.callback_url }}"
+      JWT_SECRET: "{{ simp.discord.jwt_secret }}"
+      PORT: "{{ simp.port }}"
+    # healthcheck:
+    #   <<: *healthcheck_opts
+    #   test: curl -sS http://127.0.0.1/health || exit 1

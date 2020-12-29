@@ -1,15 +1,24 @@
 const colors = require("tailwindcss/colors");
+const { default: _default, alt, light } = require("./colors");
 
 module.exports = {
-  purge: ["pages/**/*.tsx", "components/**/*.tsx"],
+  purge: ["./pages/**/*.tsx", "./components/**/*.tsx"],
   darkMode: "class", // or 'media' or 'class'
   theme: {
+    borderWidth: {
+      1: "1px",
+    },
     colors: {
       ...colors,
+      blurple: "rgb(114, 137, 218)",
       theme: {
-        DEFAULT: colors.blueGray[900],
-        alt: "#0c111f",
+        DEFAULT: _default,
+        alt,
+        light,
       },
+    },
+    minWidth: {
+      image: "800px",
     },
     gridTemplateColumns: {
       "right-sidebar": "auto 300px",
