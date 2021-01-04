@@ -1,16 +1,23 @@
-import { PrismaClient, UploadType } from "@prisma/client";
+import { PrismaClient, UploadType, User as DatabaseUser } from "@prisma/client";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { getSession, Session } from "next-auth/client";
 import { prisma as db } from "@/lib/db";
 import { FormData, parseFiles } from "./file";
 import { User } from "next-auth";
 import { getUserFromToken } from "./auth";
+import { BackendUser } from "./utils/shared";
 
 export type BaseContext = {
   db: PrismaClient;
 };
 
 export type Endpoint<T> = Middleware<BaseContext & T>;
+
+export type Handler<T> = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  ctx: BaseContext
+) => Promise<T>;
 
 export type Middleware<T> = (
   req: NextApiRequest,
@@ -41,10 +48,10 @@ export function makeMiddleware<T extends BaseContext, K>(
   };
 }
 
-export type CtxSession = { user: User; contextType: UploadType };
+export type CtxSession = { user: BackendUser; contextType: UploadType };
 
 export function withUser<T extends BaseContext>(
-  f: Middleware<T & { user?: User; contextType: UploadType }>,
+  f: Middleware<T & { user?: DatabaseUser; contextType: UploadType }>,
   opts?: { strict: false }
 ): Middleware<T>;
 export function withUser<T extends BaseContext>(
@@ -58,21 +65,34 @@ export function withUser<T extends BaseContext>(
   return async (req, res, ctx) => {
     const next = (user?: User, opts?: { contextType: UploadType }) => {
       console.log(`Got a request from ${user ? user.name : "Anonymous User"}`);
-      return f(req, res, { ...ctx, contextType: opts.contextType, user });
+      return f(req, res, {
+        ...ctx,
+        contextType: opts.contextType,
+        user: user as DatabaseUser,
+      });
+    };
+
+    const error = () => {
+      return res.status(403).json({ error: "Forbidden" });
     };
 
     const auth = req.headers.authorization;
 
     if (auth) {
       const user = await getUserFromToken(auth, ctx.db);
+      if (!user && strict) {
+        return error();
+      }
       return next(user, { contextType: "TOKEN" });
     }
 
     const session = await getSession({ req });
 
     if (!session && strict) {
-      return res.status(403).end();
+      return error();
     }
+
+    console.log(session?.user);
 
     return next(session?.user, { contextType: "WEBSITE" });
   };
@@ -90,7 +110,12 @@ export function withFileUpload<T extends BaseContext>(
 }
 
 export function handle(f: Middleware<BaseContext>): NextApiHandler {
-  return (req, res) => {
-    return f(req, res, { db });
+  return async (req, res) => {
+    try {
+      return await f(req, res, { db });
+    } catch (error) {
+      res.statusCode = 500;
+      res.json({ error });
+    }
   };
 }

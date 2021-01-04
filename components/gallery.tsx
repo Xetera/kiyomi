@@ -13,18 +13,20 @@ function LoadingImage({ image }) {
   const imageWidth = width < 1000 ? width : THUMBNAIL_WIDTH;
   return (
     <Link href={`/image/${image.slug}`} key={image.slug}>
-      <Image
-        width={imageWidth}
-        height={(imageWidth / image.width) * image.height}
-        src={image.url}
-        onLoad={() => setLoaded(true)}
-      />
-      {/* {!loaded && (
+      <a>
+        <Image
+          width={imageWidth}
+          height={(imageWidth / image.width) * image.height}
+          src={image.url}
+          onLoad={() => setLoaded(true)}
+        />
+        {/* {!loaded && (
           <Skeleton
             width={THUMBNAIL_WIDTH}
             height={(THUMBNAIL_WIDTH / image.width) * image.height}
           />
         )} */}
+      </a>
     </Link>
   );
 }

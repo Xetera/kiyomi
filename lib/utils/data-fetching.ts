@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { publicImageFields } from "./transformer";
 
-export const imageFindOptions: Partial<Prisma.FindUniqueImageArgs> = {
+export const imageFindOptions = {
   select: {
-    ...Object.fromEntries(publicImageFields.map((field) => [field, true])),
+    ...publicImageFields,
     tags: {
       select: {
         name: true,
@@ -16,16 +16,20 @@ export const imageFindOptions: Partial<Prisma.FindUniqueImageArgs> = {
         image: true,
       },
     },
-    faces: {
+    apperances: {
       select: {
-        id: true,
-        score: true,
         person: true,
-        x: true,
-        y: true,
-        width: true,
-        height: true,
+        faces: {
+          select: {
+            id: true,
+            score: true,
+            x: true,
+            y: true,
+            width: true,
+            height: true,
+          },
+        },
       },
     },
   },
-};
+} as const;

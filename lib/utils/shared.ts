@@ -1,3 +1,5 @@
+import { User } from "next-auth";
+import { SessionBase } from "next-auth/_utils";
 import useSWR, { ConfigInterface } from "swr";
 
 /**
@@ -76,7 +78,7 @@ export function useGet<T, K>(url: string, config: ConfigInterface<T, K>) {
 
 export const IMAGES_PER_FETCH = 40;
 
-export type ImageResponse = {
+export type ImagesResponse = {
   data: any[];
   cursor: string | null;
 };
@@ -88,4 +90,9 @@ export type PublicPerson = {
 export type PublicFace = {
   id: number;
   person?: PublicPerson;
+};
+
+export type BackendUser = User & {
+  id: number;
+  createdAt: Date;
 };

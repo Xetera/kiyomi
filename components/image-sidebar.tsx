@@ -7,6 +7,9 @@ import { CascadeChildren } from "./animations/cascade-children";
 import { RiQuestionLine, RiToolsLine, RiHammerLine } from "react-icons/ri";
 import { format } from "date-fns";
 import Image from "next/image";
+import { User } from "./user";
+import type { ImageResponse } from "@/pages/api/image/[slug]";
+import { ImageContext } from "@/models/contexts";
 
 function SidebarSection({ title, children }) {
   return (
@@ -17,32 +20,24 @@ function SidebarSection({ title, children }) {
   );
 }
 
-export default function ImageSidebar({ image }: any) {
+export default function ImageSidebar() {
+  const image = React.useContext(ImageContext);
   const uploadDate = new Date(image.createdAt);
-  console.log(image);
   return (
     <aside className="align-start text-sm rounded">
       <CascadeChildren className="grid gap-4 text-sm">
         <div className="flex flex-row align-top">
-          <div style={{ maxHeight: "48px" }}>
-            <Image
-              src={image.user.image}
-              width="48px"
-              height="48px"
-              className="rounded-full"
-            />
-          </div>
-          <div className="ml-4">
-            <p className="font-semibold mr-2 flex items-center">
-              {image.user.name}
-              <span data-tip="Staff member">
-                <RiHammerLine className="ml-2" />
-              </span>
-            </p>
-            <time className="text-blueGray-500" dateTime={image.createdAt}>
-              {format(uploadDate, "MMMM dd, yyyy HH:mm")}
-            </time>
-          </div>
+          <User
+            user={image.user}
+            bottom={
+              <time
+                className="text-blueGray-500"
+                dateTime={image.createdAt.toString()}
+              >
+                {format(uploadDate, "MMMM dd, yyyy HH:mm")}
+              </time>
+            }
+          />
         </div>
         <hr className="border-theme-light" />
         <SidebarSection title={"Dimensions"}>

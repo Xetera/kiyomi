@@ -14,7 +14,13 @@ import {
   detectFaces,
   FaceDetect,
 } from "@/lib/face-recognition";
-import { Person, raw } from "@prisma/client";
+import {
+  Appearance,
+  Person,
+  Image,
+  raw,
+  PromiseReturnType,
+} from "@prisma/client";
 import idgen from "nanoid";
 import { transformImage } from "@/lib/utils/transformer";
 import { humanFileSize } from "@/lib/utils/shared";
@@ -26,10 +32,20 @@ export const config = {
   },
 };
 
+async function response(image: Image, bytesHuman: string) {
+  return {
+    ...transformImage(image),
+    bytesHuman,
+  };
+}
+
+export type UploadResponse = PromiseReturnType<typeof response>;
+
 export default handle(
   withUser(
     withFileUpload(async (_req, res, { upload, db, user, contextType }) => {
       try {
+        console.log("user", user);
         const { files, fields } = upload;
         const [file] = files;
         const tags = fields.tags ? fields.tags.split(",") : [];
@@ -111,7 +127,7 @@ export default handle(
                   name: tag,
                   addedBy: {
                     connect: {
-                      email: user.email,
+                      id: user.id,
                     },
                   },
                 };
@@ -122,7 +138,6 @@ export default handle(
 
         db.face.create;
 
-        let targetPerson: string | number;
         let existingPerson: Person | undefined = personId
           ? await db.person.findUnique({ where: { id: Number(personId) } })
           : undefined;
@@ -133,15 +148,38 @@ export default handle(
             },
           });
         }
-        console.log(targetPerson);
 
-        const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, person_id) VALUES`;
+        let existingAppearance: Appearance | undefined;
+        if (existingPerson) {
+          existingAppearance = await db.appearance.create({
+            data: {
+              image: {
+                connect: {
+                  id: image.id,
+                },
+              },
+              person: {
+                connect: {
+                  id: existingPerson.id,
+                },
+              },
+              addedBy: {
+                connect: {
+                  id: user.id,
+                },
+              },
+            },
+          });
+        }
+
+        const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, added_by_id, appearance_id) VALUES`;
         const templatedString = faces
           .map(({ detection, descriptor }) => {
             const { x, y, height, width } = detection.box;
             const cube = descriptor.join(",");
-            const linkedPerson = existingPerson?.id ?? "NULL";
-            return `(${image.id}, ${detection.score}, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${linkedPerson})`;
+            const userId = user.id;
+            const linkedPerson = existingAppearance?.id ?? "NULL";
+            return `(${image.id}, ${detection.score}, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${userId}, ${linkedPerson})`;
           })
           .join(",");
 
@@ -150,14 +188,12 @@ export default handle(
           await db.$executeRaw`${raw(BASE_STRING + templatedString)}`;
         }
         console.log(facesDims);
-        res.json({
-          ...transformImage(image),
-          bytesHuman: humanFileSize(file.size),
-        });
+        return res.json(response(image, humanFileSize(file.size)));
       } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Internal Server Error" });
       }
-    })
+    }),
+    { strict: true }
   )
 );

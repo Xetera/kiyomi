@@ -29,3 +29,7 @@ a.selected {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
+
+.inset-shadow {
+  box-shadow: inset 0 1px 0 hsla(0,0%,100%,.05);
+}

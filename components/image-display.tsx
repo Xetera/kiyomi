@@ -1,6 +1,6 @@
 import React from "react";
 import { PersonPortrait } from "./person-preview";
-import { FaceContext } from "@/models/contexts";
+import { FaceContext, ImageContext } from "@/models/contexts";
 import { CascadeChildren } from "./animations/cascade-children";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToggle } from "react-use";
@@ -46,7 +46,8 @@ function Face({ image, face, style, active }) {
   );
 }
 
-export default function ImageDisplay({ image }: any) {
+export default function ImageDisplay() {
+  const image = React.useContext(ImageContext);
   const imageRef = React.useRef<HTMLImageElement>();
   const parentRef = React.useRef<HTMLDivElement>();
   const { face: activeFace } = React.useContext(FaceContext);

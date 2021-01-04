@@ -1,24 +1,31 @@
 import { Image } from "@prisma/client";
 import { pick } from "lodash";
 
-export const publicImageFields: Array<keyof Image | string> = [
-  "userId",
-  "slug",
-  "public",
-  "caption",
-  "source",
-  "height",
-  "width",
-  "bytes",
-  "mimetype",
-  "isNsfw",
-  "views",
-  "palette",
-  "createdAt",
-  "updatedAt",
-];
+export const publicImageFields = {
+  userId: true,
+  slug: true,
+  public: true,
+  caption: true,
+  source: true,
+  height: true,
+  width: true,
+  bytes: true,
+  mimetype: true,
+  isNsfw: true,
+  views: true,
+  palette: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
 
-export function transformImage(image: Image) {
+type ExtraImageProperties = {
+  mimetype: string;
+  url: string;
+};
+
+export function transformImage<T extends { mimetype: string; slug: string }>(
+  image: T
+): T & ExtraImageProperties {
   const mimetype = image.mimetype.toLowerCase();
   return {
     ...image,

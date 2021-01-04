@@ -19,6 +19,7 @@ faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 async function checkWeights() {
   // @ts-ignore
   if (!global.loadedWeights) {
+    console.log("Weights were not loading, loading now");
     await Promise.all([
       faceapi.nets.faceRecognitionNet.loadFromDisk("./weights"),
       faceapi.nets.ssdMobilenetv1.loadFromDisk("./weights"),

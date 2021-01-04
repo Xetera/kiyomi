@@ -9,6 +9,7 @@ import { Navbar } from "@/components/navbar";
 import { FrontPage } from "@/components/front-page";
 import { Waypoint } from "react-waypoint";
 import { useScroll } from "react-use";
+import type { HomeResponse } from "./api/image";
 
 function getKey(index: number, prevData: any) {
   console.log("fetching");
@@ -34,17 +35,19 @@ export default function Home({ images }: { images: any[] }) {
   const [fetching, setFetching] = React.useState(false);
   const { y } = useScroll(pageRef);
   console.log(y);
-  const { data, setSize, size, error, isValidating } = useSWRInfinite(
-    getKey,
-    fetcher,
-    {
-      // initialData: { data: images, cursor: images[images.length - 1] ?? null },
-      onSuccess(data) {
-        console.log("success", data);
-        setFetching(false);
-      },
-    }
-  );
+  const {
+    data,
+    setSize,
+    size,
+    error,
+    isValidating,
+  } = useSWRInfinite<HomeResponse>(getKey, fetcher, {
+    // initialData: { data: images, cursor: images[images.length - 1] ?? null },
+    onSuccess(data) {
+      console.log("success", data);
+      setFetching(false);
+    },
+  });
   const imagess = data ? [].concat(...data.map((d) => d.data)) : [];
   console.log("imagess", imagess);
   async function getMore() {

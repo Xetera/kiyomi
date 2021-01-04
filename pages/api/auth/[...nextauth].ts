@@ -1,5 +1,5 @@
 import NextAuth, { InitOptions } from "next-auth";
-import { User } from "@prisma/client";
+import { User as DatabaseUser } from "@prisma/client";
 import Providers from "next-auth/providers";
 import Adapters from "next-auth/adapters";
 import { prisma } from "@/lib/db";
@@ -23,8 +23,17 @@ const options: InitOptions = {
     },
   }),
   database: process.env.DATABASE_URL,
+  callbacks: {
+    session: (session, user: DatabaseUser) => {
+      // @ts-ignore
+      session.user.id = user.id;
+      // @ts-ignore
+      session.user.createdAt = user.createdAt;
+      return Promise.resolve(session);
+    },
+  },
   events: {
-    async createUser(user: User) {
+    async createUser(user: DatabaseUser) {
       // TODO: this fires 2 save requests per sign up
       // should just add a token while creating the user but
       // idk how lol

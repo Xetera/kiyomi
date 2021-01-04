@@ -12,6 +12,9 @@ export default handle(
       console.log(user);
       const userImages = await db.image.findMany({
         ...imageFindOptions,
+        orderBy: {
+          createdAt: "desc",
+        },
         where: {
           user: {
             email: user.email,

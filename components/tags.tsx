@@ -1,9 +1,12 @@
 import React from "react";
 function Tag({ tag }: { tag: string }) {
   return (
-    <div className="bg-theme-light py-1 px-2 rounded text-sm font-semibold">
+    <a
+      href={`/tag/${tag}`}
+      className="bg-theme-light py-1 px-2 rounded text-sm font-semibold inset-shadow hover:bg-theme-lightest hover:text-white"
+    >
       {tag}
-    </div>
+    </a>
   );
 }
 

@@ -66,6 +66,25 @@ model Person {
   @@map("persons")
 }
 
+model Appearance {
+  id Int @id @default(autoincrement())
+  person Person @relation(fields: [personId], references: [id])
+  personId  Int     @map("person_id")
+  // this is for the VERY rare cases where
+  // a person might have more than one face
+  // in a picture like in a collage
+  faces Face[]
+  addedBy User @relation(fields: [addedById], references: [id])
+  addedById Int @map(name: "added_by_id")
+  image Image @relation("image_appearances", fields: [imageId], references: [id])
+  imageId Int @map(name: "image_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("appearances")
+}
+
 model Face {
   id        Int      @id @default(autoincrement())
   x         Float
@@ -74,15 +93,18 @@ model Face {
   width     Float
   // This type is currently not supported.
   // descriptor cube?
-  personId  Int?     @map("person_id")
-  imageId   Int      @map("image_id")
+  appearanceId   Int?      @map("appearance_id")
+  addedBy User? @relation(fields: [addedById])
+  addedById Int? @map(name: "added_by_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
-  score     Float    @default(0)
-  image     Image    @relation("image_faces", fields: [imageId], references: [id])
-  person    Person?  @relation("face_person", fields: [personId], references: [id])
 
-  @@index([imageId], name: "face.image_id.index")
+  score     Float    @default(0)
+  appearance     Appearance?    @relation("image_appearance", fields: [appearanceId], references: [id])
+  image Image @relation(fields: [imageId], references: [id])
+  imageId Int @map(name: "image_id")
+
+  @@index([appearanceId], name: "face.appearanceId.index")
   @@map("faces")
 }
 
@@ -109,6 +131,7 @@ model User {
   updatedAt     DateTime  @default(now()) @map("updated_at")
   images        Image[]
   cratedTags    Tag[]
+  bot Boolean @default(false)
 
   @@index([token], name: "user.token.index")
   @@map("users")
@@ -146,8 +169,9 @@ model Image {
   source     String?
   bytes      Int        @default(0)
   user       User?      @relation(fields: [userId], references: [id])
-  faces      Face[]     @relation("image_faces")
+  apperances      Appearance[]     @relation("image_appearances")
   tags       Tag[]
+  faces Face[] @relation()
 
   @@index([slug], name: "images.slug_index")
   @@map("images")
