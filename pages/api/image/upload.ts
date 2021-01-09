@@ -22,9 +22,10 @@ import {
   PromiseReturnType,
 } from "@prisma/client";
 import idgen from "nanoid";
-import { transformImage } from "@/lib/utils/transformer";
-import { humanFileSize } from "@/lib/utils/shared";
+import { transformImage } from "@/lib/transformer";
+import { humanFileSize } from "@/lib/shared";
 import SQL from "sql-template-strings";
+import { GetImage, imageFindOptions } from "@/lib/data-fetching";
 
 export const config = {
   api: {
@@ -32,7 +33,7 @@ export const config = {
   },
 };
 
-async function response(image: Image, bytesHuman: string) {
+async function response(image: GetImage, bytesHuman: string) {
   return {
     ...transformImage(image),
     bytesHuman,
@@ -103,6 +104,10 @@ export default handle(
             .json({ error: `unsupported type '${metadata.type}'` });
         }
         const image = await db.image.create({
+          select: {
+            id: true,
+            ...imageFindOptions.select,
+          },
           data: {
             fileName: file.originalname,
             width: metadata.width,
@@ -183,11 +188,9 @@ export default handle(
           })
           .join(",");
 
-        console.log(templatedString);
         if (faces.length > 0) {
           await db.$executeRaw`${raw(BASE_STRING + templatedString)}`;
         }
-        console.log(facesDims);
         return res.json(response(image, humanFileSize(file.size)));
       } catch (err) {
         console.log(err);

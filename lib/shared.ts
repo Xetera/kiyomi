@@ -1,5 +1,4 @@
 import { User } from "next-auth";
-import { SessionBase } from "next-auth/_utils";
 import useSWR, { ConfigInterface } from "swr";
 
 /**

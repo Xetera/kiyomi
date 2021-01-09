@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@prisma/client": "^2.13.1",
+    "@prisma/client": "^2.14.0",
     "@tensorflow/tfjs-node": "1.7.4",
     "autoprefixer": "^10.1.0",
     "aws-sdk": "^2.815.0",
@@ -48,7 +48,7 @@
     "use-image": "^1.0.7"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.13.1",
+    "@prisma/cli": "^2.14.0",
     "@types/lodash": "^4.14.166",
     "@types/mime-types": "^2.1.0",
     "@types/multer": "^1.4.5",

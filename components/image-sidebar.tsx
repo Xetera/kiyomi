@@ -1,4 +1,4 @@
-import { humanFileSize } from "@/lib/utils/shared";
+import { humanFileSize } from "@/lib/shared";
 import React from "react";
 import { Palette } from "./palette-color";
 import { Tags } from "./tags";

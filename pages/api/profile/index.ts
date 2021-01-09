@@ -1,6 +1,29 @@
 import { handle, withUser } from "@/lib/middleware";
-import { imageFindOptions } from "@/lib/utils/data-fetching";
-import { transformImage } from "@/lib/utils/transformer";
+import { imageFindOptions } from "@/lib/data-fetching";
+import { transformImage } from "@/lib/transformer";
+import { PrismaClient, PromiseReturnType } from "@prisma/client";
+import { User } from "next-auth";
+
+async function response(user: User, db: PrismaClient) {
+  const userImages = await db.image.findMany({
+    ...imageFindOptions,
+    orderBy: {
+      createdAt: "desc",
+    },
+    where: {
+      user: {
+        email: user.email,
+      },
+    },
+  });
+
+  return {
+    user,
+    images: userImages.map(transformImage),
+  };
+}
+
+export type ProfileResponse = PromiseReturnType<typeof response>;
 
 export default handle(
   withUser(
@@ -9,23 +32,7 @@ export default handle(
         res.redirect("/api/auth/signin");
         return;
       }
-      console.log(user);
-      const userImages = await db.image.findMany({
-        ...imageFindOptions,
-        orderBy: {
-          createdAt: "desc",
-        },
-        where: {
-          user: {
-            email: user.email,
-          },
-        },
-      });
-
-      res.json({
-        user,
-        images: userImages.map(transformImage),
-      });
+      return res.json(await response(user, db));
     },
     { strict: false }
   )

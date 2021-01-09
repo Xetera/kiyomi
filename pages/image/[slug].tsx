@@ -1,6 +1,6 @@
 import React from "react";
 import { prisma } from "@/lib/db";
-import { fetcher, useGet } from "@/lib/utils/shared";
+import { fetcher, useGet } from "@/lib/shared";
 import { GetServerSideProps } from "next";
 import ImageDisplay from "@/components/image-display";
 import ImageSidebar from "@/components/image-sidebar";
@@ -15,7 +15,7 @@ import useSWR from "swr";
 const imageUrl = (slug: string) => `/api/image/${slug}`;
 
 export default function Image({ images, slug }) {
-  const [face, setFace] = React.useState(-1);
+  const [face, setFace] = React.useState("");
   const { data } = useSWR<ImageResponse>(imageUrl(slug), fetcher, {
     initialData: images,
   });
@@ -45,7 +45,7 @@ export default function Image({ images, slug }) {
               style={{ height: "min-content", minWidth: "250px" }}
               className="overflow-hidden"
             >
-              <ImageSidebar image={data} />
+              <ImageSidebar />
             </div>
           </article>
         </div>
@@ -65,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       notFound: true,
     };
   }
-  const images = await fetcher(imageUrl(slug as string));
+  const images: ImageResponse = await fetcher(imageUrl(slug as string));
   // asynchronously increment view done in
   // getServerSideProps to prevent triggering
   // view climb from useSWR

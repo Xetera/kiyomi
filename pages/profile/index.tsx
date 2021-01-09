@@ -1,7 +1,8 @@
+import type { ProfileResponse } from "../api/profile";
 import { Gallery } from "@/components/gallery";
 import { Navbar } from "@/components/navbar";
 import { User } from "@/components/user";
-import { fetcher, useGet } from "@/lib/utils/shared";
+import { fetcher, useGet } from "@/lib/shared";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/client";
 import React from "react";
@@ -12,7 +13,7 @@ const profileUrl = `/api/profile`;
 export default function Image(props) {
   const [session] = useSession();
   console.log("session ", session);
-  const { data } = useSWR(profileUrl, {
+  const { data } = useSWR<ProfileResponse>(profileUrl, {
     initialData: props,
   });
   return (

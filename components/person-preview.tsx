@@ -1,29 +1,46 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaceContext } from "@/models/contexts";
+import { FaceContext, ImageAppearance, ImageFace } from "@/models/contexts";
 import {
   RiLightbulbFlashLine,
   RiEdit2Line,
   RiDeleteBinLine,
 } from "react-icons/ri";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { PredictionResponse } from "@/pages/api/image/face/[slug]";
 
 function ActionButton({ icon, className }) {
   return <div className={`p-1 ${className} flex items-start`}>{icon}</div>;
 }
 
+type PortraitProps = React.HTMLProps<HTMLDivElement> & {
+  src: string;
+  appearance?: ImageAppearance;
+  face?: ImageFace;
+  prediction?: PredictionResponse[0]["matches"][0];
+};
+
 export const maxPortraitHeight = 140;
 
-export function PersonPortrait({ src, face, index, prediction, ...rest }) {
+export function PersonPortrait({
+  src,
+  appearance,
+  face,
+  prediction,
+  className,
+}: PortraitProps) {
   console.log("face", face);
   const ref = React.useRef<HTMLCanvasElement>();
   const { setFace } = React.useContext(FaceContext);
   const height = maxPortraitHeight;
   const maxWidth = 100;
-  const scale = height / face.height;
-  const widthScale = Math.round(face.width * scale);
+  const scale = face ? height / face.height : 1;
+  const widthScale = face ? Math.round(face.width * scale) : 1;
   const heightScale = height;
   React.useEffect(() => {
+    if (!face) {
+      return;
+    }
     // getCroppedImg(src, crop).then((e) => setBlob(e));
     const image = new Image();
     image.src = src;
@@ -45,30 +62,38 @@ export function PersonPortrait({ src, face, index, prediction, ...rest }) {
   const predictionScore = prediction?.predictionScore
     ? `${prediction.predictionScore.toFixed(2)}%`
     : "None";
+
+  const motionId = appearance
+    ? `appearance:${appearance.id}`
+    : face
+    ? `face:${face.id}`
+    : "";
   return (
     <motion.div
-      className={`rounded overflow-hidden whitespace-nowrap flex flex-row text-xs ${rest.className} bg-theme-alt cursor-pointer border-theme-light`}
+      className={`rounded overflow-hidden whitespace-nowrap flex flex-row text-xs ${className} bg-theme-alt cursor-pointer border-theme-light`}
       style={{
         borderWidth: "1px",
         height,
       }}
-      onMouseEnter={() => setFace(index)}
-      onMouseLeave={() => setFace(-1)}
+      onMouseEnter={() => setFace(motionId)}
+      onMouseLeave={() => setFace("")}
     >
       <div
         className="overflow-hidden object-cover flex flex-col items-center"
         style={{ maxWidth }}
       >
-        <canvas
-          className="overflow-hidden"
-          width={`${widthScale}px`}
-          height={heightScale}
-          style={{
-            height: heightScale,
-            width: widthScale,
-          }}
-          ref={(r) => (ref.current = r)}
-        ></canvas>
+        {face && (
+          <canvas
+            className="overflow-hidden"
+            width={`${widthScale}px`}
+            height={heightScale}
+            style={{
+              height: heightScale,
+              width: widthScale,
+            }}
+            ref={(r) => (ref.current = r)}
+          ></canvas>
+        )}
       </div>
       <div className="w-full flex flex-col flex-1 overflow-hidden">
         <h2
@@ -79,10 +104,10 @@ export function PersonPortrait({ src, face, index, prediction, ...rest }) {
         >
           <p
             className={`overflow-hidden overflow-ellipsis ${
-              !face.person ? "text-blueGray-500" : ""
+              !appearance ? "text-blueGray-500" : ""
             }`}
           >
-            {face.person?.name ?? "Unverified"}
+            {appearance?.person.name ?? "Unverified"}
           </p>
           <div className="flex">
             <ActionButton

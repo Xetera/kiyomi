@@ -1,20 +1,38 @@
 import React from "react";
 import { PersonPortrait } from "./person-preview";
-import { FaceContext, ImageContext } from "@/models/contexts";
+import {
+  FaceContext,
+  ImageAppearance,
+  ImageContext,
+  ImageFace,
+} from "@/models/contexts";
 import { CascadeChildren } from "./animations/cascade-children";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToggle } from "react-use";
 import { FaExpand, FaCompress, FaUserSecret } from "react-icons/fa";
 import { RiSpyLine } from "react-icons/ri";
 import Skeleton from "react-loading-skeleton";
-import { fetcher } from "@/lib/utils/shared";
+import { fetcher } from "@/lib/shared";
 import useSWR from "swr";
+import type { ImageResponse } from "@/pages/api/image/[slug]";
+import { PredictionResponse } from "@/pages/api/image/face/[slug]";
 
-function Face({ image, face, style, active }) {
-  console.log(face);
+type FaceProps = React.HTMLProps<HTMLDivElement> & {
+  image: ImageResponse;
+  appearance?: ImageAppearance;
+  face: ImageFace;
+  forceActive: boolean;
+};
+
+function Face({ appearance, face, style, forceActive }: FaceProps) {
+  const { face: activeFace } = React.useContext(FaceContext);
+  const motionId = appearance
+    ? `appearance:${appearance.id}`
+    : `face:${face.id}`;
+  const active = activeFace === motionId;
   return (
     <AnimatePresence>
-      {active && (
+      {(active || forceActive) && (
         <motion.div
           className="absolute z-2 rounded border-2"
           initial={{ y: 20 }}
@@ -28,10 +46,13 @@ function Face({ image, face, style, active }) {
           <div className="w-full h-full absolute">
             <p
               className="absolute top-full w-full text-xs p-1"
-              style={{ background: "rgba(46, 42, 56, 0.8)", minWidth: "80px" }}
+              style={{
+                background: "rgba(46, 42, 56, 0.8)",
+                minWidth: "80px",
+              }}
             >
-              {face.person?.name ? (
-                face.person.name
+              {appearance ? (
+                appearance.person.name
               ) : (
                 <i className="text-blueGray-500">Unknown</i>
               )}
@@ -65,11 +86,12 @@ export default function ImageDisplay() {
   };
   const [active, setActive] = React.useState(false);
   const [loaded, setLoaded] = React.useState(false);
-  const { data: facePredictions } = useSWR(
+  const { data: facePredictions = [] } = useSWR<PredictionResponse>(
     `/api/image/face/${image.slug}`,
     fetcher,
     { refreshInterval: 0 }
   );
+  console.log("predictions", facePredictions);
   const [parentSize, setParentSize] = React.useState<DOMRect>(defaults);
   const [imageSize, setImageSize] = React.useState<DOMRect>(defaults);
   const shouldBeExpandable =
@@ -98,14 +120,33 @@ export default function ImageDisplay() {
       checkSize();
     }
   }, [loaded]);
+
+  function renderFaces(faces: ImageFace[], appearance?: ImageAppearance) {
+    return faces.map((face) => (
+      <Face
+        forceActive={active}
+        appearance={appearance}
+        face={face}
+        image={image}
+        style={{
+          left: (face.x * imageSize.width) / image.width,
+          top: (face.y * imageSize.height) / image.height,
+          width: (face.width * imageSize.width) / image.width,
+          height: (face.height * imageSize.height) / image.height,
+          pointerEvents: "none",
+        }}
+      />
+    ));
+  }
+
   const {
     width: parentWidth,
     height: parentHeight,
   } = parentRef.current?.getBoundingClientRect() ?? { width: 700, height: 800 };
-  console.log(parentWidth, parentHeight);
+
   const MAX_WIDTH = 1200;
   const imageMaxHeight = !expanded
-    ? "90vh"
+    ? "70vh"
     : image.height <= 800
     ? image.height
     : "100%";
@@ -145,20 +186,10 @@ export default function ImageDisplay() {
             maxHeight: imageMaxHeight,
           }}
         >
-          {image.faces.map((face, i) => (
-            <Face
-              active={active || activeFace === i}
-              face={face}
-              image={image}
-              style={{
-                left: (face.x * imageSize.width) / image.width,
-                top: (face.y * imageSize.height) / image.height,
-                width: (face.width * imageSize.width) / image.width,
-                height: (face.height * imageSize.height) / image.height,
-                pointerEvents: "none",
-              }}
-            />
-          ))}
+          {renderFaces(image.unknownFaces)}
+          {image.appearances.flatMap((appearance, i) =>
+            renderFaces(appearance.faces, appearance)
+          )}
         </div>
         <img
           ref={(input) => {
@@ -194,25 +225,30 @@ export default function ImageDisplay() {
         />
       </div>
 
-      {image.faces.length > 0 && (
-        <section className="mt-6">
-          {/* <h2 className="text-lg font-semibold mb-3 mt-3">
+      <section className="mt-6">
+        {/* <h2 className="text-lg font-semibold mb-3 mt-3">
             Appearing in this Image
           </h2> */}
-          <CascadeChildren className="grid faces-grid flex-row gap-4">
-            {image.faces?.map((face, i) => (
+        <CascadeChildren className="grid faces-grid flex-row gap-4">
+          {image.unknownFaces?.map((face) => {
+            return <PersonPortrait src={image.url} face={face} />;
+          })}
+          {image.appearances?.map((appearance) => {
+            const [face] = appearance.faces;
+            return (
               <PersonPortrait
-                index={i}
                 src={image.url}
+                appearance={appearance}
                 face={face}
                 prediction={
+                  face &&
                   facePredictions?.find((f) => f.face === face.id)?.matches[0]
                 }
               />
-            ))}
-          </CascadeChildren>
-        </section>
-      )}
+            );
+          })}
+        </CascadeChildren>
+      </section>
     </div>
   );
 }

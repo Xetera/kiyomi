@@ -5,7 +5,7 @@ import { prisma as db } from "@/lib/db";
 import { FormData, parseFiles } from "./file";
 import { User } from "next-auth";
 import { getUserFromToken } from "./auth";
-import { BackendUser } from "./utils/shared";
+import { BackendUser } from "./shared";
 
 export type BaseContext = {
   db: PrismaClient;
@@ -115,6 +115,7 @@ export function handle(f: Middleware<BaseContext>): NextApiHandler {
       return await f(req, res, { db });
     } catch (error) {
       res.statusCode = 500;
+      console.log(error)
       res.json({ error });
     }
   };

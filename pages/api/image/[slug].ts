@@ -1,24 +1,24 @@
-import { BaseContext, handle, Handler, Middleware } from "@/lib/middleware";
-import { imageFindOptions } from "@/lib/utils/data-fetching";
-import { transformImage } from "@/lib/utils/transformer";
+import { handle, Handler, Middleware } from "@/lib/middleware";
+import { getImage } from "@/lib/data-fetching";
+import { transformImage } from "@/lib/transformer";
 import { PrismaClient, PromiseReturnType } from "@prisma/client";
 
-const response: Handler = async (req, res, { db }) => {
+const response = async (slug: string, db: PrismaClient) => {
+  const data = await getImage(slug, db);
+  return transformImage(data);
+};
+
+export default handle(async (req, res, { db }) => {
+  console.log("hello?");
   const { slug } = req.query;
   if (Array.isArray(slug)) {
     res.statusCode = 400;
     return res.end();
   }
 
-  res.json(await response(slug, db));
-};
-
-export default handle(async (slug: string, db: PrismaClient) => {
-  const data = await db.image.findUnique({
-    ...imageFindOptions,
-    where: { slug },
-  });
-  return transformImage(data);
+  const resp = await response(slug, db);
+  console.log(resp);
+  res.json(resp);
 });
 
 export type ImageResponse = PromiseReturnType<typeof response>;

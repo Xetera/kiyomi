@@ -79,16 +79,32 @@ export async function detectFaces(
   return detections;
 }
 
+export type RecognitionMatch = {
+  slug: string;
+  predictionScore: number /* float */;
+  person: {
+    id: number;
+    description?: string;
+    name: string;
+  };
+};
+
 export async function findClosestMatchingPerson(
   faceIds: number[],
   { db, findCount = 5 }: { db: PrismaClient; findCount: number }
-): Promise<Array<{ face: number; matches: Face[] }>> {
+): Promise<Array<{ face: number; matches: RecognitionMatch[] }>> {
   return Promise.all(
     faceIds.map(async (faceId) => {
       return {
         face: faceId,
         matches: await db.$queryRaw`
-        SELECT i.slug, row_to_json(p.*) as person, ((1 - ((SELECT descriptor from faces where id = ${faceId}) <-> m.descriptor)) * 100) as "predictionScore"
+        SELECT i.slug,
+          json_build_object(
+             'id', p.id,
+             'description', p.description,
+             'name', p.name
+          ) as person,
+          ((1 - ((SELECT descriptor from faces where id = ${faceId}) <-> m.descriptor)) * 100) as "predictionScore"
         FROM faces m
           INNER JOIN images i on i.id = m.image_id
           inner join persons p on p.id = m.person_id
@@ -98,5 +114,8 @@ export async function findClosestMatchingPerson(
         `,
       };
     })
-  );
+  ).then((r) => {
+    console.log(r);
+    return r;
+  });
 }

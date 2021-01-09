@@ -1,4 +1,4 @@
-import { rgbToHsl } from "@/lib/utils/shared";
+import { rgbToHsl } from "@/lib/shared";
 import { HTMLAttributes } from "react";
 
 function decimalToHex(num: number) {

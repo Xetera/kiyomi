@@ -1,9 +1,10 @@
 import { findClosestMatchingPerson } from "@/lib/face-recognition";
 import { handle } from "@/lib/middleware";
+import { PrismaClient, PromiseReturnType } from "@prisma/client";
 
-export default handle(async (req, res, { db }) => {
+async function response(slug: string, db: PrismaClient) {
   const image = await db.image.findUnique({
-    where: { slug: req.query.slug as string },
+    where: { slug },
     include: {
       faces: {
         select: {
@@ -12,12 +13,19 @@ export default handle(async (req, res, { db }) => {
       },
     },
   });
-  const result = await findClosestMatchingPerson(
+  return findClosestMatchingPerson(
     image.faces.map((face) => face.id),
     {
       db,
       findCount: 5,
     }
   );
-  res.json(result);
+}
+
+export type PredictionResponse = PromiseReturnType<typeof response>;
+
+export default handle(async (req, res, { db }) => {
+  const result = await response(req.query.slug as string, db);
+  console.log(result);
+  res.json(result ?? []);
 });

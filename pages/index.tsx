@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { useSession } from "next-auth/client";
 import { Gallery } from "../components/gallery";
 import { MyDropzone } from "@/components/upload";
-import { fetcher, IMAGES_PER_FETCH, useGet } from "@/lib/utils/shared";
+import { fetcher, IMAGES_PER_FETCH, useGet } from "@/lib/shared";
 import { useSWRInfinite } from "swr";
 import { Navbar } from "@/components/navbar";
 import { FrontPage } from "@/components/front-page";
