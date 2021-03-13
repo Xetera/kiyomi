@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:buster-slim AS deps
+FROM node:14-slim AS deps
 
 WORKDIR /opt/app
 COPY package.json yarn.lock ./

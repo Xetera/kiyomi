@@ -59,13 +59,12 @@ jobs:
         run: cd ansible && ansible-playbook playbook.yaml -i "${{ secrets.HOST_IP }}," -vvvv -c paramiko -e "ansible_user=root"
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
+          WASABI_ACCESS_KEY: ${{ secrets.WASABI_ACCESS_KEY }}
+          WASABI_SECRET_KEY: ${{ secrets.WASABI_SECRET_KEY }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
-          DISCORD_CALLBACK_URL: ${{ secrets.DISCORD_CALLBACK_URL }}
-          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
-          DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          RESTIC_PASSWORD: ${{ secrets.RESTIC_PASSWORD }}
-          B2_ACCOUNT_ID: ${{ secrets.B2_ACCOUNT_ID }}
-          B2_ACCOUNT_SECRET: ${{ secrets.B2_ACCOUNT_SECRET }}
+          DISCORD_SECRET: ${{ secrets.DISCORD_SECRET }}
+          DISCORD_ID: ${{ secrets.DISCORD_ID }}
+          # JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          # RESTIC_PASSWORD: ${{ secrets.RESTIC_PASSWORD }}
+          # B2_ACCOUNT_ID: ${{ secrets.B2_ACCOUNT_ID }}
+          # B2_ACCOUNT_SECRET: ${{ secrets.B2_ACCOUNT_SECRET }}
