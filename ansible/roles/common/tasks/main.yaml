@@ -91,7 +91,7 @@
       traefik.http.services.simp.loadbalancer.healthcheck.path: /api/health
     env:
       WASABI_ACCESS_KEY: "{{ simp.wasabi_access_key }}"
-      WASABI_SECRET_KEY: "{{ simp.wasabi_secret_key }}"
+      WASABI_SECRET: "{{ simp.wasabi_secret_key }}"
       NODE_ENV: production
       POSTGRES_URL: "{{ postgres.url }}"
       DISCORD_ID: "{{ simp.discord.id }}"
