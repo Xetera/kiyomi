@@ -55,7 +55,7 @@ jobs:
       - name: Install paramiko
         run: pip install paramiko
       - name: Run ansible playbook
-        run: cd ansible && ansible-playbook staging.yaml -i "${{ secrets.HOST_IP }}," -vvvv -c paramiko
+        run: cd ansible && ansible-playbook playbook.yaml -i "${{ secrets.HOST_IP }}," -vvvv -c paramiko
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}

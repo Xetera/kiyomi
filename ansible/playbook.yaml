@@ -1,0 +1,6 @@
+- name: Starting all processes
+  hosts: all
+  gather_facts: true
+  roles:
+    - name: common
+      tags: ["common"]
