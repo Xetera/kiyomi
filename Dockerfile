@@ -14,6 +14,7 @@ RUN apt-get update && \
     libssl-dev
 
 RUN yarn --frozen-lockfile
+COPY prisma prisma
 RUN yarn generate
 
 # Rebuild the source code only when needed
@@ -46,7 +47,7 @@ COPY --from=builder /opt/app/public ./public
 COPY --from=builder /opt/app/.next ./.next
 COPY --from=builder /opt/app/node_modules ./node_modules
 
-RUN useradd −u 8877 simp
+RUN useradd simp
 USER simp
 
 CMD ["node_modules/.bin/next", "start"]
