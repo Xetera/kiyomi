@@ -59,7 +59,9 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
         <SidebarSection title={"NSFW?"}>
           <p className="font-semibold">{image.isNsfw ? "Yes" : "No"}</p>
         </SidebarSection>
-        <Tags tags={["test", "kpop", "tagging"]} />
+        {image.tags?.length && (
+          <Tags tags={image.tags.map((tag) => tag.name)} />
+        )}
         <Palette colors={image.palette} />
         <div>
           {image.source && <p className="text-blueGray-500">{image.source}</p>}
