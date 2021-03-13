@@ -95,6 +95,7 @@
       CLIENT_ID: "{{ simp.discord.client_id }}"
       CLIENT_SECRET: "{{ simp.discord.client_secret }}"
       CALLBACK_URL: "{{ simp.discord.callback_url }}"
+      NEXTAUTH_URL: "{{ domain }}"
       PORT: "{{ simp.port }}"
     # healthcheck:
     #   <<: *healthcheck_opts
