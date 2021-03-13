@@ -5,11 +5,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
     steps:
       - uses: actions/checkout@v1
-      - name: Install Node v14
-        uses: actions/setup-node@v1
+      - uses: whoan/docker-build-with-cache-action@v5
         with:
-          node-version: 14
-      - name: Build container
-        uses: docker/build-push-action@v1
+          username: xetera
+          password: "${{ secrets.DOCKER_PASSWORD }}"
+          image_name: xetera/simp-pics
+          push_image_and_stages: false
