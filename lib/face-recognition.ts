@@ -10,7 +10,7 @@ import {
   WithFaceLandmarks,
   FaceDetection,
 } from "face-api.js";
-import { Face, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const { Canvas, Image, ImageData } = canvas;
 // @ts-ignore

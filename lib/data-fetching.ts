@@ -1,5 +1,6 @@
-import { PrismaClient, PromiseReturnType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import useSWR from "swr";
+import { PromiseReturnType } from "./shared";
 import { publicImageFields } from "./transformer";
 
 export const imageFindOptionsFaceSelection = {

@@ -31,7 +31,7 @@
 #     job: "/bin/sh ~/restic_backup.sh >> /var/log/backups.log 2>&1"
 
 # shared by traefik
-- name: Create network between hasura <-> auth
+- name: Ensure network created
   docker_network:
     name: "{{ docker_network_name }}"
 
@@ -48,7 +48,7 @@
 - name: Ensure Docker database is running
   docker_container:
     name: "{{ postgres.name }}"
-    image: xetera/postgres-13-2kd
+    image: xetera/simp-pics-postgres
     restart_policy: always
     networks:
       - name: "{{ docker_network_name }}"
@@ -73,7 +73,7 @@
 - name: Creating Webserver
   docker_container:
     name: "{{ simp.name }}"
-    image: xetera/simp
+    image: xetera/simp-pics
     pull: true
     restart_policy: always
     networks:
@@ -88,14 +88,13 @@
       traefik.http.services.simp.loadbalancer.server.port: "{{ auth.port }}"
       traefik.http.services.simp.loadbalancer.healthcheck.path: /api/health
     env:
-      WASABI_ACCESS_KEY: "{{  auth.wasabi_access_key }}"
-      WASABI_SECRET_KEY: "{{  auth.wasabi_secret_key }}"
+      WASABI_ACCESS_KEY: "{{ simp.wasabi_access_key }}"
+      WASABI_SECRET_KEY: "{{ simp.wasabi_secret_key }}"
       NODE_ENV: production
       REDIRECT_URL: "{{ simp.discord.redirect_url }}"
       CLIENT_ID: "{{ simp.discord.client_id }}"
       CLIENT_SECRET: "{{ simp.discord.client_secret }}"
       CALLBACK_URL: "{{ simp.discord.callback_url }}"
-      JWT_SECRET: "{{ simp.discord.jwt_secret }}"
       PORT: "{{ simp.port }}"
     # healthcheck:
     #   <<: *healthcheck_opts

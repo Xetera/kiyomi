@@ -2,15 +2,17 @@ import type { ProfileResponse } from "../api/profile";
 import { Gallery } from "@/components/gallery";
 import { Navbar } from "@/components/navbar";
 import { User } from "@/components/user";
-import { fetcher, useGet } from "@/lib/shared";
-import { GetServerSideProps } from "next";
+import { fetcher, PromiseReturnType, useGet } from "@/lib/shared";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession, useSession } from "next-auth/client";
 import React from "react";
 import useSWR from "swr";
 
 const profileUrl = `/api/profile`;
 
-export default function Image(props) {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+export default function Image(props: Props) {
   const [session] = useSession();
   console.log("session ", session);
   const { data } = useSWR<ProfileResponse>(profileUrl, {
@@ -31,7 +33,7 @@ export default function Image(props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
   console.log("session be", session);
   if (!session) {
@@ -48,5 +50,5 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       Cookie: req.headers.cookie,
     },
   });
-  return { props: { ...props, session } };
+  return { props: { ...props, session } } as const;
 };

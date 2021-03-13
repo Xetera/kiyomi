@@ -1,8 +1,12 @@
 import { handle, withUser } from "@/lib/middleware";
 import { imageFindOptions } from "@/lib/data-fetching";
-import { IMAGES_PER_FETCH, ImagesResponse } from "@/lib/shared";
+import {
+  IMAGES_PER_FETCH,
+  ImagesResponse,
+  PromiseReturnType,
+} from "@/lib/shared";
 import { transformImage } from "@/lib/transformer";
-import { Prisma, PrismaClient, PromiseReturnType } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { last } from "lodash";
 
 async function response(db: PrismaClient, cursor?: string) {

@@ -1,13 +1,13 @@
 import React from "react";
 import { prisma } from "@/lib/db";
-import { fetcher, useGet } from "@/lib/shared";
+import { fetcher, PromiseReturnType, useGet } from "@/lib/shared";
 import { GetServerSideProps } from "next";
 import ImageDisplay from "@/components/image-display";
 import ImageSidebar from "@/components/image-sidebar";
 import { FaceContext, ImageContext } from "@/models/contexts";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
-import { FaUserLock } from "react-icons/fa";
+import NextHead from "next/head";
 import { RiSpyLine } from "react-icons/ri";
 import type { ImageResponse } from "../api/image/[slug]";
 import useSWR from "swr";
@@ -15,7 +15,8 @@ import ReactModal from "react-modal";
 
 const imageUrl = (slug: string) => `/api/image/${slug}`;
 
-export default function Image({ images, slug }) {
+type Props = PromiseReturnType<typeof getServerSideProps>["props"];
+export default function Image({ images, slug }: Props) {
   const [isEditOpen, setEditOpen] = React.useState(false);
   const [face, setFace] = React.useState("");
   const { data } = useSWR<ImageResponse>(imageUrl(slug), fetcher, {
@@ -31,6 +32,13 @@ export default function Image({ images, slug }) {
   }, [isEditOpen]);
   return (
     <FaceContext.Provider value={{ face, setFace }}>
+      <NextHead>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:creator" content="@_Xetera" />
+        <meta property="twitter:image" content={images.url} />
+        {/* <meta property="og:type" content="website" /> */}
+      </NextHead>
+
       <ImageContext.Provider value={data}>
         <Navbar />
         {!data.public && (
@@ -79,10 +87,7 @@ export default function Image({ images, slug }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({
-  res,
-  params,
-}) => {
+export const getServerSideProps = async ({ res, params }) => {
   console.log("getServerSideProps IMAGE");
   const { slug } = params;
   if (Array.isArray(slug)) {
@@ -112,5 +117,5 @@ export const getServerSideProps: GetServerSideProps = async ({
       images,
       slug,
     },
-  };
+  } as const;
 };

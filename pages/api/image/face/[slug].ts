@@ -1,6 +1,7 @@
 import { findClosestMatchingPerson } from "@/lib/face-recognition";
 import { handle } from "@/lib/middleware";
-import { PrismaClient, PromiseReturnType } from "@prisma/client";
+import { PromiseReturnType } from "@/lib/shared";
+import { PrismaClient } from "@prisma/client";
 
 async function response(slug: string, db: PrismaClient) {
   const image = await db.image.findUnique({

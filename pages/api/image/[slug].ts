@@ -1,7 +1,8 @@
 import { handle, Handler, Middleware } from "@/lib/middleware";
 import { getImage } from "@/lib/data-fetching";
 import { transformImage } from "@/lib/transformer";
-import { PrismaClient, PromiseReturnType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { PromiseReturnType } from "@/lib/shared";
 
 const response = async (slug: string, db: PrismaClient) => {
   const data = await getImage(slug, db);

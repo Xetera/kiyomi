@@ -14,16 +14,10 @@ import {
   detectFaces,
   FaceDetect,
 } from "@/lib/face-recognition";
-import {
-  Appearance,
-  Person,
-  Image,
-  raw,
-  PromiseReturnType,
-} from "@prisma/client";
+import { Appearance, Person, Image, Prisma } from "@prisma/client";
 import idgen from "nanoid";
 import { transformImage } from "@/lib/transformer";
-import { humanFileSize } from "@/lib/shared";
+import { humanFileSize, PromiseReturnType } from "@/lib/shared";
 import SQL from "sql-template-strings";
 import { GetImage, imageFindOptions } from "@/lib/data-fetching";
 
@@ -187,7 +181,7 @@ export default handle(
           .join(",");
 
         if (faces.length > 0) {
-          await db.$executeRaw`${raw(BASE_STRING + templatedString)}`;
+          await db.$executeRaw`${Prisma.raw(BASE_STRING + templatedString)}`;
         }
         console.log("image is", image);
         return res.json(await response(image, humanFileSize(file.size)));

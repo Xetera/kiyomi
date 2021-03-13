@@ -1,6 +1,10 @@
 import { User } from "next-auth";
 import useSWR, { ConfigInterface } from "swr";
 
+export type PromiseReturnType<
+  T extends (...args) => any
+> = ReturnType<T> extends Promise<infer R> ? R : never;
+
 /**
  * Format bytes as human-readable text.
  *

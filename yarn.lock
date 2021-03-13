@@ -266,13 +266,6 @@
   resolved "https://registry.yarnpkg.com/@panva/asn1.js/-/asn1.js-1.0.0.tgz#dd55ae7b8129e02049f009408b97c61ccf9032f6"
   integrity sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==
 
-"@prisma/cli@^2.14.0":
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.18.0.tgz#33ba55977a198b7cdc2b1e11bd58e3280fd3c707"
-  integrity sha512-40524ZtDEivaHG4GcCXM8QOZSUg+wTj7tGe0HziXiejgFytY2vJVkEbaCKSY8fIxXso+nPKKKZYT5IJ3fSuXjg==
-  dependencies:
-    "@prisma/engines" "2.18.0-34.da6fafb57b24e0b61ca20960c64e2d41f9e8cff1"
-
 "@prisma/client@^2.18.0":
   version "2.18.0"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.18.0.tgz#bff0a206f3caf7525583c703146f835dee0b5ad6"
@@ -5001,6 +4994,13 @@ pretty-hrtime@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
+
+prisma@^2.18.0:
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/prisma/-/prisma-2.18.0.tgz#b19a2d4a487b8b62759777be55506567af41f6ae"
+  integrity sha512-03po/kFW3/oGHtnANgZiKYz22KEx6NpdaIP2r4eievmVam9f2+0PdP4x/KSFdMCT6B6VHh+3ILTi2z3bYosCgA==
+  dependencies:
+    "@prisma/engines" "2.18.0-34.da6fafb57b24e0b61ca20960c64e2d41f9e8cff1"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

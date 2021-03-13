@@ -1,8 +1,9 @@
 import { handle, withUser } from "@/lib/middleware";
 import { imageFindOptions } from "@/lib/data-fetching";
 import { transformImage } from "@/lib/transformer";
-import { PrismaClient, PromiseReturnType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { User } from "next-auth";
+import { PromiseReturnType } from "@/lib/shared";
 
 async function response(user: User, db: PrismaClient) {
   const userImages = await db.image.findMany({
