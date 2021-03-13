@@ -17,12 +17,14 @@ function NavLink({ children, href, as = undefined }) {
 export function Navbar() {
   const [session, signedIn] = useSession();
   return (
-    <nav className="bg-blueGray-900 items-center mx-auto border-b-2 border-theme-light">
+    <nav className="bg-blueGray-900 items-center mx-auto border-b-2 border-theme-light w-full">
       <div className="justify-between flex max-w-7xl mx-auto items-center py-4 px-4 h-15">
         <div>
           <ul className="grid gap-12 grid-flow-col max-w-6xl ">
-            <NavLink href={"/"}>Home</NavLink>
-            <NavLink href={"/browse"}>Browse</NavLink>
+            <NavLink href={"/"}>
+              <a>Home</a>
+            </NavLink>
+            <a href={"/sharex"}>Sharex</a>
             {signedIn && <NavLink href={"/profile"}>Profile</NavLink>}
           </ul>
         </div>

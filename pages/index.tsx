@@ -35,46 +35,57 @@ export default function Home({ images }: { images: HomeResponse }) {
   const [fetching, setFetching] = React.useState(false);
   const { y } = useScroll(pageRef);
   console.log(y);
-  const {
-    data,
-    setSize,
-    size,
-    error,
-    isValidating,
-  } = useSWRInfinite<HomeResponse>(getKey, fetcher, {
-    // initialData: images,
-    onSuccess(data) {
-      console.log("success", data);
-      setFetching(false);
-    },
-  });
-  const imagess = data ? [].concat(...data.map((d) => d.data)) : [];
-  console.log("imagess", imagess);
-  async function getMore() {
-    setFetching(true);
-    console.log("getting more?");
-    if (fetching) {
-      return;
-    }
-    console.log("not already fetching, fetching now");
-    console.log("getting more data!");
-    await setSize((size) => size + 1);
-    setFetching(false);
-  }
-  if (!data) {
-    return "loading...";
-  }
-  if (error) {
-    console.log("error", error);
-  }
-  console.log("isValidating", isValidating);
-  const { cursor } = data[data.length - 1];
+  // const {
+  //   data,
+  //   setSize,
+  //   size,
+  //   error,
+  //   isValidating,
+  // } = useSWRInfinite<HomeResponse>(getKey, fetcher, {
+  //   // initialData: images,
+  //   onSuccess(data) {
+  //     console.log("success", data);
+  //     setFetching(false);
+  //   },
+  // });
+  // const imagess = data ? [].concat(...data.map((d) => d.data)) : [];
+  // console.log("imagess", imagess);
+  // async function getMore() {
+  //   setFetching(true);
+  //   console.log("getting more?");
+  //   if (fetching) {
+  //     return;
+  //   }
+  //   console.log("not already fetching, fetching now");
+  //   console.log("getting more data!");
+  //   await setSize((size) => size + 1);
+  //   setFetching(false);
+  // }
+  // if (!data) {
+  //   return "loading...";
+  // }
+  // if (error) {
+  //   console.log("error", error);
+  // }
+  // console.log("isValidating", isValidating);
+  // const { cursor } = data[data.length - 1];
   return (
     <>
       <Navbar />
-      <div className="relative" ref={pageRef}>
-        <FrontPage />
-        <div className="flex flex-col w-full mx-auto max-w-7xl px-8">
+      <div
+        className="relative flex-1 flex-row flex justify-center"
+        ref={pageRef}
+      >
+        <div className="flex flex-col mx-auto px-5 mt-12 max-w-6xl h-full justify-start">
+          <h1 className="text-6xl mb-3 font-bold">Hi, it's me Xetera</h1>
+          <p className="text-coolGray-400 max-w-xl mb-2">
+            This is my private image host. If (for some reason) you would like
+            access, shoot me a DM at <b>Xetera#0001</b> on Discord with your
+            expected usage amount to get an API token.
+          </p>
+          <p className="text-xs text-coolGray-400">No NSFW please</p>
+        </div>
+        {/* <FrontPage />
           <aside className="flex sticky top-0 z-20 bg-theme py-3 w-full">
             <div className="grid gap-4 font-semibold grid-flow-col">
               <Tab active={true}>Popular</Tab>
@@ -86,18 +97,12 @@ export default function Home({ images }: { images: HomeResponse }) {
               <p>Crap... we had an error</p>
             ) : (
               <>
-                {/* <InfiniteScroll
-                pageStart={0}
-                  loadMore={getMore}
-                  hasMore={!isValidating && !fetching}
-                  useWindow={false}
-                > */}
                 <Gallery images={imagess} />
                 <Waypoint onEnter={getMore} />
               </>
             )}
           </main>
-        </div>
+        </div> */}
       </div>
       {/* <pre style={{ whiteSpace: "pre" }}>{JSON.stringify(images, null, 2)}</pre> */}
     </>
@@ -105,10 +110,10 @@ export default function Home({ images }: { images: HomeResponse }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const images = JSON.parse(JSON.stringify(await fetcher("/api/image")));
+  // const images = JSON.parse(JSON.stringify(await fetcher("/api/image")));
   return {
     props: {
-      images,
+      images: [],
     },
   };
 };

@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }) {
         color="rgba(34, 50, 64, 0.5)"
         highlightColor="rgba(34, 50, 64, 0.7)"
       >
-        <div className="min-h-screen">
+        <div className="min-h-screen flex flex-col">
           <Component {...pageProps} />
         </div>
       </SkeletonTheme>
