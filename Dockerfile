@@ -14,6 +14,7 @@ RUN apt-get update && \
     libssl-dev
 
 RUN yarn --frozen-lockfile
+COPY prisma prisma
 RUN yarn generate
 
 # Rebuild the source code only when needed
