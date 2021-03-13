@@ -1,4 +1,4 @@
-docker_network_name: kiyominet
+docker_network_name: simppicsnet
 
 domain: "simp.pics"
 
@@ -14,12 +14,16 @@ simp:
     id: "{{ lookup('env', 'DISCORD_ID') }}"
     secret: "{{ lookup('env', 'DISCORD_SECRET') }}"
 
+postgres_name: simp_postgres
+postgres_database: simp_pics
+postgres_username: postgres
+postgres_password: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+
 postgres:
-  name: postgres
+  name: "{{ postgres_name }}"
+  url: "postgres://{{ postgres_username }}:{{ postgres_password }}@{{ postgres_name }}:5432/{{ postgres_database }}"
   datadog_username: datadog
   datadog_password: "{{ lookup('env', 'DATADOG_POSTGRES_PASSWORD') }}"
-  password: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
-  # host: postgres # "{{ lookup('env', 'POSTGRES_HOST') }}"
-  username: postgres
-  region: eu-west-3
-  database: simp_pics
+  password: "{{ postgres_password }}"
+  username: "{{ postgres_username }}"
+  database: "{{ postgres_database }}"

@@ -55,17 +55,19 @@
     volumes:
       - "{{ postgres.name }}-volume"
     command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
+    ports:
+      - 5430:5432
     env:
       POSTGRES_USER: "{{ postgres.username }}"
       POSTGRES_PASSWORD: "{{ postgres.password }}"
       POSTGRES_DB: "{{ postgres.database }}"
-    labels:
-      traefik.enable: "true"
-      traefik.docker.network: "{{ docker_network_name }}"
-      traefik.tcp.services.postgres.loadbalancer.server.port: "5432"
-      traefik.tcp.routers.postgres.entrypoints: "postgres"
-      traefik.tcp.routers.postgres.rule: HostSNI(`db.simp.pics`)
-      traefik.tcp.routers.postgres.service: postgres
+    # labels:
+    #   traefik.enable: "true"
+    #   traefik.docker.network: "{{ docker_network_name }}"
+    #   traefik.tcp.services.simp_postgres.loadbalancer.server.port: "5432"
+    #   traefik.tcp.routers.simp_postgres.entrypoints: postgres
+    #   traefik.tcp.routers.simp_postgres.rule: HostSNI(`db.simp.pics`)
+    #   traefik.tcp.routers.simp_postgres.service: simp_postgres
     healthcheck:
       <<: *healthcheck_opts
       test: "pg_isready -U {{ postgres.username }}"
@@ -93,7 +95,6 @@
       NODE_ENV: production
       DISCORD_ID: "{{ simp.discord.id }}"
       DISCORD_SECRET: "{{ simp.discord.secret }}"
-      CALLBACK_URL: "{{ simp.discord.callback_url }}"
       NEXTAUTH_URL: "{{ domain }}"
       NEXT_PUBLIC_BASE_URL: "https://{{ domain }}"
       NEXT_PUBLIC_BASE_URL_CDN: "https://my.simp.pics"

@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: whoan/docker-build-with-cache-action@v5
+        env:
+          NEXT_PUBLIC_BASE_URL: simp.pics
         with:
           username: xetera
           password: "${{ secrets.DOCKER_PASSWORD }}"
