@@ -13,10 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: whoan/docker-build-with-cache-action@v5
-        env:
-          NEXT_PUBLIC_BASE_URL: https://simp.pics
         with:
           username: xetera
           password: "${{ secrets.DOCKER_PASSWORD }}"
           image_name: xetera/simp-pics
           push_image_and_stages: false
+          build_extra_args: --build-arg NEXT_PUBLIC_BASE_URL=https://simp.pics --build-arg NEXT_PUBLIC_BASE_URL_CDN=https://my.simp.pics
