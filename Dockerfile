@@ -35,8 +35,8 @@ RUN yarn build
 RUN yarn tf
 
 # Production image, copy all the files and run next
-FROM node:buster-slim AS runner
-RUN apt install libssl-dev
+FROM node:14-slim AS runner
+RUN apt-get install -y libssl-dev
 
 ARG X_TAG
 WORKDIR /opt/app
