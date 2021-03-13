@@ -23,6 +23,8 @@ RUN yarn generate
 # but the code hasn't changed.
 FROM node:14-slim AS builder
 
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_BASE_URL_CDN
 
 ENV NODE_ENV=production
 WORKDIR /opt/app
