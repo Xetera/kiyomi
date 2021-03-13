@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@prisma/client": "^2.14.0",
+    "@prisma/client": "^2.18.0",
     "@tensorflow/tfjs-node": "1.7.4",
     "autoprefixer": "^10.1.0",
     "aws-sdk": "^2.815.0",
@@ -25,8 +25,8 @@
     "modern-normalize": "^1.0.0",
     "multer": "^1.4.2",
     "nanoid": "^3.1.20",
-    "next": "10.0.3",
-    "next-auth": "^3.1.0",
+    "next": "10.0.5",
+    "next-auth": "^3.3.0-canary.11",
     "nexus": "^1.0.0",
     "postcss": "^8.2.1",
     "react": "17.0.1",
@@ -37,6 +37,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-loading-skeleton": "^2.1.1",
     "react-masonry-component": "^6.2.1",
+    "react-modal": "^3.12.1",
     "react-perfect-scrollbar": "^1.5.8",
     "react-tooltip": "^4.2.11",
     "react-use": "^15.3.4",
@@ -55,6 +56,7 @@
     "@types/next-auth": "^3.1.18",
     "@types/node": "^14.14.14",
     "@types/react": "^17.0.0",
+    "@types/react-modal": "^3.10.6",
     "typescript": "^4.1.3"
   }
 }

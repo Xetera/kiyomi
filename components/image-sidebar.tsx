@@ -4,7 +4,12 @@ import { Palette } from "./palette-color";
 import { Tags } from "./tags";
 import { motion } from "framer-motion";
 import { CascadeChildren } from "./animations/cascade-children";
-import { RiQuestionLine, RiToolsLine, RiHammerLine } from "react-icons/ri";
+import {
+  RiQuestionLine,
+  RiToolsLine,
+  RiHammerLine,
+  RiEdit2Line,
+} from "react-icons/ri";
 import { format } from "date-fns";
 import Image from "next/image";
 import { User } from "./user";
@@ -20,7 +25,7 @@ function SidebarSection({ title, children }) {
   );
 }
 
-export default function ImageSidebar() {
+export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
   const image = React.useContext(ImageContext);
   const uploadDate = new Date(image.createdAt);
   return (
@@ -67,6 +72,13 @@ export default function ImageSidebar() {
         >
           View Original
         </a>
+        <div
+          className="inline-flex items-center bg-theme-light p-1 px-2 rounded cursor-pointer"
+          onClick={onEdit}
+        >
+          <RiEdit2Line className=" text-blueGray-400 mr-2" />
+          <p className="text-blueGray-400">Edit image</p>
+        </div>
       </CascadeChildren>
     </aside>
   );

@@ -9,7 +9,7 @@ const response = async (slug: string, db: PrismaClient) => {
 };
 
 export default handle(async (req, res, { db }) => {
-  console.log("hello?");
+  console.log("[SERVER] /api/image/[slug]");
   const { slug } = req.query;
   if (Array.isArray(slug)) {
     res.statusCode = 400;

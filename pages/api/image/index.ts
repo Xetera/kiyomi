@@ -37,7 +37,9 @@ export default handle(
   withUser(
     async (req, res, { user, db }) => {
       const { cursor } = req.query;
-      res.json(await response(db, cursor as string));
+      const data = await response(db, cursor as string);
+      console.log("[SERVER] Responding /api/image");
+      res.json(data);
     },
     { strict: false }
   )

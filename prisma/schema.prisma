@@ -97,7 +97,7 @@ model Face {
   // This type is currently not supported.
   // descriptor cube?
   appearanceId Int?     @map("appearance_id")
-  addedBy      User?    @relation(fields: [addedById])
+  addedBy      User?    @relation(fields: [addedById], references:[id])
   addedById    Int?     @map(name: "added_by_id")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @default(now()) @map("updated_at")

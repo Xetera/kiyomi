@@ -141,8 +141,6 @@ export default handle(
           },
         });
 
-        db.face.create;
-
         let existingPerson: Person | undefined = personId
           ? await db.person.findUnique({ where: { id: Number(personId) } })
           : undefined;
@@ -191,7 +189,8 @@ export default handle(
         if (faces.length > 0) {
           await db.$executeRaw`${raw(BASE_STRING + templatedString)}`;
         }
-        return res.json(response(image, humanFileSize(file.size)));
+        console.log("image is", image);
+        return res.json(await response(image, humanFileSize(file.size)));
       } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Internal Server Error" });

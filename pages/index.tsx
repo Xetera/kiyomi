@@ -29,7 +29,7 @@ function Tab({ active, children }) {
   );
 }
 
-export default function Home({ images }: { images: any[] }) {
+export default function Home({ images }: { images: HomeResponse }) {
   const pageRef = React.useRef(null);
   const [activeTab, setActiveTab] = React.useState(0);
   const [fetching, setFetching] = React.useState(false);
@@ -42,7 +42,7 @@ export default function Home({ images }: { images: any[] }) {
     error,
     isValidating,
   } = useSWRInfinite<HomeResponse>(getKey, fetcher, {
-    // initialData: { data: images, cursor: images[images.length - 1] ?? null },
+    // initialData: images,
     onSuccess(data) {
       console.log("success", data);
       setFetching(false);
@@ -61,11 +61,11 @@ export default function Home({ images }: { images: any[] }) {
     await setSize((size) => size + 1);
     setFetching(false);
   }
+  if (!data) {
+    return "loading...";
+  }
   if (error) {
     console.log("error", error);
-  }
-  if (!data) {
-    return "loading";
   }
   console.log("isValidating", isValidating);
   const { cursor } = data[data.length - 1];

@@ -11,14 +11,24 @@ import { FaUserLock } from "react-icons/fa";
 import { RiSpyLine } from "react-icons/ri";
 import type { ImageResponse } from "../api/image/[slug]";
 import useSWR from "swr";
+import ReactModal from "react-modal";
 
 const imageUrl = (slug: string) => `/api/image/${slug}`;
 
 export default function Image({ images, slug }) {
+  const [isEditOpen, setEditOpen] = React.useState(false);
   const [face, setFace] = React.useState("");
   const { data } = useSWR<ImageResponse>(imageUrl(slug), fetcher, {
     initialData: images,
   });
+  React.useEffect(() => {
+    const { classList } = document.querySelector("body");
+    if (isEditOpen) {
+      classList.add("overflow-hidden");
+    } else {
+      classList.remove("overflow-hidden");
+    }
+  }, [isEditOpen]);
   return (
     <FaceContext.Provider value={{ face, setFace }}>
       <ImageContext.Provider value={data}>
@@ -45,11 +55,25 @@ export default function Image({ images, slug }) {
               style={{ height: "min-content", minWidth: "250px" }}
               className="overflow-hidden"
             >
-              <ImageSidebar />
+              <ImageSidebar onEdit={() => setEditOpen(true)} />
             </div>
           </article>
         </div>
         <Footer />
+        <ReactModal
+          isOpen={isEditOpen}
+          overlayClassName="ReactModal__Overlay flex fixed h-full w-full"
+          style={{
+            overlay: {
+              inset: "0px",
+              backgroundColor: "rgba(6, 12, 14, 0.75)",
+            },
+          }}
+          className="bg-theme h-3/4 w-full max-w-7xl m-auto border-theme-alt border-1 outline-none"
+          onRequestClose={() => setEditOpen(false)}
+        >
+          <div>Test</div>
+        </ReactModal>
       </ImageContext.Provider>
     </FaceContext.Provider>
   );
@@ -59,6 +83,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   res,
   params,
 }) => {
+  console.log("getServerSideProps IMAGE");
   const { slug } = params;
   if (Array.isArray(slug)) {
     return {
@@ -81,6 +106,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     .catch((err) => {
       console.log("something went wrong while incrementing views", err);
     });
+  console.log("[CLIENT] Rendering /pages/image/[slug]");
   return {
     props: {
       images,
