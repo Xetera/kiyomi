@@ -2,31 +2,21 @@ name: Test and Deploy
 on:
   push:
     branches:
-      - "*"
-    # gotta move out the tags bit to a different workflow
-    tags:
-      - "v*"
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Install Node v14
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - name: Build container
-        uses: docker/build-push-action@v1
+      - uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: xetera/simp-pics
-          tag_with_ref: true
+          image_name: xetera/simp-pics
   deploy:
     if: github.ref == 'refs/heads/master'
     needs:
-      - frontend
-      - auth
+      - build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -57,7 +47,6 @@ jobs:
         run: cd ansible && ansible-playbook staging.yaml -i "${{ secrets.HOST_IP }}," -vvvv -c paramiko
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
-          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           DISCORD_REDIRECT_URL: ${{ secrets.DISCORD_REDIRECT_URL }}
@@ -68,8 +57,3 @@ jobs:
           RESTIC_PASSWORD: ${{ secrets.RESTIC_PASSWORD }}
           B2_ACCOUNT_ID: ${{ secrets.B2_ACCOUNT_ID }}
           B2_ACCOUNT_SECRET: ${{ secrets.B2_ACCOUNT_SECRET }}
-      - name: Download site artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: app
-          path: /_static
