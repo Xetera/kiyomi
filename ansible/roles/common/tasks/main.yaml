@@ -1,4 +1,4 @@
-- include_vars: secret.yaml
+# - include_vars: secret.yaml
 
 - set_fact:
     network: &network
@@ -85,17 +85,18 @@
       traefik.http.routers.simp.tls.certresolver: cert
       traefik.http.routers.simp.tls: "true"
       traefik.http.routers.simp.entrypoints: websecure
-      traefik.http.services.simp.loadbalancer.server.port: "{{ auth.port }}"
+      traefik.http.services.simp.loadbalancer.server.port: "{{ simp.port }}"
       traefik.http.services.simp.loadbalancer.healthcheck.path: /api/health
     env:
       WASABI_ACCESS_KEY: "{{ simp.wasabi_access_key }}"
       WASABI_SECRET_KEY: "{{ simp.wasabi_secret_key }}"
       NODE_ENV: production
-      REDIRECT_URL: "{{ simp.discord.redirect_url }}"
-      CLIENT_ID: "{{ simp.discord.client_id }}"
-      CLIENT_SECRET: "{{ simp.discord.client_secret }}"
+      DISCORD_ID: "{{ simp.discord.id }}"
+      DISCORD_SECRET: "{{ simp.discord.secret }}"
       CALLBACK_URL: "{{ simp.discord.callback_url }}"
       NEXTAUTH_URL: "{{ domain }}"
+      NEXT_PUBLIC_BASE_URL: "https://{{ domain }}"
+      NEXT_PUBLIC_BASE_URL_CDN: "https://my.simp.pics"
       PORT: "{{ simp.port }}"
     # healthcheck:
     #   <<: *healthcheck_opts

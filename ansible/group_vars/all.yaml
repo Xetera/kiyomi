@@ -1,10 +1,18 @@
 docker_network_name: kiyominet
 
 domain: "simp.pics"
-hasura_url: "https://api.{{ domain }}"
 
 ssh:
   username:
+
+simp:
+  name: "simp_pics"
+  port: "3000"
+  wasabi_access_key: "{{ lookup('env', 'WASABI_ACCESS_KEY') }}"
+  wasabi_secret_key: "{{ lookup('env', 'WASABI_SECRET_KEY') }}"
+  discord:
+    id: "{{ lookup('env', 'DISCORD_ID') }}"
+    secret: "{{ lookup('env', 'DISCORD_SECRET') }}"
 
 postgres:
   name: postgres
@@ -14,4 +22,4 @@ postgres:
   # host: postgres # "{{ lookup('env', 'POSTGRES_HOST') }}"
   username: postgres
   region: eu-west-3
-  database: kiyomi
+  database: simp_pics
