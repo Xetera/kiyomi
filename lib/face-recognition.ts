@@ -62,20 +62,6 @@ export async function detectFaces(
     .detectAllFaces(image)
     .withFaceLandmarks()
     .withFaceDescriptors();
-
-  const out = faceapi.createCanvasFromMedia(image as any) as any;
-  faceapi.draw.drawDetections(out, detections);
-
-  const baseDir = "out";
-  console.log("done, saved results to out/faceDetection.jpg");
-  if (!fs.existsSync(baseDir)) {
-    fs.mkdirSync(baseDir);
-  }
-
-  fs.writeFileSync(
-    path.resolve(baseDir, "detections.jpg"),
-    out.toBuffer("image/jpeg")
-  );
   return detections;
 }
 
