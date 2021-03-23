@@ -21,6 +21,7 @@ import { humanFileSize, PromiseReturnType } from "@/lib/shared";
 import SQL from "sql-template-strings";
 import { GetImage, imageFindOptions } from "@/lib/data-fetching";
 
+// we can't use trpc here because of the binary file upload
 export const config = {
   api: {
     bodyParser: false,
@@ -29,7 +30,7 @@ export const config = {
 
 async function response(image: GetImage, bytesHuman: string) {
   return {
-    ...transformImage(image),
+    ...transformImage(image!),
     bytesHuman,
   };
 }
@@ -56,16 +57,16 @@ export default handle(
         const metadata = sizeOf(file.buffer);
         const slug = idgen.nanoid(16);
         const slugWithExtension = `${slug}.${metadata.type}`;
-        const mime = mimeType.lookup(metadata.type);
+        const mime = mimeType.lookup(metadata.type!);
         const [pHash, hash, faces, palette] = await Promise.all([
-          mime !== false && canPerceptualHash(metadata.type)
+          mime !== false && canPerceptualHash(metadata.type!)
             ? perceptualHash(file.buffer, mime)
             : Promise.resolve(),
           sha256Hash(file.buffer),
-          mime !== false && canDetectFaces(metadata.type)
+          mime !== false && canDetectFaces(metadata.type!)
             ? detectFaces(file.buffer, {
-                width: metadata.width,
-                height: metadata.height,
+                width: metadata.width!,
+                height: metadata.height!,
               }).catch((err) => {
                 console.log("something went wrong with detecting faces", err);
                 return [] as FaceDetect[];
@@ -91,7 +92,7 @@ export default handle(
           width: detection.box.width,
           height: detection.box.height,
         }));
-        const databaseType = mimetypeMappings[metadata.type];
+        const databaseType = mimetypeMappings[metadata.type!];
         if (!databaseType) {
           return res
             .status(400)
@@ -117,7 +118,7 @@ export default handle(
             slug,
             ...(palette ? { palette } : {}),
             user: {
-              connect: { email: user.email },
+              connect: { email: user.email ?? undefined },
             },
             tags: {
               create: tags.map((tag) => {
@@ -136,7 +137,8 @@ export default handle(
         });
 
         let existingPerson: Person | undefined = personId
-          ? await db.person.findUnique({ where: { id: Number(personId) } })
+          ? (await db.person.findUnique({ where: { id: Number(personId) } })) ??
+            undefined
           : undefined;
         if (faces.length === 1 && personName && !existingPerson) {
           existingPerson = await db.person.create({

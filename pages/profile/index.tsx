@@ -7,17 +7,25 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession, useSession } from "next-auth/client";
 import React from "react";
 import useSWR from "swr";
+import { useMeQuery } from "@/lib/__generated__/graphql";
+import withApollo from "@/lib/apollo";
+import { useRouter } from "next/router";
 
-const profileUrl = `/api/profile`;
+// const profileUrl = `/api/profile`;
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+// type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-export default function Image(props: Props) {
+function Image() {
   const [session] = useSession();
-  console.log("session ", session);
-  const { data } = useSWR<ProfileResponse>(profileUrl, {
-    initialData: props,
-  });
+  const router = useRouter();
+  const { data } = useMeQuery();
+  console.log(data);
+  if (!session || !data?.me) {
+    return <Navbar />;
+  }
+  // const { data } = useSWR<ProfileResponse>(profileUrl, {
+  //   initialData: props,
+  // });
   return (
     <div>
       <Navbar />
@@ -27,28 +35,30 @@ export default function Image(props: Props) {
             <User user={session.user} bottom={<h1>hi</h1>} />
           </div>
         </div>
-        <Gallery images={data.images} />
+        <Gallery images={data.me.images} />
       </div>
     </div>
   );
 }
 
-export const getServerSideProps = async ({ req, res }) => {
-  const session = await getSession({ req });
-  console.log("session be", session);
-  if (!session) {
-    return {
-      props: {},
-      redirect: {
-        destination: "/api/auth/signin",
-      },
-    };
-  }
-  const props = await fetcher(profileUrl, {
-    redirect: "follow",
-    headers: {
-      Cookie: req.headers.cookie,
-    },
-  });
-  return { props: { ...props, session } } as const;
-};
+// export const getServerSideProps = async ({ req, res }) => {
+//   const session = await getSession({ req });
+//   console.log("session be", session);
+//   if (!session) {
+//     return {
+//       props: {},
+//       redirect: {
+//         destination: "/api/auth/signin",
+//       },
+//     };
+//   }
+//   const props = await fetcher(profileUrl, {
+//     redirect: "follow",
+//     headers: {
+//       Cookie: req.headers.cookie,
+//     },
+//   });
+//   return { props: { ...props, session } } as const;
+// };
+
+export default withApollo({ ssr: true })(Image);

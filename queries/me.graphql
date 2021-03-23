@@ -1,0 +1,8 @@
+query Me {
+  me {
+    ...UserData
+    images {
+      ...ImageData
+    }
+  }
+}

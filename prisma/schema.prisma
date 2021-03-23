@@ -95,7 +95,7 @@ model Face {
   height       Float
   width        Float
   // This type is currently not supported.
-  // descriptor cube?
+  descriptor Unsupported("cube")
   appearanceId Int?     @map("appearance_id")
   addedBy      User?    @relation(fields: [addedById], references:[id])
   addedById    Int?     @map(name: "added_by_id")
@@ -107,7 +107,7 @@ model Face {
   image      Image       @relation(fields: [imageId], references: [id])
   imageId    Int         @map(name: "image_id")
 
-  Person     Person?     @relation("face_person", fields: [personId], references: [id])
+  person     Person?     @relation("face_person", fields: [personId], references: [id])
   personId   Int?        @map(name: "person_id")
   Appearance Appearance? @relation(fields: [appearanceId], references: [id])
   @@index([appearanceId], name: "face.appearanceId.index")
@@ -126,6 +126,7 @@ model Session {
   @@map("sessions")
 }
 
+/// A user
 model User {
   id            Int       @id @default(autoincrement())
   name          String?
@@ -156,6 +157,7 @@ model VerificationRequest {
   @@map("verification_requests")
 }
 
+/// An image uploaded by a user or bot
 model Image {
   slug        String       @unique
   width       Int?
@@ -170,6 +172,7 @@ model Image {
   hash        String
   pHash       String?      @map("p_hash")
   public      Boolean      @default(false)
+  // The decimal representation of the primary colors, sorted by commonality
   palette     Int[]
   caption     String?
   views       Int          @default(0)
@@ -194,7 +197,6 @@ enum TagSource {
   USER
 }
 
-///
 enum MimeType {
   PNG
   JPG

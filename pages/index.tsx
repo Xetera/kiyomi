@@ -83,7 +83,7 @@ export default function Home({ images }: { images: HomeResponse }) {
             access, shoot me a DM at <b>Xetera#0001</b> on Discord with your
             expected usage amount to get an API token.
           </p>
-          <p className="text-xs text-coolGray-400">No NSFW please</p>
+          <p className="text-sm text-coolGray-400">No NSFW please</p>
         </div>
         {/* <FrontPage />
           <aside className="flex sticky top-0 z-20 bg-theme py-3 w-full">

@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaceContext, ImageAppearance, ImageFace } from "@/models/contexts";
+import { FaceContext } from "@/models/contexts";
 import {
   RiLightbulbFlashLine,
   RiEdit2Line,
@@ -8,6 +8,11 @@ import {
 } from "react-icons/ri";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { PredictionResponse } from "@/pages/api/image/face/[slug]";
+import {
+  FaceDataFragment,
+  Maybe,
+  OneImageQuery,
+} from "@/lib/__generated__/graphql";
 
 function ActionButton({ icon, className }) {
   return <div className={`p-1 ${className} flex items-start`}>{icon}</div>;
@@ -15,8 +20,10 @@ function ActionButton({ icon, className }) {
 
 type PortraitProps = React.HTMLProps<HTMLDivElement> & {
   src: string;
-  appearance?: ImageAppearance;
-  face?: ImageFace;
+  appearance?: Maybe<
+    NonNullable<OneImageQuery["image"]>["appearances"][number]
+  >;
+  face?: Maybe<FaceDataFragment>;
   prediction?: PredictionResponse[0]["matches"][0];
 };
 
@@ -30,7 +37,7 @@ export function PersonPortrait({
   className,
 }: PortraitProps) {
   console.log("face", face);
-  const ref = React.useRef<HTMLCanvasElement>();
+  const ref = React.useRef<HTMLCanvasElement | null>();
   const { setFace } = React.useContext(FaceContext);
   const height = maxPortraitHeight;
   const maxWidth = 100;
@@ -45,8 +52,8 @@ export function PersonPortrait({
     const image = new Image();
     image.src = src;
     image.onload = () => {
-      const ctx = ref.current.getContext("2d");
-      ctx.drawImage(
+      const ctx = ref.current?.getContext("2d");
+      ctx?.drawImage(
         image,
         face.x,
         face.y,

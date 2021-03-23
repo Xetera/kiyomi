@@ -1,5 +1,5 @@
 module.exports = {
   images: {
-    domains: ["my.simp.pics", "cdn.discordapp.com"],
+    domains: ["localhost", "my.simp.pics", "cdn.discordapp.com"],
   },
 };

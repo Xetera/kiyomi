@@ -4,6 +4,7 @@ import Masonry from "react-masonry-component";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import { useBoolean, useWindowSize } from "react-use";
+import { ImageDataFragment } from "@/lib/__generated__/graphql";
 
 const THUMBNAIL_WIDTH = 300;
 
@@ -31,7 +32,7 @@ function LoadingImage({ image }) {
   );
 }
 
-export function Gallery({ images }: any) {
+export function Gallery({ images }: { images: ImageDataFragment[] }) {
   return (
     <Masonry
       className={"my-gallery-class"} // default ''

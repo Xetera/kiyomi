@@ -9,39 +9,52 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import NextHead from "next/head";
 import { RiSpyLine } from "react-icons/ri";
-import type { ImageResponse } from "../api/image/[slug]";
-import useSWR from "swr";
+import { trpc } from "@/lib/trpc";
+
 import ReactModal from "react-modal";
+import { useRouter } from "next/router";
+import { useOneImageQuery } from "@/lib/__generated__/graphql";
+import withApollo from "@/lib/apollo";
 
-const imageUrl = (slug: string) => `/api/image/${slug}`;
-
-type Props = PromiseReturnType<typeof getServerSideProps>["props"];
-export default function Image({ images, slug }: Props) {
+const Image = () => {
   const [isEditOpen, setEditOpen] = React.useState(false);
+  const router = useRouter();
+  const slug = router.query.slug as string | undefined;
   const [face, setFace] = React.useState("");
-  const { data } = useSWR<ImageResponse>(imageUrl(slug), fetcher, {
-    initialData: images,
+  const { data, loading } = useOneImageQuery({
+    variables: { slug: slug as string },
   });
   React.useEffect(() => {
-    const { classList } = document.querySelector("body");
+    const { classList } = document.querySelector("body")!;
     if (isEditOpen) {
       classList.add("overflow-hidden");
     } else {
       classList.remove("overflow-hidden");
     }
   }, [isEditOpen]);
+  console.log({ data, loading });
+  if (!data) {
+    return null;
+  }
+  if (loading || !data) {
+    return null;
+  }
+  const { image } = data;
+  if (!image) {
+    return null;
+  }
   return (
     <FaceContext.Provider value={{ face, setFace }}>
       <NextHead>
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content="@_Xetera" />
-        <meta property="twitter:image" content={images.url} />
+        <meta property="twitter:image" content={image.url} />
         {/* <meta property="og:type" content="website" /> */}
       </NextHead>
 
-      <ImageContext.Provider value={data}>
+      <ImageContext.Provider value={image}>
         <Navbar />
-        {!data.public && (
+        {!image.public && (
           <div className="mb-4 rounded border-b-1 border-theme-light bg-theme-alt text-sm lg:text-base">
             <div className="max-w-7xl mx-auto py-3 px-4 flex items-center font-semibold text-blueGray-400">
               <RiSpyLine className="mr-2" />
@@ -52,9 +65,9 @@ export default function Image({ images, slug }: Props) {
         <div className="justify-center mx-auto max-w-7xl px-4 lg:my-24 my-4">
           <article className="flex gap-8 justify-center md:flex-row flex-col">
             <div className="flex">
-              {data.caption && (
+              {image.caption && (
                 <h1 className="text-2xl font-black mb-2 text-blueGray-500">
-                  {data.caption}
+                  {image.caption}
                 </h1>
               )}
               <ImageDisplay />
@@ -85,37 +98,40 @@ export default function Image({ images, slug }: Props) {
       </ImageContext.Provider>
     </FaceContext.Provider>
   );
-}
-
-export const getServerSideProps = async ({ res, params }) => {
-  console.log("getServerSideProps IMAGE");
-  const { slug } = params;
-  if (Array.isArray(slug)) {
-    return {
-      notFound: true,
-    };
-  }
-  const images: ImageResponse = await fetcher(imageUrl(slug as string));
-  // asynchronously increment view done in
-  // getServerSideProps to prevent triggering
-  // view climb from useSWR
-  prisma.image
-    .update({
-      where: { slug },
-      data: {
-        views: {
-          increment: 1,
-        },
-      },
-    })
-    .catch((err) => {
-      console.log("something went wrong while incrementing views", err);
-    });
-  console.log("[CLIENT] Rendering /pages/image/[slug]");
-  return {
-    props: {
-      images,
-      slug,
-    },
-  } as const;
 };
+
+export default withApollo({ ssr: true })(Image);
+
+// export const getServerSideProps = async ({ req, res, params }) => {
+//   const { prisma } = await import("@/lib/db");
+//   const ssr = trpc.ssr(appRouter, { req, res, db: prisma });
+//   const { slug } = params;
+//   if (Array.isArray(slug)) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+//   // asynchronously increment view done in
+//   // getServerSideProps to prevent triggering
+//   // view climb from useSWR
+//   prisma.image
+//     .update({
+//       where: { slug },
+//       data: {
+//         views: {
+//           increment: 1,
+//         },
+//       },
+//     })
+//     .catch((err) => {
+//       console.log("something went wrong while incrementing views", err);
+//     });
+
+//   await ssr.prefetchQuery("image.one", { slug });
+//   return {
+//     props: {
+//       dehydratedState: trpc.dehydrate(),
+//       slug,
+//     },
+//   } as const;
+// };

@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import { User } from "next-auth";
+import { PrismaClient, User } from "@prisma/client";
 import { randomBytes } from "crypto";
 
 const TOKEN_PREFIX = "SIMP_";
@@ -12,7 +11,7 @@ export function generateUserToken() {
 export function getUserFromToken(
   token: string,
   db: PrismaClient
-): Promise<User | undefined> {
+): Promise<User | null> {
   if (!token.startsWith(TOKEN_PREFIX)) {
     throw new Error("malformed token");
   }

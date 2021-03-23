@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2020",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
+    // "rootDirs": ["prisma", "src"],
     "strict": false,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -15,6 +17,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
+    "pretty": true,
     "paths": {
       "@/*": ["*"]
     }

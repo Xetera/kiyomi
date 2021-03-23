@@ -51,7 +51,7 @@ export function makeMiddleware<T extends BaseContext, K>(
 export type CtxSession = { user: BackendUser; contextType: UploadType };
 
 export function withUser<T extends BaseContext>(
-  f: Middleware<T & { user?: DatabaseUser; contextType: UploadType }>,
+  f: Middleware<T & { user?: DatabaseUser | null; contextType: UploadType }>,
   opts?: { strict: false }
 ): Middleware<T>;
 export function withUser<T extends BaseContext>(
@@ -63,11 +63,11 @@ export function withUser<T extends BaseContext>(
   { strict = true }: { strict: boolean } = { strict: true }
 ): Middleware<T> {
   return async (req, res, ctx) => {
-    const next = (user?: User, opts?: { contextType: UploadType }) => {
+    const next = (user?: User | null, opts?: { contextType: UploadType }) => {
       console.log(`Got a request from ${user ? user.name : "Anonymous User"}`);
       return f(req, res, {
         ...ctx,
-        contextType: opts.contextType,
+        contextType: opts?.contextType ?? "TOKEN",
         user: user as DatabaseUser,
       });
     };
@@ -115,7 +115,7 @@ export function handle(f: Middleware<BaseContext>): NextApiHandler {
       return await f(req, res, { db });
     } catch (error) {
       res.statusCode = 500;
-      console.log(error)
+      console.log(error);
       res.json({ error });
     }
   };

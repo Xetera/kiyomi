@@ -39,7 +39,7 @@ export function transformImage<
   const appearanceMap = keyBy(image.appearances, (appearance) => appearance.id);
 
   const unknownFaces = image.faces.filter(
-    (face) => !(face.appearanceId in appearanceMap)
+    (face) => !(face?.appearanceId in appearanceMap)
   );
   return {
     ...imageRest,

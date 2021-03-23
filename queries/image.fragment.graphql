@@ -1,0 +1,22 @@
+fragment ImageData on Image {
+  id
+  height
+  width
+  isNsfw
+  url
+  rawUrl
+  createdAt
+  caption
+  public
+  source
+  slug
+  bytes
+  mimetype
+  palette
+  uploadedBy {
+    ...UserData
+  }
+  tags {
+    name
+  }
+}

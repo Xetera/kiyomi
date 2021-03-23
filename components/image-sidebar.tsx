@@ -13,7 +13,6 @@ import {
 import { format } from "date-fns";
 import Image from "next/image";
 import { User } from "./user";
-import type { ImageResponse } from "@/pages/api/image/[slug]";
 import { ImageContext } from "@/models/contexts";
 
 function SidebarSection({ title, children }) {
@@ -27,13 +26,16 @@ function SidebarSection({ title, children }) {
 
 export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
   const image = React.useContext(ImageContext);
+  if (!image) {
+    return null;
+  }
   const uploadDate = new Date(image.createdAt);
   return (
     <aside className="align-start text-sm rounded">
       <CascadeChildren className="grid gap-4 text-sm">
         <div className="flex flex-row align-top">
           <User
-            user={image.user}
+            user={image.uploadedBy}
             bottom={
               <time
                 className="text-blueGray-500"
@@ -59,8 +61,10 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
         <SidebarSection title={"NSFW?"}>
           <p className="font-semibold">{image.isNsfw ? "Yes" : "No"}</p>
         </SidebarSection>
-        {image.tags?.length && (
+        {image.tags?.length > 0 ? (
           <Tags tags={image.tags.map((tag) => tag.name)} />
+        ) : (
+          <div />
         )}
         <Palette colors={image.palette} />
         <div>

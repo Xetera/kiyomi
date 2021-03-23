@@ -1,4 +1,8 @@
-import type { ImageResponse } from "@/pages/api/image/[slug]";
+import {
+  ImageDataFragment,
+  OneImageQuery,
+  OneImageQueryResult,
+} from "@/lib/__generated__/graphql";
 import React from "react";
 
 /**
@@ -9,10 +13,6 @@ export const FaceContext = React.createContext({
   face: "",
 });
 
-export type ImageFace = ImageResponse["unknownFaces"][0];
-
-export type ImageAppearance = ImageResponse["appearances"][0];
-
-export type ImagePerson = ImageAppearance["person"];
-
-export const ImageContext = React.createContext<ImageResponse>(null);
+export const ImageContext = React.createContext<OneImageQuery["image"] | null>(
+  null
+);

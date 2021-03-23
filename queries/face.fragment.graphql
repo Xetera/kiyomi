@@ -1,0 +1,8 @@
+fragment FaceData on Face {
+  id
+  x
+  y
+  width
+  height
+  score
+}

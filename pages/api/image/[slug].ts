@@ -1,25 +1,18 @@
-import { handle, Handler, Middleware } from "@/lib/middleware";
 import { getImage } from "@/lib/data-fetching";
 import { transformImage } from "@/lib/transformer";
-import { PrismaClient } from "@prisma/client";
-import { PromiseReturnType } from "@/lib/shared";
+import { createRouter } from "../trpc/[trpc]";
+import { httpError } from "@trpc/server";
+import * as z from "zod";
 
-const response = async (slug: string, db: PrismaClient) => {
-  const data = await getImage(slug, db);
-  return transformImage(data);
-};
-
-export default handle(async (req, res, { db }) => {
-  console.log("[SERVER] /api/image/[slug]");
-  const { slug } = req.query;
-  if (Array.isArray(slug)) {
-    res.statusCode = 400;
-    return res.end();
-  }
-
-  const resp = await response(slug, db);
-  console.log(resp);
-  res.json(resp);
+export const imageRouter = createRouter().query("one", {
+  input: z.object({
+    slug: z.string(),
+  }),
+  async resolve({ ctx, input }) {
+    const data = await getImage(input.slug, ctx.db);
+    if (!data) {
+      throw httpError.notFound;
+    }
+    return transformImage(data);
+  },
 });
-
-export type ImageResponse = PromiseReturnType<typeof response>;

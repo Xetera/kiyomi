@@ -9,8 +9,8 @@ import { generateUserToken } from "@/lib/auth";
 const options: InitOptions = {
   providers: [
     Providers.Discord({
-      clientId: process.env.DISCORD_ID,
-      clientSecret: process.env.DISCORD_SECRET,
+      clientId: process.env.DISCORD_ID!,
+      clientSecret: process.env.DISCORD_SECRET!,
     }),
   ],
   adapter: Adapters.Prisma.Adapter({

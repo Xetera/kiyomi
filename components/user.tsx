@@ -1,21 +1,30 @@
 import React from "react";
 import { RiHammerLine } from "react-icons/ri";
 import Image from "next/image";
+import { Maybe, UserDataFragment } from "@/lib/__generated__/graphql";
 
-export function User({ user, bottom }) {
+export function User({
+  user,
+  bottom,
+}: {
+  user?: Maybe<UserDataFragment>;
+  bottom: React.ReactElement;
+}) {
   return (
     <div className="flex flex-row align-top">
       <div style={{ maxHeight: "48px" }}>
-        <Image
-          src={user.image}
-          width="48px"
-          height="48px"
-          className="rounded-full"
-        />
+        {user?.avatar && (
+          <Image
+            src={user.avatar}
+            width="48px"
+            height="48px"
+            className="rounded-full"
+          />
+        )}
       </div>
       <div className="ml-4">
         <p className="font-semibold mr-2 flex items-center">
-          {user.name}
+          {user?.name ?? <i>Unknown User</i>}
           <span data-tip="Staff member">
             <RiHammerLine className="ml-2" />
           </span>

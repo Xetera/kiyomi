@@ -1,11 +1,6 @@
 import React from "react";
 import { PersonPortrait } from "./person-preview";
-import {
-  FaceContext,
-  ImageAppearance,
-  ImageContext,
-  ImageFace,
-} from "@/models/contexts";
+import { FaceContext, ImageContext } from "@/models/contexts";
 import { CascadeChildren } from "./animations/cascade-children";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToggle } from "react-use";
@@ -14,14 +9,19 @@ import { RiEdit2Line, RiSpyLine } from "react-icons/ri";
 import Skeleton from "react-loading-skeleton";
 import { fetcher } from "@/lib/shared";
 import useSWR from "swr";
-import type { ImageResponse } from "@/pages/api/image/[slug]";
+// import type { ImageResponse } from "@/pages/api/image/[slug]";
 import ReactModal from "react-modal";
 import { PredictionResponse } from "@/pages/api/image/face/[slug]";
+import {
+  AppearanceDataFragment,
+  FaceDataFragment,
+  ImageDataFragment,
+} from "@/lib/__generated__/graphql";
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
-  image: ImageResponse;
-  appearance?: ImageAppearance;
-  face: ImageFace;
+  image: ImageDataFragment;
+  appearance?: AppearanceDataFragment;
+  face: FaceDataFragment;
   forceActive: boolean;
 };
 
@@ -70,8 +70,8 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
 
 export default function ImageDisplay() {
   const image = React.useContext(ImageContext);
-  const imageRef = React.useRef<HTMLImageElement>();
-  const parentRef = React.useRef<HTMLDivElement>();
+  const imageRef = React.useRef<HTMLImageElement | null>();
+  const parentRef = React.useRef<HTMLDivElement | null>();
   const { face: activeFace } = React.useContext(FaceContext);
   const [expanded, toggleExpanded] = useToggle(false);
   const defaults = {
@@ -88,24 +88,26 @@ export default function ImageDisplay() {
   const [active, setActive] = React.useState(false);
   const [loaded, setLoaded] = React.useState(false);
   const { data: facePredictions = [] } = useSWR<PredictionResponse>(
-    `/api/image/face/${image.slug}`,
+    `/api/image/face/${image?.slug}`,
     fetcher,
     { refreshInterval: 0 }
   );
-  console.log("predictions", facePredictions);
-  const [parentSize, setParentSize] = React.useState<DOMRect>(defaults);
-  const [imageSize, setImageSize] = React.useState<DOMRect>(defaults);
-  const shouldBeExpandable =
-    image.height > 1200 && image.height / image.width > 1.2;
-  function checkSize() {
-    const a = parentRef.current.getBoundingClientRect();
-    const b = imageRef.current.getBoundingClientRect();
-    setParentSize(a);
-    setImageSize(b);
-  }
   React.useEffect(() => {
     checkSize();
   }, [expanded]);
+  console.log("predictions", facePredictions);
+  const [parentSize, setParentSize] = React.useState<DOMRect>(defaults);
+  const [imageSize, setImageSize] = React.useState<DOMRect>(defaults);
+  function checkSize() {
+    const a = parentRef.current?.getBoundingClientRect();
+    const b = imageRef.current?.getBoundingClientRect();
+    if (a) {
+      setParentSize(a);
+    }
+    if (b) {
+      setImageSize(b);
+    }
+  }
 
   React.useEffect(() => {
     // seems to be necessary for refs to initialize properly first
@@ -121,19 +123,30 @@ export default function ImageDisplay() {
       checkSize();
     }
   }, [loaded]);
+  if (!image) {
+    return null;
+  }
+  const shouldBeExpandable =
+    image.height &&
+    image.width &&
+    image.height > 1200 &&
+    image.height / image.width > 1.2;
 
-  function renderFaces(faces: ImageFace[], appearance?: ImageAppearance) {
+  function renderFaces(
+    faces: FaceDataFragment[],
+    appearance?: AppearanceDataFragment
+  ) {
     return faces.map((face) => (
       <Face
         forceActive={active}
         appearance={appearance}
         face={face}
-        image={image}
+        image={image!}
         style={{
-          left: (face.x * imageSize.width) / image.width,
-          top: (face.y * imageSize.height) / image.height,
-          width: (face.width * imageSize.width) / image.width,
-          height: (face.height * imageSize.height) / image.height,
+          left: (face.x * imageSize.width) / (image?.width ?? 1),
+          top: (face.y * imageSize.height) / (image?.height ?? 1),
+          width: (face.width * imageSize.width) / (image?.width ?? 1),
+          height: (face.height * imageSize.height) / (image?.height ?? 1),
           pointerEvents: "none",
         }}
       />
@@ -148,8 +161,8 @@ export default function ImageDisplay() {
   const MAX_WIDTH = 1200;
   const imageMaxHeight = !expanded
     ? "70vh"
-    : image.height <= 800
-    ? image.height
+    : image!.height! <= 800
+    ? image!.height
     : "100%";
 
   return (
@@ -165,7 +178,7 @@ export default function ImageDisplay() {
         className="relative bg-theme-alt rounded"
         ref={(r) => (parentRef.current = r)}
         style={{
-          maxHeight: imageMaxHeight,
+          maxHeight: imageMaxHeight!,
         }}
       >
         {shouldBeExpandable && (
@@ -182,9 +195,9 @@ export default function ImageDisplay() {
         <div
           className="left-0 right-0 absolute mx-auto pointer-events-none top-0"
           style={{
-            maxWidth: image.width <= 1200 ? image.width : "100%",
+            maxWidth: image!.width! <= 1200 ? image.width! : "100%",
             width: imageRef.current?.width,
-            maxHeight: imageMaxHeight,
+            maxHeight: imageMaxHeight!,
           }}
         >
           {renderFaces(image.unknownFaces)}
@@ -213,14 +226,14 @@ export default function ImageDisplay() {
               updateFunc();
             }
           }}
-          src={image.url}
+          src={image.rawUrl}
           onMouseEnter={(_) => setActive(true)}
           onMouseLeave={(_) => setActive(false)}
           {...(loaded ? {} : { width: image.width })}
-          height={image.height}
+          height={image.height!}
           style={{
-            flexBasis: image.width <= 1200 ? image.width : "100%",
-            maxHeight: image.height <= 800 ? image.height : "100%",
+            flexBasis: image.width! <= 1200 ? image.width! : "100%",
+            maxHeight: image.height! <= 800 ? image.height! : "100%",
           }}
           className="flex object-contain overflow-hidden m-auto rounded"
         />
@@ -232,13 +245,13 @@ export default function ImageDisplay() {
           </h2> */}
         <CascadeChildren className="grid faces-grid flex-row gap-4">
           {image.unknownFaces?.map((face) => {
-            return <PersonPortrait src={image.url} face={face} />;
+            return <PersonPortrait src={image.rawUrl} face={face} />;
           })}
           {image.appearances?.map((appearance) => {
             const [face] = appearance.faces;
             return (
               <PersonPortrait
-                src={image.url}
+                src={image.rawUrl}
                 appearance={appearance}
                 face={face}
                 prediction={
