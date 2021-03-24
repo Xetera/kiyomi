@@ -2,14 +2,8 @@ import { humanFileSize } from "@/lib/shared";
 import React from "react";
 import { Palette } from "./palette-color";
 import { Tags } from "./tags";
-import { motion } from "framer-motion";
 import { CascadeChildren } from "./animations/cascade-children";
-import {
-  RiQuestionLine,
-  RiToolsLine,
-  RiHammerLine,
-  RiEdit2Line,
-} from "react-icons/ri";
+import { RiEdit2Line } from "react-icons/ri";
 import { format } from "date-fns";
 import Image from "next/image";
 import { User } from "./user";
@@ -71,7 +65,7 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
           {image.source && <p className="text-blueGray-500">{image.source}</p>}
         </div>
         <a
-          href={image.url}
+          href={image.rawUrl}
           rel="external"
           target="_blank"
           className="hover:underline"

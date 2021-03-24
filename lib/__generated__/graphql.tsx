@@ -65,6 +65,8 @@ export type Image = {
   bytes: Scalars['Int'];
   appearances: Array<Appearance>;
   createdAt: Scalars['DateTime'];
+  /** Human readable file size. Use `bytes` for a number representation */
+  fileSize: Scalars['String'];
   /** Link to the image on the site */
   url: Scalars['String'];
   /** Direct link to the image on the CDN */

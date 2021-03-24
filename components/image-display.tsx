@@ -16,6 +16,7 @@ import {
   AppearanceDataFragment,
   FaceDataFragment,
   ImageDataFragment,
+  MimeType,
 } from "@/lib/__generated__/graphql";
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
@@ -175,12 +176,25 @@ export default function ImageDisplay() {
       }}
     >
       <div
-        className="relative bg-theme-alt rounded"
+        className="relative rounded"
         ref={(r) => (parentRef.current = r)}
         style={{
           maxHeight: imageMaxHeight!,
         }}
       >
+        {image.mimetype !== MimeType.Gif && (
+          <img
+            src={image.rawUrl}
+            style={{
+              // ...(image.width! < 1000 ? { filter: "blur(2px)" } : {}),
+              boxShadow: "inset 0 0 30px 15px #212121",
+              zIndex: -1,
+              // WebkitMaskImage:
+              //   "linear-gradient(to top, transparent 2%, black 95%)",
+            }}
+            className="absolute w-full opacity-[0.04] max-h-full object-cover object-center"
+          />
+        )}
         {shouldBeExpandable && (
           <div
             className="absolute right-full height-full mr-2 xl:block hidden rounded cursor-pointer"

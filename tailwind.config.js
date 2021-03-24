@@ -2,7 +2,7 @@ const colors = require("tailwindcss/colors");
 const { default: _default, alt, light, lightest } = require("./colors");
 
 module.exports = {
-  purge: ["./pages/**/*.tsx", "./components/**/*.tsx"],
+  purge: ["./pages/**/*.tsx", "./components/**/*.tsx", "!node_modules/*"],
   darkMode: "class", // or 'media' or 'class'
   theme: {
     borderWidth: {

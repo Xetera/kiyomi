@@ -1,5 +1,3 @@
-# - include_vars: secret.yaml
-
 - set_fact:
     network: &network
       networks:
@@ -14,23 +12,6 @@
       timeout: 5s
       retries: 5
 
-# - name: Install restic
-#   apt:
-#     name: restic
-
-# - name: Copy over backup script
-#   template:
-#     src: restic_backup.sh
-#     dest: ~/restic_backup.sh
-
-# - name: Set backup cron job for every day
-#   cron:
-#     name: kiyomi-backup
-#     hour: "0"
-#     minute: "0"
-#     job: "/bin/sh ~/restic_backup.sh >> /var/log/backups.log 2>&1"
-
-# shared by traefik
 - name: Ensure network created
   docker_network:
     name: "{{ docker_network_name }}"

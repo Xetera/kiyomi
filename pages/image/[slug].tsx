@@ -13,7 +13,7 @@ import { trpc } from "@/lib/trpc";
 
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import { useOneImageQuery } from "@/lib/__generated__/graphql";
+import { MimeType, useOneImageQuery } from "@/lib/__generated__/graphql";
 import withApollo from "@/lib/apollo";
 
 const Image = () => {
@@ -48,37 +48,36 @@ const Image = () => {
       <NextHead>
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content="@_Xetera" />
-        <meta property="twitter:image" content={image.url} />
+        <meta property="twitter:image" content={image.rawUrl} />
         {/* <meta property="og:type" content="website" /> */}
       </NextHead>
 
       <ImageContext.Provider value={image}>
         <Navbar />
         {!image.public && (
-          <div className="mb-4 rounded border-b-1 border-theme-light bg-theme-alt text-sm lg:text-base">
+          <div className="rounded border-b-1 border-theme-light bg-theme-alt text-sm lg:text-base">
             <div className="max-w-7xl mx-auto py-3 px-4 flex items-center font-semibold text-blueGray-400">
               <RiSpyLine className="mr-2" />
               This image is unlisted and can only be viewed with a link.
             </div>
           </div>
         )}
-        <div className="justify-center mx-auto max-w-7xl px-4 lg:my-24 my-4">
-          <article className="flex gap-8 justify-center md:flex-row flex-col">
-            <div className="flex">
-              {image.caption && (
-                <h1 className="text-2xl font-black mb-2 text-blueGray-500">
-                  {image.caption}
-                </h1>
-              )}
-              <ImageDisplay />
-            </div>
-            <div
-              style={{ height: "min-content", minWidth: "250px" }}
-              className="overflow-hidden"
-            >
-              <ImageSidebar onEdit={() => setEditOpen(true)} />
-            </div>
-          </article>
+        <div className="w-full relative overflow-hidden">
+          <div className="justify-center mx-auto max-w-7xl px-4 lg:my-24 my-4">
+            <article className="flex gap-8 justify-center md:flex-row flex-col">
+              <div className="flex">
+                {image.caption && (
+                  <h1 className="text-2xl font-black mb-2 text-blueGray-500">
+                    {image.caption}
+                  </h1>
+                )}
+                <ImageDisplay />
+              </div>
+              <div className="overflow-hidden h-[min-content] min-w-[250px]">
+                <ImageSidebar onEdit={() => setEditOpen(true)} />
+              </div>
+            </article>
+          </div>
         </div>
         <Footer />
         <ReactModal

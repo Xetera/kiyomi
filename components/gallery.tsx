@@ -18,7 +18,7 @@ function LoadingImage({ image }) {
         <Image
           width={imageWidth}
           height={(imageWidth / image.width) * image.height}
-          src={image.url}
+          src={image.rawUrl}
           onLoad={() => setLoaded(true)}
         />
         {/* {!loaded && (

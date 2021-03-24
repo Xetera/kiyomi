@@ -1,3 +1,4 @@
+import { humanFileSize } from "../../shared";
 import _ from "lodash";
 import {
   objectType,
@@ -59,6 +60,14 @@ export const User = objectType({
       .appearances()
       .createdAt()
       .createdAt();
+    t.field("fileSize", {
+      type: nonNull("String"),
+      description:
+        "Human readable file size. Use `bytes` for a number representation.",
+      resolve(file) {
+        return humanFileSize(file.bytes);
+      },
+    });
     t.field("url", {
       type: nonNull("String"),
       description: "Link to the image on the site",
