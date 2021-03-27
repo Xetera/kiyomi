@@ -13,12 +13,14 @@ export const User = objectType({
         pagination: true,
         filtering: true,
         async resolve(root, { where, ...args }, ctx, info, resolver) {
+          const MAX_IMAGES_PAGE = 100;
           // users can only query their own images
           const canView = ctx.user ? ctx.user.id === root.id : false;
           return resolver(
             root,
             {
               ...args,
+              take: Math.min(args.take ?? MAX_IMAGES_PAGE, MAX_IMAGES_PAGE),
               where: {
                 ...where,
                 ...(!canView ? { public: { equals: true } } : {}),
