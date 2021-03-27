@@ -33,7 +33,6 @@ export const Query = queryField((t) => {
   t.field("me", {
     type: "User",
     resolve(_root, args, { prisma, user }) {
-      console.log({ user });
       if (!user) {
         return null;
       }

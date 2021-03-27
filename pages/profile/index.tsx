@@ -1,19 +1,12 @@
-import type { ProfileResponse } from "../api/profile";
 import { Gallery } from "@/components/gallery";
 import { Navbar } from "@/components/navbar";
 import { User } from "@/components/user";
-import { fetcher, PromiseReturnType, useGet } from "@/lib/shared";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession, useSession } from "next-auth/client";
 import React from "react";
 import useSWR from "swr";
 import { useMeQuery } from "@/lib/__generated__/graphql";
 import withApollo from "@/lib/apollo";
 import { useRouter } from "next/router";
-
-// const profileUrl = `/api/profile`;
-
-// type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 function Image() {
   const [session] = useSession();
@@ -40,25 +33,5 @@ function Image() {
     </div>
   );
 }
-
-// export const getServerSideProps = async ({ req, res }) => {
-//   const session = await getSession({ req });
-//   console.log("session be", session);
-//   if (!session) {
-//     return {
-//       props: {},
-//       redirect: {
-//         destination: "/api/auth/signin",
-//       },
-//     };
-//   }
-//   const props = await fetcher(profileUrl, {
-//     redirect: "follow",
-//     headers: {
-//       Cookie: req.headers.cookie,
-//     },
-//   });
-//   return { props: { ...props, session } } as const;
-// };
 
 export default withApollo({ ssr: true })(Image);

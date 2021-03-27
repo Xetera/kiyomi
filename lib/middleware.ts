@@ -104,7 +104,7 @@ export function withFileUpload<T extends BaseContext>(
   f: Middleware<T & CtxUpload>
 ): Middleware<T> {
   return async (req, res, ctx) => {
-    const upload = await parseFiles(req);
+    const upload = await parseFiles(req, res);
     return f(req, res, { ...ctx, upload });
   };
 }

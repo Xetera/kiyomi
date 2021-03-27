@@ -1,7 +1,4 @@
 import React from "react";
-import { prisma } from "@/lib/db";
-import { fetcher, PromiseReturnType, useGet } from "@/lib/shared";
-import { GetServerSideProps } from "next";
 import ImageDisplay from "@/components/image-display";
 import ImageSidebar from "@/components/image-sidebar";
 import { FaceContext, ImageContext } from "@/models/contexts";
@@ -9,7 +6,6 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import NextHead from "next/head";
 import { RiSpyLine } from "react-icons/ri";
-import { trpc } from "@/lib/trpc";
 
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
@@ -113,37 +109,3 @@ const Image = () => {
 };
 
 export default withApollo({ ssr: true })(Image);
-
-// export const getServerSideProps = async ({ req, res, params }) => {
-//   const { prisma } = await import("@/lib/db");
-//   const ssr = trpc.ssr(appRouter, { req, res, db: prisma });
-//   const { slug } = params;
-//   if (Array.isArray(slug)) {
-//     return {
-//       notFound: true,
-//     };
-//   }
-//   // asynchronously increment view done in
-//   // getServerSideProps to prevent triggering
-//   // view climb from useSWR
-//   prisma.image
-//     .update({
-//       where: { slug },
-//       data: {
-//         views: {
-//           increment: 1,
-//         },
-//       },
-//     })
-//     .catch((err) => {
-//       console.log("something went wrong while incrementing views", err);
-//     });
-
-//   await ssr.prefetchQuery("image.one", { slug });
-//   return {
-//     props: {
-//       dehydratedState: trpc.dehydrate(),
-//       slug,
-//     },
-//   } as const;
-// };

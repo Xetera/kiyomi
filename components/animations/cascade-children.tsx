@@ -25,17 +25,21 @@ export function CascadeChildren({
         },
       }}
     >
-      {React.Children.map(children, (child) => (
-        <motion.div
-          key={child.toString()}
-          variants={{
-            hidden: { opacity: 0 },
-            show: { opacity: 1 },
-          }}
-        >
-          {child}
-        </motion.div>
-      ))}
+      {React.Children.map(
+        children,
+        (child) =>
+          child && (
+            <motion.div
+              key={child.toString()}
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1 },
+              }}
+            >
+              {child}
+            </motion.div>
+          )
+      )}
     </motion.section>
   );
 }

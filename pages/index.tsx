@@ -9,12 +9,8 @@ import { Navbar } from "@/components/navbar";
 import { FrontPage } from "@/components/front-page";
 import { Waypoint } from "react-waypoint";
 import { useScroll } from "react-use";
-import type { HomeResponse } from "./api/image";
 
 function getKey(index: number, prevData: any) {
-  console.log("fetching");
-  console.log(index);
-  console.log(prevData);
   if (!index) {
     return `/api/image`;
   }
@@ -29,7 +25,7 @@ function Tab({ active, children }) {
   );
 }
 
-export default function Home({ images }: { images: HomeResponse }) {
+export default function Home() {
   const pageRef = React.useRef(null);
   const [activeTab, setActiveTab] = React.useState(0);
   const [fetching, setFetching] = React.useState(false);
@@ -115,8 +111,6 @@ export default function Home({ images }: { images: HomeResponse }) {
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   // const images = JSON.parse(JSON.stringify(await fetcher("/api/image")));
   return {
-    props: {
-      images: [],
-    },
+    props: {},
   };
 };

@@ -56,7 +56,6 @@ export async function detectFaces(
   image.height = height;
   image.width = width;
 
-  console.log("detecting faces");
   const detections = await faceapi
     // @ts-ignore
     .detectAllFaces(image)

@@ -4,8 +4,8 @@ import { FileDetails } from "./file";
 const config = {
   bucketName: "my.simp.pics",
   region: "eu-east-1",
-  accessKeyId: process.env.WASABI_ACCESS_KEY,
-  secretAccessKey: process.env.WASABI_SECRET,
+  accessKeyId: process.env.WASABI_ACCESS_KEY!,
+  secretAccessKey: process.env.WASABI_SECRET!,
 };
 
 export const wasabi = new S3({
@@ -24,7 +24,6 @@ const UPLOAD_CONFIG = {
 };
 
 export function uploadParsedFiles([file]: UploadableFile[]) {
-  console.log(file);
   return wasabi
     .putObject({
       ...UPLOAD_CONFIG,

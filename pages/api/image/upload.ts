@@ -16,10 +16,7 @@ import {
 } from "@/lib/face-recognition";
 import { Appearance, Person, Image, Prisma } from "@prisma/client";
 import idgen from "nanoid";
-import { transformImage } from "@/lib/transformer";
-import { humanFileSize, PromiseReturnType } from "@/lib/shared";
-import SQL from "sql-template-strings";
-import { GetImage, imageFindOptions } from "@/lib/data-fetching";
+import { imageFindOptions, sdk } from "@/lib/data-fetching";
 
 // we can't use trpc here because of the binary file upload
 export const config = {
@@ -27,15 +24,6 @@ export const config = {
     bodyParser: false,
   },
 };
-
-async function response(image: GetImage, bytesHuman: string) {
-  return {
-    ...transformImage(image!),
-    bytesHuman,
-  };
-}
-
-export type UploadResponse = PromiseReturnType<typeof response>;
 
 export default handle(
   withUser(
@@ -184,8 +172,9 @@ export default handle(
         if (faces.length > 0) {
           await db.$executeRaw`${Prisma.raw(BASE_STRING + templatedString)}`;
         }
-        console.log("image is", image);
-        return res.json(await response(image, humanFileSize(file.size)));
+
+        const result = await sdk.getUploadResult({ slug: image.slug });
+        return res.json(result.image);
       } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Internal Server Error" });

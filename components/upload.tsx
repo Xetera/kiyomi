@@ -8,7 +8,6 @@ export function MyDropzone() {
     const reader = new FileReader();
     reader.onload = async (file) => {
       // Do something with the files
-      console.log(acceptedFiles);
       const data = new FormData();
       data.append("file", acceptedFiles[0], acceptedFiles[0].name);
       const result = await fetch("/api/image/upload", {

@@ -1,6 +1,6 @@
 import { imageHash as imageHashCallback } from "image-hash";
 import multer from "multer";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { promisify } from "util";
 import { createHash } from "crypto";
 import { MimeType } from "@prisma/client";
@@ -45,10 +45,11 @@ export type FormData = {
 
 export function parseFiles(
   req: NextApiRequest,
+  res: NextApiResponse,
   { name = "file" } = {}
 ): Promise<FormData> {
   return new Promise(function (resolve, reject) {
-    upload.array(name)(req as any, null, async (err: any) => {
+    upload.array(name)(req as any, res as any, async (err: any) => {
       if (err) {
         return reject(err);
       }

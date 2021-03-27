@@ -1,7 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import useSWR from "swr";
 import { PromiseReturnType } from "./shared";
 import { publicImageFields } from "./transformer";
+import { getSdk } from "@/lib/__generated__/request";
+import { GraphQLClient } from "graphql-request";
+
+export const client = new GraphQLClient(
+  `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`
+);
+
+export const sdk = getSdk(client);
 
 export const imageFindOptionsFaceSelection = {
   id: true,

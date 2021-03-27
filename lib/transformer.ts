@@ -27,24 +27,3 @@ type ExtraImageProperties = {
   mimetype: string;
   url: string;
 };
-
-export function transformImage<
-  T extends GetImage & {
-    mimetype: string;
-    slug: string;
-  }
->(image: T) {
-  const { faces, ...imageRest } = image;
-  const mimetype = image.mimetype.toLowerCase();
-  const appearanceMap = keyBy(image.appearances, (appearance) => appearance.id);
-
-  const unknownFaces = image.faces.filter(
-    (face) => !(face?.appearanceId in appearanceMap)
-  );
-  return {
-    ...imageRest,
-    mimetype,
-    unknownFaces,
-    url: `https://my.simp.pics/${image.slug}.${mimetype}`,
-  };
-}

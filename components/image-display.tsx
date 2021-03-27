@@ -97,7 +97,7 @@ export default function ImageDisplay() {
   React.useEffect(() => {
     checkSize();
   }, [expanded]);
-  console.log("predictions", facePredictions);
+
   const [parentSize, setParentSize] = React.useState<DOMRect>(defaults);
   const [imageSize, setImageSize] = React.useState<DOMRect>(defaults);
   function checkSize() {

@@ -14,6 +14,9 @@ async function response(slug: string, db: PrismaClient) {
       },
     },
   });
+  if (!image) {
+    return [];
+  }
   return findClosestMatchingPerson(
     image.faces.map((face) => face.id),
     {
@@ -27,6 +30,5 @@ export type PredictionResponse = PromiseReturnType<typeof response>;
 
 export default handle(async (req, res, { db }) => {
   const result = await response(req.query.slug as string, db);
-  console.log(result);
   res.json(result ?? []);
 });
