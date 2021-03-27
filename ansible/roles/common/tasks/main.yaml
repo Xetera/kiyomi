@@ -34,7 +34,7 @@
     networks:
       - name: "{{ docker_network_name }}"
     volumes:
-      - "{{ postgres.name }}-volume"
+      - "{{ postgres.name }}-volume:/var/lib/postgresql/data"
     command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
     ports:
       - 5430:5432
