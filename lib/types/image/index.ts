@@ -8,6 +8,7 @@ import {
   list,
   enumType,
 } from "nexus";
+import { ImageWhereInput } from "@/lib/__generated__/request";
 
 export const User = objectType({
   name: "Image",
@@ -118,9 +119,19 @@ export const Query = queryField((t) => {
     args: {
       slug: nonNull(stringArg()),
     },
-    resolve(_root, args, { prisma }) {
+    async resolve(_root, args, { prisma, user }) {
       const { slug } = args;
-      return prisma.image.findUnique({ where: { slug } });
+      const image = await prisma.image.findUnique({
+        where: { slug },
+        include: { user: true },
+      });
+      if (!image) {
+        return null;
+      }
+      if (!image.public && image.user?.id !== user?.id) {
+        return null;
+      }
+      return image;
     },
   });
 });
