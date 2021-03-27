@@ -11,10 +11,10 @@ import { ImageContext } from "@/models/contexts";
 
 function SidebarSection({ title, children }) {
   return (
-    <div className="flex flex-row">
-      <h2 className="font-bold text-right mr-2">{title}</h2>
-      <div className="flex items-center text-blueGray-500">{children}</div>
-    </div>
+    <>
+      <h2 className="font-bold text-left mr-2">{title}</h2>
+      <div className="flex items-center text-gray-400">{children}</div>
+    </>
   );
 }
 
@@ -32,7 +32,7 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
             user={image.uploadedBy}
             bottom={
               <time
-                className="text-blueGray-500"
+                className="text-gray-500"
                 dateTime={image.createdAt.toString()}
               >
                 {format(uploadDate, "MMMM dd, yyyy HH:mm")}
@@ -40,21 +40,26 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
             }
           />
         </div>
-        <hr className="border-theme-light" />
-        <SidebarSection title={"Dimensions"}>
-          <p className="font-semibold">
-            {image.width}x{image.height}
-          </p>
-        </SidebarSection>
-        <SidebarSection title={"Size"}>
-          <p className="font-semibold">{humanFileSize(image.bytes)}</p>
-        </SidebarSection>
-        <SidebarSection title={"Type"}>
-          <p className="font-semibold">{image.mimetype.toUpperCase()}</p>
-        </SidebarSection>
-        <SidebarSection title={"NSFW?"}>
-          <p className="font-semibold">{image.isNsfw ? "Yes" : "No"}</p>
-        </SidebarSection>
+        <hr className="border-theme-subtle" />
+        <div
+          className="grid gap-2"
+          style={{ gridTemplateColumns: "min-content 1fr" }}
+        >
+          <SidebarSection title={"Dimensions"}>
+            <p className="font-semibold">
+              {image.width}x{image.height}
+            </p>
+          </SidebarSection>
+          <SidebarSection title={"Size"}>
+            <p className="font-semibold">{humanFileSize(image.bytes)}</p>
+          </SidebarSection>
+          <SidebarSection title={"Type"}>
+            <p className="font-semibold">{image.mimetype.toUpperCase()}</p>
+          </SidebarSection>
+          <SidebarSection title={"NSFW?"}>
+            <p className="font-semibold">{image.isNsfw ? "Yes" : "No"}</p>
+          </SidebarSection>
+        </div>
         {image.tags?.length > 0 ? (
           <Tags tags={image.tags.map((tag) => tag.name)} />
         ) : (
@@ -62,22 +67,14 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
         )}
         <Palette colors={image.palette} />
         <div>
-          {image.source && <p className="text-blueGray-500">{image.source}</p>}
+          {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
-        <a
-          href={image.rawUrl}
-          rel="external"
-          target="_blank"
-          className="hover:underline"
-        >
-          View Original
-        </a>
         <div
-          className="inline-flex items-center bg-theme-light p-1 px-2 rounded cursor-pointer"
+          className="inline-flex items-center border-theme-subtle border-1 p-1 px-2 rounded cursor-pointer"
           onClick={onEdit}
         >
-          <RiEdit2Line className=" text-blueGray-400 mr-2" />
-          <p className="text-blueGray-400">Edit image</p>
+          <RiEdit2Line className=" text-gray-400 mr-2" />
+          <p className="text-gray-400">Edit image</p>
         </div>
       </CascadeChildren>
     </aside>

@@ -18,6 +18,7 @@ import {
   ImageDataFragment,
   MimeType,
 } from "@/lib/__generated__/graphql";
+import Hr from "./hr";
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
   image: ImageDataFragment;
@@ -36,7 +37,7 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
     <AnimatePresence>
       {(active || forceActive) && (
         <motion.div
-          className="absolute z-2 rounded border-2"
+          className="absolute z-2 rounded-t border-2"
           initial={{ y: 20 }}
           animate={{ y: 0 }}
           exit={{ opacity: 0 }}
@@ -49,16 +50,16 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
             <p
               className="absolute top-full w-full text-xs p-1"
               style={{
-                background: "rgba(46, 42, 56, 0.8)",
+                background: "rgba(20, 17, 30, 0.8)",
                 minWidth: "80px",
               }}
             >
               {appearance ? (
                 appearance.person.name
               ) : (
-                <i className="text-blueGray-500">Unknown</i>
+                <i className="text-gray-500">Unknown</i>
               )}
-              <div className="text-xs text-blueGray-400">
+              <div className="text-xs text-gray-400">
                 {(face.score * 100).toFixed(2)}%
               </div>
             </p>
@@ -182,26 +183,13 @@ export default function ImageDisplay() {
           maxHeight: imageMaxHeight!,
         }}
       >
-        {image.mimetype !== MimeType.Gif && (
-          <img
-            src={image.rawUrl}
-            style={{
-              // ...(image.width! < 1000 ? { filter: "blur(2px)" } : {}),
-              boxShadow: "inset 0 0 30px 15px #212121",
-              zIndex: -1,
-              // WebkitMaskImage:
-              //   "linear-gradient(to top, transparent 2%, black 95%)",
-            }}
-            className="absolute w-full opacity-[0.04] max-h-full object-cover object-center"
-          />
-        )}
         {shouldBeExpandable && (
           <div
             className="absolute right-full height-full mr-2 xl:block hidden rounded cursor-pointer"
             title="Toggle expanded view"
             onClick={(e) => toggleExpanded()}
           >
-            <div className="sticky top-0 p-1 bg-theme-alt">
+            <div className="sticky top-0 p-1">
               {expanded ? <FaCompress /> : <FaExpand />}
             </div>
           </div>
@@ -219,6 +207,7 @@ export default function ImageDisplay() {
             renderFaces(appearance.faces, appearance)
           )}
         </div>
+        {/* @ts-ignore */}
         <img
           ref={(input) => {
             imageRef.current = input;
@@ -253,30 +242,49 @@ export default function ImageDisplay() {
         />
       </div>
 
-      <section className="mt-6">
-        {/* <h2 className="text-lg font-semibold mb-3 mt-3">
-            Appearing in this Image
-          </h2> */}
-        <CascadeChildren className="grid faces-grid flex-row gap-4">
-          {image.unknownFaces?.map((face) => {
-            return <PersonPortrait src={image.rawUrl} face={face} />;
-          })}
-          {image.appearances?.map((appearance) => {
-            const [face] = appearance.faces;
-            return (
-              <PersonPortrait
-                src={image.rawUrl}
-                appearance={appearance}
-                face={face}
-                prediction={
-                  face &&
-                  facePredictions?.find((f) => f.face === face.id)?.matches[0]
-                }
-              />
-            );
-          })}
-        </CascadeChildren>
-      </section>
+      <div className="flex items-center w-full mt-4">
+        <a
+          href={image.rawUrl}
+          rel="external nofollower noopener"
+          target="_blank"
+          className="hover:underline text-sm mr-3 text-gray-400"
+        >
+          View Original
+        </a>
+        <Hr className="flex-1" />
+      </div>
+      {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
+        <section className="mt-5">
+          <div className="mb-3">
+            <h2 className="text-lg font-semibold">Appearing in this image</h2>
+            {image.unknownFaces.length > 0 && (
+              <p className="text-xs text-gray-500 mt-1 font-semibold">
+                Unverified faces are faces that have not been linked to a known
+                person.
+              </p>
+            )}
+          </div>
+          <CascadeChildren className="grid faces-grid flex-row gap-4">
+            {image.unknownFaces?.map((face) => {
+              return <PersonPortrait src={image.rawUrl} face={face} />;
+            })}
+            {image.appearances?.map((appearance) => {
+              const [face] = appearance.faces;
+              return (
+                <PersonPortrait
+                  src={image.rawUrl}
+                  appearance={appearance}
+                  face={face}
+                  prediction={
+                    face &&
+                    facePredictions?.find((f) => f.face === face.id)?.matches[0]
+                  }
+                />
+              );
+            })}
+          </CascadeChildren>
+        </section>
+      )}
     </div>
   );
 }

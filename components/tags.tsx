@@ -3,7 +3,7 @@ function Tag({ tag }: { tag: string }) {
   return (
     <a
       href={`/tag/${tag}`}
-      className="bg-theme-light py-1 px-2 rounded text-sm font-semibold inset-shadow hover:bg-theme-lightest hover:text-white"
+      className="bg-theme-subtle py-1 px-2 rounded text-sm font-semibold hover:text-white"
     >
       {tag}
     </a>
@@ -12,7 +12,7 @@ function Tag({ tag }: { tag: string }) {
 
 export function Tags({ tags }: { tags: string[] }) {
   return (
-    <section className="flex flex-row flex-wrap text-blueGray-400">
+    <section className="flex flex-row flex-wrap text-gray-300">
       {tags.map((tag) => (
         <div key={tag} className="mb-1 mr-1">
           <Tag tag={tag} />

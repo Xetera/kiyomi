@@ -11,7 +11,7 @@ export function PaletteColor({ color }: { color: number }) {
     <div className="flex flex-row items-center">
       <span
         style={{ background: decimalToHex(color) }}
-        className="h-6 w-6 hover:h-6 animate rounded border-1 border-theme-light"
+        className="h-6 w-6 hover:h-6 animate rounded-full border-1 border-theme-light"
       />
       <pre className="ml-2 text-sm">#{colorHex}</pre>
     </div>
@@ -23,10 +23,7 @@ export function Palette({
   ...rest
 }: HTMLAttributes<HTMLDivElement> & { colors: number[] }) {
   return (
-    <section
-      className="grid grid-flow-row mt-2 border-theme border-2 gap-2 text-blueGray-400"
-      {...rest}
-    >
+    <section className="grid grid-flow-row mt-2 gap-2 text-gray-400" {...rest}>
       {colors.map((color) => (
         <PaletteColor color={color} key={color} />
       ))}

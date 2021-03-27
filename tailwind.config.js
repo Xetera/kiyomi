@@ -1,5 +1,5 @@
 const colors = require("tailwindcss/colors");
-const { default: _default, alt, light, lightest } = require("./colors");
+const { default: _default, alt, light, lightest, subtle } = require("./colors");
 
 module.exports = {
   purge: ["./pages/**/*.tsx", "./components/**/*.tsx", "!node_modules/*"],
@@ -16,6 +16,7 @@ module.exports = {
         alt,
         light,
         lightest,
+        subtle,
       },
     },
     minWidth: {

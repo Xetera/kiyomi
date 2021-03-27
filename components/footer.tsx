@@ -3,12 +3,12 @@ import { RiDiscordFill, RiTwitterFill } from "react-icons/ri";
 function FooterSection({ section }) {
   return (
     <section key={section.title}>
-      <h1 className="text-base font-semibold mb-3 text-blueGray-300">
+      <h1 className="text-base font-semibold mb-3 text-gray-300">
         {section.title}
       </h1>
       <ul>
         {section.links.map((link) => (
-          <li key={link.href} className="font-semibold text-blueGray-500">
+          <li key={link.href} className="font-semibold text-gray-500">
             <a href={link.href} className="hover:underline">
               {link.name}
             </a>
@@ -22,13 +22,13 @@ function FooterSection({ section }) {
 export function Footer() {
   return (
     <footer
-      className="border-theme-light bg-theme-alt"
+      className="border-theme-subtle bg-theme"
       style={{
         borderTopWidth: "1px",
       }}
     >
       <div className="max-w-7xl mx-auto flex justify-between md:py-20 py-8 px-8 md:flex-row flex-col">
-        <div className="text-blueGray-400">
+        <div className="text-gray-400">
           <h1 className="text-3xl font-black ">simp.pics</h1>
           <div className="flex flex-row py-5">
             <a href="https://discord.gg/" className="mr-4">

@@ -15,6 +15,7 @@ import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import { MimeType, useOneImageQuery } from "@/lib/__generated__/graphql";
 import withApollo from "@/lib/apollo";
+import { ImageEditModal } from "@/components/image-edit-modal";
 
 const Image = () => {
   const [isEditOpen, setEditOpen] = React.useState(false);
@@ -49,20 +50,32 @@ const Image = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content="@_Xetera" />
         <meta property="twitter:image" content={image.rawUrl} />
-        {/* <meta property="og:type" content="website" /> */}
       </NextHead>
 
       <ImageContext.Provider value={image}>
         <Navbar />
         {!image.public && (
-          <div className="rounded border-b-1 border-theme-light bg-theme-alt text-sm lg:text-base">
-            <div className="max-w-7xl mx-auto py-3 px-4 flex items-center font-semibold text-blueGray-400">
+          <div className="text-gray-400 rounded border-b-1 border-theme-subtle text-sm lg:text-base">
+            <div className="max-w-7xl mx-auto py-3 px-4 flex items-center font-semibold">
               <RiSpyLine className="mr-2" />
               This image is unlisted and can only be viewed with a link.
             </div>
           </div>
         )}
         <div className="w-full relative overflow-hidden">
+          {image.mimetype !== MimeType.Gif && (
+            <img
+              src={image.rawUrl}
+              style={{
+                ...(image.width! < 1000 ? { filter: "blur(2px)" } : {}),
+                boxShadow: "inset 0 0 30px 15px #212121",
+                zIndex: -1,
+                WebkitMaskImage:
+                  "linear-gradient(to top, transparent 2%, black 73%)",
+              }}
+              className="absolute w-full opacity-[0.05] max-h-full object-cover object-center"
+            />
+          )}
           <div className="justify-center mx-auto max-w-7xl px-4 lg:my-24 my-4">
             <article className="flex gap-8 justify-center md:flex-row flex-col">
               <div className="flex">
@@ -92,7 +105,7 @@ const Image = () => {
           className="bg-theme h-3/4 w-full max-w-7xl m-auto border-theme-alt border-1 outline-none"
           onRequestClose={() => setEditOpen(false)}
         >
-          <div>Test</div>
+          <ImageEditModal image={image} />
         </ReactModal>
       </ImageContext.Provider>
     </FaceContext.Provider>

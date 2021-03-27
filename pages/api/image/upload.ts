@@ -41,7 +41,6 @@ export default handle(
   withUser(
     withFileUpload(async (_req, res, { upload, db, user, contextType }) => {
       try {
-        console.log("user", user);
         const { files, fields } = upload;
         const [file] = files;
         const tags = fields.tags ? fields.tags.split(",") : [];

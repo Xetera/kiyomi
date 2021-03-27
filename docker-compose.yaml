@@ -2,6 +2,7 @@ version: "3.5"
 
 volumes:
   sp_pg:
+    external: true
 
 services:
   pg:

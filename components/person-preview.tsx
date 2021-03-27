@@ -13,6 +13,7 @@ import {
   Maybe,
   OneImageQuery,
 } from "@/lib/__generated__/graphql";
+import useImageSlice from "@/hooks/useImageSlice";
 
 function ActionButton({ icon, className }) {
   return <div className={`p-1 ${className} flex items-start`}>{icon}</div>;
@@ -36,36 +37,15 @@ export function PersonPortrait({
   prediction,
   className,
 }: PortraitProps) {
-  console.log("face", face);
-  const ref = React.useRef<HTMLCanvasElement | null>();
+  const faceSlice = useImageSlice({
+    src,
+    height: maxPortraitHeight,
+    face,
+  });
   const { setFace } = React.useContext(FaceContext);
   const height = maxPortraitHeight;
   const maxWidth = 100;
   const scale = face ? height / face.height : 1;
-  const widthScale = face ? Math.round(face.width * scale) : 1;
-  const heightScale = height;
-  React.useEffect(() => {
-    if (!face) {
-      return;
-    }
-    // getCroppedImg(src, crop).then((e) => setBlob(e));
-    const image = new Image();
-    image.src = src;
-    image.onload = () => {
-      const ctx = ref.current?.getContext("2d");
-      ctx?.drawImage(
-        image,
-        face.x,
-        face.y,
-        face.width,
-        face.height,
-        0,
-        0,
-        widthScale,
-        heightScale
-      );
-    };
-  }, []);
   const predictionScore = prediction?.predictionScore
     ? `${prediction.predictionScore.toFixed(2)}%`
     : "None";
@@ -77,7 +57,7 @@ export function PersonPortrait({
     : "";
   return (
     <motion.div
-      className={`rounded overflow-hidden whitespace-nowrap flex flex-row text-xs ${className} bg-theme-alt cursor-pointer border-theme-light`}
+      className={`rounded overflow-hidden whitespace-nowrap flex flex-row text-xs ${className} cursor-pointer border-theme-subtle`}
       style={{
         borderWidth: "1px",
         height,
@@ -89,32 +69,32 @@ export function PersonPortrait({
         className="overflow-hidden object-cover flex flex-col items-center"
         style={{ maxWidth }}
       >
-        {face && (
+        {faceSlice && (
           <canvas
             className="overflow-hidden"
-            width={`${widthScale}px`}
-            height={heightScale}
+            width={`${faceSlice.widthScale}px`}
+            height={faceSlice.heightScale}
             style={{
-              height: heightScale,
-              width: widthScale,
+              height: faceSlice.heightScale,
+              width: faceSlice.widthScale,
             }}
-            ref={(r) => (ref.current = r)}
+            ref={(r) => (faceSlice.ref.current = r)}
           ></canvas>
         )}
       </div>
       <div className="w-full flex flex-col flex-1 overflow-hidden">
         <h2
-          className="font-semibold text-sm px-3 py-2 border-theme-light flex justify-between"
+          className="font-semibold text-sm px-3 py-2 border-theme-subtle flex justify-between"
           style={{
             borderBottomWidth: "1px",
           }}
         >
           <p
-            className={`overflow-hidden overflow-ellipsis ${
-              !appearance ? "text-blueGray-500" : ""
+            className={`overflow-ellipsis ${
+              !appearance ? "text-gray-300" : ""
             }`}
           >
-            {appearance?.person.name ?? "Unverified"}
+            {appearance?.person.name ?? <i>Unverified</i>}
           </p>
           <div className="flex">
             <ActionButton
@@ -128,19 +108,14 @@ export function PersonPortrait({
           </div>
         </h2>
         <div className="flex flex-col justify-between h-full overflow-hidden">
-          <PerfectScrollbar className="px-3 py-2 flex-1 overflow-hidden whitespace-normal">
+          <PerfectScrollbar className="px-3 py-2 flex-1 overflow-hidden whitespace-normal text-gray-400">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry's standard dummy text
             ever since the 1500s, when an unknown printer took a galley of type
             and scrambled it to make a type specimen book. It has survived not
             only five centuries, but also the leap into electronic
-            {/* {prediction?.person?.description ?? (
-                <div className="flex flex-row">
-                  <i className="text-blueGray-600">No description</i>
-                </div>
-              )} */}
           </PerfectScrollbar>
-          <div className="px-3 py-2 flex w-full flex-row justify-between items-end text-blueGray-500">
+          <div className="px-3 py-2 flex w-full flex-row justify-between items-end text-gray-400">
             <div>
               <p
                 className="flex items-center font-semibold"

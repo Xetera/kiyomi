@@ -76,14 +76,17 @@ export default function Home({ images }: { images: HomeResponse }) {
         className="relative flex-1 flex-row flex justify-center"
         ref={pageRef}
       >
-        <div className="flex flex-col mx-auto px-5 mt-12 max-w-6xl h-full justify-start">
-          <h1 className="text-6xl mb-3 font-bold">Hi, it's me Xetera</h1>
-          <p className="text-coolGray-400 max-w-xl mb-2">
+        <div className="flex flex-col px-5 mt-12 h-full justify-start flex-1 max-w-6xl">
+          <h1 className="text-8xl mb-5 font-black text-gray-100">simp.pics</h1>
+          <p className="text-2xl font-semibold text-gray-400">
+            A SFW image host mindful of human connections.
+          </p>
+          {/* <p className="text-coolGray-400 max-w-xl mb-2">
             This is my private image host. If (for some reason) you would like
             access, shoot me a DM at <b>Xetera#0001</b> on Discord with your
             expected usage amount to get an API token.
           </p>
-          <p className="text-sm text-coolGray-400">No NSFW please</p>
+          <p className="text-sm text-coolGray-400">No NSFW please</p> */}
         </div>
         {/* <FrontPage />
           <aside className="flex sticky top-0 z-20 bg-theme py-3 w-full">
