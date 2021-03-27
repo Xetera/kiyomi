@@ -21,6 +21,7 @@ export const config = {
 const cors = makeCors();
 
 const apolloServer = new ApolloServer({
+  playground: true,
   schema,
   async context(ctx: ContextInput) {
     const { req, res } = ctx;
