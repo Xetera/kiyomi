@@ -12,6 +12,22 @@ export const User = objectType({
       .images({
         pagination: true,
         filtering: true,
+        async resolve(root, { where, ...args }, ctx, info, resolver) {
+          // users can only query their own images
+          const canView = ctx.user ? ctx.user.id === root.id : false;
+          return resolver(
+            root,
+            {
+              ...args,
+              where: {
+                ...where,
+                ...(!canView ? { public: { equals: true } } : {}),
+              },
+            },
+            ctx,
+            info
+          );
+        },
       });
   },
 });
