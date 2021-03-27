@@ -1,6 +1,6 @@
 # don't touch this file, it will magically generate types
 overwrite: true
-schema: "http://localhost:3000/api/graphql" # GraphQL endpoint
+schema: ./lib/__generated__/schema.graphql
 generates:
   ./lib/__generated__/request.ts:
     documents:

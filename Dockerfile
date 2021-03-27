@@ -14,7 +14,11 @@ RUN apt-get update && \
     libssl-dev
 
 RUN yarn --frozen-lockfile
-COPY prisma prisma
+COPY . .
+# COPY tsconfig.generator.json tsconfig.generator.json
+# COPY tsconfig.json tsconfig.json
+# COPY codegen.yaml codegen.yaml
+# COPY lib lib
 RUN yarn generate
 RUN yarn codegen
 
