@@ -58,6 +58,9 @@ export function Navbar() {
             <NavLink hardLink href="/sharex" target="_blank">
               Sharex
             </NavLink>
+            <NavLink hardLink href="/api/graphql">
+              API
+            </NavLink>
             {signedIn && <NavLink href={"/profile"}>Profile</NavLink>}
           </ul>
         </div>
