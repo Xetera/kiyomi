@@ -16,6 +16,7 @@ RUN apt-get update && \
 RUN yarn --frozen-lockfile
 COPY prisma prisma
 RUN yarn generate
+RUN yarn codegen
 
 # Rebuild the source code only when needed
 # This is where because may be the case that you would try
