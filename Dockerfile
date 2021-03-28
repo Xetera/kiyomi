@@ -30,7 +30,7 @@ RUN yarn build
 RUN yarn cache clean
 
 FROM node:14-alpine
-RUN apk add --virtual --no-cache libressl-dev tini
+RUN apk update && apk add --virtual --no-cache libressl-dev tini gcompat
 
 WORKDIR /opt/app
 ARG NEXT_PUBLIC_BASE_URL
@@ -43,8 +43,6 @@ COPY package.json yarn.lock ./
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
 COPY --from=build /opt/app/node_modules node_modules
 RUN yarn tf
-# COPY --from=deps ~/.yarn ~/.yarn
-# COPY --from=build /opt/app/node_modules node_modules
 COPY --from=build /opt/app/.next .next
 COPY --from=build /opt/app/public public
 
