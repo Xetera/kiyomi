@@ -121,17 +121,10 @@ export const Query = queryField((t) => {
     },
     async resolve(_root, args, { prisma, user }) {
       const { slug } = args;
-      const image = await prisma.image.findUnique({
+      return await prisma.image.findUnique({
         where: { slug },
         include: { user: true },
       });
-      if (!image) {
-        return null;
-      }
-      if (!image.public && image.user?.id !== user?.id) {
-        return null;
-      }
-      return image;
     },
   });
 });
