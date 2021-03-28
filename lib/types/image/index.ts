@@ -119,11 +119,10 @@ export const Query = queryField((t) => {
     args: {
       slug: nonNull(stringArg()),
     },
-    async resolve(_root, args, { prisma, user }) {
+    async resolve(_root, args, { prisma }) {
       const { slug } = args;
       return await prisma.image.findUnique({
         where: { slug },
-        include: { user: true },
       });
     },
   });
