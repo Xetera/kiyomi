@@ -1,8 +1,7 @@
 # Install dependencies only when needed
-FROM node:14-slim AS deps
+FROM node:14-slim AS build
 
 WORKDIR /opt/app
-COPY package.json yarn.lock ./
 # tensorflow needs these binaries
 RUN apt-get update && \ 
     apt-get install -y build-essential \
@@ -13,50 +12,46 @@ RUN apt-get update && \
     libc6-dev \
     libssl-dev
 
+COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
-COPY . .
-# COPY tsconfig.generator.json tsconfig.generator.json
-# COPY tsconfig.json tsconfig.json
-# COPY codegen.yaml codegen.yaml
-# COPY lib lib
+COPY tsconfig.generator.json tsconfig.generator.json
+COPY tsconfig.json tsconfig.json
+COPY prisma prisma
 RUN yarn generate
+
+COPY . .
+# COPY lib/shared.ts lib/shared.ts
+# COPY lib/context.ts lib/context.ts
+# COPY lib/types lib/types
 RUN yarn codegen
 
-# Rebuild the source code only when needed
-# This is where because may be the case that you would try
-# to build the app based on some `X_TAG` in my case (Git commit hash)
-# but the code hasn't changed.
-FROM node:14-slim AS builder
+RUN yarn build
 
+RUN yarn cache clean
+
+FROM node:14-alpine
+RUN apk add --virtual --no-cache libressl-dev tini
+
+WORKDIR /opt/app
 ARG NEXT_PUBLIC_BASE_URL
 ARG NEXT_PUBLIC_BASE_URL_CDN
 
 ENV NODE_ENV=production
 WORKDIR /opt/app
-COPY . .
 
-# COPY --from=deps ~/.yarn ~/.yarn
-COPY --from=deps /opt/app/node_modules ./node_modules
-RUN yarn build
-# Rebuilding tensorflow dependencies for some reason???
+COPY package.json yarn.lock ./
+# Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
+COPY --from=build /opt/app/node_modules node_modules
 RUN yarn tf
+# COPY --from=deps ~/.yarn ~/.yarn
+# COPY --from=build /opt/app/node_modules node_modules
+COPY --from=build /opt/app/.next .next
+COPY --from=build /opt/app/public public
 
-# Production image, copy all the files and run next
-FROM node:14-slim
-RUN apt-get update && apt-get install -y libssl-dev
+EXPOSE 3000
 
-ARG X_TAG
-WORKDIR /opt/app
-ENV NODE_ENV=production
-
-
-COPY --from=builder /opt/app/next.config.js ./
-COPY --from=builder /opt/app/public ./public
-COPY --from=builder /opt/app/.next ./.next
-COPY --from=builder /opt/app/node_modules ./node_modules
 COPY weights weights
 
-RUN useradd simp
-USER simp
+USER guest
 
 CMD ["node_modules/.bin/next", "start"]

@@ -1,5 +1,7 @@
 generator client {
   provider = "prisma-client-js"
+  // required by alpine linux
+  binaryTargets = ["native", "linux-musl"]
 }
 
 datasource db {
