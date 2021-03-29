@@ -50,6 +50,7 @@ EXPOSE 3000
 
 COPY weights weights
 
-USER guest
+RUN useradd −u 8877 simp
+USER simp
 
 CMD ["node_modules/.bin/next", "start"]
