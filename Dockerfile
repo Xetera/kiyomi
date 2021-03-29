@@ -30,7 +30,7 @@ RUN yarn build
 RUN yarn cache clean
 
 FROM node:14-slim
-RUN apt get update && apt get install -y libssl-dev
+RUN apt-get update && apt-get install -y libssl-dev
 
 WORKDIR /opt/app
 ARG NEXT_PUBLIC_BASE_URL
