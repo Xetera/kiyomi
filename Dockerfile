@@ -29,8 +29,8 @@ RUN yarn build
 
 RUN yarn cache clean
 
-FROM node:14-alpine
-RUN apk update && apk add --virtual --no-cache libressl-dev tini gcompat
+FROM node:14-slim
+RUN apt get libssl-dev
 
 WORKDIR /opt/app
 ARG NEXT_PUBLIC_BASE_URL
