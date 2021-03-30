@@ -1,12 +1,12 @@
-import NextAuth, { InitOptions } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import { User as DatabaseUser } from "@prisma/client";
 import Providers from "next-auth/providers";
 import Adapters from "next-auth/adapters";
 import { prisma } from "@/lib/db";
-import { NextApiRequest, NextApiResponse } from "next-auth/_utils";
+import { NextApiRequest, NextApiResponse } from "next";
 import { generateUserToken } from "@/lib/auth";
 
-const options: InitOptions = {
+const options: NextAuthOptions = {
   providers: [
     Providers.Discord({
       clientId: process.env.DISCORD_ID!,
@@ -24,13 +24,13 @@ const options: InitOptions = {
   }),
   database: process.env.DATABASE_URL,
   callbacks: {
-    session: (session, user: DatabaseUser) => {
-      // @ts-ignore
-      session.user.id = user.id;
-      // @ts-ignore
-      session.user.createdAt = user.createdAt;
-      return Promise.resolve(session);
-    },
+    // session: (session) => {
+    //   // @ts-ignore
+    //   session.user.id = user.id;
+    //   // @ts-ignore
+    //   session.user.createdAt = user.createdAt;
+    //   return Promise.resolve(session);
+    // },
   },
   events: {
     async createUser(user: DatabaseUser) {

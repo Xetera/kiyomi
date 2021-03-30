@@ -1,6 +1,5 @@
 import React from "react";
 import { RiHammerLine } from "react-icons/ri";
-import Image from "next/image";
 import { Maybe, UserDataFragment } from "@/lib/__generated__/graphql";
 
 export function User({
@@ -14,7 +13,7 @@ export function User({
     <div className="flex flex-row align-top">
       <div style={{ maxHeight: "48px" }}>
         {user?.avatar && (
-          <Image
+          <img
             src={user.avatar}
             width="48px"
             height="48px"

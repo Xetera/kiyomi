@@ -1,12 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import Masonry from "react-masonry-component";
-import Image from "next/image";
-import Skeleton from "react-loading-skeleton";
 import { useBoolean, useWindowSize } from "react-use";
 import { ImageDataFragment } from "@/lib/__generated__/graphql";
+import dynamic from "next/dynamic";
 
 const THUMBNAIL_WIDTH = 300;
+
+const NextImage = dynamic(() => import("next/image"), { ssr: false });
 
 function LoadingImage({ image }) {
   const [loaded, setLoaded] = useBoolean(false);
@@ -15,7 +16,7 @@ function LoadingImage({ image }) {
   return (
     <Link href={`/image/${image.slug}`} key={image.slug}>
       <a>
-        <Image
+        <NextImage
           width={imageWidth}
           height={(imageWidth / image.width) * image.height}
           src={image.rawUrl}

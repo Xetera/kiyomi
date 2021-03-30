@@ -2,7 +2,6 @@ import { useSession } from "next-auth/client";
 import Link from "next/link";
 import React, { PropsWithChildren } from "react";
 import BetterLink from "./nextjs/link";
-import Image from "next/image";
 
 type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 type NavLinkProps = AType & {
@@ -70,7 +69,7 @@ export function Navbar() {
               <NavLink href="/profile">
                 <p className="text-trueGray-300 mr-3">{session.user.name}</p>
                 {session.user.image && (
-                  <Image
+                  <img
                     className="rounded-full m-0"
                     height="25px"
                     width="25px"

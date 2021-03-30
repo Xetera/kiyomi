@@ -6,8 +6,32 @@ import {
   OneImageQuery,
 } from "@/lib/__generated__/graphql";
 import React from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { maxPortraitHeight, PersonPortrait } from "./person-preview";
+import dynamic from "next/dynamic";
+
+const DragDropContext = dynamic(
+  () => {
+    const promise = import("react-beautiful-dnd").then(
+      (r) => r.DragDropContext
+    );
+    return promise;
+  },
+  { ssr: false }
+);
+const Droppable = dynamic(
+  () => {
+    const a = import("react-beautiful-dnd").then((r) => r.Droppable);
+    return a;
+  },
+  { ssr: false }
+);
+const Draggable = dynamic(
+  () => {
+    const a = import("react-beautiful-dnd").then((r) => r.Draggable);
+    return a;
+  },
+  { ssr: false }
+);
 
 export type ImageEditModalProps = {
   image: NonNullable<OneImageQuery["image"]>;

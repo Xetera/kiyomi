@@ -5,7 +5,6 @@ import { Tags } from "./tags";
 import { CascadeChildren } from "./animations/cascade-children";
 import { RiEdit2Line } from "react-icons/ri";
 import { format } from "date-fns";
-import Image from "next/image";
 import { User } from "./user";
 import { ImageContext } from "@/models/contexts";
 

@@ -1,6 +1,6 @@
 import { PrismaClient, UploadType, User as DatabaseUser } from "@prisma/client";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import { getSession, Session } from "next-auth/client";
+import { getSession } from "next-auth/client";
 import { prisma as db } from "@/lib/db";
 import { FormData, parseFiles } from "./file";
 import { User } from "next-auth";
