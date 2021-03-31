@@ -19,11 +19,18 @@ generates:
     plugins:
       - add:
           content: *comment
+      - add:
+          placement: append
+          content: "export { fetcher }"
       - typescript
       - typescript-operations
-      - typescript-react-apollo
+      - typescript-react-query
     config:
-      reactApolloVersion: 3
-      withComponent: false
-      withHOC: false
-      withHooks: true
+      fetcher:
+        endpoint: "`${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`"
+        # func: "./lib/data-fetching#useGraphQLFetch"
+        # isReactHook: true
+    # reactApolloVersion: 3
+    # withComponent: false
+    # withHOC: false
+    # withHooks: true

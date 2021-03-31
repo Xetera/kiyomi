@@ -6,22 +6,35 @@ import "../styles/globals.css";
 // import ReactTooltip from "react-tooltip";
 import { default as _default, alt, light } from "../colors";
 import NextHead from "next/head";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Hydrate } from "react-query/hydration";
+import React from "react";
 
 const App = ({ Component, pageProps }) => {
+  const queryClientRef = React.useRef<QueryClient>();
+  if (!queryClientRef.current) {
+    queryClientRef.current = new QueryClient();
+  }
+
   return (
-    <Provider session={pageProps.session}>
-      <NextHead>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </NextHead>
-      {/* <SkeletonTheme
+    <QueryClientProvider client={queryClientRef.current}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Provider session={pageProps.session}>
+          <NextHead>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            />
+          </NextHead>
+          {/* <SkeletonTheme
         color="rgba(34, 50, 64, 0.5)"
         highlightColor="rgba(34, 50, 64, 0.7)"
       > */}
-      <div className="min-h-screen flex flex-col">
-        <Component {...pageProps} />
-      </div>
-      {/* </SkeletonTheme> */}
-      {/* <ReactTooltip
+          <div className="min-h-screen flex flex-col">
+            <Component {...pageProps} />
+          </div>
+          {/* </SkeletonTheme> */}
+          {/* <ReactTooltip
         uuid="mytt"
         backgroundColor="#0c111f"
         effect="solid"
@@ -29,7 +42,9 @@ const App = ({ Component, pageProps }) => {
         borderColor={light}
         //border={true} borderColor="red"
       /> */}
-    </Provider>
+        </Provider>
+      </Hydrate>
+    </QueryClientProvider>
   );
 };
 

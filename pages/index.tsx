@@ -30,7 +30,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = React.useState(0);
   const [fetching, setFetching] = React.useState(false);
   const { y } = useScroll(pageRef);
-  console.log(y);
   // const {
   //   data,
   //   setSize,

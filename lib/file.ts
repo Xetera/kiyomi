@@ -26,8 +26,6 @@ export type FileDetails = {
 async function fileFromUrl(url: URL, fieldname: string): Promise<FileDetails> {
   const DEFAULT_MIMETYPE = "?/?";
   const res = await fetch(url.toString()).then();
-  console.log(res);
-  console.log(res.headers);
   const arrayBuffer = await res.arrayBuffer();
   return {
     encoding: "7bit",

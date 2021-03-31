@@ -1,3 +1,4 @@
+import { useMeQuery, UserDataFragment } from "@/lib/__generated__/graphql";
 import { useSession } from "next-auth/client";
 import Link from "next/link";
 import React, { PropsWithChildren } from "react";
@@ -41,8 +42,16 @@ function NavLink({
   );
 }
 
+export type NavbarProps = {
+  user?: UserDataFragment;
+};
+
 export function Navbar() {
-  const [session, signedIn] = useSession();
+  const { data } = useMeQuery();
+  if (!data) {
+    return null;
+  }
+  const user = data.me;
   return (
     <nav
       className="bg-theme items-center mx-auto border-b-2 border-theme-subtle w-full"
@@ -54,26 +63,26 @@ export function Navbar() {
         <div>
           <ul className="grid gap-12 grid-flow-col max-w-6xl ">
             <NavLink href={"/"}>Home</NavLink>
-            <NavLink hardLink href="/sharex" target="_blank">
+            <NavLink hardLink href="/api/sharex" target="_blank">
               Sharex
             </NavLink>
             <NavLink hardLink href="/api/graphql">
               API
             </NavLink>
-            {signedIn && <NavLink href={"/profile"}>Profile</NavLink>}
+            {user && <NavLink href={"/profile"}>Profile</NavLink>}
           </ul>
         </div>
         <div>
           <ul>
-            {session && (
+            {user && (
               <NavLink href="/profile">
-                <p className="text-trueGray-300 mr-3">{session.user.name}</p>
-                {session.user.image && (
+                <p className="text-trueGray-300 mr-3">{user.name}</p>
+                {user.avatar && (
                   <img
                     className="rounded-full m-0"
                     height="25px"
                     width="25px"
-                    src={session.user.image}
+                    src={user.avatar}
                   />
                 )}
               </NavLink>

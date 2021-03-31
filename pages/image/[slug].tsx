@@ -9,18 +9,29 @@ import { RiSpyLine } from "react-icons/ri";
 
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import { MimeType, useOneImageQuery } from "@/lib/__generated__/graphql";
+import {
+  fetcher,
+  MimeType,
+  OneImageDocument,
+  useOneImageQuery,
+} from "@/lib/__generated__/graphql";
 import withApollo from "@/lib/apollo";
 import { ImageEditModal } from "@/components/image-edit-modal";
+import { QueryClient } from "react-query";
+import { GetServerSideProps } from "next";
+import { dehydrate } from "react-query/hydration";
+import { prefetchQuery } from "@/lib/shared";
+import { prisma } from "@/lib/db";
 
 const Image = () => {
   const [isEditOpen, setEditOpen] = React.useState(false);
   const router = useRouter();
   const slug = router.query.slug as string | undefined;
   const [face, setFace] = React.useState("");
-  const { data, loading } = useOneImageQuery({
-    variables: { slug: slug as string },
+  const { data, isFetching } = useOneImageQuery({
+    slug: slug as string,
   });
+
   React.useEffect(() => {
     const { classList } = document.querySelector("body")!;
     if (isEditOpen) {
@@ -29,11 +40,10 @@ const Image = () => {
       classList.remove("overflow-hidden");
     }
   }, [isEditOpen]);
-  console.log({ data, loading });
   if (!data) {
     return null;
   }
-  if (loading || !data) {
+  if (!data) {
     return null;
   }
   const { image } = data;
@@ -108,4 +118,24 @@ const Image = () => {
   );
 };
 
-export default withApollo({ ssr: true })(Image);
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const slug = ctx.params!.slug as string;
+  prisma.image.update({
+    where: { slug },
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+  });
+  const dehydratedState = await prefetchQuery("OneImage", {
+    slug,
+  });
+  return {
+    props: {
+      dehydratedState,
+    },
+  };
+};
+
+export default Image;

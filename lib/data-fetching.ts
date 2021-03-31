@@ -1,8 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { PromiseReturnType } from "./shared";
+import { fetcher, PromiseReturnType } from "./shared";
 import { publicImageFields } from "./transformer";
 import { getSdk } from "@/lib/__generated__/request";
 import { GraphQLClient } from "graphql-request";
+import React from "react";
+import { dehydrate } from "react-query/hydration";
 
 export const client = new GraphQLClient(
   `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`

@@ -92,8 +92,6 @@ export function withUser<T extends BaseContext>(
       return error();
     }
 
-    console.log(session?.user);
-
     return next(session?.user, { contextType: "WEBSITE" });
   };
 }
