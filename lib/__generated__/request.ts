@@ -606,10 +606,7 @@ export type FaceDataFragment = (
 export type ImageDataFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette'>
-  & { uploadedBy?: Maybe<(
-    { __typename?: 'User' }
-    & UserDataFragment
-  )>, tags: Array<(
+  & { tags: Array<(
     { __typename?: 'Tag' }
     & Pick<Tag, 'name'>
   )> }
@@ -678,13 +675,6 @@ export const FaceDataFragmentDoc = gql`
   score
 }
     `;
-export const UserDataFragmentDoc = gql`
-    fragment UserData on User {
-  id
-  name
-  avatar
-}
-    `;
 export const ImageDataFragmentDoc = gql`
     fragment ImageData on Image {
   id
@@ -701,14 +691,18 @@ export const ImageDataFragmentDoc = gql`
   bytes
   mimetype
   palette
-  uploadedBy {
-    ...UserData
-  }
   tags {
     name
   }
 }
-    ${UserDataFragmentDoc}`;
+    `;
+export const UserDataFragmentDoc = gql`
+    fragment UserData on User {
+  id
+  name
+  avatar
+}
+    `;
 export const MeDocument = gql`
     query Me {
   me {

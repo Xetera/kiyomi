@@ -1,6 +1,6 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import { useSession } from "next-auth/client";
+import { getSession, useSession } from "next-auth/client";
 import { Gallery } from "../components/gallery";
 import { MyDropzone } from "@/components/upload";
 import { fetcher, IMAGES_PER_FETCH, useGet } from "@/lib/shared";
@@ -107,9 +107,11 @@ export default function Home() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // const images = JSON.parse(JSON.stringify(await fetcher("/api/image")));
   return {
-    props: {},
+    props: {
+      session: await getSession(ctx),
+    },
   };
 };

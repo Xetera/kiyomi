@@ -7,18 +7,16 @@ import useSWR from "swr";
 import { useMeQuery } from "@/lib/__generated__/graphql";
 import withApollo from "@/lib/apollo";
 import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
+import { prefetchQuery } from "@/lib/client-helpers";
 
 function Image() {
-  const [session] = useSession();
   const router = useRouter();
   const { data } = useMeQuery();
-  console.log(data);
-  if (!session || !data?.me) {
+  if (!data?.me) {
     return <Navbar />;
   }
-  // const { data } = useSWR<ProfileResponse>(profileUrl, {
-  //   initialData: props,
-  // });
+  console.log({ data });
   return (
     <div>
       <Navbar />
@@ -34,4 +32,11 @@ function Image() {
   );
 }
 
-export default withApollo({ ssr: true })(Image);
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const dehydratedState = await prefetchQuery("MeQuery", {});
+  return {
+    props: { dehydratedState },
+  };
+};
+
+export default Image;

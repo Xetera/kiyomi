@@ -1,4 +1,4 @@
-import { Provider } from "next-auth/client";
+import { getSession, Provider } from "next-auth/client";
 // Import our CSS
 import "../styles/tailwind.css";
 import "../styles/globals.css";
@@ -9,8 +9,13 @@ import NextHead from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import React from "react";
+import { GetServerSideProps } from "next";
+import { useMeQuery } from "@/lib/__generated__/graphql";
+import { prefetchQuery } from "@/lib/client-helpers";
+import { AppProps } from "next/dist/next-server/lib/router/router";
+import App from "next/app";
 
-const App = ({ Component, pageProps }) => {
+const CustomApp = ({ Component, pageProps }: AppProps) => {
   const queryClientRef = React.useRef<QueryClient>();
   if (!queryClientRef.current) {
     queryClientRef.current = new QueryClient();
@@ -47,5 +52,4 @@ const App = ({ Component, pageProps }) => {
     </QueryClientProvider>
   );
 };
-
-export default App;
+export default CustomApp;

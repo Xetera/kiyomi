@@ -632,6 +632,9 @@ export type OneImageQuery = (
         { __typename?: 'Face' }
         & FaceDataFragment
       )> }
+    )>, uploadedBy?: Maybe<(
+      { __typename?: 'User' }
+      & UserDataFragment
     )> }
     & ImageDataFragment
   )> }
@@ -654,10 +657,7 @@ export type FaceDataFragment = (
 export type ImageDataFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette'>
-  & { uploadedBy?: Maybe<(
-    { __typename?: 'User' }
-    & UserDataFragment
-  )>, tags: Array<(
+  & { tags: Array<(
     { __typename?: 'Tag' }
     & Pick<Tag, 'name'>
   )> }
@@ -726,13 +726,6 @@ export const FaceDataFragmentDoc = `
   score
 }
     `;
-export const UserDataFragmentDoc = `
-    fragment UserData on User {
-  id
-  name
-  avatar
-}
-    `;
 export const ImageDataFragmentDoc = `
     fragment ImageData on Image {
   id
@@ -749,14 +742,18 @@ export const ImageDataFragmentDoc = `
   bytes
   mimetype
   palette
-  uploadedBy {
-    ...UserData
-  }
   tags {
     name
   }
 }
-    ${UserDataFragmentDoc}`;
+    `;
+export const UserDataFragmentDoc = `
+    fragment UserData on User {
+  id
+  name
+  avatar
+}
+    `;
 export const OneImageDocument = `
     query OneImage($slug: String!) {
   image(slug: $slug) {
@@ -776,11 +773,15 @@ export const OneImageDocument = `
         ...FaceData
       }
     }
+    uploadedBy {
+      ...UserData
+    }
     ...ImageData
   }
 }
     ${FaceDataFragmentDoc}
 ${AppearanceDataFragmentDoc}
+${UserDataFragmentDoc}
 ${ImageDataFragmentDoc}`;
 export const useOneImageQuery = <
       TData = OneImageQuery,

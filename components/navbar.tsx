@@ -47,11 +47,12 @@ export type NavbarProps = {
 };
 
 export function Navbar() {
-  const { data } = useMeQuery();
-  if (!data) {
+  const [session] = useSession();
+  console.log({ session });
+  if (!session) {
     return null;
   }
-  const user = data.me;
+  const { user } = session;
   return (
     <nav
       className="bg-theme items-center mx-auto border-b-2 border-theme-subtle w-full"
@@ -77,12 +78,12 @@ export function Navbar() {
             {user && (
               <NavLink href="/profile">
                 <p className="text-trueGray-300 mr-3">{user.name}</p>
-                {user.avatar && (
+                {user.image && (
                   <img
                     className="rounded-full m-0"
                     height="25px"
                     width="25px"
-                    src={user.avatar}
+                    src={user.image}
                   />
                 )}
               </NavLink>

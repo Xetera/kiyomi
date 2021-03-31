@@ -24,13 +24,16 @@ const options: NextAuthOptions = {
   }),
   database: process.env.DATABASE_URL,
   callbacks: {
-    // session: (session) => {
-    //   // @ts-ignore
-    //   session.user.id = user.id;
-    //   // @ts-ignore
-    //   session.user.createdAt = user.createdAt;
-    //   return Promise.resolve(session);
-    // },
+    session: (session, user: DatabaseUser) => {
+      // @ts-ignore
+      session.user.id = user.id;
+      // @ts-ignore
+      session.user.createdAt = user.createdAt;
+      return Promise.resolve({
+        ...session,
+        id: user.id,
+      });
+    },
   },
   events: {
     async createUser(user: DatabaseUser) {
