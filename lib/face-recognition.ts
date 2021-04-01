@@ -14,7 +14,7 @@ import { PrismaClient } from "@prisma/client";
 
 const { Canvas, Image, ImageData } = canvas;
 // @ts-ignore
-faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
+// faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
 async function checkWeights() {
   // @ts-ignore
