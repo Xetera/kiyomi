@@ -11,12 +11,11 @@ import { GetServerSideProps } from "next";
 import { prefetchQuery } from "@/lib/client-helpers";
 
 function Image() {
-  const router = useRouter();
   const { data } = useMeQuery();
   if (!data?.me) {
     return <Navbar />;
   }
-  console.log({ data });
+
   return (
     <div>
       <Navbar />
