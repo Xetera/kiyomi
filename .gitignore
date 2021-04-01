@@ -35,3 +35,5 @@ yarn-error.log*
 .vercel
 
 ansible/.env
+test.sh
+dump.sql

@@ -50,15 +50,16 @@ export default handle(
             ? perceptualHash(file.buffer, mime)
             : Promise.resolve(),
           sha256Hash(file.buffer),
-          mime !== false && canDetectFaces(metadata.type!)
-            ? detectFaces(file.buffer, {
-                width: metadata.width!,
-                height: metadata.height!,
-              }).catch((err) => {
-                console.log("something went wrong with detecting faces", err);
-                return [] as FaceDetect[];
-              })
-            : Promise.resolve([] as FaceDetect[]),
+          [] as FaceDetect[],
+          // mime !== false && canDetectFaces(metadata.type!)
+          //   ? detectFaces(file.buffer, {
+          //       width: metadata.width!,
+          //       height: metadata.height!,
+          //     }).catch((err) => {
+          //       console.log("something went wrong with detecting faces", err);
+          //       return [] as FaceDetect[];
+          //     })
+          //   : Promise.resolve([] as FaceDetect[]),
           mime !== false
             ? dominantColors(file.buffer, mime).catch((err) => {
                 console.log(err);

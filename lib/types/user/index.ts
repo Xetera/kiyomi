@@ -14,6 +14,7 @@ export const User = objectType({
         filtering: true,
         async resolve(root, { where, ...args }, ctx, info, resolver) {
           const MAX_IMAGES_PAGE = 100;
+          console.log({ ctx });
           // users can only query their own images
           const canView = ctx.user ? ctx.user.id === root.id : false;
           return resolver(
@@ -50,8 +51,8 @@ export const Query = queryField((t) => {
   });
   t.field("me", {
     type: "User",
-    resolve(_root, args, { prisma, user }) {
-      if (!user) {
+    resolve(_root, _args, { prisma, user }) {
+      if (!user?.id) {
         return null;
       }
       return prisma.user.findUnique({ where: { id: user.id } });

@@ -1,5 +1,7 @@
 import { User } from "next-auth";
 import useSWR, { ConfigInterface } from "swr";
+import { QueryClient } from "react-query";
+import { dehydrate } from "react-query/hydration";
 
 export type PromiseReturnType<
   T extends (...args) => any

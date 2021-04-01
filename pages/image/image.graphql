@@ -16,6 +16,9 @@ query OneImage($slug: String!) {
         ...FaceData
       }
     }
+    uploadedBy {
+      ...UserData
+    }
     ...ImageData
   }
 }

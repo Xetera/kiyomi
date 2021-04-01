@@ -16,6 +16,6 @@ function makeApollo(ctx?: NextPageContext) {
   });
 }
 
-const withApollo = nextApollo(makeApollo);
+// const withApollo = ;
 
-export default withApollo;
+export default nextApollo(makeApollo);

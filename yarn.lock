@@ -834,6 +834,17 @@
     change-case-all "1.0.12"
     tslib "~2.1.0"
 
+"@graphql-codegen/typescript-react-query@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript-react-query/-/typescript-react-query-1.2.4.tgz#f38fffcf1f0e943a47f131977899d30970f7e29d"
+  integrity sha512-pRv5jZnNXMVvlJoWr0ugfrAe8pOfqxAE+aulvsVZQ8e8IMN0/3EQtz5BMh0OrmivZGUhLTgLisY44aW5JXeqcA==
+  dependencies:
+    "@graphql-codegen/plugin-helpers" "^1.18.4"
+    "@graphql-codegen/visitor-plugin-common" "^1.19.1"
+    auto-bind "~4.0.0"
+    change-case-all "1.0.12"
+    tslib "~2.1.0"
+
 "@graphql-codegen/typescript@^1.21.1":
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript/-/typescript-1.21.1.tgz#9bce3254b8ef30a6bf64e57ba3991f9be7a19b53"

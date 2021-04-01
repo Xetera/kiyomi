@@ -13,9 +13,6 @@ fragment ImageData on Image {
   bytes
   mimetype
   palette
-  uploadedBy {
-    ...UserData
-  }
   tags {
     name
   }
