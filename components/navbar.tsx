@@ -48,11 +48,7 @@ export type NavbarProps = {
 
 export function Navbar() {
   const [session] = useSession();
-  console.log({ session });
-  if (!session) {
-    return null;
-  }
-  const { user } = session;
+
   return (
     <nav
       className="bg-theme items-center mx-auto border-b-2 border-theme-subtle w-full"
@@ -70,20 +66,20 @@ export function Navbar() {
             <NavLink hardLink href="/api/graphql">
               API
             </NavLink>
-            {user && <NavLink href={"/profile"}>Profile</NavLink>}
+            {session?.user && <NavLink href={"/profile"}>Profile</NavLink>}
           </ul>
         </div>
         <div>
           <ul>
-            {user && (
+            {session?.user && (
               <NavLink href="/profile">
-                <p className="text-trueGray-300 mr-3">{user.name}</p>
-                {user.image && (
+                <p className="text-trueGray-300 mr-3">{session.user.name}</p>
+                {session.user.image && (
                   <img
                     className="rounded-full m-0"
                     height="25px"
                     width="25px"
-                    src={user.image}
+                    src={session.user.image}
                   />
                 )}
               </NavLink>
