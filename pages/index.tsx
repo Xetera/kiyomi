@@ -1,13 +1,7 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import { getSession, useSession } from "next-auth/client";
-import { Gallery } from "../components/gallery";
-import { MyDropzone } from "@/components/upload";
-import { fetcher, IMAGES_PER_FETCH, useGet } from "@/lib/shared";
-import { useSWRInfinite } from "swr";
+import { getSession } from "next-auth/client";
 import { Navbar } from "@/components/navbar";
-import { FrontPage } from "@/components/front-page";
-import { Waypoint } from "react-waypoint";
 import { useScroll } from "react-use";
 
 function getKey(index: number, prevData: any) {
