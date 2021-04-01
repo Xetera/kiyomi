@@ -169,7 +169,7 @@ export default function ImageDisplay() {
 
   return (
     <div
-      className="flex flex-1 flex-col lg:min-w-image md:min-w-sm"
+      className="flex flex-1 flex-col xl:min-w-image lg:min-w-sm"
       style={{
         maxWidth: MAX_WIDTH,
         flexBasis: MAX_WIDTH,
