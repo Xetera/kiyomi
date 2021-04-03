@@ -1,6 +1,7 @@
 import { handle, withFileUpload, withUser } from "@/lib/middleware";
 import {
   canPerceptualHash,
+  convertToWebp,
   dominantColors,
   mimetypeMappings,
   perceptualHash,
@@ -36,17 +37,20 @@ export default handle(
         if (!file) {
           return res.status(400).json({ error: "'file' missing" });
         }
-        const metadata = sizeOf(file.buffer);
+        const webp = await convertToWebp(file.buffer);
+        const { format, height, width } = webp.info;
+        const buffer = webp.data;
+        // const metadata = sizeOf(webp.data);
         const slug = idgen.nanoid(16);
-        const slugWithExtension = `${slug}.${metadata.type}`;
-        const mime = mimeType.lookup(metadata.type!);
+        const slugWithExtension = `${slug}.${format}`;
+        const mime = mimeType.lookup(format);
         const [pHash, hash, palette, uploadResult] = await Promise.all([
-          mime !== false && canPerceptualHash(metadata.type!)
-            ? perceptualHash(file.buffer, mime)
+          mime !== false && canPerceptualHash(format)
+            ? perceptualHash(buffer, mime)
             : Promise.resolve(),
-          sha256Hash(file.buffer),
+          sha256Hash(buffer),
           mime !== false
-            ? dominantColors(file.buffer, mime).catch((err) => {
+            ? dominantColors(buffer, mime).catch((err) => {
                 console.log(err);
               })
             : [],
@@ -61,13 +65,13 @@ export default handle(
         if (uploadResult.$response.error) {
           return console.log(uploadResult.$response.error);
         }
-        const databaseType = mimetypeMappings[metadata.type!];
+        const databaseType = mimetypeMappings[format];
         if (!databaseType) {
           return res
             .status(400)
-            .json({ error: `unsupported type '${metadata.type}'` });
+            .json({ error: `unsupported type '${format}'` });
         }
-        if (!metadata.width || !metadata.height) {
+        if (!width || !height) {
           return res
             .status(400)
             .json({ error: `Could not determine the dimensions of the image` });
@@ -80,8 +84,8 @@ export default handle(
           data: {
             ireneBotId: ireneBotImageId ? Number(ireneBotImageId) : undefined,
             fileName: file.originalname,
-            width: metadata.width,
-            height: metadata.height,
+            width,
+            height,
             uploadType: contextType,
             mimetype: databaseType,
             pHash: pHash as string | undefined,

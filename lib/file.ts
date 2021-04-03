@@ -6,6 +6,7 @@ import { createHash } from "crypto";
 import { MimeType } from "@prisma/client";
 import getColors from "get-image-colors";
 import mimetypes from "mime-types";
+import sharp from "sharp";
 
 // const thief = new Thief();
 
@@ -118,4 +119,12 @@ export async function dominantColors(
 ): Promise<number[]> {
   const colors = await getColors(data, { type, count: 5 });
   return colors.map((color: any) => color.num());
+}
+
+export async function convertToWebp(
+  buffer: Buffer
+): Promise<{ data: Buffer; info: sharp.OutputInfo }> {
+  return sharp(buffer)
+    .webp({ nearLossless: true })
+    .toBuffer({ resolveWithObject: true });
 }
