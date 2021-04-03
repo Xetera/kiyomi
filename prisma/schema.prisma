@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   // required by alpine linux
   binaryTargets = ["native", "linux-musl"]
 }
@@ -20,7 +20,7 @@ model Account {
   accessToken        String?   @map("access_token")
   accessTokenExpires DateTime? @map("access_token_expires")
   createdAt          DateTime  @default(now()) @map("created_at")
-  updatedAt          DateTime  @default(now()) @map("updated_at")
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at")
 
   @@index([providerAccountId], name: "provider_account_id")
   @@index([providerId], name: "provider_id")
@@ -35,7 +35,7 @@ model Tag {
   imageId   Int       @map("image_id")
   addedById Int?      @map("added_by_id")
   createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @map("updated_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
   addedBy   User?     @relation(fields: [addedById], references: [id])
   image     Image     @relation(fields: [imageId], references: [id])
 
@@ -45,12 +45,12 @@ model Tag {
 }
 
 model Alias {
-  id        Int      @id @default(autoincrement())
-  name      String
-  person    Person   @relation(fields: [personId], references: [id])
-  personId  Int      @map(name: "person_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  name       String
+  person     Person   @relation(fields: [personId], references: [id])
+  personId   Int      @map(name: "person_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("aliases")
 }
@@ -62,9 +62,9 @@ model Person {
   aliases     Alias[]
   appearsIn   Face[]   @relation("face_person")
   createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @map("updated_at")
-
-  Appearance Appearance[]
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  ireneBotId Int?     @map("irene_bot_id") @unique
+  appearances Appearance[]
   @@index([name], name: "person.name.index")
   @@map("persons")
 }
@@ -76,42 +76,41 @@ model Appearance {
   // this is an array for the VERY rare cases where
   // a person might have more than one face
   // in a picture like in a collage
-  faces     Face[] @relation("appearance_faces")
+  faces     Face[] @relation("apperance_face")
   addedBy   User   @relation(fields: [addedById], references: [id])
   addedById Int    @map(name: "added_by_id")
   image     Image  @relation("image_appearances", fields: [imageId], references: [id])
   imageId   Int    @map(name: "image_id")
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  Face Face[]
-  @@unique([personId, imageId], name: "unique_image_person")
+  @@unique([personId, imageId], name: "appearance")
   @@map("appearances")
 }
 
 model Face {
-  id           Int      @id @default(autoincrement())
+  id           Int                 @id @default(autoincrement())
   x            Float
   y            Float
   height       Float
   width        Float
   // This type is currently not supported.
-  descriptor Unsupported("cube")
-  appearanceId Int?     @map("appearance_id")
-  addedBy      User?    @relation(fields: [addedById], references:[id])
-  addedById    Int?     @map(name: "added_by_id")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @map("updated_at")
+  descriptor   Unsupported("cube")
+  appearanceId Int?                @map("appearance_id")
+  addedBy      User?               @relation(fields: [addedById], references: [id])
+  addedById    Int?                @map(name: "added_by_id")
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @default(now()) @updatedAt @map("updated_at")
 
-  score      Float       @default(0)
-  appearance Appearance? @relation("appearance_faces", fields: [appearanceId], references: [id])
-  image      Image       @relation(fields: [imageId], references: [id])
-  imageId    Int         @map(name: "image_id")
+  score   Float      @default(0)
+  image   Image      @relation(fields: [imageId], references: [id])
+  imageId Int        @map(name: "image_id")
+  source  FaceSource @default(Manual)
 
   person     Person?     @relation("face_person", fields: [personId], references: [id])
   personId   Int?        @map(name: "person_id")
-  Appearance Appearance? @relation(fields: [appearanceId], references: [id])
+  appearance Appearance? @relation("apperance_face", fields: [appearanceId], references: [id])
   @@index([appearanceId], name: "face.appearanceId.index")
   @@map("faces")
 }
@@ -123,9 +122,23 @@ model Session {
   sessionToken String   @unique @map("session_token")
   accessToken  String   @unique @map("access_token")
   createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @map("updated_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("sessions")
+}
+
+/// A single role that a user has
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      String   @map("role_name")
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([name, userId], name: "userRole")
+  @@index([userId], name: "roles.user")
+  @@map("roles")
 }
 
 /// A user
@@ -137,13 +150,14 @@ model User {
   image         String?
   token         String?   @unique
   createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @map("updated_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
   images        Image[]
   cratedTags    Tag[]
+  roles         Role[]
   bot           Boolean   @default(false)
 
-  Appearance Appearance[]
-  Face       Face[]
+  taggedAppearances Appearance[]
+  markedFaces       Face[]
   @@index([token], name: "user.token.index")
   @@map("users")
 }
@@ -154,37 +168,39 @@ model VerificationRequest {
   token      String   @unique
   expires    DateTime
   createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @default(now()) @map("updated_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("verification_requests")
 }
 
 /// An image uploaded by a user or bot
 model Image {
-  slug        String       @unique
-  width       Int?
-  height      Int?
-  fileName    String?      @map("file_name")
-  uploadType  UploadType   @map("upload_type")
-  mimetype    MimeType
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @default(now()) @map("updated_at")
-  userId      Int?         @map("user_id")
-  id          Int          @id @default(autoincrement())
-  hash        String
-  pHash       String?      @map("p_hash")
-  public      Boolean      @default(false)
-  // The decimal representation of the primary colors, sorted by commonality
-  palette     Int[]
-  caption     String?
-  views       Int          @default(0)
-  isNsfw      Boolean      @default(false) @map("is_nsfw")
-  source      String?
-  bytes       Int          @default(0)
-  user        User?        @relation(fields: [userId], references: [id])
-  appearances Appearance[] @relation("image_appearances")
-  tags        Tag[]
-  faces       Face[]
+  slug         String       @unique
+  width        Int
+  height       Int
+  fileName     String?      @map("file_name")
+  uploadType   UploadType   @map("upload_type")
+  mimetype     MimeType
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @default(now()) @updatedAt @map("updated_at")
+  userId       Int?         @map("user_id")
+  id           Int          @id @default(autoincrement())
+  hash         String
+  pHash        String?      @map("p_hash")
+  public       Boolean      @default(false)
+  // The decimal representation of the primary colors, sorted by appearance frequency
+  palette      Int[]
+  caption      String?
+  views        Int          @default(0)
+  isNsfw       Boolean      @default(false) @map("is_nsfw")
+  source       String?
+  bytes        Int          @default(0)
+  user         User?        @relation(fields: [userId], references: [id])
+  appearances  Appearance[] @relation("image_appearances")
+  faceScanDate DateTime?    @map("face_scan_date")
+  ireneBotId Int? @unique
+  tags         Tag[]
+  faces        Face[]
 
   @@index([slug], name: "images.slug_index")
   @@map("images")
@@ -197,6 +213,11 @@ enum UploadType {
 
 enum TagSource {
   USER
+}
+
+enum FaceSource {
+  Scan
+  Manual
 }
 
 enum MimeType {

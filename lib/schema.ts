@@ -1,4 +1,4 @@
-import { makeSchema, queryComplexityPlugin } from "nexus";
+import { fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from "nexus";
 import { nexusPrisma } from "nexus-plugin-prisma";
 import path from "path";
 import * as types from "./types";
@@ -9,6 +9,7 @@ export const schema = makeSchema({
       experimentalCRUD: true,
       paginationStrategy: "prisma",
     }),
+    fieldAuthorizePlugin(),
     queryComplexityPlugin(),
   ],
   outputs: {

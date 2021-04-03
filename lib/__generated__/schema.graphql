@@ -29,20 +29,19 @@ type Appearance {
   updatedAt: DateTime!
 }
 
+input AppearanceAppearanceCompoundUniqueInput {
+  imageId: Int!
+  personId: Int!
+}
+
 input AppearanceListRelationFilter {
   every: AppearanceWhereInput
   none: AppearanceWhereInput
   some: AppearanceWhereInput
 }
 
-input AppearanceUnique_image_personCompoundUniqueInput {
-  imageId: Int!
-  personId: Int!
-}
-
 input AppearanceWhereInput {
   AND: [AppearanceWhereInput!]
-  Face: FaceListRelationFilter
   NOT: [AppearanceWhereInput!]
   OR: [AppearanceWhereInput!]
   addedBy: UserWhereInput
@@ -58,8 +57,8 @@ input AppearanceWhereInput {
 }
 
 input AppearanceWhereUniqueInput {
+  appearance: AppearanceAppearanceCompoundUniqueInput
   id: Int
-  unique_image_person: AppearanceUnique_image_personCompoundUniqueInput
 }
 
 input BoolFilter {
@@ -89,6 +88,13 @@ input DateTimeNullableFilter {
   lte: DateTime
   not: NestedDateTimeNullableFilter
   notIn: [DateTime!]
+}
+
+input EnumFaceSourceFilter {
+  equals: FaceSource
+  in: [FaceSource!]
+  not: NestedEnumFaceSourceFilter
+  notIn: [FaceSource!]
 }
 
 input EnumMimeTypeFilter {
@@ -126,15 +132,28 @@ type Face {
   y: Float!
 }
 
+input FaceInput {
+  certainty: Float!
+  descriptor: [Float!]!
+  height: Float!
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
 input FaceListRelationFilter {
   every: FaceWhereInput
   none: FaceWhereInput
   some: FaceWhereInput
 }
 
+enum FaceSource {
+  Manual
+  Scan
+}
+
 input FaceWhereInput {
   AND: [FaceWhereInput!]
-  Appearance: AppearanceWhereInput
   NOT: [FaceWhereInput!]
   OR: [FaceWhereInput!]
   addedBy: UserWhereInput
@@ -149,6 +168,7 @@ input FaceWhereInput {
   person: PersonWhereInput
   personId: IntNullableFilter
   score: FloatFilter
+  source: EnumFaceSourceFilter
   updatedAt: DateTimeFilter
   width: FloatFilter
   x: FloatFilter
@@ -175,6 +195,7 @@ type Image {
   bytes: Int!
   caption: String
   createdAt: DateTime!
+  faceScanDate: DateTime
 
   """The name the image file was uploaded with."""
   fileName: String
@@ -186,15 +207,17 @@ type Image {
   hash: String!
 
   """Height of the image in pixels."""
-  height: Int
+  height: Int!
   id: Int!
+
+  """( ͡° ͜ʖ ͡°)"""
   isNsfw: Boolean!
 
   """The IANA media type of the image."""
   mimetype: MimeType!
 
   """
-  Block hash of the image, useful for doing reverse search with hamming distance.
+  Block hash of the image, useful for doing reverse search using hamming distance.
   """
   pHash: String
 
@@ -224,7 +247,7 @@ type Image {
   views: Int!
 
   """Width of the image in pixels."""
-  width: Int
+  width: Int!
 }
 
 input ImageListRelationFilter {
@@ -241,10 +264,11 @@ input ImageWhereInput {
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
+  faceScanDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
   fileName: StringNullableFilter
   hash: StringFilter
-  height: IntNullableFilter
+  height: IntFilter
   id: IntFilter
   isNsfw: BoolFilter
   mimetype: EnumMimeTypeFilter
@@ -259,7 +283,7 @@ input ImageWhereInput {
   user: UserWhereInput
   userId: IntNullableFilter
   views: IntFilter
-  width: IntNullableFilter
+  width: IntFilter
 }
 
 input ImageWhereUniqueInput {
@@ -308,6 +332,14 @@ enum MimeType {
   WEBP
 }
 
+type Mutation {
+  """Image face recognition update. Only available to bot accounts"""
+  markFaces(faces: [FaceInput!]!, ireneBotId: Int, personName: String, replacePreviousScan: Boolean, slug: String!): Image
+
+  """Image face recognition update. Only available to bot accounts"""
+  test(slug: String!): Image
+}
+
 input NestedBoolFilter {
   equals: Boolean
   not: NestedBoolFilter
@@ -333,6 +365,13 @@ input NestedDateTimeNullableFilter {
   lte: DateTime
   not: NestedDateTimeNullableFilter
   notIn: [DateTime!]
+}
+
+input NestedEnumFaceSourceFilter {
+  equals: FaceSource
+  in: [FaceSource!]
+  not: NestedEnumFaceSourceFilter
+  notIn: [FaceSource!]
 }
 
 input NestedEnumMimeTypeFilter {
@@ -426,14 +465,15 @@ type Person {
 
 input PersonWhereInput {
   AND: [PersonWhereInput!]
-  Appearance: AppearanceListRelationFilter
   NOT: [PersonWhereInput!]
   OR: [PersonWhereInput!]
   aliases: AliasListRelationFilter
+  appearances: AppearanceListRelationFilter
   appearsIn: FaceListRelationFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   id: IntFilter
+  ireneBotId: IntNullableFilter
   name: StringFilter
   updatedAt: DateTimeFilter
 }
@@ -447,6 +487,39 @@ type Query {
 enum QueryMode {
   default
   insensitive
+}
+
+type Role {
+  createdAt: DateTime!
+  name: String!
+}
+
+input RoleListRelationFilter {
+  every: RoleWhereInput
+  none: RoleWhereInput
+  some: RoleWhereInput
+}
+
+input RoleUserRoleCompoundUniqueInput {
+  name: String!
+  userId: Int!
+}
+
+input RoleWhereInput {
+  AND: [RoleWhereInput!]
+  NOT: [RoleWhereInput!]
+  OR: [RoleWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  name: StringFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntFilter
+}
+
+input RoleWhereUniqueInput {
+  id: Int
+  userRole: RoleUserRoleCompoundUniqueInput
 }
 
 input StringFilter {
@@ -525,12 +598,11 @@ type User {
   id: Int!
   images(cursor: ImageWhereUniqueInput, skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
+  roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  Appearance: AppearanceListRelationFilter
-  Face: FaceListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   bot: BoolFilter
@@ -541,7 +613,10 @@ input UserWhereInput {
   id: IntFilter
   image: StringNullableFilter
   images: ImageListRelationFilter
+  markedFaces: FaceListRelationFilter
   name: StringNullableFilter
+  roles: RoleListRelationFilter
+  taggedAppearances: AppearanceListRelationFilter
   token: StringNullableFilter
   updatedAt: DateTimeFilter
 }

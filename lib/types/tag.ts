@@ -17,7 +17,3 @@ export const User = objectType({
     t.model.createdAt();
   },
 });
-
-// export const TagSource = enumType({
-//   name: "TagSource",
-// });

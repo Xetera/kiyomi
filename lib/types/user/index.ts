@@ -6,6 +6,7 @@ export const User = objectType({
     t.model
       .id()
       .name()
+      .roles()
       .image({
         alias: "avatar",
       })

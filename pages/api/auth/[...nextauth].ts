@@ -5,6 +5,7 @@ import Adapters from "next-auth/adapters";
 import { prisma } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { generateUserToken } from "@/lib/auth";
+import { Role } from "@/lib/permissions";
 
 const options: NextAuthOptions = {
   providers: [
@@ -44,7 +45,14 @@ const options: NextAuthOptions = {
       const token = generateUserToken();
       const _updatedUser = await prisma.user.update({
         where: { id: user.id },
-        data: { token },
+        data: {
+          token,
+          roles: {
+            create: {
+              name: Role.User,
+            },
+          },
+        },
       });
       console.log(`Created new token for user ${user.name}`);
     },

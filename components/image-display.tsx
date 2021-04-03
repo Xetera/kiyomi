@@ -4,19 +4,13 @@ import { FaceContext, ImageContext } from "@/models/contexts";
 import { CascadeChildren } from "./animations/cascade-children";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToggle } from "react-use";
-import { FaExpand, FaCompress, FaUserSecret } from "react-icons/fa";
-import { RiEdit2Line, RiSpyLine } from "react-icons/ri";
-import Skeleton from "react-loading-skeleton";
+import { FaExpand, FaCompress } from "react-icons/fa";
 import { fetcher } from "@/lib/shared";
 import useSWR from "swr";
-// import type { ImageResponse } from "@/pages/api/image/[slug]";
-import ReactModal from "react-modal";
-import { PredictionResponse } from "@/pages/api/image/face/[slug]";
 import {
   AppearanceDataFragment,
   FaceDataFragment,
   ImageDataFragment,
-  MimeType,
 } from "@/lib/__generated__/graphql";
 import Hr from "./hr";
 

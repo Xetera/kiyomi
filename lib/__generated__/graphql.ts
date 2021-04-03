@@ -69,20 +69,19 @@ export type AppearanceFacesArgs = {
   take?: Maybe<Scalars['Int']>;
 };
 
+export type AppearanceAppearanceCompoundUniqueInput = {
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+};
+
 export type AppearanceListRelationFilter = {
   every?: Maybe<AppearanceWhereInput>;
   none?: Maybe<AppearanceWhereInput>;
   some?: Maybe<AppearanceWhereInput>;
 };
 
-export type AppearanceUnique_Image_PersonCompoundUniqueInput = {
-  imageId: Scalars['Int'];
-  personId: Scalars['Int'];
-};
-
 export type AppearanceWhereInput = {
   AND?: Maybe<Array<AppearanceWhereInput>>;
-  Face?: Maybe<FaceListRelationFilter>;
   NOT?: Maybe<Array<AppearanceWhereInput>>;
   OR?: Maybe<Array<AppearanceWhereInput>>;
   addedBy?: Maybe<UserWhereInput>;
@@ -98,8 +97,8 @@ export type AppearanceWhereInput = {
 };
 
 export type AppearanceWhereUniqueInput = {
+  appearance?: Maybe<AppearanceAppearanceCompoundUniqueInput>;
   id?: Maybe<Scalars['Int']>;
-  unique_image_person?: Maybe<AppearanceUnique_Image_PersonCompoundUniqueInput>;
 };
 
 export type BoolFilter = {
@@ -128,6 +127,13 @@ export type DateTimeNullableFilter = {
   lte?: Maybe<Scalars['DateTime']>;
   not?: Maybe<NestedDateTimeNullableFilter>;
   notIn?: Maybe<Array<Scalars['DateTime']>>;
+};
+
+export type EnumFaceSourceFilter = {
+  equals?: Maybe<FaceSource>;
+  in?: Maybe<Array<FaceSource>>;
+  not?: Maybe<NestedEnumFaceSourceFilter>;
+  notIn?: Maybe<Array<FaceSource>>;
 };
 
 export type EnumMimeTypeFilter = {
@@ -166,15 +172,28 @@ export type Face = {
   y: Scalars['Float'];
 };
 
+export type FaceInput = {
+  certainty?: Maybe<Scalars['Float']>;
+  descriptor: Array<Scalars['Float']>;
+  height: Scalars['Float'];
+  width: Scalars['Float'];
+  x: Scalars['Float'];
+  y: Scalars['Float'];
+};
+
 export type FaceListRelationFilter = {
   every?: Maybe<FaceWhereInput>;
   none?: Maybe<FaceWhereInput>;
   some?: Maybe<FaceWhereInput>;
 };
 
+export enum FaceSource {
+  Manual = 'Manual',
+  Scan = 'Scan'
+}
+
 export type FaceWhereInput = {
   AND?: Maybe<Array<FaceWhereInput>>;
-  Appearance?: Maybe<AppearanceWhereInput>;
   NOT?: Maybe<Array<FaceWhereInput>>;
   OR?: Maybe<Array<FaceWhereInput>>;
   addedBy?: Maybe<UserWhereInput>;
@@ -189,6 +208,7 @@ export type FaceWhereInput = {
   person?: Maybe<PersonWhereInput>;
   personId?: Maybe<IntNullableFilter>;
   score?: Maybe<FloatFilter>;
+  source?: Maybe<EnumFaceSourceFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
   width?: Maybe<FloatFilter>;
   x?: Maybe<FloatFilter>;
@@ -216,6 +236,7 @@ export type Image = {
   bytes: Scalars['Int'];
   caption?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
+  faceScanDate?: Maybe<Scalars['DateTime']>;
   /** The name the image file was uploaded with. */
   fileName?: Maybe<Scalars['String']>;
   /** Human readable file size. Use `bytes` for a number representation. */
@@ -223,12 +244,13 @@ export type Image = {
   /** SHA256 checksum of the image. */
   hash: Scalars['String'];
   /** Height of the image in pixels. */
-  height?: Maybe<Scalars['Int']>;
+  height: Scalars['Int'];
   id: Scalars['Int'];
+  /** ( ͡° ͜ʖ ͡°) */
   isNsfw: Scalars['Boolean'];
   /** The IANA media type of the image. */
   mimetype: MimeType;
-  /** Block hash of the image, useful for doing reverse search with hamming distance. */
+  /** Block hash of the image, useful for doing reverse search using hamming distance. */
   pHash?: Maybe<Scalars['String']>;
   /** Dominant colors in the image in decimal format, sorted by frequency. */
   palette: Array<Scalars['Int']>;
@@ -248,7 +270,7 @@ export type Image = {
   url: Scalars['String'];
   views: Scalars['Int'];
   /** Width of the image in pixels. */
-  width?: Maybe<Scalars['Int']>;
+  width: Scalars['Int'];
 };
 
 
@@ -279,10 +301,11 @@ export type ImageWhereInput = {
   bytes?: Maybe<IntFilter>;
   caption?: Maybe<StringNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
+  faceScanDate?: Maybe<DateTimeNullableFilter>;
   faces?: Maybe<FaceListRelationFilter>;
   fileName?: Maybe<StringNullableFilter>;
   hash?: Maybe<StringFilter>;
-  height?: Maybe<IntNullableFilter>;
+  height?: Maybe<IntFilter>;
   id?: Maybe<IntFilter>;
   isNsfw?: Maybe<BoolFilter>;
   mimetype?: Maybe<EnumMimeTypeFilter>;
@@ -297,7 +320,7 @@ export type ImageWhereInput = {
   user?: Maybe<UserWhereInput>;
   userId?: Maybe<IntNullableFilter>;
   views?: Maybe<IntFilter>;
-  width?: Maybe<IntNullableFilter>;
+  width?: Maybe<IntFilter>;
 };
 
 export type ImageWhereUniqueInput = {
@@ -346,6 +369,28 @@ export enum MimeType {
   Webp = 'WEBP'
 }
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  /** Image face recognition update. Only available to bot accounts */
+  markFaces?: Maybe<Image>;
+  /** Image face recognition update. Only available to bot accounts */
+  test?: Maybe<Image>;
+};
+
+
+export type MutationMarkFacesArgs = {
+  faces: Array<FaceInput>;
+  ireneBotId?: Maybe<Scalars['Int']>;
+  personName?: Maybe<Scalars['String']>;
+  replacePreviousScan?: Maybe<Scalars['Boolean']>;
+  slug: Scalars['String'];
+};
+
+
+export type MutationTestArgs = {
+  slug: Scalars['String'];
+};
+
 export type NestedBoolFilter = {
   equals?: Maybe<Scalars['Boolean']>;
   not?: Maybe<NestedBoolFilter>;
@@ -371,6 +416,13 @@ export type NestedDateTimeNullableFilter = {
   lte?: Maybe<Scalars['DateTime']>;
   not?: Maybe<NestedDateTimeNullableFilter>;
   notIn?: Maybe<Array<Scalars['DateTime']>>;
+};
+
+export type NestedEnumFaceSourceFilter = {
+  equals?: Maybe<FaceSource>;
+  in?: Maybe<Array<FaceSource>>;
+  not?: Maybe<NestedEnumFaceSourceFilter>;
+  notIn?: Maybe<Array<FaceSource>>;
 };
 
 export type NestedEnumMimeTypeFilter = {
@@ -465,14 +517,15 @@ export type Person = {
 
 export type PersonWhereInput = {
   AND?: Maybe<Array<PersonWhereInput>>;
-  Appearance?: Maybe<AppearanceListRelationFilter>;
   NOT?: Maybe<Array<PersonWhereInput>>;
   OR?: Maybe<Array<PersonWhereInput>>;
   aliases?: Maybe<AliasListRelationFilter>;
+  appearances?: Maybe<AppearanceListRelationFilter>;
   appearsIn?: Maybe<FaceListRelationFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   description?: Maybe<StringNullableFilter>;
   id?: Maybe<IntFilter>;
+  ireneBotId?: Maybe<IntNullableFilter>;
   name?: Maybe<StringFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
 };
@@ -498,6 +551,40 @@ export enum QueryMode {
   Default = 'default',
   Insensitive = 'insensitive'
 }
+
+export type Role = {
+  __typename?: 'Role';
+  createdAt: Scalars['DateTime'];
+  name: Scalars['String'];
+};
+
+export type RoleListRelationFilter = {
+  every?: Maybe<RoleWhereInput>;
+  none?: Maybe<RoleWhereInput>;
+  some?: Maybe<RoleWhereInput>;
+};
+
+export type RoleUserRoleCompoundUniqueInput = {
+  name: Scalars['String'];
+  userId: Scalars['Int'];
+};
+
+export type RoleWhereInput = {
+  AND?: Maybe<Array<RoleWhereInput>>;
+  NOT?: Maybe<Array<RoleWhereInput>>;
+  OR?: Maybe<Array<RoleWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  name?: Maybe<StringFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  user?: Maybe<UserWhereInput>;
+  userId?: Maybe<IntFilter>;
+};
+
+export type RoleWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+  userRole?: Maybe<RoleUserRoleCompoundUniqueInput>;
+};
 
 export type StringFilter = {
   contains?: Maybe<Scalars['String']>;
@@ -577,6 +664,7 @@ export type User = {
   id: Scalars['Int'];
   images: Array<Image>;
   name?: Maybe<Scalars['String']>;
+  roles: Array<Role>;
 };
 
 
@@ -587,10 +675,15 @@ export type UserImagesArgs = {
   where?: Maybe<ImageWhereInput>;
 };
 
+
+export type UserRolesArgs = {
+  cursor?: Maybe<RoleWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
 export type UserWhereInput = {
   AND?: Maybe<Array<UserWhereInput>>;
-  Appearance?: Maybe<AppearanceListRelationFilter>;
-  Face?: Maybe<FaceListRelationFilter>;
   NOT?: Maybe<Array<UserWhereInput>>;
   OR?: Maybe<Array<UserWhereInput>>;
   bot?: Maybe<BoolFilter>;
@@ -601,7 +694,10 @@ export type UserWhereInput = {
   id?: Maybe<IntFilter>;
   image?: Maybe<StringNullableFilter>;
   images?: Maybe<ImageListRelationFilter>;
+  markedFaces?: Maybe<FaceListRelationFilter>;
   name?: Maybe<StringNullableFilter>;
+  roles?: Maybe<RoleListRelationFilter>;
+  taggedAppearances?: Maybe<AppearanceListRelationFilter>;
   token?: Maybe<StringNullableFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
 };
@@ -615,6 +711,7 @@ export type OneImageQuery = (
   { __typename?: 'Query' }
   & { image?: Maybe<(
     { __typename?: 'Image' }
+    & Pick<Image, 'faceScanDate'>
     & { unknownFaces: Array<(
       { __typename?: 'Face' }
       & { appearance?: Maybe<(
@@ -777,6 +874,7 @@ export const OneImageDocument = `
       ...UserData
     }
     ...ImageData
+    faceScanDate
   }
 }
     ${FaceDataFragmentDoc}

@@ -9,14 +9,11 @@ import {
 import { uploadParsedFiles } from "@/lib/wasabi";
 import mimeType from "mime-types";
 import sizeOf from "image-size";
-import {
-  canDetectFaces,
-  detectFaces,
-  FaceDetect,
-} from "@/lib/face-recognition";
+import { FaceDetect } from "@/labeler/src/face-recognition";
 import { Appearance, Person, Image, Prisma } from "@prisma/client";
 import idgen from "nanoid";
 import { imageFindOptions, sdk } from "@/lib/data-fetching";
+import { amqpPromise, sendImageToFaceRecognition } from "@/lib/amqp";
 
 // we can't use trpc here because of the binary file upload
 export const config = {
@@ -31,11 +28,9 @@ export default handle(
       try {
         const { files, fields } = upload;
         const [file] = files;
+        const { ireneBotImageId, ireneBotIdolId, ireneBotIdolName } = fields;
         const tags = fields.tags ? fields.tags.split(",") : [];
-        const personId = fields.person_id;
-        const personName = fields.person_name;
         const source = fields.source;
-        const personAliases = fields.person_aliases;
         const isPublic = fields?.public === "true" ?? false;
         const nsfw = fields?.nsfw === "true" ?? false;
         if (!file) {
@@ -45,21 +40,11 @@ export default handle(
         const slug = idgen.nanoid(16);
         const slugWithExtension = `${slug}.${metadata.type}`;
         const mime = mimeType.lookup(metadata.type!);
-        const [pHash, hash, faces, palette] = await Promise.all([
+        const [pHash, hash, palette, uploadResult] = await Promise.all([
           mime !== false && canPerceptualHash(metadata.type!)
             ? perceptualHash(file.buffer, mime)
             : Promise.resolve(),
           sha256Hash(file.buffer),
-          [] as FaceDetect[],
-          // mime !== false && canDetectFaces(metadata.type!)
-          //   ? detectFaces(file.buffer, {
-          //       width: metadata.width!,
-          //       height: metadata.height!,
-          //     }).catch((err) => {
-          //       console.log("something went wrong with detecting faces", err);
-          //       return [] as FaceDetect[];
-          //     })
-          //   : Promise.resolve([] as FaceDetect[]),
           mime !== false
             ? dominantColors(file.buffer, mime).catch((err) => {
                 console.log(err);
@@ -73,18 +58,19 @@ export default handle(
             },
           ]),
         ]);
-        const facesDims = faces.map(({ detection }) => ({
-          score: detection.score,
-          x: detection.box.x,
-          y: detection.box.y,
-          width: detection.box.width,
-          height: detection.box.height,
-        }));
+        if (uploadResult.$response.error) {
+          return console.log(uploadResult.$response.error);
+        }
         const databaseType = mimetypeMappings[metadata.type!];
         if (!databaseType) {
           return res
             .status(400)
             .json({ error: `unsupported type '${metadata.type}'` });
+        }
+        if (!metadata.width || !metadata.height) {
+          return res
+            .status(400)
+            .json({ error: `Could not determine the dimensions of the image` });
         }
         const image = await db.image.create({
           select: {
@@ -92,6 +78,7 @@ export default handle(
             ...imageFindOptions.select,
           },
           data: {
+            ireneBotId: ireneBotImageId ? Number(ireneBotImageId) : undefined,
             fileName: file.originalname,
             width: metadata.width,
             height: metadata.height,
@@ -123,22 +110,23 @@ export default handle(
             },
           },
         });
-
-        let existingPerson: Person | undefined = personId
-          ? (await db.person.findUnique({ where: { id: Number(personId) } })) ??
-            undefined
+        let existingPerson: Person | undefined = ireneBotIdolId
+          ? (await db.person.findUnique({
+              where: { ireneBotId: Number(ireneBotIdolId) },
+            })) ?? undefined
           : undefined;
-        if (faces.length === 1 && personName && !existingPerson) {
+
+        if (ireneBotIdolName && !existingPerson) {
           existingPerson = await db.person.create({
             data: {
-              name: personName,
+              ireneBotId: ireneBotIdolId ? Number(ireneBotIdolId) : undefined,
+              name: ireneBotIdolName,
             },
           });
         }
 
-        let existingAppearance: Appearance | undefined;
         if (existingPerson) {
-          existingAppearance = await db.appearance.create({
+          await db.appearance.create({
             data: {
               image: {
                 connect: {
@@ -152,29 +140,24 @@ export default handle(
               },
               addedBy: {
                 connect: {
-                  id: user.id,
+                  id: user!.id,
                 },
               },
             },
           });
         }
 
-        const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, added_by_id, appearance_id) VALUES`;
-        const templatedString = faces
-          .map(({ detection, descriptor }) => {
-            const { x, y, height, width } = detection.box;
-            const cube = descriptor.join(",");
-            const userId = user.id;
-            const linkedPerson = existingAppearance?.id ?? "NULL";
-            return `(${image.id}, ${detection.score}, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${userId}, ${linkedPerson})`;
-          })
-          .join(",");
-
-        if (faces.length > 0) {
-          await db.$executeRaw`${Prisma.raw(BASE_STRING + templatedString)}`;
-        }
-
+        // we cannot use graphql so we have to pretend that the result is
+        // a graphql response lmfao
         const result = await sdk.getUploadResult({ slug: image.slug });
+        sendImageToFaceRecognition(image.slug, {
+          ireneBotIdolId: ireneBotIdolId ? Number(ireneBotIdolId) : undefined,
+          ireneBotImageId: ireneBotImageId
+            ? Number(ireneBotImageId)
+            : undefined,
+        }).catch((err) => {
+          console.error(err);
+        });
         return res.json(result.image);
       } catch (err) {
         console.log(err);

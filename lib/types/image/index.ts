@@ -6,9 +6,11 @@ import {
   nonNull,
   stringArg,
   list,
-  enumType,
+  mutationField,
+  inputObjectType,
 } from "nexus";
-import { ImageWhereInput } from "@/lib/__generated__/request";
+import { hasRole, Role } from "../../permissions";
+import { Appearance, FaceSource, Person, Prisma } from "@prisma/client";
 
 export const User = objectType({
   name: "Image",
@@ -30,13 +32,15 @@ export const User = objectType({
       })
       .pHash({
         description:
-          "Block hash of the image, useful for doing reverse search with hamming distance.",
+          "Block hash of the image, useful for doing reverse search using hamming distance.",
       })
       .palette({
         description:
           "Dominant colors in the image in decimal format, sorted by frequency.",
       })
-      .isNsfw()
+      .isNsfw({
+        description: "( ͡° ͜ʖ ͡°)",
+      })
       .source({
         description:
           "The url the image was taken from (if applicable). Not guaranteed to be a direct image url.",
@@ -59,6 +63,7 @@ export const User = objectType({
       })
       .bytes()
       .appearances()
+      .faceScanDate()
       .createdAt()
       .createdAt();
     t.field("fileSize", {
@@ -69,15 +74,13 @@ export const User = objectType({
         return humanFileSize(file.bytes);
       },
     });
-    t.field("url", {
-      type: nonNull("String"),
+    t.nonNull.string("url", {
       description: "Link to the image on the site",
       resolve(p) {
         return `${process.env.NEXT_PUBLIC_BASE_URL}/image/${p.slug}`;
       },
     });
-    t.field("rawUrl", {
-      type: nonNull("String"),
+    t.nonNull.string("rawUrl", {
       description: "Direct link to the image on the CDN",
       resolve(p) {
         const baseCdnUrl = process.env.NEXT_PUBLIC_BASE_URL_CDN;
@@ -86,7 +89,7 @@ export const User = objectType({
     });
     t.field("unknownFaces", {
       type: nonNull(list(nonNull("Face"))),
-      async resolve(image, {}, { prisma }) {
+      async resolve(image, _args, { prisma }) {
         const [appearances, faces] = await Promise.all([
           // prisma optimizes the N+1 problem here
           prisma.appearance.findMany({
@@ -124,6 +127,171 @@ export const Query = queryField((t) => {
       return await prisma.image.findUnique({
         where: { slug },
       });
+    },
+  });
+});
+
+export const FaceInput = inputObjectType({
+  name: "FaceInput",
+  definition(t) {
+    t.nonNull.float("x");
+    t.nonNull.float("y");
+    t.nonNull.float("width");
+    t.nonNull.float("height");
+    t.nonNull.float("certainty");
+    t.nonNull.list.nonNull.float("descriptor");
+  },
+});
+
+export const Mutation = mutationField((t) => {
+  t.field("markFaces", {
+    type: "Image",
+    description:
+      "Image face recognition update. Only available to bot accounts",
+    args: {
+      slug: nonNull(stringArg()),
+      personName: "String",
+      ireneBotId: "Int",
+      replacePreviousScan: "Boolean",
+      faces: nonNull(list(nonNull("FaceInput"))),
+    },
+    async authorize(_, args, { prisma, user }) {
+      if (!user) {
+        return false;
+      }
+      // indexed query
+      const role = await prisma.role.findUnique({
+        where: {
+          userRole: {
+            userId: user.id,
+            name: Role.Editor,
+          },
+        },
+      });
+      return Boolean(role);
+    },
+    async resolve(
+      _root,
+      { slug, faces, personName, ireneBotId, replacePreviousScan },
+      { prisma, user }
+    ) {
+      const image = await prisma.image.findUnique({
+        where: { slug },
+        include: { faces: true },
+      });
+      if (!image) {
+        throw Error("Invalid image slug");
+      }
+      if (replacePreviousScan) {
+        await prisma.face.deleteMany({
+          where: {
+            id: {
+              in: image.faces
+                .filter((face) => face.source === "Scan")
+                .map((face) => face.id),
+            },
+          },
+        });
+      }
+
+      let existingPerson: Person | undefined = ireneBotId
+        ? (await prisma.person.findUnique({
+            where: { ireneBotId },
+          })) ?? undefined
+        : undefined;
+
+      if (faces.length === 1 && personName && !existingPerson) {
+        existingPerson = await prisma.person.create({
+          data: {
+            ireneBotId: ireneBotId,
+            name: personName,
+          },
+        });
+      }
+
+      let existingAppearance: Appearance | undefined;
+      if (existingPerson) {
+        existingAppearance = await prisma.appearance.create({
+          data: {
+            image: {
+              connect: {
+                id: image.id,
+              },
+            },
+            person: {
+              connect: {
+                id: existingPerson.id,
+              },
+            },
+            addedBy: {
+              connect: {
+                id: user!.id,
+              },
+            },
+          },
+        });
+      }
+      prisma.image
+        .update({
+          where: {
+            slug,
+          },
+          data: {
+            faceScanDate: new Date(),
+          },
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, added_by_id, appearance_id, source) VALUES`;
+      const templatedString = faces
+        .map(({ x, y, height, width, descriptor, certainty }) => {
+          const cube = descriptor.join(",");
+          const userId = user!.id;
+          const linkedPerson = existingAppearance?.id ?? "NULL";
+          const source = user!.bot ? FaceSource.Scan : FaceSource.Manual;
+          const data = `(${image.id}, ${certainty}, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${userId}, ${linkedPerson}, '${source}')`;
+          return data;
+        })
+        .join(",");
+
+      if (faces.length > 0) {
+        await prisma.$executeRaw`${Prisma.raw(BASE_STRING + templatedString)}`;
+      }
+      return image;
+    },
+  });
+  t.field("test", {
+    type: "Image",
+    description:
+      "Image face recognition update. Only available to bot accounts",
+    args: {
+      slug: nonNull(stringArg()),
+    },
+    async authorize(_, args, { prisma, user }) {
+      if (!user) {
+        return false;
+      }
+      // indexed query
+      const roles = await prisma.role.findMany({
+        where: {
+          userId: user.id,
+        },
+      });
+      return hasRole(roles, Role.Administrator);
+    },
+    async resolve(_root, { slug }, { prisma, amqp }) {
+      const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler";
+
+      const channel = await amqp.createChannel();
+      await channel.assertQueue(queueName);
+      channel.sendToQueue(queueName, Buffer.from(JSON.stringify({ slug })));
+      const image = await prisma.image.findUnique({
+        where: {
+          slug,
+        },
+      });
+      return image;
     },
   });
 });

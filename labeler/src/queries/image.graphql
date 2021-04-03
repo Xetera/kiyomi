@@ -1,0 +1,10 @@
+query getBackendImage($slug: String!) {
+  image(slug: $slug) {
+    id
+    width
+    height
+    rawUrl
+    mimetype
+    faceScanDate
+  }
+}

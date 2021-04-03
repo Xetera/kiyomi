@@ -3,7 +3,7 @@ import { getSession, Provider } from "next-auth/client";
 import "../styles/tailwind.css";
 import "../styles/globals.css";
 // import { SkeletonTheme } from "react-loading-skeleton";
-// import ReactTooltip from "react-tooltip";
+import ReactTooltip from "react-tooltip";
 import { default as _default, alt, light } from "../colors";
 import NextHead from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -35,14 +35,14 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
             <Component {...pageProps} />
           </div>
           {/* </SkeletonTheme> */}
-          {/* <ReactTooltip
-        uuid="mytt"
-        backgroundColor="#0c111f"
-        effect="solid"
-        border={true}
-        borderColor={light}
-        //border={true} borderColor="red"
-      /> */}
+          <ReactTooltip
+            uuid="mytt"
+            backgroundColor="#0c111f"
+            effect="solid"
+            border={true}
+            borderColor={light}
+            //border={true} borderColor="red"
+          />
         </Provider>
       </Hydrate>
     </QueryClientProvider>

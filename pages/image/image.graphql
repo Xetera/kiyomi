@@ -20,5 +20,6 @@ query OneImage($slug: String!) {
       ...UserData
     }
     ...ImageData
+    faceScanDate
   }
 }

@@ -3,9 +3,9 @@ import makeCors from "micro-cors";
 import { schema } from "@/lib/schema";
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/db";
-import { User } from "@prisma/client";
 import { getUserFromToken } from "@/lib/auth";
 import { getSession } from "next-auth/client";
+import { amqpPromise } from "@/lib/amqp";
 
 type ContextInput = {
   req: NextApiRequest;
@@ -27,18 +27,17 @@ const apolloServer = new ApolloServer({
   async context(ctx: ContextInput) {
     const { req, res } = ctx;
     const auth = req.headers.authorization;
+    const amqp = await amqpPromise;
 
-    let user: User | undefined;
-    let uploadType: "TOKEN" | "WEBSITE" = "WEBSITE";
     if (auth) {
-      user = (await getUserFromToken(auth, prisma)) ?? undefined;
-      uploadType = "TOKEN";
+      const user = (await getUserFromToken(auth, prisma)) ?? undefined;
       return {
         req,
         res,
+        amqp,
         prisma,
         user,
-        uploadType,
+        uploadType: "TOKEN",
       };
     }
 
@@ -47,8 +46,10 @@ const apolloServer = new ApolloServer({
     return {
       req,
       user: session?.user,
+      amqp,
       res,
       session,
+      uploadType: "WEBSITE",
       prisma,
     };
   },
