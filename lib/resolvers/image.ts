@@ -1,4 +1,4 @@
-import { humanFileSize } from "../../shared";
+import { humanFileSize } from "../shared";
 import _ from "lodash";
 import {
   objectType,
@@ -9,7 +9,7 @@ import {
   mutationField,
   inputObjectType,
 } from "nexus";
-import { hasRole, Role } from "../../permissions";
+import { hasRole, Role } from "../permissions";
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client";
 
 export const User = objectType({

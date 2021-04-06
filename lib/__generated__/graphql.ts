@@ -173,7 +173,7 @@ export type Face = {
 };
 
 export type FaceInput = {
-  certainty?: Maybe<Scalars['Float']>;
+  certainty: Scalars['Float'];
   descriptor: Array<Scalars['Float']>;
   height: Scalars['Float'];
   width: Scalars['Float'];

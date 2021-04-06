@@ -1,7 +1,7 @@
 import { handle, withFileUpload, withUser } from "@/lib/middleware";
 import {
   canPerceptualHash,
-  convertToWebp,
+  convertImage,
   dominantColors,
   mimetypeMappings,
   perceptualHash,
@@ -37,10 +37,16 @@ export default handle(
         if (!file) {
           return res.status(400).json({ error: "'file' missing" });
         }
-        const webp = await convertToWebp(file.buffer);
+        const metadata = sizeOf(file.buffer);
+        if (!metadata.type) {
+          return res.json({ error: "invalid file type" });
+        }
+        console.log({ metadata });
+        const webp = await convertImage(file.buffer, metadata.type, "webp");
+        console.log({ webp });
         const { format, height, width } = webp.info;
+        // return;
         const buffer = webp.data;
-        // const metadata = sizeOf(webp.data);
         const slug = idgen.nanoid(16);
         const slugWithExtension = `${slug}.${format}`;
         const mime = mimeType.lookup(format);

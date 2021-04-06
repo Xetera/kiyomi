@@ -22,7 +22,11 @@ const cors = makeCors();
 
 const apolloServer = new ApolloServer({
   introspection: true,
-  playground: true,
+  playground: {
+    title: "Simp.pics API",
+    codeTheme: {},
+    // workspaceName: "Simp.pics API",
+  },
   schema,
   async context(ctx: ContextInput) {
     const { req, res } = ctx;

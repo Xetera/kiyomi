@@ -270,6 +270,7 @@ input ImageWhereInput {
   hash: StringFilter
   height: IntFilter
   id: IntFilter
+  ireneBotId: IntNullableFilter
   isNsfw: BoolFilter
   mimetype: EnumMimeTypeFilter
   pHash: StringNullableFilter
@@ -288,6 +289,7 @@ input ImageWhereInput {
 
 input ImageWhereUniqueInput {
   id: Int
+  ireneBotId: Int
   slug: String
 }
 

@@ -1,7 +1,7 @@
 import { fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from "nexus";
 import { nexusPrisma } from "nexus-plugin-prisma";
 import path from "path";
-import * as types from "./types";
+import * as types from "./resolvers";
 
 export const schema = makeSchema({
   plugins: [
