@@ -122,67 +122,71 @@ export async function dominantColors(
   return colors.map((color: any) => color.num());
 }
 
+type ConversionResult = { data: Buffer; info: sharp.OutputInfo };
+
 export async function convertImage(
   buffer: Buffer,
-  inputFormat: string,
-  outputFormat: "webp" | "webm"
-): Promise<{ data: Buffer; info: sharp.OutputInfo }> {
-  // const readable = new Readable();
+  inputFormat: MimeType
+): Promise<ConversionResult> {
+  const excludedFormats = new Set<MimeType>([
+    MimeType.MP4,
+    MimeType.GIF,
+    MimeType.WEBP,
+    MimeType.WEBM,
+  ]);
+  const mappings: Record<MimeType, string> = {
+    [MimeType.AVIF]: "webp",
+    [MimeType.JPG]: "webp",
+    [MimeType.PNG]: "webp",
+    [MimeType.SVG]: "webp",
+    [MimeType.MP4]: "webm",
+    [MimeType.WEBM]: "webm",
+    [MimeType.GIF]: "webm",
+    [MimeType.WEBP]: "webp",
+  };
   const readable = new Readable();
-  readable._read = () => {}; // _read is required but you can noop it
+  readable._read = () => {};
   readable.push(buffer);
   readable.push(null);
 
-  console.log(readable.readableLength);
+  async function withMetadata(b: Buffer): Promise<ConversionResult> {
+    return new Promise((res, rej) => {
+      sharp(b).toBuffer((err, data, info) => {
+        if (err) {
+          return rej(err);
+        }
+        return res({ data, info });
+      });
+    });
+  }
+
+  if (excludedFormats.has(inputFormat)) {
+    return withMetadata(buffer);
+  }
+
   return new Promise((res, rej) => {
     const passthrough = new PassThrough();
-    console.log({ inputFormat, outputFormat });
+
+    const outputFormat = mappings[inputFormat];
     let command = ffmpeg()
       .input(readable)
       .outputFormat(outputFormat)
       .on("error", rej);
-    if (inputFormat === "gif") {
-      command = command.inputFormat("gif_pipe");
-    }
     const stream = command.stream(passthrough, { end: true });
-    console.log("piping to sharp");
+
     let output: Buffer[] = [];
-    passthrough.on("data", (data) => {
-      console.log(data);
-      output.push(data);
-    });
-    sharp(buffer).webp().toFile("./testsharp.webp");
+    passthrough.on("data", (data) => output.push(data));
+    // sharp(buffer).webp().toFile("./testsharp.webp");
     passthrough.on("error", rej);
+
     stream.on("end", async () => {
       const padded = Buffer.concat(output);
-      await fs.writeFile("./wtfOriginal.webp", padded);
-      console.log(output);
+      // await fs.writeFile("./wtfOriginal.webp", padded);
+
+      // https://xetera.dev/converting-webp for an explanation
       const final = padded.copyWithin(4, -4).slice(0, -4);
-      await fs.writeFile("./wtf.webp", final);
-      sharp(final).toBuffer((err, buff, info) => {
-        if (err) {
-          return rej(err);
-        }
-        res({ data: buff, info });
-      });
+      // await fs.writeFile("./wtf.webp", final);
+      withMetadata(final).then(res, rej);
     });
-    // stream.on("close", (data) => {
-    //   console.log(data);
-    //   );
-    // });
-    // ffmpeg()
-    //   .input(readable)
-    //   .format("webp")
-    //   // .inputFormat("")
-    //   .loop()
-    //   .on("start", function (commandLine) {
-    //     console.log("Spawned Ffmpeg with command: " + commandLine);
-    //   })
-    //   .on("error", rej)
-    //   .pipe(passthrough);
-    // passthrough.pipe(fs.createWriteStream("./wtf.webp"));
-    // return sharp(buffer)
-    //   .webp({ nearLossless: true })
-    //   .toBuffer({ resolveWithObject: true });
   });
 }

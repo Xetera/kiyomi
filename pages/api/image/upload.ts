@@ -11,7 +11,7 @@ import { uploadParsedFiles } from "@/lib/wasabi";
 import mimeType from "mime-types";
 import sizeOf from "image-size";
 import { FaceDetect } from "@/labeler/src/face-recognition";
-import { Appearance, Person, Image, Prisma } from "@prisma/client";
+import { Appearance, Person, Image, Prisma, MimeType } from "@prisma/client";
 import idgen from "nanoid";
 import { imageFindOptions, sdk } from "@/lib/data-fetching";
 import { amqpPromise, sendImageToFaceRecognition } from "@/lib/amqp";
@@ -42,29 +42,38 @@ export default handle(
           return res.json({ error: "invalid file type" });
         }
         console.log({ metadata });
-        const webp = await convertImage(file.buffer, metadata.type, "webp");
-        console.log({ webp });
+        const parsedMimetype = metadata.type.toUpperCase();
+        if (!(parsedMimetype in MimeType)) {
+          return res.json({ error: `Invalid mimetype: ${metadata.type}` });
+        }
+        const webp = await convertImage(
+          file.buffer,
+          metadata.type.toUpperCase() as MimeType
+        );
+
         const { format, height, width } = webp.info;
         // return;
         const buffer = webp.data;
         const slug = idgen.nanoid(16);
         const slugWithExtension = `${slug}.${format}`;
         const mime = mimeType.lookup(format);
+        if (mime === false) {
+          return res.json({ error: "invalid file type" });
+        }
         const [pHash, hash, palette, uploadResult] = await Promise.all([
-          mime !== false && canPerceptualHash(format)
+          canPerceptualHash(format)
             ? perceptualHash(buffer, mime)
             : Promise.resolve(),
           sha256Hash(buffer),
-          mime !== false
-            ? dominantColors(buffer, mime).catch((err) => {
-                console.log(err);
-              })
-            : [],
+          // using the old buffer here as it's the most compatible with the lib
+          dominantColors(file.buffer, mime).catch((err) => {
+            console.log(err);
+          }),
           uploadParsedFiles([
             {
               ...file,
               path: slugWithExtension,
-              mimetype: mime || "image/jpg",
+              mimetype: mime || "image/webp",
             },
           ]),
         ]);

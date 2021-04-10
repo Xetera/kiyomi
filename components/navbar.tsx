@@ -66,7 +66,6 @@ export function Navbar() {
             <NavLink hardLink href="/api/graphql">
               API
             </NavLink>
-            {session?.user && <NavLink href={"/profile"}>Profile</NavLink>}
           </ul>
         </div>
         <div>
