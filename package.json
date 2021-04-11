@@ -1,10 +1,16 @@
 {
   "name": "simp.pics",
   "private": true,
-  "workspaces": [
-    "site",
-    "labeler"
-  ],
+  "workspaces": {
+    "packages": [
+      "site",
+      "labeler"
+    ],
+    "nohoist": [
+      "**/@tensorflow/tfjs-node",
+      "**/@tensorflow/tfjs-node/**"
+    ]
+  },
   "scripts": {
     "codegen": "yarn workspace site codegen && graphql-codegen"
   },
