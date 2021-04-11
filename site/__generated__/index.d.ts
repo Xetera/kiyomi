@@ -497,6 +497,7 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     image: NexusGenRootTypes['Image']; // Image!
     score: number; // Float!
+    source: NexusGenEnums['FaceSource']; // FaceSource!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     width: number; // Float!
     x: number; // Float!
@@ -531,7 +532,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     markFaces: NexusGenRootTypes['Image'] | null; // Image
-    test: NexusGenRootTypes['Image'] | null; // Image
+    scanFaces: NexusGenRootTypes['Image'] | null; // Image
   }
   Person: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -556,6 +557,7 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     avatar: string | null; // String
+    bot: boolean; // Boolean!
     id: number; // Int!
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     name: string | null; // String
@@ -580,6 +582,7 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     image: 'Image'
     score: 'Float'
+    source: 'FaceSource'
     updatedAt: 'DateTime'
     width: 'Float'
     x: 'Float'
@@ -614,7 +617,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     markFaces: 'Image'
-    test: 'Image'
+    scanFaces: 'Image'
   }
   Person: { // field return type name
     createdAt: 'DateTime'
@@ -639,6 +642,7 @@ export interface NexusGenFieldTypeNames {
   }
   User: { // field return type name
     avatar: 'String'
+    bot: 'Boolean'
     id: 'Int'
     images: 'Image'
     name: 'String'
@@ -674,7 +678,7 @@ export interface NexusGenArgTypes {
       replacePreviousScan?: boolean | null; // Boolean
       slug: string; // String!
     }
-    test: { // args
+    scanFaces: { // args
       slug: string; // String!
     }
   }

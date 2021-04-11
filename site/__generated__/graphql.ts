@@ -166,6 +166,7 @@ export type Face = {
   id: Scalars['Int'];
   image: Image;
   score: Scalars['Float'];
+  source: FaceSource;
   updatedAt: Scalars['DateTime'];
   width: Scalars['Float'];
   x: Scalars['Float'];
@@ -375,8 +376,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Image face recognition update. Only available to bot accounts */
   markFaces?: Maybe<Image>;
-  /** Image face recognition update. Only available to bot accounts */
-  test?: Maybe<Image>;
+  /** Scan image for faces asynchronously. Only available to admin accounts */
+  scanFaces?: Maybe<Image>;
 };
 
 
@@ -389,7 +390,7 @@ export type MutationMarkFacesArgs = {
 };
 
 
-export type MutationTestArgs = {
+export type MutationScanFacesArgs = {
   slug: Scalars['String'];
 };
 
@@ -663,6 +664,7 @@ export enum UploadType {
 export type User = {
   __typename?: 'User';
   avatar?: Maybe<Scalars['String']>;
+  bot: Scalars['Boolean'];
   id: Scalars['Int'];
   images: Array<Image>;
   name?: Maybe<Scalars['String']>;

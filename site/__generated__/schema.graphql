@@ -126,6 +126,7 @@ type Face {
   id: Int!
   image: Image!
   score: Float!
+  source: FaceSource!
   updatedAt: DateTime!
   width: Float!
   x: Float!
@@ -338,8 +339,8 @@ type Mutation {
   """Image face recognition update. Only available to bot accounts"""
   markFaces(faces: [FaceInput!]!, ireneBotId: Int, personName: String, replacePreviousScan: Boolean, slug: String!): Image
 
-  """Image face recognition update. Only available to bot accounts"""
-  test(slug: String!): Image
+  """Scan image for faces asynchronously. Only available to admin accounts"""
+  scanFaces(slug: String!): Image
 }
 
 input NestedBoolFilter {
@@ -597,6 +598,7 @@ enum UploadType {
 
 type User {
   avatar: String
+  bot: Boolean!
   id: Int!
   images(cursor: ImageWhereUniqueInput, skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String

@@ -261,10 +261,10 @@ export const Mutation = mutationField((t) => {
       return image;
     },
   });
-  t.field("test", {
+  t.field("scanFaces", {
     type: "Image",
     description:
-      "Image face recognition update. Only available to bot accounts",
+      "Scan image for faces asynchronously. Only available to admin accounts",
     args: {
       slug: nonNull(stringArg()),
     },

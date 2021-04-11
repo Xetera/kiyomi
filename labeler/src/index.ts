@@ -16,7 +16,26 @@ const client = new GraphQLClient(`${config.get("backendUrl")}/api/graphql`, {
   },
 });
 
-const faceRecognitionQueue = config.get("faceRecognitionQueue");
+const faceRecognitionQueueName = config.get("faceRecognitionQueue");
+const faceRecognitionRetryExchangeName = "face-recognition-retry";
+
+let faceRecognitionQueue: amqp.Channel | undefined;
+
+function publish(routingKey: string, content: object, delay: number) {
+  try {
+    if (!faceRecognitionQueue) {
+      return logger.error(`Could not push to queue, not initialized`);
+    }
+    faceRecognitionQueue.publish(
+      faceRecognitionRetryExchangeName,
+      routingKey,
+      Buffer.from(JSON.stringify(content)),
+      { headers: { "x-delay": delay } }
+    );
+  } catch (e) {
+    logger.error(`[AMQP] failed ${e.message}`);
+  }
+}
 
 function createConsumer(channel: amqp.Channel) {
   return <T>(f: (arg: T, packet: amqp.ConsumeMessage) => any) => {
@@ -39,7 +58,10 @@ function createConsumer(channel: amqp.Channel) {
         await f(message, packet);
         channel.ack(packet);
       } catch (err) {
+        const delay = 1000 * 60 * 5;
         logger.error(err);
+        logger.info(`Dead lettering packet with ${delay} ms delay`);
+        publish(faceRecognitionQueueName, packet, delay);
         channel.ack(packet);
       }
     };
@@ -49,9 +71,9 @@ function createConsumer(channel: amqp.Channel) {
 async function processFaces(conn: amqp.Connection) {
   const channel = await conn.createChannel();
   const consume = createConsumer(channel);
-  channel.assertQueue(faceRecognitionQueue);
+  channel.assertQueue(faceRecognitionQueueName);
   channel.consume(
-    faceRecognitionQueue,
+    faceRecognitionQueueName,
     consume(async (msg: { slug: string }) => {
       const sdk = getSdk(client);
       const { image } = await sdk.getBackendImage({
@@ -87,12 +109,58 @@ async function processFaces(conn: amqp.Connection) {
   );
 }
 
+const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+async function connect(): Promise<amqp.Connection> {
+  const RECONNECT_DELAY = 2000;
+  try {
+    const connection = await amqp.connect(config.get("amqpUrl"));
+    connection.on("error", err => {
+      if (err.message !== "Connection closing") {
+        logger.error("[AMQP] conn error", err.message);
+      }
+    });
+    connection.on("close", () => {
+      logger.info("[AMQP] Reconnecting...");
+      setTimeout(connect, RECONNECT_DELAY);
+    });
+    logger.info("Connected!");
+    return connection;
+  } catch (err) {
+    logger.error(err);
+    await wait(RECONNECT_DELAY);
+    return connect();
+  }
+}
+
+async function populateQueues(conn: amqp.Connection) {
+  const chan = await conn.createConfirmChannel();
+  chan.on("close", () => {
+    logger.info("[AMQP] channel closed");
+  });
+  faceRecognitionQueue = chan;
+  chan.assertExchange(faceRecognitionRetryExchangeName, "x-delayed-message", {
+    autoDelete: false,
+    durable: true,
+    arguments: {
+      "x-delayed-type": "direct",
+    },
+  });
+  chan.assertQueue(faceRecognitionQueueName);
+  chan.bindQueue(
+    faceRecognitionQueueName,
+    faceRecognitionRetryExchangeName,
+    faceRecognitionQueueName
+  );
+}
+
 async function main() {
   logger.info("Running app");
   // @ts-ignore
   await faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
   await checkWeights();
-  const conn = await amqp.connect(config.get("amqpUrl"));
+  const conn = await connect();
+  await populateQueues(conn);
   processFaces(conn);
   return;
 }

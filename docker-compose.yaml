@@ -6,7 +6,7 @@ volumes:
 
 services:
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: heidiks/rabbitmq-delayed-message-exchange:3.8.9-management
     container_name: "rabbitmq"
     ports:
       - 3333:5672
