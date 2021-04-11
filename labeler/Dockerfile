@@ -25,8 +25,8 @@ RUN apt-get update && apt-get install -y libssl-dev
 WORKDIR /opt/app
 
 ENV NODE_ENV=production
-WORKDIR /opt/app
 
+COPY package.json yarn.lock ./
 COPY --from=build /opt/app/node_modules node_modules
 COPY --from=build /opt/app/dist dist
 
