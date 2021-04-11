@@ -18,9 +18,10 @@ RUN yarn --frozen-lockfile
 COPY tsconfig.json tsconfig.json
 COPY src src
 RUN yarn build
+RUN yarn tf
 
 FROM node:14-slim
-RUN apt-get update && apt-get install -y libssl-dev build-essential
+RUN apt-get update && apt-get install -y libssl-dev build-essential python3
 
 WORKDIR /opt/app
 
@@ -31,8 +32,9 @@ RUN yarn global add node-pre-gyp
 RUN yarn --production --frozen-lockfile
 COPY --from=build /opt/app/dist dist
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
-RUN yarn tf
 
 COPY weights weights
+
+RUN yarn tf
 
 CMD ["node", "./dist/index.js"]
