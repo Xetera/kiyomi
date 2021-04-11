@@ -83,9 +83,6 @@ async function processFaces(conn: amqp.Connection) {
           descriptor: Array.from(descriptor),
         })),
       });
-      logger.info(faces);
-
-      logger.info(image);
     })
   );
 }
@@ -98,7 +95,6 @@ async function main() {
   const conn = await amqp.connect(config.get("amqpUrl"));
   processFaces(conn);
   return;
-  // conn.on("error")
 }
 
 main();
