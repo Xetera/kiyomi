@@ -13,7 +13,7 @@ RUN apt-get update && \
 
 RUN npm i -g pnpm
 RUN yarn global add ts-node typescript
-COPY package.json ./
+COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
 COPY tsconfig.json tsconfig.json
@@ -28,7 +28,7 @@ WORKDIR /opt/app
 
 ENV NODE_ENV=production
 
-COPY package.json ./
+COPY package.json yarn.lock ./
 RUN yarn global add node-pre-gyp
 RUN yarn --production --frozen-lockfile
 COPY --from=build /opt/app/dist dist

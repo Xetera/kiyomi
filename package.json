@@ -1,18 +1,8 @@
 {
   "name": "simp.pics",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "site",
-      "labeler"
-    ],
-    "nohoist": [
-      "**/@tensorflow/tfjs-node",
-      "**/@tensorflow/tfjs-node/**"
-    ]
-  },
   "scripts": {
-    "codegen": "yarn workspace site codegen && graphql-codegen"
+    "codegen": "cd site && yarn codegen & graphql-codegen"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.21.3"
