@@ -14,6 +14,7 @@ export const Face = objectType({
       .image()
       .score()
       .createdAt()
+      .source()
       .updatedAt();
   },
 });
