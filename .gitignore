@@ -2,7 +2,7 @@
 
 .idea
 # dependencies
-/node_modules
+**/node_modules
 /.pnp
 .pnp.js
 
@@ -21,9 +21,9 @@
 *.pem
 
 # debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
 
 # local env files
 .env.local
@@ -35,5 +35,6 @@ yarn-error.log*
 .vercel
 
 ansible/.env
-test.sh
-dump.sql
+site/test.sh
+site/dump.sql
+site/.next

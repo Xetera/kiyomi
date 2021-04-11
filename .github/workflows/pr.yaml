@@ -1,6 +1,8 @@
 name: PR Test
 on:
   pull_request:
+    paths:
+      - site/**
 
 jobs:
   build:
@@ -16,6 +18,7 @@ jobs:
         with:
           username: xetera
           password: "${{ secrets.DOCKER_PASSWORD }}"
+          context: site
           image_name: xetera/simp-pics
           push_image_and_stages: false
           build_extra_args: --build-arg NEXT_PUBLIC_BASE_URL=https://simp.pics --build-arg NEXT_PUBLIC_BASE_URL_CDN=https://my.simp.pics

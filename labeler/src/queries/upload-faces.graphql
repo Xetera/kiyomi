@@ -1,0 +1,10 @@
+mutation uploadFaces($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int) {
+  markFaces(
+    slug: $slug
+    replacePreviousScan: true
+    faces: $faces
+    ireneBotId: $ireneBotId
+  ) {
+    id
+  }
+}

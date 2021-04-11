@@ -1,0 +1,27 @@
+version: "3.5"
+
+volumes:
+  sp_pg:
+    external: true
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: "rabbitmq"
+    ports:
+      - 3333:5672
+      - 15672:15672
+  pg:
+    container_name: sp_pg
+    restart: on-failure
+    build:
+      context: postgres
+      dockerfile: Dockerfile
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: test
+      POSTGRES_DATABASE: simp
+      POSTGRES_USER: postgres
+    volumes:
+      - sp_pg

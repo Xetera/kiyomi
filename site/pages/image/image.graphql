@@ -1,0 +1,25 @@
+query OneImage($slug: String!) {
+  image(slug: $slug) {
+    unknownFaces {
+      ...FaceData
+      appearance {
+        ...AppearanceData
+      }
+    }
+    appearances {
+      id
+      person {
+        id
+        name
+      }
+      faces {
+        ...FaceData
+      }
+    }
+    uploadedBy {
+      ...UserData
+    }
+    ...ImageData
+    faceScanDate
+  }
+}
