@@ -32,4 +32,4 @@ COPY --from=build /opt/app/dist dist
 
 COPY weights weights
 
-CMD ["yarn", "start"]
+CMD ["node", "./dist/index.js"]
