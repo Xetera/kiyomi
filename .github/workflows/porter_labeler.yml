@@ -1,8 +1,8 @@
+name: Labeler build
 "on":
   push:
     branches:
       - main
-name: Deploy to Porter
 jobs:
   porter-deploy:
     runs-on: ubuntu-latest
