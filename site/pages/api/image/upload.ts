@@ -10,13 +10,11 @@ import {
 import { uploadParsedFiles } from "@/lib/wasabi";
 import mimeType from "mime-types";
 import sizeOf from "image-size";
-import { FaceDetect } from "@/labeler/src/face-recognition";
 import { Appearance, Person, Image, Prisma, MimeType } from "@prisma/client";
 import idgen from "nanoid";
 import { imageFindOptions, sdk } from "@/lib/data-fetching";
 import { amqpPromise, sendImageToFaceRecognition } from "@/lib/amqp";
 
-// we can't use trpc here because of the binary file upload
 export const config = {
   api: {
     bodyParser: false,

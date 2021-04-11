@@ -2,7 +2,7 @@ import { getSession, Provider } from "next-auth/client";
 // Import our CSS
 import "../styles/tailwind.css";
 import "../styles/globals.css";
-// import { SkeletonTheme } from "react-loading-skeleton";
+import "modern-normalize";
 import ReactTooltip from "react-tooltip";
 import { default as _default, alt, light } from "../colors";
 import NextHead from "next/head";

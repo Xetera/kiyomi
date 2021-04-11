@@ -83,11 +83,12 @@ export default function ImageDisplay() {
   };
   const [active, setActive] = React.useState(false);
   const [loaded, setLoaded] = React.useState(false);
-  const { data: facePredictions = [] } = useSWR<PredictionResponse>(
-    `/api/image/face/${image?.slug}`,
-    fetcher,
-    { refreshInterval: 0 }
-  );
+  const facePredictions: any[] = [];
+  // const { data: facePredictions = [] } = useSWR<PredictionResponse>(
+  //   `/api/image/face/${image?.slug}`,
+  //   fetcher,
+  //   { refreshInterval: 0 }
+  // );
   React.useEffect(() => {
     checkSize();
   }, [expanded]);

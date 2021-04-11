@@ -290,6 +290,7 @@ export type ImageWhereInput = {
   hash?: Maybe<StringFilter>;
   height?: Maybe<IntFilter>;
   id?: Maybe<IntFilter>;
+  ireneBotId?: Maybe<IntNullableFilter>;
   isNsfw?: Maybe<BoolFilter>;
   mimetype?: Maybe<EnumMimeTypeFilter>;
   pHash?: Maybe<StringNullableFilter>;
@@ -308,6 +309,7 @@ export type ImageWhereInput = {
 
 export type ImageWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
   slug?: Maybe<Scalars['String']>;
 };
 

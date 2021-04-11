@@ -7,7 +7,6 @@ import {
   RiDeleteBinLine,
 } from "react-icons/ri";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { PredictionResponse } from "@/pages/api/image/face/[slug]";
 import {
   FaceDataFragment,
   Maybe,
@@ -25,7 +24,7 @@ type PortraitProps = React.HTMLProps<HTMLDivElement> & {
     NonNullable<OneImageQuery["image"]>["appearances"][number]
   >;
   face?: Maybe<FaceDataFragment>;
-  prediction?: PredictionResponse[0]["matches"][0];
+  prediction?: any; // PredictionResponse[0]["matches"][0];
 };
 
 export const maxPortraitHeight = 140;
