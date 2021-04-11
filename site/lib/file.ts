@@ -48,7 +48,7 @@ export function parseFiles(
   res: NextApiResponse,
   { name = "file" } = {}
 ): Promise<FormData> {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     upload.array(name)(req as any, res as any, async (err: any) => {
       if (err) {
         return reject(err);
@@ -124,6 +124,8 @@ export async function dominantColors(
 
 type ConversionResult = { data: Buffer; info: sharp.OutputInfo };
 
+const BROKEN_WEBP_HEADER = Buffer.from([0, 0, 0, 0]);
+
 export async function convertImage(
   buffer: Buffer,
   inputFormat: MimeType
@@ -181,11 +183,13 @@ export async function convertImage(
 
     stream.on("end", async () => {
       const padded = Buffer.concat(output);
-      // await fs.writeFile("./wtfOriginal.webp", padded);
 
       // https://xetera.dev/converting-webp for an explanation
-      const final = padded.copyWithin(4, -4).slice(0, -4);
-      // await fs.writeFile("./wtf.webp", final);
+      const isImageHeaderBroken =
+        padded.slice(4, 8).compare(BROKEN_WEBP_HEADER) === 0;
+      const final = isImageHeaderBroken
+        ? padded.copyWithin(4, -4).slice(0, -4)
+        : padded;
       withMetadata(final).then(res, rej);
     });
   });
