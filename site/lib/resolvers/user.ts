@@ -10,6 +10,7 @@ export const User = objectType({
       .image({
         alias: "avatar",
       })
+      .bot()
       .images({
         pagination: true,
         filtering: true,
