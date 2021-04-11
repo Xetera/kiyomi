@@ -24,7 +24,7 @@ RUN yarn cache clean
 
 ### release
 FROM node:14-alpine
-RUN apk update && apk add --virtual libressl-dev openssl
+RUN apk update && apk add --virtual libressl-dev openssl libgomp expat
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 COPY --from=jrottenberg/ffmpeg:4.3-alpine312 /usr/local /usr/local/
