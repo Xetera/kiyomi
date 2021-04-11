@@ -1,4 +1,5 @@
 # Install dependencies only when needed
+### build
 FROM node:14-alpine AS build
 
 WORKDIR /opt/app
@@ -21,8 +22,12 @@ RUN yarn build
 
 RUN yarn cache clean
 
+### release
 FROM node:14-alpine
-RUN apk update && apk add --virtual libressl-dev ffmpeg openssl libwebp libwebp-tools
+RUN apk update && apk add --virtual libressl-dev openssl
+
+ENV LD_LIBRARY_PATH=/usr/local/lib
+COPY --from=jrottenberg/ffmpeg:4.3-alpine312 /usr/local /usr/local/
 
 WORKDIR /opt/app
 ARG NEXT_PUBLIC_BASE_URL
