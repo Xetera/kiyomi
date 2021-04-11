@@ -24,14 +24,12 @@ const apolloServer = new ApolloServer({
   introspection: true,
   playground: {
     title: "Simp.pics API",
-    codeTheme: {},
-    // workspaceName: "Simp.pics API",
   },
   schema,
   async context(ctx: ContextInput) {
     const { req, res } = ctx;
     const auth = req.headers.authorization;
-    const amqp = await amqpPromise;
+    const amqp = await amqpPromise.catch(() => undefined);
 
     if (auth) {
       const user = (await getUserFromToken(auth, prisma)) ?? undefined;

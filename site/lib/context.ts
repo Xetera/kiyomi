@@ -3,7 +3,8 @@ import amqp from "amqplib";
 
 export interface Context {
   prisma: PrismaClient;
-  amqp: amqp.Connection;
+  // could be null due to connection errors
+  amqp?: amqp.Connection;
   user?: User;
   uploadType: "WEBSITE" | "USER";
 }

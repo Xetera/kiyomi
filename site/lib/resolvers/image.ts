@@ -282,6 +282,9 @@ export const Mutation = mutationField((t) => {
     },
     async resolve(_root, { slug }, { prisma, amqp }) {
       const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler";
+      if (!amqp) {
+        throw Error("Could not establish AMQP connection");
+      }
 
       const channel = await amqp.createChannel();
       await channel.assertQueue(queueName);

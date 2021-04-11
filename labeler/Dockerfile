@@ -11,13 +11,15 @@ RUN apt-get update && \
     libc6-dev \
     libssl-dev
 
-RUN yarn global add ts-node typescript
-COPY package.json yarn.lock ./
-RUN yarn --frozen-lockfile
+RUN npm i -g pnpm
+RUN pnpm i -g ts-node typescript
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm i --frozen-lockfile
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
-RUN yarn tf
-RUN yarn build
-RUN yarn cache clean
+RUN pnpm tf
+COPY tsconfig.json tsconfig.json
+COPY src src
+RUN pnpm build
 
 FROM node:14-slim
 RUN apt-get update && apt-get install -y libssl-dev
@@ -26,7 +28,7 @@ WORKDIR /opt/app
 
 ENV NODE_ENV=production
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 COPY --from=build /opt/app/node_modules node_modules
 COPY --from=build /opt/app/dist dist
 

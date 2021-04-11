@@ -64,7 +64,7 @@ export default handle(
             : Promise.resolve(),
           sha256Hash(buffer),
           // using the old buffer here as it's the most compatible with the lib
-          dominantColors(file.buffer, mime).catch((err) => {
+          dominantColors(file.buffer, metadata.type).catch((err) => {
             console.log(err);
           }),
           uploadParsedFiles([

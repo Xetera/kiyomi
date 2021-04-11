@@ -22,7 +22,6 @@
     "tf": "npm rebuild @tensorflow/tfjs-node build-addon-from-source",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -35,6 +34,7 @@
     "trailingComma": "es5"
   },
   "name": "labeler",
+  "private": "true",
   "author": "Xetera",
   "module": "dist/labeler.esm.js",
   "size-limit": [
@@ -48,26 +48,26 @@
     }
   ],
   "devDependencies": {
-    "@graphql-codegen/cli": "^1.21.3",
-    "@graphql-codegen/typescript-graphql-request": "^3.1.0",
     "@size-limit/preset-small-lib": "^4.10.2",
     "@types/amqplib": "^0.5.17",
     "@types/convict": "^6.0.1",
-    "@types/pino": "^6.3.6",
+    "@types/pino": "^6.3.7",
     "husky": "^6.0.0",
     "pino-pretty": "^4.7.1",
     "size-limit": "^4.10.2",
     "tsdx": "^0.14.1",
-    "tslib": "^2.1.0",
-    "typescript": "^4.2.3"
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
   },
   "dependencies": {
+    "@tensorflow/tfjs-node": "1.7.4",
     "amqplib": "^0.7.1",
     "axios": "^0.21.1",
     "canvas": "^2.7.0",
     "convict": "^6.0.1",
     "dotenv": "^8.2.0",
     "face-api.js": "^0.22.2",
+    "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "graphql-tag": "^2.11.0",
     "pino": "^6.11.2",
