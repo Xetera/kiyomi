@@ -15,11 +15,9 @@ RUN npm i -g pnpm
 RUN yarn global add ts-node typescript
 COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
-# Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
 COPY tsconfig.json tsconfig.json
 COPY src src
 RUN yarn build
-RUN yarn tf
 
 FROM node:14-slim
 RUN apt-get update && apt-get install -y libssl-dev build-essential
@@ -32,6 +30,7 @@ COPY package.json yarn.lock ./
 RUN yarn global add node-pre-gyp
 RUN yarn --production --frozen-lockfile
 COPY --from=build /opt/app/dist dist
+# Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
 RUN yarn tf
 
 COPY weights weights
