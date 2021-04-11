@@ -37,4 +37,4 @@ jobs:
         id: deploy_porter
         run: |2
 
-          curl -X POST "https://dashboard.getporter.dev/api/webhooks/deploy/${{secrets.WEBHOOK_LABELER}}?commit=$(git rev-parse --short HEAD)&repository=index.docker.io/xetera/simp-pics"
+          curl -X POST "https://dashboard.getporter.dev/api/webhooks/deploy/${{secrets.WEBHOOK_LABELER}}?commit=$(git rev-parse --short HEAD)&repository=index.docker.io/xetera/simp-pics-labeler"
