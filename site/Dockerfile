@@ -22,7 +22,7 @@ RUN yarn build
 RUN yarn cache clean
 
 FROM node:14-alpine
-RUN apk update && apk add --virtual libressl-dev ffmpeg openssl
+RUN apk update && apk add --virtual libressl-dev ffmpeg openssl libwebp libwebp-tools
 
 WORKDIR /opt/app
 ARG NEXT_PUBLIC_BASE_URL
