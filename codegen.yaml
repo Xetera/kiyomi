@@ -1,8 +1,8 @@
 # don't touch this file, it will magically generate types
 overwrite: true
-schema: ./site/lib/__generated__/schema.graphql
+schema: ./site/__generated__/schema.graphql
 generates:
-  ./site/lib/__generated__/request.ts:
+  ./site/__generated__/request.ts:
     documents:
       - site/queries/**/*.graphql
     plugins: &request_plugins
@@ -15,7 +15,7 @@ generates:
     documents:
       - labeler/src/**/*.graphql
     plugins: *request_plugins
-  ./site/lib/__generated__/graphql.ts:
+  ./site/__generated__/graphql.ts:
     documents:
       - site/pages/**/*.graphql
       - site/components/**/*.graphql

@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { fetcher, PromiseReturnType } from "./shared";
 import { publicImageFields } from "./transformer";
-import { getSdk } from "@/lib/__generated__/request";
+import { getSdk } from "@/__generated__/request";
 import { GraphQLClient } from "graphql-request";
 import React from "react";
 import { dehydrate } from "react-query/hydration";

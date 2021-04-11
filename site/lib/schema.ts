@@ -13,14 +13,8 @@ export const schema = makeSchema({
     queryComplexityPlugin(),
   ],
   outputs: {
-    schema: path.join(process.cwd(), "lib", "__generated__", "schema.graphql"),
-    typegen: path.join(
-      process.cwd(),
-      "node_modules",
-      "@types",
-      "nexus-typegen",
-      "index.d.ts"
-    ),
+    schema: path.join(process.cwd(), "__generated__", "schema.graphql"),
+    typegen: path.join(process.cwd(), "__generated__", "index.d.ts"),
   },
   sourceTypes: {
     modules: [{ module: ".prisma/client", alias: "PrismaClient" }],

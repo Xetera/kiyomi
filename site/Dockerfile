@@ -1,16 +1,8 @@
 # Install dependencies only when needed
-FROM node:14-slim AS build
+FROM node:14-alpine AS build
 
 WORKDIR /opt/app
-# tensorflow needs these binaries
-RUN apt-get update && \ 
-    apt-get install -y build-essential \
-    wget \
-    python3 \
-    make \
-    gcc \ 
-    libc6-dev \
-    libssl-dev
+RUN apk update && apk add --virtual libressl-dev openssl
 
 COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile

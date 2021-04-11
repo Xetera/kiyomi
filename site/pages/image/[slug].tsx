@@ -9,7 +9,7 @@ import { RiSpyLine } from "react-icons/ri";
 
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import { MimeType, useOneImageQuery } from "@/lib/__generated__/graphql";
+import { MimeType, useOneImageQuery } from "@/__generated__/graphql";
 import withApollo from "@/lib/apollo";
 import { ImageEditModal } from "@/components/image-edit-modal";
 import { QueryClient } from "react-query";

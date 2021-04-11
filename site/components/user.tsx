@@ -1,6 +1,6 @@
 import React from "react";
 import { RiHammerLine } from "react-icons/ri";
-import { Maybe, UserDataFragment } from "@/lib/__generated__/graphql";
+import { Maybe, UserDataFragment } from "@/__generated__/graphql";
 
 export function User({
   user,

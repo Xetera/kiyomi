@@ -1,4 +1,4 @@
-import { OneImageQuery } from "@/lib/__generated__/graphql";
+import { OneImageQuery } from "@/__generated__/graphql";
 import React from "react";
 
 export const FaceContext = React.createContext({

@@ -4,7 +4,7 @@ import { User } from "@/components/user";
 import { getSession, useSession } from "next-auth/client";
 import React from "react";
 import useSWR from "swr";
-import { useMeQuery } from "@/lib/__generated__/graphql";
+import { useMeQuery } from "@/__generated__/graphql";
 import withApollo from "@/lib/apollo";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";

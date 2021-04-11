@@ -1,6 +1,6 @@
 # don't touch this file, it will magically generate types
 overwrite: true
-schema: ../lib/__generated__/schema.graphql
+schema: ../__generated__/schema.graphql
 generates:
   ./src/__generated__/request.ts: &request
     documents:

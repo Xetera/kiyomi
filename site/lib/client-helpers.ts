@@ -1,4 +1,4 @@
-import * as g from "@/lib/__generated__/graphql";
+import * as g from "@/__generated__/graphql";
 import { QueryClient } from "react-query";
 import { dehydrate } from "react-query/hydration";
 

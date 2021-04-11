@@ -1,1 +1,1 @@
-{ "schema": "schema.graphql" }
+{ "schema": "site/__generated__/schema.graphql" }

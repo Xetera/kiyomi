@@ -11,7 +11,7 @@ import {
   FaceDataFragment,
   Maybe,
   OneImageQuery,
-} from "@/lib/__generated__/graphql";
+} from "@/__generated__/graphql";
 import useImageSlice from "@/hooks/useImageSlice";
 
 function ActionButton({ icon, className }) {

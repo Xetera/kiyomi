@@ -11,7 +11,7 @@ import {
   AppearanceDataFragment,
   FaceDataFragment,
   ImageDataFragment,
-} from "@/lib/__generated__/graphql";
+} from "@/__generated__/graphql";
 import Hr from "./hr";
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
