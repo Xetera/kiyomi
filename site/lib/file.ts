@@ -114,6 +114,17 @@ export function perceptualHash(data: Buffer, mimetype: string) {
   );
 }
 
+export function parseExtension(extension: string): MimeType {
+  // stinky check
+  if (extension === "jpeg") {
+    return MimeType.JPG;
+  }
+  if (!(extension.toUpperCase() in MimeType)) {
+    throw Error(`${extension} is not a valid mimetype`);
+  }
+  return MimeType[extension.toUpperCase()];
+}
+
 export async function dominantColors(
   data: Buffer,
   type: string
@@ -122,7 +133,10 @@ export async function dominantColors(
   return colors.map((color: any) => color.num());
 }
 
-type ConversionResult = { data: Buffer; info: sharp.OutputInfo };
+type ConversionResult = {
+  data: Buffer;
+  info: sharp.Metadata;
+};
 
 const BROKEN_WEBP_HEADER = Buffer.from([0, 0, 0, 0]);
 
@@ -136,7 +150,7 @@ export async function convertImage(
     MimeType.WEBP,
     MimeType.WEBM,
   ]);
-  const mappings: Record<MimeType, string> = {
+  const mappings: Record<MimeType | string, string> = {
     [MimeType.AVIF]: "webp",
     [MimeType.JPG]: "webp",
     [MimeType.PNG]: "webp",
@@ -152,14 +166,8 @@ export async function convertImage(
   readable.push(null);
 
   async function withMetadata(b: Buffer): Promise<ConversionResult> {
-    return new Promise((res, rej) => {
-      sharp(b).toBuffer((err, data, info) => {
-        if (err) {
-          return rej(err);
-        }
-        return res({ data, info });
-      });
-    });
+    const info = await sharp(b).metadata();
+    return { data: b, info };
   }
 
   if (excludedFormats.has(inputFormat)) {

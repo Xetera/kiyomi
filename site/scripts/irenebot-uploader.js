@@ -39,7 +39,7 @@ const body = {
   p_key: process.env.TOKEN,
 };
 
-const MAX_CONTENT_LENGTH = 6_000_000;
+const MAX_CONTENT_LENGTH = 8_000_000;
 const parallelMap = (arr, fn, max) => {
   const out = [];
   const initial = [...Array(max)];
@@ -59,26 +59,19 @@ const imageSize = (url) =>
   fetch(url, { method: "HEAD" }).then((r) => r.headers.get("content-length"));
 
 let _queue = Promise.resolve();
-function set(data) {
-  _queue = _queue.then(async () => {
-    await fs.promises.writeFile(
-      path.join(__dirname, "results.json"),
-      JSON.stringify(data)
-    );
-  });
-}
 
-const uploadFile = async (url, person) => {
+const uploadFile = async (url, person, imageId) => {
   const form = new FormData();
   form.append("file", url);
   form.append("source", "Irenebot (https://github.com/MujyKun/IreneBot)");
-  form.append("person_id", person.id);
-  form.append("person_name", person.fullname);
+  form.append("ireneBotImageId", imageId);
+  form.append("ireneBotIdolId", person.id);
+  form.append("ireneBotIdolName", person.fullname);
   const response = await fetch("http://localhost:3000/api/image/upload", {
     method: "POST",
     headers: {
       Authorization:
-        "SIMP_b367dbb15ee0082e9ff1978a918d2ee54ee111b50fe3dc1faf1e340f9c04b6a0",
+        "SIMP_3e237d76bfd6d4afe2987ba80b6636e91e6920e0fff3d8de12eb8773d41ca9b2",
     },
     body: form,
   }).then((r) => r.json());
@@ -87,23 +80,20 @@ const uploadFile = async (url, person) => {
 
 const DC = [JIU, SUA, SIYEON, HANDONG, YOOHYEON, DAMI, GAHYEON];
 
-async function memes(id, results, person) {
-  if (id in results) {
-    console.log(`${id} was already fetched`);
-    return;
-  }
-  const res = await fetch(`https://api.irenebot.com/file/${id}`, {
+async function memes(id, person) {
+  const res = await fetch(`https://api.irenebot.com/file/${id}/`, {
     headers: {
       "content-type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify(body),
+    headers: {
+      Authorization: `Bearer ${process.env.TOKEN}`,
+      "User-Agent": "simp.pics crawler",
+    },
     redirect: "manual",
   });
   if (res.status === 500) {
     console.log(`${id} responded with 500`);
-    results[id] = -1;
-    return set(results);
   }
   const imageLocation = res.headers.get("location");
   if (!imageLocation) {
@@ -112,16 +102,17 @@ async function memes(id, results, person) {
     console.log(res.headers);
     return;
   }
-  console.log(`Got valid response from ${id}. STATUS = ${res.status}`);
+  console.log(
+    `Got valid response from ${id}. ${imageLocation}. STATUS = ${res.status}`
+  );
   const size = await imageSize(imageLocation);
+  const human = humanFileSize(size);
+  console.log(`${id} has filesize: ${human}`);
   if (size > MAX_CONTENT_LENGTH) {
-    console.log(`skipping ${id} because it's too big = ${humanFileSize(size)}`);
-    results[id] = -1;
-    return set(results);
+    console.log(`skipping ${id} because it's too big = ${human}`);
+    return;
   }
-  uploadFile(imageLocation, person);
-  results[id] = 1;
-  return set(results);
+  uploadFile(imageLocation, person, id);
 }
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -132,25 +123,20 @@ const makeImages = (t) => require(`./members/${t}.json`);
 parallelMap(
   DC.flatMap((d) =>
     makeImages(d)
-      .slice(300, 310)
+      .slice(304, 305)
       .map((image) => ({
         imageId: image.id,
         personId: d,
       }))
-  ),
+  ).slice(3, 6),
   async ({ imageId, personId }) => {
     const person = members.find((member) => member.id === personId);
-    const results = JSON.parse(
-      await _queue.then((_) =>
-        fs.promises.readFile(path.join(__dirname, "results.json"), "utf-8")
-      )
-    );
-    await memes(imageId, results, person);
+    await memes(imageId, person);
   },
   5
 ).then((r) => {
   console.log("done!");
-  process.exit(0);
+  // process.exit(0);
 });
 
 function pleaseDontExit() {

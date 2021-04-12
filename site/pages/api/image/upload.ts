@@ -4,6 +4,7 @@ import {
   convertImage,
   dominantColors,
   mimetypeMappings,
+  parseExtension,
   perceptualHash,
   sha256Hash,
 } from "@/lib/file";
@@ -28,6 +29,17 @@ export default handle(
         const { files, fields } = upload;
         const [file] = files;
         const { ireneBotImageId, ireneBotIdolId, ireneBotIdolName } = fields;
+        if (ireneBotImageId) {
+          const existingImage = await db.image.findUnique({
+            where: { ireneBotId: Number(ireneBotImageId) },
+            select: { id: true },
+          });
+          if (existingImage) {
+            return res.json({
+              error: `Image with irene id ${ireneBotImageId} already exists`,
+            });
+          }
+        }
         const tags = fields.tags ? fields.tags.split(",") : [];
         const source = fields.source;
         const isPublic = fields?.public === "true" ?? false;
@@ -44,16 +56,18 @@ export default handle(
         if (!(parsedMimetype in MimeType)) {
           return res.json({ error: `Invalid mimetype: ${metadata.type}` });
         }
-        const webp = await convertImage(
-          file.buffer,
-          metadata.type.toUpperCase() as MimeType
-        );
+        const inputFormat = parseExtension(metadata.type);
+        console.log({ inputFormat });
+        const webp = await convertImage(file.buffer, inputFormat);
 
         const { format, height, width } = webp.info;
-        // return;
+
         const buffer = webp.data;
         const slug = idgen.nanoid(16);
         const slugWithExtension = `${slug}.${format}`;
+        if (!format) {
+          return res.json({ error: "Invalid file format" });
+        }
         const mime = mimeType.lookup(format);
         if (mime === false) {
           return res.json({ error: "invalid file type" });
@@ -109,9 +123,7 @@ export default handle(
             isNsfw: nsfw,
             slug,
             ...(palette ? { palette } : {}),
-            user: {
-              connect: { email: user.email ?? undefined },
-            },
+            userId: user.id,
             tags: {
               create: tags.map((tag) => {
                 return {

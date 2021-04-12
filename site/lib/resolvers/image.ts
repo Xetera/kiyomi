@@ -177,7 +177,7 @@ export const Mutation = mutationField((t) => {
     ) {
       const image = await prisma.image.findUnique({
         where: { slug },
-        include: { faces: true },
+        include: { faces: true, appearances: true },
       });
       if (!image) {
         throw Error("Invalid image slug");
@@ -194,9 +194,14 @@ export const Mutation = mutationField((t) => {
         });
       }
 
-      let existingPerson: Person | undefined = ireneBotId
+      let existingAppearance: Appearance | undefined;
+      const shouldLinkWithExistingAppearance = image.appearances.length === 1;
+      if (shouldLinkWithExistingAppearance) {
+        existingAppearance = image.appearances[0];
+      }
+      let existingPerson: Person | undefined = existingAppearance?.personId
         ? (await prisma.person.findUnique({
-            where: { ireneBotId },
+            where: { ireneBotId: existingAppearance.personId },
           })) ?? undefined
         : undefined;
 
@@ -209,8 +214,7 @@ export const Mutation = mutationField((t) => {
         });
       }
 
-      let existingAppearance: Appearance | undefined;
-      if (existingPerson) {
+      if (existingPerson && !existingAppearance) {
         existingAppearance = await prisma.appearance.create({
           data: {
             image: {
