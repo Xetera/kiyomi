@@ -8,7 +8,7 @@ import {
   perceptualHash,
   sha256Hash,
 } from "@/lib/file";
-import { uploadParsedFiles } from "@/lib/wasabi";
+import { uploadImage } from "@/lib/wasabi";
 import mimeType from "mime-types";
 import sizeOf from "image-size";
 import { Appearance, Person, Image, Prisma, MimeType } from "@prisma/client";
@@ -81,13 +81,11 @@ export default handle(
           dominantColors(file.buffer, metadata.type).catch((err) => {
             console.log(err);
           }),
-          uploadParsedFiles([
-            {
-              ...file,
-              path: slugWithExtension,
-              mimetype: mime || "image/webp",
-            },
-          ]),
+          uploadImage({
+            key: slugWithExtension,
+            body: buffer,
+            mimetype: mime || "image/webp",
+          }),
         ]);
         if (uploadResult.$response.error) {
           return console.log(uploadResult.$response.error);
@@ -118,7 +116,7 @@ export default handle(
             pHash: pHash as string | undefined,
             hash: hash as string,
             public: isPublic,
-            bytes: file.size,
+            bytes: buffer.byteLength,
             source,
             isNsfw: nsfw,
             slug,

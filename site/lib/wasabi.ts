@@ -23,13 +23,19 @@ const UPLOAD_CONFIG = {
   Bucket: config.bucketName,
 };
 
-export function uploadParsedFiles([file]: UploadableFile[]) {
+export type UploadableImage = {
+  key: string;
+  body: Buffer | ReadableStream;
+  mimetype: string;
+};
+
+export function uploadImage(image: UploadableImage) {
   return wasabi
     .putObject({
       ...UPLOAD_CONFIG,
-      Key: file.path,
-      Body: file.buffer,
-      ContentType: file.mimetype,
+      Key: image.key,
+      Body: image.body,
+      ContentType: image.mimetype,
     })
     .promise();
 }

@@ -135,7 +135,7 @@ export async function dominantColors(
 
 type ConversionResult = {
   data: Buffer;
-  info: sharp.Metadata;
+  info: sharp.OutputInfo;
 };
 
 const BROKEN_WEBP_HEADER = Buffer.from([0, 0, 0, 0]);
@@ -165,40 +165,52 @@ export async function convertImage(
   readable.push(buffer);
   readable.push(null);
 
-  async function withMetadata(b: Buffer): Promise<ConversionResult> {
-    const info = await sharp(b).metadata();
-    return { data: b, info };
+  async function convertWebp(b: Buffer): Promise<ConversionResult> {
+    console.log("converting image to webp");
+    return withMetadata(sharp(b).webp({ quality: 80 }));
+  }
+
+  async function withMetadata(b: sharp.Sharp): Promise<ConversionResult> {
+    return new Promise((resolve, reject) => {
+      b.toBuffer((err, data, info) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve({ data, info });
+      });
+    });
   }
 
   if (excludedFormats.has(inputFormat)) {
-    return withMetadata(buffer);
+    return withMetadata(sharp(buffer));
   }
+  return convertWebp(buffer);
 
-  return new Promise((res, rej) => {
-    const passthrough = new PassThrough();
+  // return new Promise((res, rej) => {
+  //   const passthrough = new PassThrough();
 
-    const outputFormat = mappings[inputFormat];
-    let command = ffmpeg()
-      .input(readable)
-      .outputFormat(outputFormat)
-      .on("error", rej);
-    const stream = command.stream(passthrough, { end: true });
+  //   const outputFormat = mappings[inputFormat];
+  //   let command = ffmpeg()
+  //     .input(readable)
+  //     .outputFormat(outputFormat)
+  //     .on("error", rej);
+  //   const stream = command.stream(passthrough, { end: true });
 
-    let output: Buffer[] = [];
-    passthrough.on("data", (data) => output.push(data));
-    // sharp(buffer).webp().toFile("./testsharp.webp");
-    passthrough.on("error", rej);
+  //   let output: Buffer[] = [];
+  //   passthrough.on("data", (data) => output.push(data));
+  //   // sharp(buffer).webp().toFile("./testsharp.webp");
+  //   passthrough.on("error", rej);
 
-    stream.on("end", async () => {
-      const padded = Buffer.concat(output);
+  //   stream.on("end", async () => {
+  //     const padded = Buffer.concat(output);
 
-      // https://xetera.dev/converting-webp for an explanation
-      const isImageHeaderBroken =
-        padded.slice(4, 8).compare(BROKEN_WEBP_HEADER) === 0;
-      const final = isImageHeaderBroken
-        ? padded.copyWithin(4, -4).slice(0, -4)
-        : padded;
-      withMetadata(final).then(res, rej);
-    });
-  });
+  //     // https://xetera.dev/converting-webp for an explanation
+  //     const isImageHeaderBroken =
+  //       padded.slice(4, 8).compare(BROKEN_WEBP_HEADER) === 0;
+  //     const final = isImageHeaderBroken
+  //       ? padded.copyWithin(4, -4).slice(0, -4)
+  //       : padded;
+  //     withMetadata(final).then(res, rej);
+  //   });
+  // });
 }

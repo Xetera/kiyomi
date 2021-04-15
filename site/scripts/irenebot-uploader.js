@@ -5,6 +5,8 @@ const path = require("path");
 const FormData = require("form-data");
 const members = require("./members.json");
 
+const production = true;
+
 const JIU = 157;
 const SUA = 158;
 const SIYEON = 159;
@@ -67,71 +69,85 @@ const uploadFile = async (url, person, imageId) => {
   form.append("ireneBotImageId", imageId);
   form.append("ireneBotIdolId", person.id);
   form.append("ireneBotIdolName", person.fullname);
-  const response = await fetch("http://localhost:3000/api/image/upload", {
-    method: "POST",
-    headers: {
-      Authorization:
-        "SIMP_3e237d76bfd6d4afe2987ba80b6636e91e6920e0fff3d8de12eb8773d41ca9b2",
-    },
-    body: form,
-  }).then((r) => r.json());
+  const response = await fetch(
+    production
+      ? "https://mamamoo.solar/api/image/upload"
+      : "http://localhost:3000/api/image/upload",
+    {
+      method: "POST",
+      headers: {
+        Authorization: production
+          ? "SIMP_123327eb205d16f2bd1f73ff32615e5b9fca7ac9520d2ff1f7ad57e9f93ce7bb"
+          : "SIMP_3e237d76bfd6d4afe2987ba80b6636e91e6920e0fff3d8de12eb8773d41ca9b2",
+      },
+      body: form,
+    }
+  ).then((r) => r.json());
   console.log(response);
 };
 
 const DC = [JIU, SUA, SIYEON, HANDONG, YOOHYEON, DAMI, GAHYEON];
 
 async function memes(id, person) {
-  const res = await fetch(`https://api.irenebot.com/file/${id}/`, {
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.TOKEN}`,
-      "User-Agent": "simp.pics crawler",
-    },
-    redirect: "manual",
-  });
-  if (res.status === 500) {
-    console.log(`${id} responded with 500`);
+  try {
+    const res = await fetch(`https://api.irenebot.com/file/${id}/`, {
+      headers: {
+        "content-type": "application/json",
+      },
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.TOKEN}`,
+        "User-Agent": "simp.pics crawler",
+      },
+      redirect: "manual",
+    });
+    if (res.status === 500) {
+      console.log(`${id} responded with 500`);
+      return;
+    }
+    const imageLocation = res.headers.get("location");
+    if (!imageLocation) {
+      console.log("uhhhh, no image?");
+      console.log(res);
+      console.log(res.headers);
+      return;
+    }
+    console.log(
+      `Got valid response from ${id}. ${imageLocation}. STATUS = ${res.status}`
+    );
+    const size = await imageSize(imageLocation);
+    const human = humanFileSize(size);
+    console.log(`${id} has filesize: ${human}`);
+    if (size > MAX_CONTENT_LENGTH) {
+      console.log(`skipping ${id} because it's too big = ${human}`);
+      return;
+    }
+    uploadFile(imageLocation, person, id);
+  } catch (err) {
+    console.log(`Unable to upload image: ${id}`);
+    console.error(err);
   }
-  const imageLocation = res.headers.get("location");
-  if (!imageLocation) {
-    console.log("uhhhh, no image?");
-    console.log(res);
-    console.log(res.headers);
-    return;
-  }
-  console.log(
-    `Got valid response from ${id}. ${imageLocation}. STATUS = ${res.status}`
-  );
-  const size = await imageSize(imageLocation);
-  const human = humanFileSize(size);
-  console.log(`${id} has filesize: ${human}`);
-  if (size > MAX_CONTENT_LENGTH) {
-    console.log(`skipping ${id} because it's too big = ${human}`);
-    return;
-  }
-  uploadFile(imageLocation, person, id);
 }
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
 const target = 162;
-const makeImages = (t) => require(`./members/${t}.json`);
+const imagesOfIdol = (t) => require(`./members/${t}.json`);
 
 parallelMap(
-  DC.flatMap((d) =>
-    makeImages(d)
-      .slice(304, 305)
+  [JIU].flatMap((d) =>
+    imagesOfIdol(157)
+      .slice(0, 1000)
       .map((image) => ({
         imageId: image.id,
         personId: d,
       }))
-  ).slice(3, 6),
+  ),
   async ({ imageId, personId }) => {
     const person = members.find((member) => member.id === personId);
     await memes(imageId, person);
+    // production download delay
+    await sleep(2000);
   },
   5
 ).then((r) => {
