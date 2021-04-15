@@ -36,10 +36,18 @@ export function canDetectFaces(mimetype: string) {
   return supportedFaceDetectionMimetypes.has(mimetype);
 }
 
+type Detection = faceapi.WithFaceDescriptor<
+  faceapi.WithFaceLandmarks<
+    {
+      detection: faceapi.FaceDetection;
+    },
+    faceapi.FaceLandmarks68
+  >
+>[];
 export function detectFaces(
   buf: Buffer,
   { width, height }: { width: number; height: number }
-) {
+): Promise<Detection> {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = async () => {
