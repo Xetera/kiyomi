@@ -36,21 +36,25 @@ export function canDetectFaces(mimetype: string) {
   return supportedFaceDetectionMimetypes.has(mimetype);
 }
 
-export async function detectFaces(
+export function detectFaces(
   buf: Buffer,
   { width, height }: { width: number; height: number }
 ) {
-  const image = new Image();
-  image.src = buf;
-  image.height = height;
-  image.width = width;
-
-  const detections = await faceapi
-    // @ts-ignore
-    .detectAllFaces(image)
-    .withFaceLandmarks()
-    .withFaceDescriptors();
-  return detections;
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = async () => {
+      const detections = await faceapi
+        // @ts-ignore
+        .detectAllFaces(image)
+        .withFaceLandmarks()
+        .withFaceDescriptors();
+      return resolve(detections);
+    };
+    image.onerror = reject;
+    image.height = height;
+    image.width = width;
+    image.src = buf;
+  });
 }
 
 export type RecognitionMatch = {
