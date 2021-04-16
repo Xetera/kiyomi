@@ -3,12 +3,8 @@ import amqp from "amqplib";
 import { GraphQLClient } from "graphql-request";
 import { config, logger } from "./config";
 import { getSdk } from "./__generated__/request";
-import axios from "axios";
-import * as faceapi from "face-api.js";
 import { canDetectFaces, checkWeights, detectFaces } from "./face-recognition";
-import * as canvas from "canvas";
-
-const { Canvas, Image, ImageData } = canvas;
+import axios from "axios";
 
 const client = new GraphQLClient(`${config.get("backendUrl")}/api/graphql`, {
   headers: {
@@ -45,8 +41,8 @@ function createConsumer(channel: amqp.Channel) {
         return;
       }
       console.log(JSON.stringify(packet));
+      let message;
       try {
-        let message;
         try {
           message = JSON.parse(packet.content.toString());
         } catch (err) {
@@ -62,7 +58,9 @@ function createConsumer(channel: amqp.Channel) {
         const delay = 1000 * 60 * 5;
         logger.error(err);
         logger.info(`Dead lettering packet with ${delay} ms delay`);
-        publish(faceRecognitionQueueName, packet, delay);
+        if (message) {
+          publish(faceRecognitionQueueName, message, delay);
+        }
         channel.ack(packet);
       }
     };
@@ -79,6 +77,7 @@ async function processFaces(conn: amqp.Connection) {
       // console.log({ msg });
       const sdk = getSdk(client);
       if (!msg.slug) {
+        logger.debug(msg);
         return logger.warn(`Did not receive a slug with an incoming message`);
       }
       const { image } = await sdk.getBackendImage({
@@ -95,10 +94,8 @@ async function processFaces(conn: amqp.Connection) {
       const imageBuffer = await axios.get(image.rawUrl, {
         responseType: "arraybuffer",
       });
-      const faces = await detectFaces(imageBuffer.data, {
-        width: image.width,
-        height: image.height,
-      });
+      const faces = await detectFaces(imageBuffer.data);
+      console.log(faces);
       await sdk.uploadFaces({
         slug: msg.slug,
         ireneBotId: msg.ireneBotIdolId,
@@ -164,7 +161,6 @@ async function populateQueues(conn: amqp.Connection) {
 async function main() {
   logger.info("Running app");
   // @ts-ignore
-  await faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
   await checkWeights();
   const conn = await connect();
   await populateQueues(conn);

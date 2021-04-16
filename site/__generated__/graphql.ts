@@ -755,6 +755,22 @@ export type FaceDataFragment = (
   & Pick<Face, 'id' | 'x' | 'y' | 'width' | 'height' | 'score'>
 );
 
+export type HomepageQueryVariables = Exact<{
+  botUser: Scalars['Int'];
+}>;
+
+
+export type HomepageQuery = (
+  { __typename?: 'Query' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & ImageDataFragment
+    )> }
+  )> }
+);
+
 export type ImageDataFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette'>
@@ -895,6 +911,27 @@ export const useOneImageQuery = <
     useQuery<OneImageQuery, TError, TData>(
       ['OneImage', variables],
       fetcher<OneImageQuery, OneImageQueryVariables>(OneImageDocument, variables),
+      options
+    );
+export const HomepageDocument = `
+    query Homepage($botUser: Int!) {
+  user(id: $botUser) {
+    images {
+      ...ImageData
+    }
+  }
+}
+    ${ImageDataFragmentDoc}`;
+export const useHomepageQuery = <
+      TData = HomepageQuery,
+      TError = unknown
+    >(
+      variables: HomepageQueryVariables, 
+      options?: UseQueryOptions<HomepageQuery, TError, TData>
+    ) => 
+    useQuery<HomepageQuery, TError, TData>(
+      ['Homepage', variables],
+      fetcher<HomepageQuery, HomepageQueryVariables>(HomepageDocument, variables),
       options
     );
 export const MeDocument = `

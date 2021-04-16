@@ -135,8 +135,8 @@ const target = 162;
 const imagesOfIdol = (t) => require(`./members/${t}.json`);
 
 parallelMap(
-  [JIU].flatMap((d) =>
-    imagesOfIdol(157)
+  [YOOHYEON].flatMap((d) =>
+    imagesOfIdol(d)
       .slice(0, 1000)
       .map((image) => ({
         imageId: image.id,

@@ -703,6 +703,22 @@ export type FaceDataFragment = (
   & Pick<Face, 'id' | 'x' | 'y' | 'width' | 'height' | 'score'>
 );
 
+export type HomepageQueryVariables = Exact<{
+  botUser: Scalars['Int'];
+}>;
+
+
+export type HomepageQuery = (
+  { __typename?: 'Query' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & ImageDataFragment
+    )> }
+  )> }
+);
+
 export type ImageDataFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette'>
@@ -803,6 +819,15 @@ export const UserDataFragmentDoc = gql`
   avatar
 }
     `;
+export const HomepageDocument = gql`
+    query Homepage($botUser: Int!) {
+  user(id: $botUser) {
+    images {
+      ...ImageData
+    }
+  }
+}
+    ${ImageDataFragmentDoc}`;
 export const MeDocument = gql`
     query Me {
   me {
@@ -839,6 +864,9 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    Homepage(variables: HomepageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<HomepageQuery> {
+      return withWrapper(() => client.request<HomepageQuery>(HomepageDocument, variables, requestHeaders));
+    },
     Me(variables?: MeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MeQuery> {
       return withWrapper(() => client.request<MeQuery>(MeDocument, variables, requestHeaders));
     },

@@ -1,14 +1,11 @@
-import "@tensorflow/tfjs-node";
-// import * as fs from "fs";
-// import * as path from "path";
-import { Image } from "canvas";
-
-import * as faceapi from "face-api.js";
+import * as tf from "@tensorflow/tfjs-node";
+import { getImageData, imageFromBuffer } from "@canvas/image";
+import * as faceapi from "@vladmandic/face-api";
 import {
   WithFaceDescriptor,
   WithFaceLandmarks,
   FaceDetection,
-} from "face-api.js";
+} from "@vladmandic/face-api";
 
 export async function checkWeights() {
   // @ts-ignore
@@ -18,6 +15,12 @@ export async function checkWeights() {
     faceapi.nets.ssdMobilenetv1.loadFromDisk("./weights"),
     faceapi.nets.faceLandmark68Net.loadFromDisk("./weights"),
   ]);
+  console.log(
+    faceapi.version,
+    tf.version.tfjs,
+    faceapi.tf.version.tfjs,
+    faceapi.tf.getBackend()
+  );
 }
 
 export type FaceDetect = WithFaceDescriptor<
@@ -44,25 +47,36 @@ type Detection = faceapi.WithFaceDescriptor<
     faceapi.FaceLandmarks68
   >
 >[];
-export function detectFaces(
-  buf: Buffer,
-  { width, height }: { width: number; height: number }
-): Promise<Detection> {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = async () => {
-      const detections = await faceapi
-        // @ts-ignore
-        .detectAllFaces(image)
-        .withFaceLandmarks()
-        .withFaceDescriptors();
-      return resolve(detections);
-    };
-    image.onerror = reject;
-    image.height = height;
-    image.width = width;
-    image.src = buf;
+export async function detectFaces(buf: Buffer): Promise<Detection> {
+  const canvas = await imageFromBuffer(buf);
+  const optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({
+    minConfidence: 0.1,
+    maxResults: 10,
   });
+
+  const imageData = getImageData(canvas);
+  if (!imageData) {
+    throw Error("No image data found");
+  }
+
+  const tensor = tf.tidy(() => {
+    const data = tf.tensor(
+      Array.from(imageData.data),
+      [canvas.height, canvas.width, 4],
+      "int32"
+    ); // create rgba image tensor from flat array
+    const channels = tf.split(data, 4, 2); // split rgba to channels
+    const rgb = tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb
+    const reshape = tf.reshape(rgb, [1, canvas.height, canvas.width, 3]); // move extra dim from the end of tensor and use it as batch number instead
+    return reshape;
+  });
+  console.log("tensor:", tensor.shape, tensor.size);
+
+  const detections = await faceapi
+    .detectAllFaces(tensor, optionsSSDMobileNet)
+    .withFaceLandmarks()
+    .withFaceDescriptors();
+  return detections;
 }
 
 export type RecognitionMatch = {

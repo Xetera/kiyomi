@@ -1,0 +1,8 @@
+query Homepage($botUser: Int!) {
+  # temporary query with JiuBot id hardcoded
+  user(id: $botUser) {
+    images {
+      ...ImageData
+    }
+  }
+}
