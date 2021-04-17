@@ -40,7 +40,7 @@ function createConsumer(channel: amqp.Channel) {
         console.error("received a null packet...? Is the connection dying?");
         return;
       }
-      console.log(JSON.stringify(packet));
+
       let message;
       try {
         try {
@@ -74,7 +74,6 @@ async function processFaces(conn: amqp.Connection) {
   channel.consume(
     faceRecognitionQueueName,
     consume(async (msg: { slug: string; ireneBotIdolId?: number }) => {
-      // console.log({ msg });
       const sdk = getSdk(client);
       if (!msg.slug) {
         logger.debug(msg);
@@ -94,8 +93,11 @@ async function processFaces(conn: amqp.Connection) {
       const imageBuffer = await axios.get(image.rawUrl, {
         responseType: "arraybuffer",
       });
+      const label = `detection-time-${image.id}`;
+      console.time(label);
       const faces = await detectFaces(imageBuffer.data);
-      console.log(faces);
+      console.timeEnd(label);
+
       await sdk.uploadFaces({
         slug: msg.slug,
         ireneBotId: msg.ireneBotIdolId,
@@ -108,7 +110,6 @@ async function processFaces(conn: amqp.Connection) {
           descriptor: Array.from(descriptor),
         })),
       });
-      logger.info(``);
     })
   );
 }
@@ -160,7 +161,6 @@ async function populateQueues(conn: amqp.Connection) {
 
 async function main() {
   logger.info("Running app");
-  // @ts-ignore
   await checkWeights();
   const conn = await connect();
   await populateQueues(conn);

@@ -49,10 +49,6 @@ type Detection = faceapi.WithFaceDescriptor<
 >[];
 export async function detectFaces(buf: Buffer): Promise<Detection> {
   const canvas = await imageFromBuffer(buf);
-  const optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({
-    minConfidence: 0.1,
-    maxResults: 10,
-  });
 
   const imageData = getImageData(canvas);
   if (!imageData) {
@@ -70,10 +66,9 @@ export async function detectFaces(buf: Buffer): Promise<Detection> {
     const reshape = tf.reshape(rgb, [1, canvas.height, canvas.width, 3]); // move extra dim from the end of tensor and use it as batch number instead
     return reshape;
   });
-  console.log("tensor:", tensor.shape, tensor.size);
 
   const detections = await faceapi
-    .detectAllFaces(tensor, optionsSSDMobileNet)
+    .detectAllFaces(tensor)
     .withFaceLandmarks()
     .withFaceDescriptors();
   return detections;
