@@ -7,14 +7,24 @@ import { RiEdit2Line, RiQuestionLine } from "react-icons/ri";
 import { format } from "date-fns";
 import { User } from "./user";
 import { ImageContext } from "@/models/contexts";
+import { Flex, Heading, Text } from "@chakra-ui/layout";
 
 function SidebarSection({ title, children }) {
   return (
     <>
-      <h2 className="font-bold flex flex-row items-center text-left mr-2 whitespace-nowrap">
+      <Heading
+        fontSize="sm"
+        whiteSpace="nowrap"
+        display="flex"
+        flexFlow="row nowrap"
+        alignItems="center"
+        mr="2"
+      >
         {title}
-      </h2>
-      <div className="flex items-center text-gray-400">{children}</div>
+      </Heading>
+      <Text size="sm" color="InactiveCaption">
+        {children}
+      </Text>
     </>
   );
 }
@@ -86,13 +96,19 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
         <div>
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
-        <div
+        <Flex
+          width="100%"
+          justifyContent="center"
+          py={2}
+          textAlign="center"
+          _hover={{
+            background: "black",
+          }}
           className="inline-flex items-center border-theme-subtle border-1 p-1 px-2 rounded cursor-pointer"
           onClick={onEdit}
         >
-          <RiEdit2Line className=" text-gray-400 mr-2" />
-          <p className="text-gray-400">Edit image</p>
-        </div>
+          <Text fontWeight="bold">Edit image</Text>
+        </Flex>
       </CascadeChildren>
     </aside>
   );

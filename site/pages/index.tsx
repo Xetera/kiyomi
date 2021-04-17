@@ -3,6 +3,9 @@ import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/client";
 import { Navbar } from "@/components/navbar";
 import { useScroll } from "react-use";
+import { useHomepageQuery } from "@/__generated__/graphql";
+import { prefetchQuery } from "@/lib/client-helpers";
+import { Gallery } from "@/components/gallery";
 
 function getKey(index: number, prevData: any) {
   if (!index) {
@@ -24,6 +27,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = React.useState(0);
   const [fetching, setFetching] = React.useState(false);
   const { y } = useScroll(pageRef);
+  const { data } = useHomepageQuery({ botUser: 2 });
+  console.log(data);
   // const {
   //   data,
   //   setSize,
@@ -76,6 +81,9 @@ export default function Home() {
             expected usage amount to get an API token.
           </p>
           <p className="text-sm text-coolGray-400">No NSFW please</p> */}
+          <div className="w-full">
+            <Gallery images={data?.user?.images ?? []} />
+          </div>
         </div>
         {/* <FrontPage />
           <aside className="flex sticky top-0 z-20 bg-theme py-3 w-full">
@@ -102,10 +110,11 @@ export default function Home() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // const images = JSON.parse(JSON.stringify(await fetcher("/api/image")));
+  const dehydratedState = await prefetchQuery("HomepageQuery", { botUser: 2 });
   return {
     props: {
       session: await getSession(ctx),
+      dehydratedState,
     },
   };
 };

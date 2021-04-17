@@ -520,12 +520,18 @@ export type Query = {
   __typename?: 'Query';
   image?: Maybe<Image>;
   me?: Maybe<User>;
+  searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
 
 
 export type QueryImageArgs = {
   slug: Scalars['String'];
+};
+
+
+export type QuerySearchPersonArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -743,6 +749,19 @@ export type MeQuery = (
   )> }
 );
 
+export type SearchPersonQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type SearchPersonQuery = (
+  { __typename?: 'Query' }
+  & { searchPerson: Array<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'id' | 'name'>
+  )> }
+);
+
 export type GetUploadResultQueryVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -839,6 +858,14 @@ export const MeDocument = gql`
 }
     ${UserDataFragmentDoc}
 ${ImageDataFragmentDoc}`;
+export const SearchPersonDocument = gql`
+    query SearchPerson($name: String!) {
+  searchPerson(query: $name) {
+    id
+    name
+  }
+}
+    `;
 export const GetUploadResultDocument = gql`
     query getUploadResult($slug: String!) {
   image(slug: $slug) {
@@ -869,6 +896,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Me(variables?: MeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MeQuery> {
       return withWrapper(() => client.request<MeQuery>(MeDocument, variables, requestHeaders));
+    },
+    SearchPerson(variables: SearchPersonQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchPersonQuery> {
+      return withWrapper(() => client.request<SearchPersonQuery>(SearchPersonDocument, variables, requestHeaders));
     },
     getUploadResult(variables: GetUploadResultQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUploadResultQuery> {
       return withWrapper(() => client.request<GetUploadResultQuery>(GetUploadResultDocument, variables, requestHeaders));

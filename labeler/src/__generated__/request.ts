@@ -520,12 +520,18 @@ export type Query = {
   __typename?: 'Query';
   image?: Maybe<Image>;
   me?: Maybe<User>;
+  searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
 
 
 export type QueryImageArgs = {
   slug: Scalars['String'];
+};
+
+
+export type QuerySearchPersonArgs = {
+  query: Scalars['String'];
 };
 
 

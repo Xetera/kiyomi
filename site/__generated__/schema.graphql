@@ -484,6 +484,7 @@ input PersonWhereInput {
 type Query {
   image(slug: String!): Image
   me: User
+  searchPerson(query: String!): [Person!]!
   user(id: Int): User
 }
 

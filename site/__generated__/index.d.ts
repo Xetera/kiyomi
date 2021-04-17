@@ -543,6 +543,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     image: NexusGenRootTypes['Image'] | null; // Image
     me: NexusGenRootTypes['User'] | null; // User
+    searchPerson: NexusGenRootTypes['Person'][]; // [Person!]!
     user: NexusGenRootTypes['User'] | null; // User
   }
   Role: { // field return type
@@ -628,6 +629,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     image: 'Image'
     me: 'User'
+    searchPerson: 'Person'
     user: 'User'
   }
   Role: { // field return type name
@@ -685,6 +687,9 @@ export interface NexusGenArgTypes {
   Query: {
     image: { // args
       slug: string; // String!
+    }
+    searchPerson: { // args
+      query: string; // String!
     }
     user: { // args
       id?: number | null; // Int

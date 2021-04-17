@@ -8,6 +8,9 @@ import {
 import React from "react";
 import { maxPortraitHeight, PersonPortrait } from "./person-preview";
 import dynamic from "next/dynamic";
+import { Box, Flex, Heading } from "@chakra-ui/layout";
+import { Input } from "@chakra-ui/input";
+import { PersonSearchbar } from "./search";
 
 const DragDropContext = dynamic(
   () => {
@@ -40,10 +43,9 @@ export type ImageEditModalProps = {
 type DraggablePersonProps = {
   src: string;
   face: FaceDataFragment;
-  appearance?: Maybe<AppearanceDataFragment>;
 };
-const DraggablePerson = React.forwardRef(
-  ({ src, face, appearance, ...rest }: DraggablePersonProps, ref) => {
+const DraggableFace = React.forwardRef(
+  ({ src, face, ...rest }: DraggablePersonProps, ref) => {
     const faceSlice = useImageSlice({
       src,
       height: maxPortraitHeight,
@@ -63,7 +65,6 @@ const DraggablePerson = React.forwardRef(
           }}
           ref={(r) => (faceSlice.ref.current = r)}
         />
-        <h2 className="mt-2">{appearance?.person.name ?? "Unknown"}</h2>
       </div>
     );
   }
@@ -75,40 +76,51 @@ export function ImageEditModal(props: ImageEditModalProps) {
   function a(p) {
     console.log(p);
   }
+  function addAppearance(personId: number) {}
   return (
     <DragDropContext onDragEnd={a}>
-      <div className="p-2">
-        <Droppable droppableId="unknown">
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              className="flex flex-row"
-              {...provided.droppableProps}
-            >
-              {props.image.unknownFaces.map((face, i) => (
-                <Draggable
-                  draggableId={face.id.toString()}
-                  key={face.id}
-                  index={i}
-                >
-                  {(provided, i) => (
-                    <DraggablePerson
-                      face={face}
-                      src={props.image.rawUrl}
-                      ref={provided.innerRef}
-                      appearance={face.appearance}
-                      style={{ background: i.isDragging ? "red" : "inherit" }}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    />
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </div>
+      <Box className="p-2" maxWidth="4xl" alignItems="center" mx="auto">
+        <Heading mb={2} size="md" color="gray.300">
+          Add a person
+        </Heading>
+        <PersonSearchbar onSelect={addAppearance} />
+        <Heading mb={2} size="md" color="gray.300">
+          Unlabeled Faces
+        </Heading>
+        <Box>
+          <Droppable droppableId="unknown">
+            {(provided) => (
+              <Flex
+                ref={provided.innerRef}
+                className="flex flex-row"
+                {...provided.droppableProps}
+              >
+                {props.image.unknownFaces.map((face, i) => (
+                  <Draggable
+                    draggableId={face.id.toString()}
+                    key={face.id}
+                    index={i}
+                  >
+                    {(provided, i) => (
+                      <DraggableFace
+                        face={face}
+                        src={props.image.rawUrl}
+                        ref={provided.innerRef}
+                        style={{
+                          background: i.isDragging ? "red" : "inherit",
+                        }}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      />
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Flex>
+            )}
+          </Droppable>
+        </Box>
+      </Box>
     </DragDropContext>
   );
 }

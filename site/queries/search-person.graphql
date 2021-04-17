@@ -1,0 +1,10 @@
+query SearchPerson($name: String!) {
+  searchPerson(query: $name) {
+    id
+    name
+  }
+}
+
+mutation AddAppearance {
+  a
+}

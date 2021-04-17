@@ -10,6 +10,50 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import React from "react";
 import { AppProps } from "next/dist/next-server/lib/router/router";
+import { ChakraProvider } from "@chakra-ui/react";
+// 1. Import the extendTheme function
+import { extendTheme } from "@chakra-ui/react";
+// 2. Extend the theme to include custom colors, fonts, etc
+
+const theme = extendTheme({
+  config: {
+    initialColorMode: "dark",
+  },
+  colors: {
+    brand: {
+      900: "#1a365d",
+      800: "#153e75",
+      700: "#2a69ac",
+    },
+  },
+  textStyles: {
+    h1: {
+      // you can also use responsive styles
+      fontSize: ["48px", "72px"],
+      fontWeight: "bold",
+      lineHeight: "110%",
+      letterSpacing: "-2%",
+    },
+    h2: {
+      fontSize: ["36px", "48px"],
+      fontWeight: "semibold",
+      lineHeight: "110%",
+      letterSpacing: "-1%",
+    },
+  },
+  layerStyles: {
+    base: {
+      bg: "gray.50",
+      border: "2px solid",
+      borderColor: "gray.500",
+    },
+    selected: {
+      bg: "teal.500",
+      color: "teal.700",
+      borderColor: "orange.500",
+    },
+  },
+});
 
 const CustomApp = ({ Component, pageProps }: AppProps) => {
   const queryClientRef = React.useRef<QueryClient>();
@@ -32,7 +76,9 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
         highlightColor="rgba(34, 50, 64, 0.7)"
       > */}
           <div className="min-h-screen flex flex-col">
-            <Component {...pageProps} />
+            <ChakraProvider theme={theme}>
+              <Component {...pageProps} />
+            </ChakraProvider>
           </div>
           {/* </SkeletonTheme> */}
           <ReactTooltip

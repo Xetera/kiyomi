@@ -537,12 +537,18 @@ export type Query = {
   __typename?: 'Query';
   image?: Maybe<Image>;
   me?: Maybe<User>;
+  searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
 
 
 export type QueryImageArgs = {
   slug: Scalars['String'];
+};
+
+
+export type QuerySearchPersonArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -795,6 +801,19 @@ export type MeQuery = (
   )> }
 );
 
+export type SearchPersonQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type SearchPersonQuery = (
+  { __typename?: 'Query' }
+  & { searchPerson: Array<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'id' | 'name'>
+  )> }
+);
+
 export type GetUploadResultQueryVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -955,6 +974,26 @@ export const useMeQuery = <
     useQuery<MeQuery, TError, TData>(
       ['Me', variables],
       fetcher<MeQuery, MeQueryVariables>(MeDocument, variables),
+      options
+    );
+export const SearchPersonDocument = `
+    query SearchPerson($name: String!) {
+  searchPerson(query: $name) {
+    id
+    name
+  }
+}
+    `;
+export const useSearchPersonQuery = <
+      TData = SearchPersonQuery,
+      TError = unknown
+    >(
+      variables: SearchPersonQueryVariables, 
+      options?: UseQueryOptions<SearchPersonQuery, TError, TData>
+    ) => 
+    useQuery<SearchPersonQuery, TError, TData>(
+      ['SearchPerson', variables],
+      fetcher<SearchPersonQuery, SearchPersonQueryVariables>(SearchPersonDocument, variables),
       options
     );
 export const GetUploadResultDocument = `
