@@ -41,6 +41,7 @@ export type Appearance = {
   createdAt: Scalars['DateTime'];
   faces: Array<Face>;
   id: Scalars['Int'];
+  image: Image;
   person: Person;
   updatedAt: Scalars['DateTime'];
 };
@@ -357,10 +358,31 @@ export enum MimeType {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add an appearance relation on an image. */
+  addAppearance: Appearance;
+  /** Attach an existing face to an apperance. */
+  linkFace: Appearance;
   /** Image face recognition update. Only available to bot accounts */
   markFaces?: Maybe<Image>;
+  /** Removes an appearance from an image */
+  removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
+  similarImages: Array<Maybe<Image>>;
+  /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
+  unlinkFace: Scalars['Int'];
+};
+
+
+export type MutationAddAppearanceArgs = {
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+};
+
+
+export type MutationLinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
 };
 
 
@@ -373,8 +395,19 @@ export type MutationMarkFacesArgs = {
 };
 
 
+export type MutationRemoveAppearanceArgs = {
+  appearanceId: Scalars['Int'];
+};
+
+
 export type MutationScanFacesArgs = {
   slug: Scalars['String'];
+};
+
+
+export type MutationUnlinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
 };
 
 export type NestedBoolFilter = {
@@ -762,6 +795,70 @@ export type SearchPersonQuery = (
   )> }
 );
 
+export type AppearanceWithFacesFragment = (
+  { __typename?: 'Appearance' }
+  & Pick<Appearance, 'id'>
+  & { faces: Array<(
+    { __typename?: 'Face' }
+    & FaceDataFragment
+  )>, person: (
+    { __typename?: 'Person' }
+    & Pick<Person, 'name'>
+  ) }
+);
+
+export type AddAppearanceMutationVariables = Exact<{
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+}>;
+
+
+export type AddAppearanceMutation = (
+  { __typename?: 'Mutation' }
+  & { appearance: (
+    { __typename?: 'Appearance' }
+    & AppearanceWithFacesFragment
+  ) }
+);
+
+export type RemoveAppearanceMutationVariables = Exact<{
+  appearanceId: Scalars['Int'];
+}>;
+
+
+export type RemoveAppearanceMutation = (
+  { __typename?: 'Mutation' }
+  & { appearance: (
+    { __typename?: 'Appearance' }
+    & AppearanceWithFacesFragment
+  ) }
+);
+
+export type LinkFaceMutationVariables = Exact<{
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
+}>;
+
+
+export type LinkFaceMutation = (
+  { __typename?: 'Mutation' }
+  & { appearance: (
+    { __typename?: 'Appearance' }
+    & AppearanceWithFacesFragment
+  ) }
+);
+
+export type UnlinkFaceMutationVariables = Exact<{
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
+}>;
+
+
+export type UnlinkFaceMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'unlinkFace'>
+);
+
 export type GetUploadResultQueryVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -800,16 +897,6 @@ export const AppearanceDataFragmentDoc = gql`
   }
 }
     `;
-export const FaceDataFragmentDoc = gql`
-    fragment FaceData on Face {
-  id
-  x
-  y
-  width
-  height
-  score
-}
-    `;
 export const ImageDataFragmentDoc = gql`
     fragment ImageData on Image {
   id
@@ -831,6 +918,27 @@ export const ImageDataFragmentDoc = gql`
   }
 }
     `;
+export const FaceDataFragmentDoc = gql`
+    fragment FaceData on Face {
+  id
+  x
+  y
+  width
+  height
+  score
+}
+    `;
+export const AppearanceWithFacesFragmentDoc = gql`
+    fragment AppearanceWithFaces on Appearance {
+  id
+  faces {
+    ...FaceData
+  }
+  person {
+    name
+  }
+}
+    ${FaceDataFragmentDoc}`;
 export const UserDataFragmentDoc = gql`
     fragment UserData on User {
   id
@@ -866,6 +974,32 @@ export const SearchPersonDocument = gql`
   }
 }
     `;
+export const AddAppearanceDocument = gql`
+    mutation AddAppearance($imageId: Int!, $personId: Int!) {
+  appearance: addAppearance(imageId: $imageId, personId: $personId) {
+    ...AppearanceWithFaces
+  }
+}
+    ${AppearanceWithFacesFragmentDoc}`;
+export const RemoveAppearanceDocument = gql`
+    mutation RemoveAppearance($appearanceId: Int!) {
+  appearance: removeAppearance(appearanceId: $appearanceId) {
+    ...AppearanceWithFaces
+  }
+}
+    ${AppearanceWithFacesFragmentDoc}`;
+export const LinkFaceDocument = gql`
+    mutation LinkFace($appearanceId: Int!, $faceId: Int!) {
+  appearance: linkFace(faceId: $faceId, appearanceId: $appearanceId) {
+    ...AppearanceWithFaces
+  }
+}
+    ${AppearanceWithFacesFragmentDoc}`;
+export const UnlinkFaceDocument = gql`
+    mutation UnlinkFace($appearanceId: Int!, $faceId: Int!) {
+  unlinkFace(faceId: $faceId, appearanceId: $appearanceId)
+}
+    `;
 export const GetUploadResultDocument = gql`
     query getUploadResult($slug: String!) {
   image(slug: $slug) {
@@ -899,6 +1033,18 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     SearchPerson(variables: SearchPersonQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchPersonQuery> {
       return withWrapper(() => client.request<SearchPersonQuery>(SearchPersonDocument, variables, requestHeaders));
+    },
+    AddAppearance(variables: AddAppearanceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddAppearanceMutation> {
+      return withWrapper(() => client.request<AddAppearanceMutation>(AddAppearanceDocument, variables, requestHeaders));
+    },
+    RemoveAppearance(variables: RemoveAppearanceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RemoveAppearanceMutation> {
+      return withWrapper(() => client.request<RemoveAppearanceMutation>(RemoveAppearanceDocument, variables, requestHeaders));
+    },
+    LinkFace(variables: LinkFaceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LinkFaceMutation> {
+      return withWrapper(() => client.request<LinkFaceMutation>(LinkFaceDocument, variables, requestHeaders));
+    },
+    UnlinkFace(variables: UnlinkFaceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UnlinkFaceMutation> {
+      return withWrapper(() => client.request<UnlinkFaceMutation>(UnlinkFaceDocument, variables, requestHeaders));
     },
     getUploadResult(variables: GetUploadResultQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUploadResultQuery> {
       return withWrapper(() => client.request<GetUploadResultQuery>(GetUploadResultDocument, variables, requestHeaders));

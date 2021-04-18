@@ -5,6 +5,7 @@ import { config, logger } from "./config";
 import { getSdk } from "./__generated__/request";
 import { canDetectFaces, checkWeights, detectFaces } from "./face-recognition";
 import axios from "axios";
+import { phash } from "./phash";
 
 const client = new GraphQLClient(`${config.get("backendUrl")}/api/graphql`, {
   headers: {
@@ -53,6 +54,7 @@ function createConsumer(channel: amqp.Channel) {
           return;
         }
         await f(message, packet);
+        console.log(`Successfully processed packet`);
         channel.ack(packet);
       } catch (err) {
         const delay = 1000 * 60 * 5;
@@ -98,18 +100,23 @@ async function processFaces(conn: amqp.Connection) {
       const faces = await detectFaces(imageBuffer.data);
       console.timeEnd(label);
 
-      await sdk.uploadFaces({
-        slug: msg.slug,
-        ireneBotId: msg.ireneBotIdolId,
-        faces: faces.map(({ detection, descriptor }) => ({
-          certainty: detection.score,
-          x: detection.box.x,
-          y: detection.box.y,
-          width: detection.box.width,
-          height: detection.box.height,
-          descriptor: Array.from(descriptor),
-        })),
-      });
+      const a = process.hrtime();
+      const data = await phash(imageBuffer.data);
+      process.hrtime(a);
+      console.log(data);
+
+      // await sdk.uploadFaces({
+      //   slug: msg.slug,
+      //   ireneBotId: msg.ireneBotIdolId,
+      //   faces: faces.map(({ detection, descriptor }) => ({
+      //     certainty: detection.score,
+      //     x: detection.box.x,
+      //     y: detection.box.y,
+      //     width: detection.box.width,
+      //     height: detection.box.height,
+      //     descriptor: Array.from(descriptor),
+      //   })),
+      // });
     })
   );
 }

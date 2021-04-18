@@ -301,4 +301,8 @@ export const Mutation = mutationField((t) => {
       return image;
     },
   });
+  t.nonNull.list.field("similarImages", {
+    type: "Image",
+    resolve(t) {},
+  });
 });

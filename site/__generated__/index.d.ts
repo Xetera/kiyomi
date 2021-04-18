@@ -486,6 +486,7 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     faces: NexusGenRootTypes['Face'][]; // [Face!]!
     id: number; // Int!
+    image: NexusGenRootTypes['Image']; // Image!
     person: NexusGenRootTypes['Person']; // Person!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
@@ -531,8 +532,13 @@ export interface NexusGenFieldTypes {
     width: number; // Int!
   }
   Mutation: { // field return type
+    addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     markFaces: NexusGenRootTypes['Image'] | null; // Image
+    removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     scanFaces: NexusGenRootTypes['Image'] | null; // Image
+    similarImages: Array<NexusGenRootTypes['Image'] | null>; // [Image]!
+    unlinkFace: number; // Int!
   }
   Person: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -572,6 +578,7 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'DateTime'
     faces: 'Face'
     id: 'Int'
+    image: 'Image'
     person: 'Person'
     updatedAt: 'DateTime'
   }
@@ -617,8 +624,13 @@ export interface NexusGenFieldTypeNames {
     width: 'Int'
   }
   Mutation: { // field return type name
+    addAppearance: 'Appearance'
+    linkFace: 'Appearance'
     markFaces: 'Image'
+    removeAppearance: 'Appearance'
     scanFaces: 'Image'
+    similarImages: 'Image'
+    unlinkFace: 'Int'
   }
   Person: { // field return type name
     createdAt: 'DateTime'
@@ -673,6 +685,14 @@ export interface NexusGenArgTypes {
     }
   }
   Mutation: {
+    addAppearance: { // args
+      imageId: number; // Int!
+      personId: number; // Int!
+    }
+    linkFace: { // args
+      appearanceId: number; // Int!
+      faceId: number; // Int!
+    }
     markFaces: { // args
       faces: NexusGenInputs['FaceInput'][]; // [FaceInput!]!
       ireneBotId?: number | null; // Int
@@ -680,8 +700,15 @@ export interface NexusGenArgTypes {
       replacePreviousScan?: boolean | null; // Boolean
       slug: string; // String!
     }
+    removeAppearance: { // args
+      appearanceId: number; // Int!
+    }
     scanFaces: { // args
       slug: string; // String!
+    }
+    unlinkFace: { // args
+      appearanceId: number; // Int!
+      faceId: number; // Int!
     }
   }
   Query: {

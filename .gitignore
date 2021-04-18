@@ -39,3 +39,4 @@ site/test.sh
 site/dump.sql
 site/.next
 **/*.txt
+.vscode

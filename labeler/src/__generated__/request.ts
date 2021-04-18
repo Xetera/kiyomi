@@ -41,6 +41,7 @@ export type Appearance = {
   createdAt: Scalars['DateTime'];
   faces: Array<Face>;
   id: Scalars['Int'];
+  image: Image;
   person: Person;
   updatedAt: Scalars['DateTime'];
 };
@@ -357,10 +358,31 @@ export enum MimeType {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add an appearance relation on an image. */
+  addAppearance: Appearance;
+  /** Attach an existing face to an apperance. */
+  linkFace: Appearance;
   /** Image face recognition update. Only available to bot accounts */
   markFaces?: Maybe<Image>;
+  /** Removes an appearance from an image */
+  removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
+  similarImages: Array<Maybe<Image>>;
+  /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
+  unlinkFace: Scalars['Int'];
+};
+
+
+export type MutationAddAppearanceArgs = {
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+};
+
+
+export type MutationLinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
 };
 
 
@@ -373,8 +395,19 @@ export type MutationMarkFacesArgs = {
 };
 
 
+export type MutationRemoveAppearanceArgs = {
+  appearanceId: Scalars['Int'];
+};
+
+
 export type MutationScanFacesArgs = {
   slug: Scalars['String'];
+};
+
+
+export type MutationUnlinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
 };
 
 export type NestedBoolFilter = {

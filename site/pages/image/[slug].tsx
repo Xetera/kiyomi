@@ -24,9 +24,13 @@ const Image = () => {
   const router = useRouter();
   const slug = router.query.slug as string | undefined;
   const [face, setFace] = React.useState("");
-  const { data, isFetching } = useOneImageQuery({
+  const { data, isFetching, refetch } = useOneImageQuery({
     slug: slug as string,
   });
+  function closeModal() {
+    refetch();
+    setEditOpen(false);
+  }
 
   React.useEffect(() => {
     const { classList } = document.querySelector("body")!;
@@ -46,6 +50,7 @@ const Image = () => {
   if (!image) {
     return null;
   }
+
   return (
     <FaceContext.Provider value={{ face, setFace }}>
       <NextHead>
@@ -86,10 +91,10 @@ const Image = () => {
                     {image.caption}
                   </h1>
                 )}
-                <ImageDisplay />
+                <ImageDisplay onEdit={() => setEditOpen(true)} />
               </div>
               <div className="overflow-hidden h-[min-content] min-w-[250px]">
-                <ImageSidebar onEdit={() => setEditOpen(true)} />
+                <ImageSidebar />
               </div>
             </article>
           </div>
@@ -105,7 +110,7 @@ const Image = () => {
             },
           }}
           className="bg-theme h-3/4 w-full max-w-7xl m-auto border-theme-alt border-1 outline-none"
-          onRequestClose={() => setEditOpen(false)}
+          onRequestClose={closeModal}
         >
           <ImageEditModal image={image} />
         </ReactModal>

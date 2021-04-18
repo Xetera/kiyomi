@@ -29,7 +29,7 @@ function SidebarSection({ title, children }) {
   );
 }
 
-export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
+export default function ImageSidebar() {
   const image = React.useContext(ImageContext);
   if (!image) {
     return null;
@@ -96,19 +96,6 @@ export default function ImageSidebar({ onEdit }: { onEdit: () => void }) {
         <div>
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
-        <Flex
-          width="100%"
-          justifyContent="center"
-          py={2}
-          textAlign="center"
-          _hover={{
-            background: "black",
-          }}
-          className="inline-flex items-center border-theme-subtle border-1 p-1 px-2 rounded cursor-pointer"
-          onClick={onEdit}
-        >
-          <Text fontWeight="bold">Edit image</Text>
-        </Flex>
       </CascadeChildren>
     </aside>
   );

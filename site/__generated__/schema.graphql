@@ -25,6 +25,7 @@ type Appearance {
   createdAt: DateTime!
   faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
+  image: Image!
   person: Person!
   updatedAt: DateTime!
 }
@@ -336,11 +337,26 @@ enum MimeType {
 }
 
 type Mutation {
+  """Add an appearance relation on an image."""
+  addAppearance(imageId: Int!, personId: Int!): Appearance!
+
+  """Attach an existing face to an apperance."""
+  linkFace(appearanceId: Int!, faceId: Int!): Appearance!
+
   """Image face recognition update. Only available to bot accounts"""
   markFaces(faces: [FaceInput!]!, ireneBotId: Int, personName: String, replacePreviousScan: Boolean, slug: String!): Image
 
+  """Removes an appearance from an image"""
+  removeAppearance(appearanceId: Int!): Appearance!
+
   """Scan image for faces asynchronously. Only available to admin accounts"""
   scanFaces(slug: String!): Image
+  similarImages: [Image]!
+
+  """
+  Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data
+  """
+  unlinkFace(appearanceId: Int!, faceId: Int!): Int!
 }
 
 input NestedBoolFilter {
