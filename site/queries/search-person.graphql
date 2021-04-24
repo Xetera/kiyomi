@@ -1,0 +1,38 @@
+query SearchPerson($name: String!) {
+  searchPerson(query: $name) {
+    id
+    name
+  }
+}
+
+fragment AppearanceWithFaces on Appearance {
+  id
+  faces {
+    ...FaceData
+  }
+  person {
+    name
+  }
+}
+
+mutation AddAppearance($imageId: Int!, $personId: Int!) {
+  appearance: addAppearance(imageId: $imageId, personId: $personId) {
+    ...AppearanceWithFaces
+  }
+}
+
+mutation RemoveAppearance($appearanceId: Int!) {
+  appearance: removeAppearance(appearanceId: $appearanceId) {
+    ...AppearanceWithFaces
+  }
+}
+
+mutation LinkFace($appearanceId: Int!, $faceId: Int!) {
+  appearance: linkFace(faceId: $faceId, appearanceId: $appearanceId) {
+    ...AppearanceWithFaces
+  }
+}
+
+mutation UnlinkFace($appearanceId: Int!, $faceId: Int!) {
+  unlinkFace(faceId: $faceId, appearanceId: $appearanceId)
+}

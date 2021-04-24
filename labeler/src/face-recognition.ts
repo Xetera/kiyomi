@@ -15,12 +15,6 @@ export async function checkWeights() {
     faceapi.nets.ssdMobilenetv1.loadFromDisk("./weights"),
     faceapi.nets.faceLandmark68Net.loadFromDisk("./weights"),
   ]);
-  console.log(
-    faceapi.version,
-    tf.version.tfjs,
-    faceapi.tf.version.tfjs,
-    faceapi.tf.getBackend()
-  );
 }
 
 export type FaceDetect = WithFaceDescriptor<

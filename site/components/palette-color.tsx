@@ -24,7 +24,7 @@ export function Palette({
 }: HTMLAttributes<HTMLDivElement> & { colors: number[] }) {
   return (
     <section className="grid grid-flow-row mt-2 gap-2 text-gray-400" {...rest}>
-      {colors.map((color) => (
+      {colors.slice(0, 5).map((color) => (
         <PaletteColor color={color} key={color} />
       ))}
     </section>

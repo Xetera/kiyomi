@@ -134,6 +134,15 @@ type Face {
   y: Float!
 }
 
+input FaceInput {
+  certainty: Float!
+  descriptor: [Float!]!
+  height: Float!
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
 input FaceListRelationFilter {
   every: FaceWhereInput
   none: FaceWhereInput
@@ -331,11 +340,19 @@ type Mutation {
   """Add an appearance relation on an image."""
   addAppearance(imageId: Int!, personId: Int!): Appearance!
 
+  """
+  Add metadata labels to an existing image. Only available to bot accounts
+  """
+  labelImage(faces: [FaceInput!]!, ireneBotId: Int, pHash: String, palette: [Int!]!, personName: String, replacePreviousScan: Boolean, slug: String!): Image
+
   """Attach an existing face to an apperance."""
   linkFace(appearanceId: Int!, faceId: Int!): Appearance!
 
   """Removes an appearance from an image"""
   removeAppearance(appearanceId: Int!): Appearance!
+
+  """Scan image for faces asynchronously. Only available to admin accounts"""
+  scanFaces(slug: String!): Image
 
   """
   Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data

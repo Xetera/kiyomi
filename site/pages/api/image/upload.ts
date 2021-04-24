@@ -51,13 +51,13 @@ export default handle(
         if (!metadata.type) {
           return res.json({ error: "invalid file type" });
         }
-        console.log({ metadata });
+
         const parsedMimetype = metadata.type.toUpperCase();
         if (!(parsedMimetype in MimeType)) {
           return res.json({ error: `Invalid mimetype: ${metadata.type}` });
         }
         const inputFormat = parseExtension(metadata.type);
-        console.log({ inputFormat });
+
         const webp = await convertImage(file.buffer, inputFormat);
 
         const { format, height, width } = webp.info;

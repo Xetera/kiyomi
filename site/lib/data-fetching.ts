@@ -7,7 +7,7 @@ import React from "react";
 import { dehydrate } from "react-query/hydration";
 
 export const client = new GraphQLClient(
-  `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`
+  `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`,
 );
 
 export const sdk = getSdk(client);

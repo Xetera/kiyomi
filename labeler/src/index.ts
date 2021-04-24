@@ -5,8 +5,9 @@ import { config, logger } from "./config";
 import { getSdk } from "./__generated__/request";
 import { canDetectFaces, checkWeights, detectFaces } from "./face-recognition";
 import axios from "axios";
+import { colorPalette, phash } from "./ffi";
 
-const client = new GraphQLClient(`${config.get("backendUrl")}/api/graphql`, {
+const client = new GraphQLClient(`${config.get("backendUrl")}/api/internal`, {
   headers: {
     authorization: config.get("userToken"),
   },
@@ -53,6 +54,7 @@ function createConsumer(channel: amqp.Channel) {
           return;
         }
         await f(message, packet);
+        console.log(`Successfully processed packet`);
         channel.ack(packet);
       } catch (err) {
         const delay = 1000 * 60 * 5;
@@ -98,9 +100,18 @@ async function processFaces(conn: amqp.Connection) {
       const faces = await detectFaces(imageBuffer.data);
       console.timeEnd(label);
 
-      await sdk.uploadFaces({
+      const a = process.hrtime();
+      const [hash, palette] = await Promise.all([
+        phash(imageBuffer.data),
+        colorPalette(imageBuffer.data)
+      ]);
+      process.hrtime(a);
+      
+      await sdk.labelImage({
         slug: msg.slug,
         ireneBotId: msg.ireneBotIdolId,
+        pHash: hash,
+        palette,
         faces: faces.map(({ detection, descriptor }) => ({
           certainty: detection.score,
           x: detection.box.x,

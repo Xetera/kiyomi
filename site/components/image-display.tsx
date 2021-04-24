@@ -5,14 +5,14 @@ import { CascadeChildren } from "./animations/cascade-children";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToggle } from "react-use";
 import { FaExpand, FaCompress } from "react-icons/fa";
-import { fetcher } from "@/lib/shared";
-import useSWR from "swr";
 import {
   AppearanceDataFragment,
   FaceDataFragment,
   ImageDataFragment,
 } from "@/__generated__/graphql";
 import Hr from "./hr";
+import { Box, Button, Flex } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/layout";
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
   image: ImageDataFragment;
@@ -64,7 +64,7 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
   );
 }
 
-export default function ImageDisplay() {
+export default function ImageDisplay({ onEdit }) {
   const image = React.useContext(ImageContext);
   const imageRef = React.useRef<HTMLImageElement | null>();
   const parentRef = React.useRef<HTMLDivElement | null>();
@@ -250,15 +250,20 @@ export default function ImageDisplay() {
       </div>
       {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
         <section className="mt-5">
-          <div className="mb-3">
-            <h2 className="text-lg font-semibold">Appearing in this image</h2>
-            {image.unknownFaces.length > 0 && (
-              <p className="text-xs text-gray-500 mt-1 font-semibold">
-                Unverified faces are faces that have not been linked to a known
-                person.
-              </p>
-            )}
-          </div>
+          <Flex mb={3} justifyContent="space-between" flexFlow="row">
+            <Flex flexDirection="column">
+              <h2 className="text-lg font-semibold">Appearing in this image</h2>
+              {image.unknownFaces.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1 font-semibold">
+                  Unverified faces are faces that have not been linked to a
+                  known person.
+                </p>
+              )}
+            </Flex>
+            <Button onClick={onEdit} size="sm">
+              Edit Faces
+            </Button>
+          </Flex>
           <CascadeChildren className="grid faces-grid flex-row gap-4">
             {image.unknownFaces?.map((face) => {
               return <PersonPortrait src={image.rawUrl} face={face} />;

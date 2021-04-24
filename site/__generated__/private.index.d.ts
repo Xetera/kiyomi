@@ -113,6 +113,14 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumUploadTypeFilter'] | null; // NestedEnumUploadTypeFilter
     notIn?: NexusGenEnums['UploadType'][] | null; // [UploadType!]
   }
+  FaceInput: { // input type
+    certainty: number; // Float!
+    descriptor: number[]; // [Float!]!
+    height: number; // Float!
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
   FaceListRelationFilter: { // input type
     every?: NexusGenInputs['FaceWhereInput'] | null; // FaceWhereInput
     none?: NexusGenInputs['FaceWhereInput'] | null; // FaceWhereInput
@@ -525,8 +533,10 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    labelImage: NexusGenRootTypes['Image'] | null; // Image
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    scanFaces: NexusGenRootTypes['Image'] | null; // Image
     unlinkFace: number; // Int!
   }
   Person: { // field return type
@@ -614,8 +624,10 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     addAppearance: 'Appearance'
+    labelImage: 'Image'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
+    scanFaces: 'Image'
     unlinkFace: 'Int'
   }
   Person: { // field return type name
@@ -675,12 +687,24 @@ export interface NexusGenArgTypes {
       imageId: number; // Int!
       personId: number; // Int!
     }
+    labelImage: { // args
+      faces: NexusGenInputs['FaceInput'][]; // [FaceInput!]!
+      ireneBotId?: number | null; // Int
+      pHash?: string | null; // String
+      palette: number[]; // [Int!]!
+      personName?: string | null; // String
+      replacePreviousScan?: boolean | null; // Boolean
+      slug: string; // String!
+    }
     linkFace: { // args
       appearanceId: number; // Int!
       faceId: number; // Int!
     }
     removeAppearance: { // args
       appearanceId: number; // Int!
+    }
+    scanFaces: { // args
+      slug: string; // String!
     }
     unlinkFace: { // args
       appearanceId: number; // Int!

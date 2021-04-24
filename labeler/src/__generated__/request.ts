@@ -41,6 +41,7 @@ export type Appearance = {
   createdAt: Scalars['DateTime'];
   faces: Array<Face>;
   id: Scalars['Int'];
+  image: Image;
   person: Person;
   updatedAt: Scalars['DateTime'];
 };
@@ -357,24 +358,57 @@ export enum MimeType {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Image face recognition update. Only available to bot accounts */
-  markFaces?: Maybe<Image>;
+  /** Add an appearance relation on an image. */
+  addAppearance: Appearance;
+  /** Add metadata labels to an existing image. Only available to bot accounts */
+  labelImage?: Maybe<Image>;
+  /** Attach an existing face to an apperance. */
+  linkFace: Appearance;
+  /** Removes an appearance from an image */
+  removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
+  /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
+  unlinkFace: Scalars['Int'];
 };
 
 
-export type MutationMarkFacesArgs = {
+export type MutationAddAppearanceArgs = {
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+};
+
+
+export type MutationLabelImageArgs = {
   faces: Array<FaceInput>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  pHash?: Maybe<Scalars['String']>;
+  palette: Array<Scalars['Int']>;
   personName?: Maybe<Scalars['String']>;
   replacePreviousScan?: Maybe<Scalars['Boolean']>;
   slug: Scalars['String'];
 };
 
 
+export type MutationLinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
+};
+
+
+export type MutationRemoveAppearanceArgs = {
+  appearanceId: Scalars['Int'];
+};
+
+
 export type MutationScanFacesArgs = {
   slug: Scalars['String'];
+};
+
+
+export type MutationUnlinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
 };
 
 export type NestedBoolFilter = {
@@ -518,14 +552,21 @@ export type PersonWhereInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Find a single image by its slug. */
   image?: Maybe<Image>;
   me?: Maybe<User>;
+  searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
 
 
 export type QueryImageArgs = {
   slug: Scalars['String'];
+};
+
+
+export type QuerySearchPersonArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -702,16 +743,18 @@ export type GetBackendImageQuery = (
   )> }
 );
 
-export type UploadFacesMutationVariables = Exact<{
+export type LabelImageMutationVariables = Exact<{
   slug: Scalars['String'];
   faces: Array<FaceInput> | FaceInput;
   ireneBotId?: Maybe<Scalars['Int']>;
+  pHash?: Maybe<Scalars['String']>;
+  palette: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
-export type UploadFacesMutation = (
+export type LabelImageMutation = (
   { __typename?: 'Mutation' }
-  & { markFaces?: Maybe<(
+  & { labelImage?: Maybe<(
     { __typename?: 'Image' }
     & Pick<Image, 'id'>
   )> }
@@ -730,13 +773,15 @@ export const GetBackendImageDocument = gql`
   }
 }
     `;
-export const UploadFacesDocument = gql`
-    mutation uploadFaces($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int) {
-  markFaces(
+export const LabelImageDocument = gql`
+    mutation labelImage($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int, $pHash: String, $palette: [Int!]!) {
+  labelImage(
     slug: $slug
     replacePreviousScan: true
     faces: $faces
     ireneBotId: $ireneBotId
+    pHash: $pHash
+    palette: $palette
   ) {
     id
   }
@@ -747,13 +792,14 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
 
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     getBackendImage(variables: GetBackendImageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBackendImageQuery> {
       return withWrapper(() => client.request<GetBackendImageQuery>(GetBackendImageDocument, variables, requestHeaders));
     },
-    uploadFaces(variables: UploadFacesMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UploadFacesMutation> {
-      return withWrapper(() => client.request<UploadFacesMutation>(UploadFacesDocument, variables, requestHeaders));
+    labelImage(variables: LabelImageMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LabelImageMutation> {
+      return withWrapper(() => client.request<LabelImageMutation>(LabelImageDocument, variables, requestHeaders));
     }
   };
 }
