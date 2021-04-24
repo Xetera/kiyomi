@@ -5,11 +5,8 @@ import { promisify } from "util";
 import { createHash } from "crypto";
 import { MimeType } from "@prisma/client";
 import getColors from "get-image-colors";
-import mimetypes from "mime-types";
-import ffmpeg from "fluent-ffmpeg";
-import { Readable, PassThrough } from "stream";
+import { Readable } from "stream";
 import sharp from "sharp";
-import * as fs from "fs/promises";
 
 const imageHash = promisify(imageHashCallback);
 
@@ -48,7 +45,7 @@ export function parseFiles(
   res: NextApiResponse,
   { name = "file" } = {}
 ): Promise<FormData> {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     upload.array(name)(req as any, res as any, async (err: any) => {
       if (err) {
         return reject(err);
@@ -125,20 +122,10 @@ export function parseExtension(extension: string): MimeType {
   return MimeType[extension.toUpperCase()];
 }
 
-export async function dominantColors(
-  data: Buffer,
-  type: string
-): Promise<number[]> {
-  const colors = await getColors(data, { type, count: 5 });
-  return colors.map((color: any) => color.num());
-}
-
 type ConversionResult = {
   data: Buffer;
   info: sharp.OutputInfo;
 };
-
-const BROKEN_WEBP_HEADER = Buffer.from([0, 0, 0, 0]);
 
 export async function convertImage(
   buffer: Buffer,
@@ -161,7 +148,7 @@ export async function convertImage(
     [MimeType.WEBP]: "webp",
   };
   const readable = new Readable();
-  readable._read = () => {};
+  readable._read = () => { };
   readable.push(buffer);
   readable.push(null);
 
@@ -185,32 +172,4 @@ export async function convertImage(
     return withMetadata(sharp(buffer));
   }
   return convertWebp(buffer);
-
-  // return new Promise((res, rej) => {
-  //   const passthrough = new PassThrough();
-
-  //   const outputFormat = mappings[inputFormat];
-  //   let command = ffmpeg()
-  //     .input(readable)
-  //     .outputFormat(outputFormat)
-  //     .on("error", rej);
-  //   const stream = command.stream(passthrough, { end: true });
-
-  //   let output: Buffer[] = [];
-  //   passthrough.on("data", (data) => output.push(data));
-  //   // sharp(buffer).webp().toFile("./testsharp.webp");
-  //   passthrough.on("error", rej);
-
-  //   stream.on("end", async () => {
-  //     const padded = Buffer.concat(output);
-
-  //     // https://xetera.dev/converting-webp for an explanation
-  //     const isImageHeaderBroken =
-  //       padded.slice(4, 8).compare(BROKEN_WEBP_HEADER) === 0;
-  //     const final = isImageHeaderBroken
-  //       ? padded.copyWithin(4, -4).slice(0, -4)
-  //       : padded;
-  //     withMetadata(final).then(res, rej);
-  //   });
-  // });
 }

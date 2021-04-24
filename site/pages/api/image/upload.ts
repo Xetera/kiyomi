@@ -2,7 +2,6 @@ import { handle, withFileUpload, withUser } from "@/lib/middleware";
 import {
   canPerceptualHash,
   convertImage,
-  dominantColors,
   mimetypeMappings,
   parseExtension,
   perceptualHash,
@@ -72,15 +71,11 @@ export default handle(
         if (mime === false) {
           return res.json({ error: "invalid file type" });
         }
-        const [pHash, hash, palette, uploadResult] = await Promise.all([
+        const [pHash, hash, uploadResult] = await Promise.all([
           canPerceptualHash(format)
             ? perceptualHash(buffer, mime)
             : Promise.resolve(),
           sha256Hash(buffer),
-          // using the old buffer here as it's the most compatible with the lib
-          dominantColors(file.buffer, metadata.type).catch((err) => {
-            console.log(err);
-          }),
           uploadImage({
             key: slugWithExtension,
             body: buffer,
