@@ -1,6 +1,8 @@
 name: Labeler build
 "on":
   push:
+    paths:
+      - labeler/**
     branches:
       - main
 jobs:

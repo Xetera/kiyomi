@@ -1,6 +1,8 @@
 name: Backend build
 "on":
   push:
+    paths:
+      - site/**
     branches:
       - main
 jobs:
@@ -28,7 +30,7 @@ jobs:
         id: docker_build_push
         run: |2
           export $(echo "${{secrets.ENV_IMAGES}}" | xargs)
-          sudo docker build site -t index.docker.io/xetera/simp-pics:$(git rev-parse --short HEAD)
+          sudo docker build --build-arg NEXT_PUBLIC_BASE_URL=https://mamamoo.solar --build-arg NEXT_PUBLIC_BASE_URL_CDN=https://my.simp.pics site -t index.docker.io/xetera/simp-pics:$(git rev-parse --short HEAD)
           sudo docker push index.docker.io/xetera/simp-pics:$(git rev-parse --short HEAD)
       - name: Deploy on Porter
         id: deploy_porter
