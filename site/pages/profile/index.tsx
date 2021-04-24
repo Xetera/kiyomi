@@ -5,7 +5,6 @@ import { getSession, useSession } from "next-auth/client";
 import React from "react";
 import useSWR from "swr";
 import { useMeQuery } from "@/__generated__/graphql";
-import withApollo from "@/lib/apollo";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { prefetchQuery } from "@/lib/client-helpers";
