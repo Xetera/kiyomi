@@ -2,6 +2,9 @@
 ### build
 FROM node:14-alpine AS build
 
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_BASE_URL_CDN
+
 WORKDIR /opt/app
 RUN apk update && apk add --virtual libressl-dev openssl
 
@@ -30,8 +33,6 @@ ENV LD_LIBRARY_PATH=/usr/local/lib
 COPY --from=jrottenberg/ffmpeg:4.3-alpine312 /usr/local /usr/local/
 
 WORKDIR /opt/app
-ARG NEXT_PUBLIC_BASE_URL
-ARG NEXT_PUBLIC_BASE_URL_CDN
 
 ENV NODE_ENV=production
 WORKDIR /opt/app
