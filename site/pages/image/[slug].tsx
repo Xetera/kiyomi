@@ -43,9 +43,7 @@ const Image = () => {
   if (!data) {
     return null;
   }
-  if (!data) {
-    return null;
-  }
+
   const { image } = data;
   if (!image) {
     return null;

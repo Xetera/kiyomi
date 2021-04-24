@@ -368,7 +368,6 @@ export type Mutation = {
   removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
-  similarImages: Array<Maybe<Image>>;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
 };
@@ -383,8 +382,9 @@ export type MutationAddAppearanceArgs = {
 export type MutationLabelImageArgs = {
   faces: Array<FaceInput>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  pHash?: Maybe<Scalars['String']>;
+  palette: Array<Scalars['Int']>;
   personName?: Maybe<Scalars['String']>;
-  phash?: Maybe<Scalars['String']>;
   replacePreviousScan?: Maybe<Scalars['Boolean']>;
   slug: Scalars['String'];
 };
@@ -552,6 +552,7 @@ export type PersonWhereInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Find a single image by its slug. */
   image?: Maybe<Image>;
   me?: Maybe<User>;
   searchPerson: Array<Person>;
@@ -1024,6 +1025,7 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
 
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     Homepage(variables: HomepageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<HomepageQuery> {

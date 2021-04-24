@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { phash } from "./phash";
+import { phash } from "./ffi";
 
 (async () => {
   const data = await fs.promises.readFile("1.webp");

@@ -2,10 +2,16 @@
   "name": "simp.pics",
   "private": true,
   "scripts": {
-    "codegen": "cd site && yarn codegen && graphql-codegen"
+    "codegen": "cd site && yarn codegen",
+    "typegen": "graphql-codegen"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.21.3",
+    "@graphql-codegen/add": "^2.0.2",
+    "@graphql-codegen/typescript-graphql-request": "^3.1.0",
+    "@graphql-codegen/typescript-operations": "^1.17.15",
+    "@graphql-codegen/typescript-react-query": "^1.2.4",
+    "graphql": "^15.5.0",
     "prettier": "^2.2.1"
   }
 }

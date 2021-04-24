@@ -368,7 +368,6 @@ export type Mutation = {
   removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
-  similarImages: Array<Maybe<Image>>;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
 };
@@ -383,8 +382,9 @@ export type MutationAddAppearanceArgs = {
 export type MutationLabelImageArgs = {
   faces: Array<FaceInput>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  pHash?: Maybe<Scalars['String']>;
+  palette: Array<Scalars['Int']>;
   personName?: Maybe<Scalars['String']>;
-  phash?: Maybe<Scalars['String']>;
   replacePreviousScan?: Maybe<Scalars['Boolean']>;
   slug: Scalars['String'];
 };
@@ -552,6 +552,7 @@ export type PersonWhereInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Find a single image by its slug. */
   image?: Maybe<Image>;
   me?: Maybe<User>;
   searchPerson: Array<Person>;
@@ -746,6 +747,8 @@ export type LabelImageMutationVariables = Exact<{
   slug: Scalars['String'];
   faces: Array<FaceInput> | FaceInput;
   ireneBotId?: Maybe<Scalars['Int']>;
+  pHash?: Maybe<Scalars['String']>;
+  palette: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
@@ -771,12 +774,14 @@ export const GetBackendImageDocument = gql`
 }
     `;
 export const LabelImageDocument = gql`
-    mutation labelImage($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int) {
+    mutation labelImage($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int, $pHash: String, $palette: [Int!]!) {
   labelImage(
     slug: $slug
     replacePreviousScan: true
     faces: $faces
     ireneBotId: $ireneBotId
+    pHash: $pHash
+    palette: $palette
   ) {
     id
   }
@@ -787,6 +792,7 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
 
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
+
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
     getBackendImage(variables: GetBackendImageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBackendImageQuery> {

@@ -130,6 +130,8 @@ type Face {
   source: FaceSource!
   updatedAt: DateTime!
   width: Float!
+  x: Float!
+  y: Float!
 }
 
 input FaceListRelationFilter {
@@ -480,6 +482,7 @@ input PersonWhereInput {
 }
 
 type Query {
+  """Find a single image by its slug."""
   image(slug: String!): Image
   me: User
   searchPerson(query: String!): [Person!]!

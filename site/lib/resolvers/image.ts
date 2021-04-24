@@ -119,6 +119,7 @@ export const User = objectType({
 export const Query = queryField((t) => {
   t.field("image", {
     type: "Image",
+    description: "Find a single image by its slug.",
     args: {
       slug: nonNull(stringArg()),
     },
@@ -153,8 +154,9 @@ export const PrivateMutation = mutationField((t) => {
       personName: "String",
       ireneBotId: "Int",
       replacePreviousScan: "Boolean",
-      faces: nonNull(list(nonNull("FaceInput"))),
+      faces: nonNull(list(nonNull(PrivateFaceInput))),
       pHash: "String",
+      palette: nonNull(list(nonNull("Int"))),
     },
     async authorize(_, args, { prisma, user }) {
       if (!user) {
@@ -173,7 +175,7 @@ export const PrivateMutation = mutationField((t) => {
     },
     async resolve(
       _root,
-      { slug, faces, personName, ireneBotId, replacePreviousScan, pHash },
+      { slug, faces, personName, ireneBotId, replacePreviousScan, pHash, palette },
       { prisma, user }
     ) {
       if (!user) {
@@ -247,6 +249,7 @@ export const PrivateMutation = mutationField((t) => {
           data: {
             faceScanDate: new Date(),
             pHash: pHash,
+            palette
           },
         })
         .catch((err) => {
@@ -282,12 +285,16 @@ export const PrivateMutation = mutationField((t) => {
         return false;
       }
       // indexed query
-      const roles = await prisma.role.findMany({
+      const role = await prisma.role.findUnique({
         where: {
+          userRole: {
           userId: user.id,
+          name: Role.Administrator
+          }
         },
       });
-      return hasRole(roles, Role.Administrator);
+      console.log({ role })
+      return Boolean(role)
     },
     async resolve(_root, { slug }, { prisma, amqp }) {
       const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler";

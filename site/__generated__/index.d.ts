@@ -493,6 +493,8 @@ export interface NexusGenFieldTypes {
     source: NexusGenEnums['FaceSource']; // FaceSource!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
   }
   Image: { // field return type
     appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
@@ -580,6 +582,8 @@ export interface NexusGenFieldTypeNames {
     source: 'FaceSource'
     updatedAt: 'DateTime'
     width: 'Float'
+    x: 'Float'
+    y: 'Float'
   }
   Image: { // field return type name
     appearances: 'Appearance'

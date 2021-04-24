@@ -10,8 +10,6 @@ const publicTypes = Object.fromEntries(
     )]
   })
 )
-console.log(types)
-console.log(publicTypes)
 
 const sourceTypes = {
   modules: [{ module: ".prisma/client", alias: "PrismaClient" }],
@@ -60,7 +58,3 @@ export const privateSchema = makeSchema({
     process.env.SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === "true",
   types,
 });
-
-if (process.env.SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS) {
-  process.exit(0)
-}

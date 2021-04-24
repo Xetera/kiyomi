@@ -691,6 +691,7 @@ export interface NexusGenArgTypes {
       faces: NexusGenInputs['FaceInput'][]; // [FaceInput!]!
       ireneBotId?: number | null; // Int
       pHash?: string | null; // String
+      palette: number[]; // [Int!]!
       personName?: string | null; // String
       replacePreviousScan?: boolean | null; // Boolean
       slug: string; // String!

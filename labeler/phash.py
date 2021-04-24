@@ -12,7 +12,7 @@ image = Image.open(io.BytesIO(buffer))
 
 out = phash(image, hash_size=32)
 
-print(out, flush=True)
+print(out, flush=True, end='')
 sys.stdout.flush()
 # import cv2 as cv
 # import json

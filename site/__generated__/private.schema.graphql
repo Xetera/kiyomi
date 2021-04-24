@@ -343,7 +343,7 @@ type Mutation {
   """
   Add metadata labels to an existing image. Only available to bot accounts
   """
-  labelImage(faces: [FaceInput!]!, ireneBotId: Int, pHash: String, personName: String, replacePreviousScan: Boolean, slug: String!): Image
+  labelImage(faces: [FaceInput!]!, ireneBotId: Int, pHash: String, palette: [Int!]!, personName: String, replacePreviousScan: Boolean, slug: String!): Image
 
   """Attach an existing face to an apperance."""
   linkFace(appearanceId: Int!, faceId: Int!): Appearance!
@@ -499,6 +499,7 @@ input PersonWhereInput {
 }
 
 type Query {
+  """Find a single image by its slug."""
   image(slug: String!): Image
   me: User
   searchPerson(query: String!): [Person!]!
