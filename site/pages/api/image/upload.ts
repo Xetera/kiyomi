@@ -115,7 +115,6 @@ export default handle(
             source,
             isNsfw: nsfw,
             slug,
-            ...(palette ? { palette } : {}),
             userId: user.id,
             tags: {
               create: tags.map((tag) => {
