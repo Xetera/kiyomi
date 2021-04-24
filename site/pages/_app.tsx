@@ -11,9 +11,7 @@ import { Hydrate } from "react-query/hydration";
 import React from "react";
 import { AppProps } from "next/dist/next-server/lib/router/router";
 import { ChakraProvider } from "@chakra-ui/react";
-// 1. Import the extendTheme function
 import { extendTheme } from "@chakra-ui/react";
-// 2. Extend the theme to include custom colors, fonts, etc
 
 const theme = extendTheme({
   config: {
@@ -71,23 +69,17 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
               content="width=device-width, initial-scale=1"
             />
           </NextHead>
-          {/* <SkeletonTheme
-        color="rgba(34, 50, 64, 0.5)"
-        highlightColor="rgba(34, 50, 64, 0.7)"
-      > */}
           <div className="min-h-screen flex flex-col">
             <ChakraProvider theme={theme}>
               <Component {...pageProps} />
             </ChakraProvider>
           </div>
-          {/* </SkeletonTheme> */}
           <ReactTooltip
             uuid="mytt"
             backgroundColor="#0c111f"
             effect="solid"
             border={true}
             borderColor={light}
-            //border={true} borderColor="red"
           />
         </Provider>
       </Hydrate>

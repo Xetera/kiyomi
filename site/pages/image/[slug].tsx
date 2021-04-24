@@ -130,12 +130,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       },
     })
-    .catch((err) => {
-      console.log(err);
-    });
-  const dehydratedState = await prefetchQuery("OneImage", {
-    slug,
-  });
+    .catch(console.error);
+  const dehydratedState = await prefetchQuery("OneImage", { slug });
   return {
     props: {
       session: await getSession(ctx),

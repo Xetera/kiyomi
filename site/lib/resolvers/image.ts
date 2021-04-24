@@ -131,7 +131,7 @@ export const Query = queryField((t) => {
   });
 });
 
-export const FaceInput = inputObjectType({
+export const PrivateFaceInput = inputObjectType({
   name: "FaceInput",
   definition(t) {
     t.nonNull.float("x");
@@ -143,17 +143,18 @@ export const FaceInput = inputObjectType({
   },
 });
 
-export const Mutation = mutationField((t) => {
-  t.field("markFaces", {
+export const PrivateMutation = mutationField((t) => {
+  t.field("labelImage", {
     type: "Image",
     description:
-      "Image face recognition update. Only available to bot accounts",
+      "Add metadata labels to an existing image. Only available to bot accounts",
     args: {
       slug: nonNull(stringArg()),
       personName: "String",
       ireneBotId: "Int",
       replacePreviousScan: "Boolean",
       faces: nonNull(list(nonNull("FaceInput"))),
+      pHash: "String",
     },
     async authorize(_, args, { prisma, user }) {
       if (!user) {
@@ -172,9 +173,12 @@ export const Mutation = mutationField((t) => {
     },
     async resolve(
       _root,
-      { slug, faces, personName, ireneBotId, replacePreviousScan },
+      { slug, faces, personName, ireneBotId, replacePreviousScan, pHash },
       { prisma, user }
     ) {
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
       const image = await prisma.image.findUnique({
         where: { slug },
         include: { faces: true, appearances: true },
@@ -201,8 +205,8 @@ export const Mutation = mutationField((t) => {
       }
       let existingPerson: Person | undefined = existingAppearance?.personId
         ? (await prisma.person.findUnique({
-            where: { ireneBotId: existingAppearance.personId },
-          })) ?? undefined
+          where: { ireneBotId: existingAppearance.personId },
+        })) ?? undefined
         : undefined;
 
       if (faces.length === 1 && personName && !existingPerson) {
@@ -229,7 +233,7 @@ export const Mutation = mutationField((t) => {
             },
             addedBy: {
               connect: {
-                id: user!.id,
+                id: user.id,
               },
             },
           },
@@ -242,6 +246,7 @@ export const Mutation = mutationField((t) => {
           },
           data: {
             faceScanDate: new Date(),
+            pHash: pHash,
           },
         })
         .catch((err) => {
@@ -251,9 +256,9 @@ export const Mutation = mutationField((t) => {
       const templatedString = faces
         .map(({ x, y, height, width, descriptor, certainty }) => {
           const cube = descriptor.join(",");
-          const userId = user!.id;
+          const userId = user.id;
           const linkedPerson = existingAppearance?.id ?? "NULL";
-          const source = user!.bot ? FaceSource.Scan : FaceSource.Manual;
+          const source = user.bot ? FaceSource.Scan : FaceSource.Manual;
           const data = `(${image.id}, ${certainty}, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${userId}, ${linkedPerson}, '${source}')`;
           return data;
         })
@@ -301,8 +306,8 @@ export const Mutation = mutationField((t) => {
       return image;
     },
   });
-  t.nonNull.list.field("similarImages", {
-    type: "Image",
-    resolve(t) {},
-  });
+  // t.nonNull.list.field("similarImages", {
+  //   type: "Image",
+  //   resolve(t) {},
+  // });
 });

@@ -360,10 +360,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Add an appearance relation on an image. */
   addAppearance: Appearance;
+  /** Add metadata labels to an existing image. Only available to bot accounts */
+  labelImage?: Maybe<Image>;
   /** Attach an existing face to an apperance. */
   linkFace: Appearance;
-  /** Image face recognition update. Only available to bot accounts */
-  markFaces?: Maybe<Image>;
   /** Removes an appearance from an image */
   removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
@@ -380,18 +380,19 @@ export type MutationAddAppearanceArgs = {
 };
 
 
-export type MutationLinkFaceArgs = {
-  appearanceId: Scalars['Int'];
-  faceId: Scalars['Int'];
-};
-
-
-export type MutationMarkFacesArgs = {
+export type MutationLabelImageArgs = {
   faces: Array<FaceInput>;
   ireneBotId?: Maybe<Scalars['Int']>;
   personName?: Maybe<Scalars['String']>;
+  phash?: Maybe<Scalars['String']>;
   replacePreviousScan?: Maybe<Scalars['Boolean']>;
   slug: Scalars['String'];
+};
+
+
+export type MutationLinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
 };
 
 
@@ -741,16 +742,16 @@ export type GetBackendImageQuery = (
   )> }
 );
 
-export type UploadFacesMutationVariables = Exact<{
+export type LabelImageMutationVariables = Exact<{
   slug: Scalars['String'];
   faces: Array<FaceInput> | FaceInput;
   ireneBotId?: Maybe<Scalars['Int']>;
 }>;
 
 
-export type UploadFacesMutation = (
+export type LabelImageMutation = (
   { __typename?: 'Mutation' }
-  & { markFaces?: Maybe<(
+  & { labelImage?: Maybe<(
     { __typename?: 'Image' }
     & Pick<Image, 'id'>
   )> }
@@ -769,9 +770,9 @@ export const GetBackendImageDocument = gql`
   }
 }
     `;
-export const UploadFacesDocument = gql`
-    mutation uploadFaces($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int) {
-  markFaces(
+export const LabelImageDocument = gql`
+    mutation labelImage($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int) {
+  labelImage(
     slug: $slug
     replacePreviousScan: true
     faces: $faces
@@ -791,8 +792,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     getBackendImage(variables: GetBackendImageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBackendImageQuery> {
       return withWrapper(() => client.request<GetBackendImageQuery>(GetBackendImageDocument, variables, requestHeaders));
     },
-    uploadFaces(variables: UploadFacesMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UploadFacesMutation> {
-      return withWrapper(() => client.request<UploadFacesMutation>(UploadFacesDocument, variables, requestHeaders));
+    labelImage(variables: LabelImageMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LabelImageMutation> {
+      return withWrapper(() => client.request<LabelImageMutation>(LabelImageDocument, variables, requestHeaders));
     }
   };
 }

@@ -1,10 +1,41 @@
-import type { PrismaClient, User } from "@prisma/client";
-import amqp from "amqplib";
+import { prisma } from "@/lib/db";
+import { getUserFromToken } from "@/lib/auth";
+import { getSession } from "next-auth/client";
+import { amqpPromise } from "@/lib/amqp";
+import { NextApiRequest, NextApiResponse } from "next";
+import { Context } from "./context-type";
 
-export interface Context {
-  prisma: PrismaClient;
-  // could be null due to connection errors
-  amqp?: amqp.Connection;
-  user?: User;
-  uploadType: "WEBSITE" | "USER";
+type ContextInput = {
+  req: NextApiRequest;
+  res: NextApiResponse;
+};
+
+export async function contextResolver(ctx: ContextInput): Promise<Context & any> {
+  const { req, res } = ctx;
+  const auth = req.headers.authorization;
+  const amqp = await amqpPromise.catch(() => undefined);
+
+  if (auth) {
+    const user = (await getUserFromToken(auth, prisma)) ?? undefined;
+    return {
+      req,
+      res,
+      amqp,
+      prisma,
+      user,
+      uploadType: "TOKEN",
+    };
+  }
+
+  const session = await getSession(ctx);
+
+  return {
+    req,
+    user: session?.user,
+    amqp,
+    res,
+    session,
+    uploadType: "WEBSITE",
+    prisma,
+  };
 }

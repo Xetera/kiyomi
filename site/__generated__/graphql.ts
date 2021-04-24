@@ -377,10 +377,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Add an appearance relation on an image. */
   addAppearance: Appearance;
+  /** Add metadata labels to an existing image. Only available to bot accounts */
+  labelImage?: Maybe<Image>;
   /** Attach an existing face to an apperance. */
   linkFace: Appearance;
-  /** Image face recognition update. Only available to bot accounts */
-  markFaces?: Maybe<Image>;
   /** Removes an appearance from an image */
   removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
@@ -397,18 +397,19 @@ export type MutationAddAppearanceArgs = {
 };
 
 
-export type MutationLinkFaceArgs = {
-  appearanceId: Scalars['Int'];
-  faceId: Scalars['Int'];
-};
-
-
-export type MutationMarkFacesArgs = {
+export type MutationLabelImageArgs = {
   faces: Array<FaceInput>;
   ireneBotId?: Maybe<Scalars['Int']>;
   personName?: Maybe<Scalars['String']>;
+  phash?: Maybe<Scalars['String']>;
   replacePreviousScan?: Maybe<Scalars['Boolean']>;
   slug: Scalars['String'];
+};
+
+
+export type MutationLinkFaceArgs = {
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
 };
 
 

@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server-micro";
 import makeCors from "micro-cors";
-import { schema } from "@/lib/schema";
+import { privateSchema } from "@/lib/schema";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
@@ -12,14 +12,11 @@ export const config = {
 const cors = makeCors();
 
 const apolloServer = new ApolloServer({
-  introspection: true,
-  playground: {
-    title: "Simp.pics API",
-  },
-  schema,
-}); 
+  introspection: process.env.NODE_ENV === "development",
+  schema: privateSchema,
+});
 
-const handler = apolloServer.createHandler({ path: "/api/graphql" });
+const handler = apolloServer.createHandler({ path: "/api/internal" });
 
 export default cors((req: NextApiRequest, res: NextApiResponse) => {
   return req.method === "OPTIONS" ? res.end() : handler(req, res);

@@ -103,20 +103,19 @@ async function processFaces(conn: amqp.Connection) {
       const a = process.hrtime();
       const data = await phash(imageBuffer.data);
       process.hrtime(a);
-      console.log(data);
 
-      // await sdk.uploadFaces({
-      //   slug: msg.slug,
-      //   ireneBotId: msg.ireneBotIdolId,
-      //   faces: faces.map(({ detection, descriptor }) => ({
-      //     certainty: detection.score,
-      //     x: detection.box.x,
-      //     y: detection.box.y,
-      //     width: detection.box.width,
-      //     height: detection.box.height,
-      //     descriptor: Array.from(descriptor),
-      //   })),
-      // });
+      await sdk.uploadFaces({
+        slug: msg.slug,
+        ireneBotId: msg.ireneBotIdolId,
+        faces: faces.map(({ detection, descriptor }) => ({
+          certainty: detection.score,
+          x: detection.box.x,
+          y: detection.box.y,
+          width: detection.box.width,
+          height: detection.box.height,
+          descriptor: Array.from(descriptor),
+        })),
+      });
     })
   );
 }

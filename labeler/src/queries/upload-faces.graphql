@@ -1,5 +1,5 @@
-mutation uploadFaces($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int) {
-  markFaces(
+mutation labelImage($slug: String!, $faces: [FaceInput!]!, $ireneBotId: Int) {
+  labelImage(
     slug: $slug
     replacePreviousScan: true
     faces: $faces
