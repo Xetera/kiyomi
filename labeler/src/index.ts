@@ -97,15 +97,12 @@ async function processFaces(conn: amqp.Connection) {
       });
       const label = `detection-time-${image.id}`;
       console.time(label);
-      const faces = await detectFaces(imageBuffer.data);
-      console.timeEnd(label);
-
-      const a = process.hrtime();
-      const [hash, palette] = await Promise.all([
+      const [faces, hash, palette] = await Promise.all([
+        detectFaces(imageBuffer.data),
         phash(imageBuffer.data),
         colorPalette(imageBuffer.data)
       ]);
-      process.hrtime(a);
+      console.timeEnd(label);
       
       await sdk.labelImage({
         slug: msg.slug,

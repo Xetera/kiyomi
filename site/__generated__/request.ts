@@ -218,6 +218,8 @@ export type FloatFilter = {
 export type Image = {
   __typename?: 'Image';
   appearances: Array<Appearance>;
+  /** The aspect ratio of the image */
+  aspectRatio: Scalars['Float'];
   bytes: Scalars['Int'];
   caption?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
@@ -276,6 +278,30 @@ export type ImageListRelationFilter = {
   every?: Maybe<ImageWhereInput>;
   none?: Maybe<ImageWhereInput>;
   some?: Maybe<ImageWhereInput>;
+};
+
+export type ImageOrderByInput = {
+  bytes?: Maybe<SortOrder>;
+  caption?: Maybe<SortOrder>;
+  createdAt?: Maybe<SortOrder>;
+  faceScanDate?: Maybe<SortOrder>;
+  fileName?: Maybe<SortOrder>;
+  hash?: Maybe<SortOrder>;
+  height?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  ireneBotId?: Maybe<SortOrder>;
+  isNsfw?: Maybe<SortOrder>;
+  mimetype?: Maybe<SortOrder>;
+  pHash?: Maybe<SortOrder>;
+  palette?: Maybe<SortOrder>;
+  public?: Maybe<SortOrder>;
+  slug?: Maybe<SortOrder>;
+  source?: Maybe<SortOrder>;
+  updatedAt?: Maybe<SortOrder>;
+  uploadType?: Maybe<SortOrder>;
+  userId?: Maybe<SortOrder>;
+  views?: Maybe<SortOrder>;
+  width?: Maybe<SortOrder>;
 };
 
 export type ImageWhereInput = {
@@ -554,6 +580,7 @@ export type Query = {
   __typename?: 'Query';
   /** Find a single image by its slug. */
   image?: Maybe<Image>;
+  images: Array<Image>;
   me?: Maybe<User>;
   searchPerson: Array<Person>;
   user?: Maybe<User>;
@@ -562,6 +589,15 @@ export type Query = {
 
 export type QueryImageArgs = {
   slug: Scalars['String'];
+};
+
+
+export type QueryImagesArgs = {
+  cursor?: Maybe<ImageWhereUniqueInput>;
+  orderBy?: Maybe<Array<ImageOrderByInput>>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+  where?: Maybe<ImageWhereInput>;
 };
 
 
@@ -612,6 +648,11 @@ export type RoleWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
   userRole?: Maybe<RoleUserRoleCompoundUniqueInput>;
 };
+
+export enum SortOrder {
+  Asc = 'asc',
+  Desc = 'desc'
+}
 
 export type StringFilter = {
   contains?: Maybe<Scalars['String']>;
@@ -745,17 +786,22 @@ export type FaceDataFragment = (
 );
 
 export type HomepageQueryVariables = Exact<{
-  botUser: Scalars['Int'];
+  take: Scalars['Int'];
+  skip: Scalars['Int'];
 }>;
 
 
 export type HomepageQuery = (
   { __typename?: 'Query' }
-  & { user?: Maybe<(
-    { __typename?: 'User' }
-    & { images: Array<(
-      { __typename?: 'Image' }
-      & ImageDataFragment
+  & { images: Array<(
+    { __typename?: 'Image' }
+    & Pick<Image, 'id' | 'url' | 'rawUrl' | 'aspectRatio' | 'createdAt'>
+    & { uploadedBy?: Maybe<(
+      { __typename?: 'User' }
+      & UserDataFragment
+    )>, appearances: Array<(
+      { __typename?: 'Appearance' }
+      & AppearanceDataFragment
     )> }
   )> }
 );
@@ -949,14 +995,23 @@ export const UserDataFragmentDoc = gql`
 }
     `;
 export const HomepageDocument = gql`
-    query Homepage($botUser: Int!) {
-  user(id: $botUser) {
-    images {
-      ...ImageData
+    query Homepage($take: Int!, $skip: Int!) {
+  images(orderBy: {createdAt: desc}, take: $take, skip: $skip) {
+    id
+    url
+    rawUrl
+    aspectRatio
+    uploadedBy {
+      ...UserData
     }
+    appearances {
+      ...AppearanceData
+    }
+    createdAt
   }
 }
-    ${ImageDataFragmentDoc}`;
+    ${UserDataFragmentDoc}
+${AppearanceDataFragmentDoc}`;
 export const MeDocument = gql`
     query Me {
   me {

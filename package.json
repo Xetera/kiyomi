@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "codegen": "cd site && yarn codegen",
-    "typegen": "graphql-codegen"
+    "typegen": "graphql-codegen",
+    "gen": "yarn codegen && yarn typegen"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.21.3",

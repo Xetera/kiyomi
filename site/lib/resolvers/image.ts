@@ -87,6 +87,12 @@ export const User = objectType({
         return `${baseCdnUrl}/${p.slug}.${p.mimetype.toLowerCase()}`;
       },
     });
+    t.nonNull.float("aspectRatio", {
+      description: "The aspect ratio of the image",
+      resolve(p) {
+        return p.width / p.height;
+      }
+    })
     t.field("unknownFaces", {
       type: nonNull(list(nonNull("Face"))),
       async resolve(image, _args, { prisma }) {
@@ -117,6 +123,20 @@ export const User = objectType({
 });
 
 export const Query = queryField((t) => {
+  t.crud.images({
+    filtering: true,
+    pagination: true,
+    ordering: true,
+    resolve(root, args, ctx, info, original) {
+      return original(root, {
+        ...args,
+        where: {
+          ...args.where,
+          public: { equals: true }
+        }
+      }, ctx, info)
+    }
+  })
   t.field("image", {
     type: "Image",
     description: "Find a single image by its slug.",
@@ -288,8 +308,8 @@ export const PrivateMutation = mutationField((t) => {
       const role = await prisma.role.findUnique({
         where: {
           userRole: {
-          userId: user.id,
-          name: Role.Administrator
+            userId: user.id,
+            name: Role.Administrator
           }
         },
       });

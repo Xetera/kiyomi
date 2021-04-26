@@ -10,12 +10,11 @@ import ReactModal from "react-modal";
 import { useRouter } from "next/router";
 import { MimeType, useOneImageQuery } from "@/__generated__/graphql";
 import { ImageEditModal } from "@/components/image-edit-modal";
-import { QueryClient } from "react-query";
 import { GetServerSideProps } from "next";
-import { dehydrate } from "react-query/hydration";
 import { prefetchQuery } from "@/lib/client-helpers";
 import { prisma } from "@/lib/db";
 import { getSession } from "next-auth/client";
+import { wrapRequest } from "@/lib/data-fetching";
 
 const Image = () => {
   const [isEditOpen, setEditOpen] = React.useState(false);
@@ -115,7 +114,7 @@ const Image = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps = wrapRequest(async (ctx) => {
   const slug = ctx.params!.slug as string;
   prisma.image
     .update({
@@ -130,10 +129,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const dehydratedState = await prefetchQuery("OneImage", { slug });
   return {
     props: {
-      session: await getSession(ctx),
       dehydratedState,
     },
   };
-};
+});
 
 export default Image;

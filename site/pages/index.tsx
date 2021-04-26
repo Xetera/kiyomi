@@ -5,7 +5,18 @@ import { Navbar } from "@/components/navbar";
 import { useScroll } from "react-use";
 import { useHomepageQuery } from "@/__generated__/graphql";
 import { prefetchQuery } from "@/lib/client-helpers";
-import { Gallery } from "@/components/gallery";
+import { Grid, Heading } from "@chakra-ui/layout";
+import { ImageGridElement } from "@/components/image-grid-element";
+import {
+  Box,
+  Image,
+  Flex,
+  Input,
+  InputGroup,
+  InputLeftElement,
+} from "@chakra-ui/react";
+import { RiSearchLine } from "react-icons/ri";
+import { wrapRequest } from "@/lib/data-fetching";
 
 function getKey(index: number, prevData: any) {
   if (!index) {
@@ -27,89 +38,104 @@ export default function Home() {
   const [activeTab, setActiveTab] = React.useState(0);
   const [fetching, setFetching] = React.useState(false);
   const { y } = useScroll(pageRef);
-  const { data } = useHomepageQuery({ botUser: 2 });
+  const { data } = useHomepageQuery({ take: 100, skip: 0 });
   console.log(data);
-  // const {
-  //   data,
-  //   setSize,
-  //   size,
-  //   error,
-  //   isValidating,
-  // } = useSWRInfinite<HomeResponse>(getKey, fetcher, {
-  //   // initialData: images,
-  //   onSuccess(data) {
-  //     console.log("success", data);
-  //     setFetching(false);
-  //   },
-  // });
-  // const imagess = data ? [].concat(...data.map((d) => d.data)) : [];
-  // console.log("imagess", imagess);
-  // async function getMore() {
-  //   setFetching(true);
-  //   console.log("getting more?");
-  //   if (fetching) {
-  //     return;
-  //   }
-  //   console.log("not already fetching, fetching now");
-  //   console.log("getting more data!");
-  //   await setSize((size) => size + 1);
-  //   setFetching(false);
-  // }
-  // if (!data) {
-  //   return "loading...";
-  // }
-  // if (error) {
-  //   console.log("error", error);
-  // }
-  // console.log("isValidating", isValidating);
-  // const { cursor } = data[data.length - 1];
   return (
     <>
       <Navbar />
-      <div
+      <Box position="relative" mb={5} height="40vh" display="flex">
+        <Image
+          maxHeight="70vh"
+          position="absolute"
+          objectPosition="0% 35%"
+          opacity="20%"
+          mb="calc(-50vh / 1.2)"
+          objectFit="cover"
+          width="100%"
+          src="https://my.simp.pics/_RnoDqOmNJVAZ4ix.webp"
+          sx={{
+            WebkitMaskImage:
+              "linear-gradient(to top, transparent 2%, black 73%)",
+          }}
+        />
+        <Flex
+          position="relative"
+          maxWidth="7xl"
+          width="100%"
+          mx="auto"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Box flexDirection="column" width="100%" px={5}>
+            <Box mb={8}>
+              <Heading
+                fontSize={["4xl", "6xl"]}
+                as="h1"
+                mb={2}
+                fontWeight="black"
+              >
+                Kiyomi
+              </Heading>
+              <Heading
+                fontSize={["2xl", "4xl"]}
+                as="h2"
+                color="gray.300"
+                fontWeight="normal"
+              >
+                An image database that understands people.
+              </Heading>
+            </Box>
+            <InputGroup size="lg" shadow="2xl">
+              <InputLeftElement
+                pointerEvents="none"
+                children={<RiSearchLine />}
+              />
+              <Input
+                placeholder="Search for an image"
+                color="white"
+                background="black"
+                borderColor="rgb(2, 3, 4)"
+              />
+            </InputGroup>
+          </Box>
+        </Flex>
+      </Box>
+      <Box
         className="relative flex-1 flex-row flex justify-center"
         ref={pageRef}
       >
-        <div className="flex flex-col px-5 mt-12 h-full justify-start flex-1 max-w-6xl">
-          <h1 className="text-8xl mb-5 font-black text-gray-100">simp.pics</h1>
-          <p className="text-2xl font-semibold text-gray-400">
-            A SFW image host mindful of human connections.
-          </p>
-          {/* <p className="text-coolGray-400 max-w-xl mb-2">
-            This is my private image host. If (for some reason) you would like
-            access, shoot me a DM at <b>Xetera#0001</b> on Discord with your
-            expected usage amount to get an API token.
-          </p>
-          <p className="text-sm text-coolGray-400">No NSFW please</p> */}
-          <div className="w-full">
-            <Gallery images={data?.user?.images ?? []} />
-          </div>
-        </div>
-        {/* <FrontPage />
-          <aside className="flex sticky top-0 z-20 bg-theme py-3 w-full">
-            <div className="grid gap-4 font-semibold grid-flow-col">
-              <Tab active={true}>Popular</Tab>
-              <Tab active={false}>Latest</Tab>
-            </div>
-          </aside>
-          <main className="w-full relative pb-20">
-            {error ? (
-              <p>Crap... we had an error</p>
-            ) : (
-              <>
-                <Gallery images={imagess} />
-                <Waypoint onEnter={getMore} />
-              </>
-            )}
-          </main>
-        </div> */}
-      </div>
-      {/* <pre style={{ whiteSpace: "pre" }}>{JSON.stringify(images, null, 2)}</pre> */}
+        <Box
+          className="flex flex-col h-full justify-start flex-1"
+          px={5}
+          maxWidth="7xl"
+        >
+          <Grid
+            gap={2}
+            gridAutoFlow="dense"
+            gridTemplateColumns={[
+              "repeat(auto-fit, minmax(150px, 1fr))",
+              "repeat(auto-fill, minmax(220px, 1fr))",
+            ]}
+          >
+            {data?.images.map((image) => (
+              <Box
+                maxHeight="385px"
+                key={image.id}
+                {...(image.aspectRatio > 1.5
+                  ? { gridColumn: "auto / span 2" }
+                  : {})}
+              >
+                <ImageGridElement image={image} />
+              </Box>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
     </>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps = wrapRequest(async (ctx) => {
   const dehydratedState = await prefetchQuery("HomepageQuery", { botUser: 2 });
   return {
     props: {
@@ -117,4 +143,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       dehydratedState,
     },
   };
-};
+});

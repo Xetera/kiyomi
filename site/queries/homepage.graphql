@@ -1,8 +1,15 @@
-query Homepage($botUser: Int!) {
-  # temporary query with JiuBot id hardcoded
-  user(id: $botUser) {
-    images {
-      ...ImageData
+query Homepage($take: Int!, $skip: Int!) {
+  images(orderBy: { createdAt: desc }, take: $take, skip: $skip) {
+    id
+    url
+    rawUrl
+    aspectRatio
+    uploadedBy {
+      ...UserData
     }
+    appearances {
+      ...AppearanceData
+    }
+    createdAt
   }
 }

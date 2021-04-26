@@ -99,7 +99,7 @@ export default handle(
         const image = await db.image.create({
           select: {
             id: true,
-            ...imageFindOptions.select,
+            slug: true
           },
           data: {
             ireneBotId: ireneBotImageId ? Number(ireneBotImageId) : undefined,

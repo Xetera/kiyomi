@@ -13,7 +13,24 @@ import { AppProps } from "next/dist/next-server/lib/router/router";
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 
+const fontFamily = `
+    "Inter",
+    system-ui,
+		-apple-system,
+		'Segoe UI',
+		Roboto,
+		Helvetica,
+		Arial,
+		sans-serif,
+		'Apple Color Emoji',
+		'Segoe UI Emoji'
+`;
+
 const theme = extendTheme({
+  fonts: {
+    body: fontFamily,
+    heading: fontFamily,
+  },
   config: {
     initialColorMode: "dark",
   },

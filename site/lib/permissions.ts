@@ -8,3 +8,7 @@ export enum Role {
 export function hasRole(roles: RoleTable[], roleCheck: Role) {
   return roles.some((role) => role.name === roleCheck);
 }
+
+export function canViewPrivateImages() {
+
+}

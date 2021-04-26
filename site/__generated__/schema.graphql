@@ -185,6 +185,9 @@ input FloatFilter {
 
 type Image {
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
+
+  """The aspect ratio of the image"""
+  aspectRatio: Float!
   bytes: Int!
   caption: String
   createdAt: DateTime!
@@ -247,6 +250,30 @@ input ImageListRelationFilter {
   every: ImageWhereInput
   none: ImageWhereInput
   some: ImageWhereInput
+}
+
+input ImageOrderByInput {
+  bytes: SortOrder
+  caption: SortOrder
+  createdAt: SortOrder
+  faceScanDate: SortOrder
+  fileName: SortOrder
+  hash: SortOrder
+  height: SortOrder
+  id: SortOrder
+  ireneBotId: SortOrder
+  isNsfw: SortOrder
+  mimetype: SortOrder
+  pHash: SortOrder
+  palette: SortOrder
+  public: SortOrder
+  slug: SortOrder
+  source: SortOrder
+  updatedAt: SortOrder
+  uploadType: SortOrder
+  userId: SortOrder
+  views: SortOrder
+  width: SortOrder
 }
 
 input ImageWhereInput {
@@ -484,6 +511,7 @@ input PersonWhereInput {
 type Query {
   """Find a single image by its slug."""
   image(slug: String!): Image
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
   searchPerson(query: String!): [Person!]!
   user(id: Int): User
@@ -525,6 +553,11 @@ input RoleWhereInput {
 input RoleWhereUniqueInput {
   id: Int
   userRole: RoleUserRoleCompoundUniqueInput
+}
+
+enum SortOrder {
+  asc
+  desc
 }
 
 input StringFilter {

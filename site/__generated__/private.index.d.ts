@@ -166,6 +166,29 @@ export interface NexusGenInputs {
     none?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     some?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
   }
+  ImageOrderByInput: { // input type
+    bytes?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    caption?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    faceScanDate?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    fileName?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    hash?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    height?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    id?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    ireneBotId?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    isNsfw?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    mimetype?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    pHash?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    palette?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    public?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    slug?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    source?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    updatedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    uploadType?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    userId?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    views?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    width?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
   ImageWhereInput: { // input type
     AND?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
     NOT?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
@@ -445,6 +468,7 @@ export interface NexusGenEnums {
   FaceSource: PrismaClient.FaceSource
   MimeType: PrismaClient.MimeType
   QueryMode: PrismaClient.QueryMode
+  SortOrder: PrismaClient.SortOrder
   TagSource: PrismaClient.TagSource
   UploadType: PrismaClient.UploadType
 }
@@ -506,6 +530,7 @@ export interface NexusGenFieldTypes {
   }
   Image: { // field return type
     appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
+    aspectRatio: number; // Float!
     bytes: number; // Int!
     caption: string | null; // String
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -547,6 +572,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     image: NexusGenRootTypes['Image'] | null; // Image
+    images: NexusGenRootTypes['Image'][]; // [Image!]!
     me: NexusGenRootTypes['User'] | null; // User
     searchPerson: NexusGenRootTypes['Person'][]; // [Person!]!
     user: NexusGenRootTypes['User'] | null; // User
@@ -597,6 +623,7 @@ export interface NexusGenFieldTypeNames {
   }
   Image: { // field return type name
     appearances: 'Appearance'
+    aspectRatio: 'Float'
     bytes: 'Int'
     caption: 'String'
     createdAt: 'DateTime'
@@ -638,6 +665,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     image: 'Image'
+    images: 'Image'
     me: 'User'
     searchPerson: 'Person'
     user: 'User'
@@ -714,6 +742,13 @@ export interface NexusGenArgTypes {
   Query: {
     image: { // args
       slug: string; // String!
+    }
+    images: { // args
+      cursor?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+      orderBy?: NexusGenInputs['ImageOrderByInput'][] | null; // [ImageOrderByInput!]
+      skip?: number | null; // Int
+      take?: number | null; // Int
+      where?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     }
     searchPerson: { // args
       query: string; // String!
