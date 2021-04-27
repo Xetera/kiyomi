@@ -21,10 +21,105 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  AliasCreateNestedManyWithoutPersonInput: { // input type
+    connect?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AliasCreateOrConnectWithoutPersonInput'][] | null; // [AliasCreateOrConnectWithoutPersonInput!]
+    create?: NexusGenInputs['AliasCreateWithoutPersonInput'][] | null; // [AliasCreateWithoutPersonInput!]
+  }
+  AliasCreateNestedOneWithoutPreferredAliasOfInput: { // input type
+    connect?: NexusGenInputs['AliasWhereUniqueInput'] | null; // AliasWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['AliasCreateOrConnectWithoutPreferredAliasOfInput'] | null; // AliasCreateOrConnectWithoutPreferredAliasOfInput
+    create?: NexusGenInputs['AliasCreateWithoutPreferredAliasOfInput'] | null; // AliasCreateWithoutPreferredAliasOfInput
+  }
+  AliasCreateOrConnectWithoutPersonInput: { // input type
+    create: NexusGenInputs['AliasCreateWithoutPersonInput']; // AliasCreateWithoutPersonInput!
+    where: NexusGenInputs['AliasWhereUniqueInput']; // AliasWhereUniqueInput!
+  }
+  AliasCreateOrConnectWithoutPreferredAliasOfInput: { // input type
+    create: NexusGenInputs['AliasCreateWithoutPreferredAliasOfInput']; // AliasCreateWithoutPreferredAliasOfInput!
+    where: NexusGenInputs['AliasWhereUniqueInput']; // AliasWhereUniqueInput!
+  }
+  AliasCreateWithoutPersonInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    name: string; // String!
+    preferredAliasOf?: NexusGenInputs['PersonCreateNestedOneWithoutPreferredAliasInput'] | null; // PersonCreateNestedOneWithoutPreferredAliasInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AliasCreateWithoutPreferredAliasOfInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    name: string; // String!
+    person: NexusGenInputs['PersonCreateNestedOneWithoutAliasesInput']; // PersonCreateNestedOneWithoutAliasesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   AliasListRelationFilter: { // input type
     every?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
     none?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
     some?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
+  }
+  AliasScalarWhereInput: { // input type
+    AND?: NexusGenInputs['AliasScalarWhereInput'][] | null; // [AliasScalarWhereInput!]
+    NOT?: NexusGenInputs['AliasScalarWhereInput'][] | null; // [AliasScalarWhereInput!]
+    OR?: NexusGenInputs['AliasScalarWhereInput'][] | null; // [AliasScalarWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  AliasUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AliasUpdateManyWithWhereWithoutPersonInput: { // input type
+    data: NexusGenInputs['AliasUpdateManyMutationInput']; // AliasUpdateManyMutationInput!
+    where: NexusGenInputs['AliasScalarWhereInput']; // AliasScalarWhereInput!
+  }
+  AliasUpdateManyWithoutPersonInput: { // input type
+    connect?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AliasCreateOrConnectWithoutPersonInput'][] | null; // [AliasCreateOrConnectWithoutPersonInput!]
+    create?: NexusGenInputs['AliasCreateWithoutPersonInput'][] | null; // [AliasCreateWithoutPersonInput!]
+    delete?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['AliasScalarWhereInput'][] | null; // [AliasScalarWhereInput!]
+    disconnect?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
+    set?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
+    update?: NexusGenInputs['AliasUpdateWithWhereUniqueWithoutPersonInput'][] | null; // [AliasUpdateWithWhereUniqueWithoutPersonInput!]
+    updateMany?: NexusGenInputs['AliasUpdateManyWithWhereWithoutPersonInput'][] | null; // [AliasUpdateManyWithWhereWithoutPersonInput!]
+    upsert?: NexusGenInputs['AliasUpsertWithWhereUniqueWithoutPersonInput'][] | null; // [AliasUpsertWithWhereUniqueWithoutPersonInput!]
+  }
+  AliasUpdateOneWithoutPreferredAliasOfInput: { // input type
+    connect?: NexusGenInputs['AliasWhereUniqueInput'] | null; // AliasWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['AliasCreateOrConnectWithoutPreferredAliasOfInput'] | null; // AliasCreateOrConnectWithoutPreferredAliasOfInput
+    create?: NexusGenInputs['AliasCreateWithoutPreferredAliasOfInput'] | null; // AliasCreateWithoutPreferredAliasOfInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['AliasUpdateWithoutPreferredAliasOfInput'] | null; // AliasUpdateWithoutPreferredAliasOfInput
+    upsert?: NexusGenInputs['AliasUpsertWithoutPreferredAliasOfInput'] | null; // AliasUpsertWithoutPreferredAliasOfInput
+  }
+  AliasUpdateWithWhereUniqueWithoutPersonInput: { // input type
+    data: NexusGenInputs['AliasUpdateWithoutPersonInput']; // AliasUpdateWithoutPersonInput!
+    where: NexusGenInputs['AliasWhereUniqueInput']; // AliasWhereUniqueInput!
+  }
+  AliasUpdateWithoutPersonInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    preferredAliasOf?: NexusGenInputs['PersonUpdateOneWithoutPreferredAliasInput'] | null; // PersonUpdateOneWithoutPreferredAliasInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AliasUpdateWithoutPreferredAliasOfInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    person?: NexusGenInputs['PersonUpdateOneRequiredWithoutAliasesInput'] | null; // PersonUpdateOneRequiredWithoutAliasesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AliasUpsertWithWhereUniqueWithoutPersonInput: { // input type
+    create: NexusGenInputs['AliasCreateWithoutPersonInput']; // AliasCreateWithoutPersonInput!
+    update: NexusGenInputs['AliasUpdateWithoutPersonInput']; // AliasUpdateWithoutPersonInput!
+    where: NexusGenInputs['AliasWhereUniqueInput']; // AliasWhereUniqueInput!
+  }
+  AliasUpsertWithoutPreferredAliasOfInput: { // input type
+    create: NexusGenInputs['AliasCreateWithoutPreferredAliasOfInput']; // AliasCreateWithoutPreferredAliasOfInput!
+    update: NexusGenInputs['AliasUpdateWithoutPreferredAliasOfInput']; // AliasUpdateWithoutPreferredAliasOfInput!
   }
   AliasWhereInput: { // input type
     AND?: NexusGenInputs['AliasWhereInput'][] | null; // [AliasWhereInput!]
@@ -35,16 +130,210 @@ export interface NexusGenInputs {
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
     person?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    preferredAliasOf?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  AliasWhereUniqueInput: { // input type
+    id?: number | null; // Int
   }
   AppearanceAppearanceCompoundUniqueInput: { // input type
     imageId: number; // Int!
     personId: number; // Int!
   }
+  AppearanceCreateNestedManyWithoutAddedByInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutAddedByInput'][] | null; // [AppearanceCreateOrConnectWithoutAddedByInput!]
+    create?: NexusGenInputs['AppearanceCreateWithoutAddedByInput'][] | null; // [AppearanceCreateWithoutAddedByInput!]
+  }
+  AppearanceCreateNestedManyWithoutImageInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutImageInput'][] | null; // [AppearanceCreateOrConnectWithoutImageInput!]
+    create?: NexusGenInputs['AppearanceCreateWithoutImageInput'][] | null; // [AppearanceCreateWithoutImageInput!]
+  }
+  AppearanceCreateNestedManyWithoutPersonInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutPersonInput'][] | null; // [AppearanceCreateOrConnectWithoutPersonInput!]
+    create?: NexusGenInputs['AppearanceCreateWithoutPersonInput'][] | null; // [AppearanceCreateWithoutPersonInput!]
+  }
+  AppearanceCreateOrConnectWithoutAddedByInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutAddedByInput']; // AppearanceCreateWithoutAddedByInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceCreateOrConnectWithoutFacesInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutFacesInput']; // AppearanceCreateWithoutFacesInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceCreateOrConnectWithoutImageInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutImageInput']; // AppearanceCreateWithoutImageInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceCreateOrConnectWithoutPersonInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutPersonInput']; // AppearanceCreateWithoutPersonInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceCreateWithoutAddedByInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faces?: NexusGenInputs['FaceCreateNestedManyWithoutAppearanceInput'] | null; // FaceCreateNestedManyWithoutAppearanceInput
+    image: NexusGenInputs['ImageCreateNestedOneWithoutAppearancesInput']; // ImageCreateNestedOneWithoutAppearancesInput!
+    person: NexusGenInputs['PersonCreateNestedOneWithoutAppearancesInput']; // PersonCreateNestedOneWithoutAppearancesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AppearanceCreateWithoutFacesInput: { // input type
+    addedBy: NexusGenInputs['UserCreateNestedOneWithoutTaggedAppearancesInput']; // UserCreateNestedOneWithoutTaggedAppearancesInput!
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    image: NexusGenInputs['ImageCreateNestedOneWithoutAppearancesInput']; // ImageCreateNestedOneWithoutAppearancesInput!
+    person: NexusGenInputs['PersonCreateNestedOneWithoutAppearancesInput']; // PersonCreateNestedOneWithoutAppearancesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AppearanceCreateWithoutImageInput: { // input type
+    addedBy: NexusGenInputs['UserCreateNestedOneWithoutTaggedAppearancesInput']; // UserCreateNestedOneWithoutTaggedAppearancesInput!
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faces?: NexusGenInputs['FaceCreateNestedManyWithoutAppearanceInput'] | null; // FaceCreateNestedManyWithoutAppearanceInput
+    person: NexusGenInputs['PersonCreateNestedOneWithoutAppearancesInput']; // PersonCreateNestedOneWithoutAppearancesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AppearanceCreateWithoutPersonInput: { // input type
+    addedBy: NexusGenInputs['UserCreateNestedOneWithoutTaggedAppearancesInput']; // UserCreateNestedOneWithoutTaggedAppearancesInput!
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faces?: NexusGenInputs['FaceCreateNestedManyWithoutAppearanceInput'] | null; // FaceCreateNestedManyWithoutAppearanceInput
+    image: NexusGenInputs['ImageCreateNestedOneWithoutAppearancesInput']; // ImageCreateNestedOneWithoutAppearancesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   AppearanceListRelationFilter: { // input type
     every?: NexusGenInputs['AppearanceWhereInput'] | null; // AppearanceWhereInput
     none?: NexusGenInputs['AppearanceWhereInput'] | null; // AppearanceWhereInput
     some?: NexusGenInputs['AppearanceWhereInput'] | null; // AppearanceWhereInput
+  }
+  AppearanceScalarWhereInput: { // input type
+    AND?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
+    NOT?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
+    OR?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
+    addedById?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    imageId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  AppearanceUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AppearanceUpdateManyWithWhereWithoutAddedByInput: { // input type
+    data: NexusGenInputs['AppearanceUpdateManyMutationInput']; // AppearanceUpdateManyMutationInput!
+    where: NexusGenInputs['AppearanceScalarWhereInput']; // AppearanceScalarWhereInput!
+  }
+  AppearanceUpdateManyWithWhereWithoutImageInput: { // input type
+    data: NexusGenInputs['AppearanceUpdateManyMutationInput']; // AppearanceUpdateManyMutationInput!
+    where: NexusGenInputs['AppearanceScalarWhereInput']; // AppearanceScalarWhereInput!
+  }
+  AppearanceUpdateManyWithWhereWithoutPersonInput: { // input type
+    data: NexusGenInputs['AppearanceUpdateManyMutationInput']; // AppearanceUpdateManyMutationInput!
+    where: NexusGenInputs['AppearanceScalarWhereInput']; // AppearanceScalarWhereInput!
+  }
+  AppearanceUpdateManyWithoutAddedByInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutAddedByInput'][] | null; // [AppearanceCreateOrConnectWithoutAddedByInput!]
+    create?: NexusGenInputs['AppearanceCreateWithoutAddedByInput'][] | null; // [AppearanceCreateWithoutAddedByInput!]
+    delete?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
+    disconnect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    set?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    update?: NexusGenInputs['AppearanceUpdateWithWhereUniqueWithoutAddedByInput'][] | null; // [AppearanceUpdateWithWhereUniqueWithoutAddedByInput!]
+    updateMany?: NexusGenInputs['AppearanceUpdateManyWithWhereWithoutAddedByInput'][] | null; // [AppearanceUpdateManyWithWhereWithoutAddedByInput!]
+    upsert?: NexusGenInputs['AppearanceUpsertWithWhereUniqueWithoutAddedByInput'][] | null; // [AppearanceUpsertWithWhereUniqueWithoutAddedByInput!]
+  }
+  AppearanceUpdateManyWithoutImageInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutImageInput'][] | null; // [AppearanceCreateOrConnectWithoutImageInput!]
+    create?: NexusGenInputs['AppearanceCreateWithoutImageInput'][] | null; // [AppearanceCreateWithoutImageInput!]
+    delete?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
+    disconnect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    set?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    update?: NexusGenInputs['AppearanceUpdateWithWhereUniqueWithoutImageInput'][] | null; // [AppearanceUpdateWithWhereUniqueWithoutImageInput!]
+    updateMany?: NexusGenInputs['AppearanceUpdateManyWithWhereWithoutImageInput'][] | null; // [AppearanceUpdateManyWithWhereWithoutImageInput!]
+    upsert?: NexusGenInputs['AppearanceUpsertWithWhereUniqueWithoutImageInput'][] | null; // [AppearanceUpsertWithWhereUniqueWithoutImageInput!]
+  }
+  AppearanceUpdateManyWithoutPersonInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutPersonInput'][] | null; // [AppearanceCreateOrConnectWithoutPersonInput!]
+    create?: NexusGenInputs['AppearanceCreateWithoutPersonInput'][] | null; // [AppearanceCreateWithoutPersonInput!]
+    delete?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
+    disconnect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    set?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
+    update?: NexusGenInputs['AppearanceUpdateWithWhereUniqueWithoutPersonInput'][] | null; // [AppearanceUpdateWithWhereUniqueWithoutPersonInput!]
+    updateMany?: NexusGenInputs['AppearanceUpdateManyWithWhereWithoutPersonInput'][] | null; // [AppearanceUpdateManyWithWhereWithoutPersonInput!]
+    upsert?: NexusGenInputs['AppearanceUpsertWithWhereUniqueWithoutPersonInput'][] | null; // [AppearanceUpsertWithWhereUniqueWithoutPersonInput!]
+  }
+  AppearanceUpdateOneWithoutFacesInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'] | null; // AppearanceWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutFacesInput'] | null; // AppearanceCreateOrConnectWithoutFacesInput
+    create?: NexusGenInputs['AppearanceCreateWithoutFacesInput'] | null; // AppearanceCreateWithoutFacesInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['AppearanceUpdateWithoutFacesInput'] | null; // AppearanceUpdateWithoutFacesInput
+    upsert?: NexusGenInputs['AppearanceUpsertWithoutFacesInput'] | null; // AppearanceUpsertWithoutFacesInput
+  }
+  AppearanceUpdateWithWhereUniqueWithoutAddedByInput: { // input type
+    data: NexusGenInputs['AppearanceUpdateWithoutAddedByInput']; // AppearanceUpdateWithoutAddedByInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceUpdateWithWhereUniqueWithoutImageInput: { // input type
+    data: NexusGenInputs['AppearanceUpdateWithoutImageInput']; // AppearanceUpdateWithoutImageInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceUpdateWithWhereUniqueWithoutPersonInput: { // input type
+    data: NexusGenInputs['AppearanceUpdateWithoutPersonInput']; // AppearanceUpdateWithoutPersonInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceUpdateWithoutAddedByInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faces?: NexusGenInputs['FaceUpdateManyWithoutAppearanceInput'] | null; // FaceUpdateManyWithoutAppearanceInput
+    image?: NexusGenInputs['ImageUpdateOneRequiredWithoutAppearancesInput'] | null; // ImageUpdateOneRequiredWithoutAppearancesInput
+    person?: NexusGenInputs['PersonUpdateOneRequiredWithoutAppearancesInput'] | null; // PersonUpdateOneRequiredWithoutAppearancesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AppearanceUpdateWithoutFacesInput: { // input type
+    addedBy?: NexusGenInputs['UserUpdateOneRequiredWithoutTaggedAppearancesInput'] | null; // UserUpdateOneRequiredWithoutTaggedAppearancesInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    image?: NexusGenInputs['ImageUpdateOneRequiredWithoutAppearancesInput'] | null; // ImageUpdateOneRequiredWithoutAppearancesInput
+    person?: NexusGenInputs['PersonUpdateOneRequiredWithoutAppearancesInput'] | null; // PersonUpdateOneRequiredWithoutAppearancesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AppearanceUpdateWithoutImageInput: { // input type
+    addedBy?: NexusGenInputs['UserUpdateOneRequiredWithoutTaggedAppearancesInput'] | null; // UserUpdateOneRequiredWithoutTaggedAppearancesInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faces?: NexusGenInputs['FaceUpdateManyWithoutAppearanceInput'] | null; // FaceUpdateManyWithoutAppearanceInput
+    person?: NexusGenInputs['PersonUpdateOneRequiredWithoutAppearancesInput'] | null; // PersonUpdateOneRequiredWithoutAppearancesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AppearanceUpdateWithoutPersonInput: { // input type
+    addedBy?: NexusGenInputs['UserUpdateOneRequiredWithoutTaggedAppearancesInput'] | null; // UserUpdateOneRequiredWithoutTaggedAppearancesInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faces?: NexusGenInputs['FaceUpdateManyWithoutAppearanceInput'] | null; // FaceUpdateManyWithoutAppearanceInput
+    image?: NexusGenInputs['ImageUpdateOneRequiredWithoutAppearancesInput'] | null; // ImageUpdateOneRequiredWithoutAppearancesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  AppearanceUpsertWithWhereUniqueWithoutAddedByInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutAddedByInput']; // AppearanceCreateWithoutAddedByInput!
+    update: NexusGenInputs['AppearanceUpdateWithoutAddedByInput']; // AppearanceUpdateWithoutAddedByInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceUpsertWithWhereUniqueWithoutImageInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutImageInput']; // AppearanceCreateWithoutImageInput!
+    update: NexusGenInputs['AppearanceUpdateWithoutImageInput']; // AppearanceUpdateWithoutImageInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceUpsertWithWhereUniqueWithoutPersonInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutPersonInput']; // AppearanceCreateWithoutPersonInput!
+    update: NexusGenInputs['AppearanceUpdateWithoutPersonInput']; // AppearanceUpdateWithoutPersonInput!
+    where: NexusGenInputs['AppearanceWhereUniqueInput']; // AppearanceWhereUniqueInput!
+  }
+  AppearanceUpsertWithoutFacesInput: { // input type
+    create: NexusGenInputs['AppearanceCreateWithoutFacesInput']; // AppearanceCreateWithoutFacesInput!
+    update: NexusGenInputs['AppearanceUpdateWithoutFacesInput']; // AppearanceUpdateWithoutFacesInput!
   }
   AppearanceWhereInput: { // input type
     AND?: NexusGenInputs['AppearanceWhereInput'][] | null; // [AppearanceWhereInput!]
@@ -65,9 +354,15 @@ export interface NexusGenInputs {
     appearance?: NexusGenInputs['AppearanceAppearanceCompoundUniqueInput'] | null; // AppearanceAppearanceCompoundUniqueInput
     id?: number | null; // Int
   }
+  BoolFieldUpdateOperationsInput: { // input type
+    set?: boolean | null; // Boolean
+  }
   BoolFilter: { // input type
     equals?: boolean | null; // Boolean
     not?: NexusGenInputs['NestedBoolFilter'] | null; // NestedBoolFilter
+  }
+  DateTimeFieldUpdateOperationsInput: { // input type
+    set?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   DateTimeFilter: { // input type
     equals?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -89,11 +384,17 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedDateTimeNullableFilter'] | null; // NestedDateTimeNullableFilter
     notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
+  EnumFaceSourceFieldUpdateOperationsInput: { // input type
+    set?: NexusGenEnums['FaceSource'] | null; // FaceSource
+  }
   EnumFaceSourceFilter: { // input type
     equals?: NexusGenEnums['FaceSource'] | null; // FaceSource
     in?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
     not?: NexusGenInputs['NestedEnumFaceSourceFilter'] | null; // NestedEnumFaceSourceFilter
     notIn?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
+  }
+  EnumMimeTypeFieldUpdateOperationsInput: { // input type
+    set?: NexusGenEnums['MimeType'] | null; // MimeType
   }
   EnumMimeTypeFilter: { // input type
     equals?: NexusGenEnums['MimeType'] | null; // MimeType
@@ -101,17 +402,35 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumMimeTypeFilter'] | null; // NestedEnumMimeTypeFilter
     notIn?: NexusGenEnums['MimeType'][] | null; // [MimeType!]
   }
+  EnumTagSourceFieldUpdateOperationsInput: { // input type
+    set?: NexusGenEnums['TagSource'] | null; // TagSource
+  }
   EnumTagSourceFilter: { // input type
     equals?: NexusGenEnums['TagSource'] | null; // TagSource
     in?: NexusGenEnums['TagSource'][] | null; // [TagSource!]
     not?: NexusGenInputs['NestedEnumTagSourceFilter'] | null; // NestedEnumTagSourceFilter
     notIn?: NexusGenEnums['TagSource'][] | null; // [TagSource!]
   }
+  EnumUploadTypeFieldUpdateOperationsInput: { // input type
+    set?: NexusGenEnums['UploadType'] | null; // UploadType
+  }
   EnumUploadTypeFilter: { // input type
     equals?: NexusGenEnums['UploadType'] | null; // UploadType
     in?: NexusGenEnums['UploadType'][] | null; // [UploadType!]
     not?: NexusGenInputs['NestedEnumUploadTypeFilter'] | null; // NestedEnumUploadTypeFilter
     notIn?: NexusGenEnums['UploadType'][] | null; // [UploadType!]
+  }
+  FaceCreateNestedManyWithoutAddedByInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+  }
+  FaceCreateNestedManyWithoutAppearanceInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+  }
+  FaceCreateNestedManyWithoutImageInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+  }
+  FaceCreateNestedManyWithoutPersonInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
   }
   FaceInput: { // input type
     certainty: number; // Float!
@@ -125,6 +444,154 @@ export interface NexusGenInputs {
     every?: NexusGenInputs['FaceWhereInput'] | null; // FaceWhereInput
     none?: NexusGenInputs['FaceWhereInput'] | null; // FaceWhereInput
     some?: NexusGenInputs['FaceWhereInput'] | null; // FaceWhereInput
+  }
+  FaceScalarWhereInput: { // input type
+    AND?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
+    NOT?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
+    OR?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
+    addedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    appearanceId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    height?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    imageId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    personId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    score?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+    source?: NexusGenInputs['EnumFaceSourceFilter'] | null; // EnumFaceSourceFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    width?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+    x?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+    y?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+  }
+  FaceUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    height?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    score?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumFaceSourceFieldUpdateOperationsInput'] | null; // EnumFaceSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    width?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    x?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    y?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+  }
+  FaceUpdateManyWithWhereWithoutAddedByInput: { // input type
+    data: NexusGenInputs['FaceUpdateManyMutationInput']; // FaceUpdateManyMutationInput!
+    where: NexusGenInputs['FaceScalarWhereInput']; // FaceScalarWhereInput!
+  }
+  FaceUpdateManyWithWhereWithoutAppearanceInput: { // input type
+    data: NexusGenInputs['FaceUpdateManyMutationInput']; // FaceUpdateManyMutationInput!
+    where: NexusGenInputs['FaceScalarWhereInput']; // FaceScalarWhereInput!
+  }
+  FaceUpdateManyWithWhereWithoutImageInput: { // input type
+    data: NexusGenInputs['FaceUpdateManyMutationInput']; // FaceUpdateManyMutationInput!
+    where: NexusGenInputs['FaceScalarWhereInput']; // FaceScalarWhereInput!
+  }
+  FaceUpdateManyWithWhereWithoutPersonInput: { // input type
+    data: NexusGenInputs['FaceUpdateManyMutationInput']; // FaceUpdateManyMutationInput!
+    where: NexusGenInputs['FaceScalarWhereInput']; // FaceScalarWhereInput!
+  }
+  FaceUpdateManyWithoutAddedByInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
+    disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutAddedByInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutAddedByInput!]
+    updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutAddedByInput'][] | null; // [FaceUpdateManyWithWhereWithoutAddedByInput!]
+  }
+  FaceUpdateManyWithoutAppearanceInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
+    disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutAppearanceInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutAppearanceInput!]
+    updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutAppearanceInput'][] | null; // [FaceUpdateManyWithWhereWithoutAppearanceInput!]
+  }
+  FaceUpdateManyWithoutImageInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
+    disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutImageInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutImageInput!]
+    updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutImageInput'][] | null; // [FaceUpdateManyWithWhereWithoutImageInput!]
+  }
+  FaceUpdateManyWithoutPersonInput: { // input type
+    connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
+    disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutPersonInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutPersonInput!]
+    updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutPersonInput'][] | null; // [FaceUpdateManyWithWhereWithoutPersonInput!]
+  }
+  FaceUpdateWithWhereUniqueWithoutAddedByInput: { // input type
+    data: NexusGenInputs['FaceUpdateWithoutAddedByInput']; // FaceUpdateWithoutAddedByInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceUpdateWithWhereUniqueWithoutAppearanceInput: { // input type
+    data: NexusGenInputs['FaceUpdateWithoutAppearanceInput']; // FaceUpdateWithoutAppearanceInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceUpdateWithWhereUniqueWithoutImageInput: { // input type
+    data: NexusGenInputs['FaceUpdateWithoutImageInput']; // FaceUpdateWithoutImageInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceUpdateWithWhereUniqueWithoutPersonInput: { // input type
+    data: NexusGenInputs['FaceUpdateWithoutPersonInput']; // FaceUpdateWithoutPersonInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceUpdateWithoutAddedByInput: { // input type
+    appearance?: NexusGenInputs['AppearanceUpdateOneWithoutFacesInput'] | null; // AppearanceUpdateOneWithoutFacesInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    height?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    image?: NexusGenInputs['ImageUpdateOneRequiredWithoutFacesInput'] | null; // ImageUpdateOneRequiredWithoutFacesInput
+    person?: NexusGenInputs['PersonUpdateOneWithoutAppearsInInput'] | null; // PersonUpdateOneWithoutAppearsInInput
+    score?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumFaceSourceFieldUpdateOperationsInput'] | null; // EnumFaceSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    width?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    x?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    y?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+  }
+  FaceUpdateWithoutAppearanceInput: { // input type
+    addedBy?: NexusGenInputs['UserUpdateOneWithoutMarkedFacesInput'] | null; // UserUpdateOneWithoutMarkedFacesInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    height?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    image?: NexusGenInputs['ImageUpdateOneRequiredWithoutFacesInput'] | null; // ImageUpdateOneRequiredWithoutFacesInput
+    person?: NexusGenInputs['PersonUpdateOneWithoutAppearsInInput'] | null; // PersonUpdateOneWithoutAppearsInInput
+    score?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumFaceSourceFieldUpdateOperationsInput'] | null; // EnumFaceSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    width?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    x?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    y?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+  }
+  FaceUpdateWithoutImageInput: { // input type
+    addedBy?: NexusGenInputs['UserUpdateOneWithoutMarkedFacesInput'] | null; // UserUpdateOneWithoutMarkedFacesInput
+    appearance?: NexusGenInputs['AppearanceUpdateOneWithoutFacesInput'] | null; // AppearanceUpdateOneWithoutFacesInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    height?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    person?: NexusGenInputs['PersonUpdateOneWithoutAppearsInInput'] | null; // PersonUpdateOneWithoutAppearsInInput
+    score?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumFaceSourceFieldUpdateOperationsInput'] | null; // EnumFaceSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    width?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    x?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    y?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+  }
+  FaceUpdateWithoutPersonInput: { // input type
+    addedBy?: NexusGenInputs['UserUpdateOneWithoutMarkedFacesInput'] | null; // UserUpdateOneWithoutMarkedFacesInput
+    appearance?: NexusGenInputs['AppearanceUpdateOneWithoutFacesInput'] | null; // AppearanceUpdateOneWithoutFacesInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    height?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    image?: NexusGenInputs['ImageUpdateOneRequiredWithoutFacesInput'] | null; // ImageUpdateOneRequiredWithoutFacesInput
+    score?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumFaceSourceFieldUpdateOperationsInput'] | null; // EnumFaceSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    width?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    x?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+    y?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
   }
   FaceWhereInput: { // input type
     AND?: NexusGenInputs['FaceWhereInput'][] | null; // [FaceWhereInput!]
@@ -151,6 +618,13 @@ export interface NexusGenInputs {
   FaceWhereUniqueInput: { // input type
     id?: number | null; // Int
   }
+  FloatFieldUpdateOperationsInput: { // input type
+    decrement?: number | null; // Float
+    divide?: number | null; // Float
+    increment?: number | null; // Float
+    multiply?: number | null; // Float
+    set?: number | null; // Float
+  }
   FloatFilter: { // input type
     equals?: number | null; // Float
     gt?: number | null; // Float
@@ -160,6 +634,136 @@ export interface NexusGenInputs {
     lte?: number | null; // Float
     not?: NexusGenInputs['NestedFloatFilter'] | null; // NestedFloatFilter
     notIn?: number[] | null; // [Float!]
+  }
+  ImageCreateNestedManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutUserInput'][] | null; // [ImageCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['ImageCreateWithoutUserInput'][] | null; // [ImageCreateWithoutUserInput!]
+  }
+  ImageCreateNestedOneWithoutAppearancesInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutAppearancesInput'] | null; // ImageCreateOrConnectWithoutAppearancesInput
+    create?: NexusGenInputs['ImageCreateWithoutAppearancesInput'] | null; // ImageCreateWithoutAppearancesInput
+  }
+  ImageCreateNestedOneWithoutTagsInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutTagsInput'] | null; // ImageCreateOrConnectWithoutTagsInput
+    create?: NexusGenInputs['ImageCreateWithoutTagsInput'] | null; // ImageCreateWithoutTagsInput
+  }
+  ImageCreateOrConnectWithoutAppearancesInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutAppearancesInput']; // ImageCreateWithoutAppearancesInput!
+    where: NexusGenInputs['ImageWhereUniqueInput']; // ImageWhereUniqueInput!
+  }
+  ImageCreateOrConnectWithoutFacesInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutFacesInput']; // ImageCreateWithoutFacesInput!
+    where: NexusGenInputs['ImageWhereUniqueInput']; // ImageWhereUniqueInput!
+  }
+  ImageCreateOrConnectWithoutTagsInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutTagsInput']; // ImageCreateWithoutTagsInput!
+    where: NexusGenInputs['ImageWhereUniqueInput']; // ImageWhereUniqueInput!
+  }
+  ImageCreateOrConnectWithoutUserInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutUserInput']; // ImageCreateWithoutUserInput!
+    where: NexusGenInputs['ImageWhereUniqueInput']; // ImageWhereUniqueInput!
+  }
+  ImageCreateWithoutAppearancesInput: { // input type
+    bytes?: number | null; // Int
+    caption?: string | null; // String
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faceScanDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    faces?: NexusGenInputs['FaceCreateNestedManyWithoutImageInput'] | null; // FaceCreateNestedManyWithoutImageInput
+    fileName?: string | null; // String
+    hash: string; // String!
+    height: number; // Int!
+    ireneBotId?: number | null; // Int
+    isNsfw?: boolean | null; // Boolean
+    mimetype: NexusGenEnums['MimeType']; // MimeType!
+    pHash?: string | null; // String
+    palette?: NexusGenInputs['ImageCreatepaletteInput'] | null; // ImageCreatepaletteInput
+    public?: boolean | null; // Boolean
+    slug: string; // String!
+    source?: string | null; // String
+    tags?: NexusGenInputs['TagCreateNestedManyWithoutImageInput'] | null; // TagCreateNestedManyWithoutImageInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    uploadType: NexusGenEnums['UploadType']; // UploadType!
+    user?: NexusGenInputs['UserCreateNestedOneWithoutImagesInput'] | null; // UserCreateNestedOneWithoutImagesInput
+    views?: number | null; // Int
+    width: number; // Int!
+  }
+  ImageCreateWithoutFacesInput: { // input type
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutImageInput'] | null; // AppearanceCreateNestedManyWithoutImageInput
+    bytes?: number | null; // Int
+    caption?: string | null; // String
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faceScanDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    fileName?: string | null; // String
+    hash: string; // String!
+    height: number; // Int!
+    ireneBotId?: number | null; // Int
+    isNsfw?: boolean | null; // Boolean
+    mimetype: NexusGenEnums['MimeType']; // MimeType!
+    pHash?: string | null; // String
+    palette?: NexusGenInputs['ImageCreatepaletteInput'] | null; // ImageCreatepaletteInput
+    public?: boolean | null; // Boolean
+    slug: string; // String!
+    source?: string | null; // String
+    tags?: NexusGenInputs['TagCreateNestedManyWithoutImageInput'] | null; // TagCreateNestedManyWithoutImageInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    uploadType: NexusGenEnums['UploadType']; // UploadType!
+    user?: NexusGenInputs['UserCreateNestedOneWithoutImagesInput'] | null; // UserCreateNestedOneWithoutImagesInput
+    views?: number | null; // Int
+    width: number; // Int!
+  }
+  ImageCreateWithoutTagsInput: { // input type
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutImageInput'] | null; // AppearanceCreateNestedManyWithoutImageInput
+    bytes?: number | null; // Int
+    caption?: string | null; // String
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faceScanDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    faces?: NexusGenInputs['FaceCreateNestedManyWithoutImageInput'] | null; // FaceCreateNestedManyWithoutImageInput
+    fileName?: string | null; // String
+    hash: string; // String!
+    height: number; // Int!
+    ireneBotId?: number | null; // Int
+    isNsfw?: boolean | null; // Boolean
+    mimetype: NexusGenEnums['MimeType']; // MimeType!
+    pHash?: string | null; // String
+    palette?: NexusGenInputs['ImageCreatepaletteInput'] | null; // ImageCreatepaletteInput
+    public?: boolean | null; // Boolean
+    slug: string; // String!
+    source?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    uploadType: NexusGenEnums['UploadType']; // UploadType!
+    user?: NexusGenInputs['UserCreateNestedOneWithoutImagesInput'] | null; // UserCreateNestedOneWithoutImagesInput
+    views?: number | null; // Int
+    width: number; // Int!
+  }
+  ImageCreateWithoutUserInput: { // input type
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutImageInput'] | null; // AppearanceCreateNestedManyWithoutImageInput
+    bytes?: number | null; // Int
+    caption?: string | null; // String
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faceScanDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    faces?: NexusGenInputs['FaceCreateNestedManyWithoutImageInput'] | null; // FaceCreateNestedManyWithoutImageInput
+    fileName?: string | null; // String
+    hash: string; // String!
+    height: number; // Int!
+    ireneBotId?: number | null; // Int
+    isNsfw?: boolean | null; // Boolean
+    mimetype: NexusGenEnums['MimeType']; // MimeType!
+    pHash?: string | null; // String
+    palette?: NexusGenInputs['ImageCreatepaletteInput'] | null; // ImageCreatepaletteInput
+    public?: boolean | null; // Boolean
+    slug: string; // String!
+    source?: string | null; // String
+    tags?: NexusGenInputs['TagCreateNestedManyWithoutImageInput'] | null; // TagCreateNestedManyWithoutImageInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    uploadType: NexusGenEnums['UploadType']; // UploadType!
+    views?: number | null; // Int
+    width: number; // Int!
+  }
+  ImageCreatepaletteInput: { // input type
+    set?: number[] | null; // [Int!]
   }
   ImageListRelationFilter: { // input type
     every?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
@@ -188,6 +792,210 @@ export interface NexusGenInputs {
     userId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     views?: NexusGenEnums['SortOrder'] | null; // SortOrder
     width?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  ImageScalarWhereInput: { // input type
+    AND?: NexusGenInputs['ImageScalarWhereInput'][] | null; // [ImageScalarWhereInput!]
+    NOT?: NexusGenInputs['ImageScalarWhereInput'][] | null; // [ImageScalarWhereInput!]
+    OR?: NexusGenInputs['ImageScalarWhereInput'][] | null; // [ImageScalarWhereInput!]
+    bytes?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    caption?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    faceScanDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    fileName?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    height?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    isNsfw?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
+    mimetype?: NexusGenInputs['EnumMimeTypeFilter'] | null; // EnumMimeTypeFilter
+    pHash?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    palette?: NexusGenInputs['IntNullableListFilter'] | null; // IntNullableListFilter
+    public?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
+    slug?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    source?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    uploadType?: NexusGenInputs['EnumUploadTypeFilter'] | null; // EnumUploadTypeFilter
+    userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    views?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    width?: NexusGenInputs['IntFilter'] | null; // IntFilter
+  }
+  ImageUpdateManyMutationInput: { // input type
+    bytes?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    caption?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faceScanDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    fileName?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    hash?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    height?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    isNsfw?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    mimetype?: NexusGenInputs['EnumMimeTypeFieldUpdateOperationsInput'] | null; // EnumMimeTypeFieldUpdateOperationsInput
+    pHash?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    palette?: NexusGenInputs['ImageUpdatepaletteInput'] | null; // ImageUpdatepaletteInput
+    public?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    slug?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    uploadType?: NexusGenInputs['EnumUploadTypeFieldUpdateOperationsInput'] | null; // EnumUploadTypeFieldUpdateOperationsInput
+    views?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    width?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+  }
+  ImageUpdateManyWithWhereWithoutUserInput: { // input type
+    data: NexusGenInputs['ImageUpdateManyMutationInput']; // ImageUpdateManyMutationInput!
+    where: NexusGenInputs['ImageScalarWhereInput']; // ImageScalarWhereInput!
+  }
+  ImageUpdateManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutUserInput'][] | null; // [ImageCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['ImageCreateWithoutUserInput'][] | null; // [ImageCreateWithoutUserInput!]
+    delete?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['ImageScalarWhereInput'][] | null; // [ImageScalarWhereInput!]
+    disconnect?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
+    set?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
+    update?: NexusGenInputs['ImageUpdateWithWhereUniqueWithoutUserInput'][] | null; // [ImageUpdateWithWhereUniqueWithoutUserInput!]
+    updateMany?: NexusGenInputs['ImageUpdateManyWithWhereWithoutUserInput'][] | null; // [ImageUpdateManyWithWhereWithoutUserInput!]
+    upsert?: NexusGenInputs['ImageUpsertWithWhereUniqueWithoutUserInput'][] | null; // [ImageUpsertWithWhereUniqueWithoutUserInput!]
+  }
+  ImageUpdateOneRequiredWithoutAppearancesInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutAppearancesInput'] | null; // ImageCreateOrConnectWithoutAppearancesInput
+    create?: NexusGenInputs['ImageCreateWithoutAppearancesInput'] | null; // ImageCreateWithoutAppearancesInput
+    update?: NexusGenInputs['ImageUpdateWithoutAppearancesInput'] | null; // ImageUpdateWithoutAppearancesInput
+    upsert?: NexusGenInputs['ImageUpsertWithoutAppearancesInput'] | null; // ImageUpsertWithoutAppearancesInput
+  }
+  ImageUpdateOneRequiredWithoutFacesInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutFacesInput'] | null; // ImageCreateOrConnectWithoutFacesInput
+    create?: NexusGenInputs['ImageCreateWithoutFacesInput'] | null; // ImageCreateWithoutFacesInput
+    update?: NexusGenInputs['ImageUpdateWithoutFacesInput'] | null; // ImageUpdateWithoutFacesInput
+    upsert?: NexusGenInputs['ImageUpsertWithoutFacesInput'] | null; // ImageUpsertWithoutFacesInput
+  }
+  ImageUpdateOneRequiredWithoutTagsInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutTagsInput'] | null; // ImageCreateOrConnectWithoutTagsInput
+    create?: NexusGenInputs['ImageCreateWithoutTagsInput'] | null; // ImageCreateWithoutTagsInput
+    update?: NexusGenInputs['ImageUpdateWithoutTagsInput'] | null; // ImageUpdateWithoutTagsInput
+    upsert?: NexusGenInputs['ImageUpsertWithoutTagsInput'] | null; // ImageUpsertWithoutTagsInput
+  }
+  ImageUpdateWithWhereUniqueWithoutUserInput: { // input type
+    data: NexusGenInputs['ImageUpdateWithoutUserInput']; // ImageUpdateWithoutUserInput!
+    where: NexusGenInputs['ImageWhereUniqueInput']; // ImageWhereUniqueInput!
+  }
+  ImageUpdateWithoutAppearancesInput: { // input type
+    bytes?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    caption?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faceScanDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    faces?: NexusGenInputs['FaceUpdateManyWithoutImageInput'] | null; // FaceUpdateManyWithoutImageInput
+    fileName?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    hash?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    height?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    isNsfw?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    mimetype?: NexusGenInputs['EnumMimeTypeFieldUpdateOperationsInput'] | null; // EnumMimeTypeFieldUpdateOperationsInput
+    pHash?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    palette?: NexusGenInputs['ImageUpdatepaletteInput'] | null; // ImageUpdatepaletteInput
+    public?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    slug?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    tags?: NexusGenInputs['TagUpdateManyWithoutImageInput'] | null; // TagUpdateManyWithoutImageInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    uploadType?: NexusGenInputs['EnumUploadTypeFieldUpdateOperationsInput'] | null; // EnumUploadTypeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneWithoutImagesInput'] | null; // UserUpdateOneWithoutImagesInput
+    views?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    width?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+  }
+  ImageUpdateWithoutFacesInput: { // input type
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutImageInput'] | null; // AppearanceUpdateManyWithoutImageInput
+    bytes?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    caption?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faceScanDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    fileName?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    hash?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    height?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    isNsfw?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    mimetype?: NexusGenInputs['EnumMimeTypeFieldUpdateOperationsInput'] | null; // EnumMimeTypeFieldUpdateOperationsInput
+    pHash?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    palette?: NexusGenInputs['ImageUpdatepaletteInput'] | null; // ImageUpdatepaletteInput
+    public?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    slug?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    tags?: NexusGenInputs['TagUpdateManyWithoutImageInput'] | null; // TagUpdateManyWithoutImageInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    uploadType?: NexusGenInputs['EnumUploadTypeFieldUpdateOperationsInput'] | null; // EnumUploadTypeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneWithoutImagesInput'] | null; // UserUpdateOneWithoutImagesInput
+    views?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    width?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+  }
+  ImageUpdateWithoutTagsInput: { // input type
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutImageInput'] | null; // AppearanceUpdateManyWithoutImageInput
+    bytes?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    caption?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faceScanDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    faces?: NexusGenInputs['FaceUpdateManyWithoutImageInput'] | null; // FaceUpdateManyWithoutImageInput
+    fileName?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    hash?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    height?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    isNsfw?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    mimetype?: NexusGenInputs['EnumMimeTypeFieldUpdateOperationsInput'] | null; // EnumMimeTypeFieldUpdateOperationsInput
+    pHash?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    palette?: NexusGenInputs['ImageUpdatepaletteInput'] | null; // ImageUpdatepaletteInput
+    public?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    slug?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    uploadType?: NexusGenInputs['EnumUploadTypeFieldUpdateOperationsInput'] | null; // EnumUploadTypeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneWithoutImagesInput'] | null; // UserUpdateOneWithoutImagesInput
+    views?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    width?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+  }
+  ImageUpdateWithoutUserInput: { // input type
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutImageInput'] | null; // AppearanceUpdateManyWithoutImageInput
+    bytes?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    caption?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    faceScanDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    faces?: NexusGenInputs['FaceUpdateManyWithoutImageInput'] | null; // FaceUpdateManyWithoutImageInput
+    fileName?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    hash?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    height?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    isNsfw?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    mimetype?: NexusGenInputs['EnumMimeTypeFieldUpdateOperationsInput'] | null; // EnumMimeTypeFieldUpdateOperationsInput
+    pHash?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    palette?: NexusGenInputs['ImageUpdatepaletteInput'] | null; // ImageUpdatepaletteInput
+    public?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    slug?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    tags?: NexusGenInputs['TagUpdateManyWithoutImageInput'] | null; // TagUpdateManyWithoutImageInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    uploadType?: NexusGenInputs['EnumUploadTypeFieldUpdateOperationsInput'] | null; // EnumUploadTypeFieldUpdateOperationsInput
+    views?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    width?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+  }
+  ImageUpdatepaletteInput: { // input type
+    set?: number[] | null; // [Int!]
+  }
+  ImageUpsertWithWhereUniqueWithoutUserInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutUserInput']; // ImageCreateWithoutUserInput!
+    update: NexusGenInputs['ImageUpdateWithoutUserInput']; // ImageUpdateWithoutUserInput!
+    where: NexusGenInputs['ImageWhereUniqueInput']; // ImageWhereUniqueInput!
+  }
+  ImageUpsertWithoutAppearancesInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutAppearancesInput']; // ImageCreateWithoutAppearancesInput!
+    update: NexusGenInputs['ImageUpdateWithoutAppearancesInput']; // ImageUpdateWithoutAppearancesInput!
+  }
+  ImageUpsertWithoutFacesInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutFacesInput']; // ImageCreateWithoutFacesInput!
+    update: NexusGenInputs['ImageUpdateWithoutFacesInput']; // ImageUpdateWithoutFacesInput!
+  }
+  ImageUpsertWithoutTagsInput: { // input type
+    create: NexusGenInputs['ImageCreateWithoutTagsInput']; // ImageCreateWithoutTagsInput!
+    update: NexusGenInputs['ImageUpdateWithoutTagsInput']; // ImageUpdateWithoutTagsInput!
   }
   ImageWhereInput: { // input type
     AND?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
@@ -223,6 +1031,13 @@ export interface NexusGenInputs {
     id?: number | null; // Int
     ireneBotId?: number | null; // Int
     slug?: string | null; // String
+  }
+  IntFieldUpdateOperationsInput: { // input type
+    decrement?: number | null; // Int
+    divide?: number | null; // Int
+    increment?: number | null; // Int
+    multiply?: number | null; // Int
+    set?: number | null; // Int
   }
   IntFilter: { // input type
     equals?: number | null; // Int
@@ -355,6 +1170,200 @@ export interface NexusGenInputs {
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
+  NullableDateTimeFieldUpdateOperationsInput: { // input type
+    set?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  NullableIntFieldUpdateOperationsInput: { // input type
+    decrement?: number | null; // Int
+    divide?: number | null; // Int
+    increment?: number | null; // Int
+    multiply?: number | null; // Int
+    set?: number | null; // Int
+  }
+  NullableStringFieldUpdateOperationsInput: { // input type
+    set?: string | null; // String
+  }
+  PersonCreateInput: { // input type
+    aliases?: NexusGenInputs['AliasCreateNestedManyWithoutPersonInput'] | null; // AliasCreateNestedManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutPersonInput'] | null; // AppearanceCreateNestedManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceCreateNestedManyWithoutPersonInput'] | null; // FaceCreateNestedManyWithoutPersonInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    description?: string | null; // String
+    ireneBotId?: number | null; // Int
+    name: string; // String!
+    preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PersonCreateNestedOneWithoutAliasesInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAliasesInput'] | null; // PersonCreateOrConnectWithoutAliasesInput
+    create?: NexusGenInputs['PersonCreateWithoutAliasesInput'] | null; // PersonCreateWithoutAliasesInput
+  }
+  PersonCreateNestedOneWithoutAppearancesInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAppearancesInput'] | null; // PersonCreateOrConnectWithoutAppearancesInput
+    create?: NexusGenInputs['PersonCreateWithoutAppearancesInput'] | null; // PersonCreateWithoutAppearancesInput
+  }
+  PersonCreateNestedOneWithoutPreferredAliasInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutPreferredAliasInput'] | null; // PersonCreateOrConnectWithoutPreferredAliasInput
+    create?: NexusGenInputs['PersonCreateWithoutPreferredAliasInput'] | null; // PersonCreateWithoutPreferredAliasInput
+  }
+  PersonCreateOrConnectWithoutAliasesInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutAliasesInput']; // PersonCreateWithoutAliasesInput!
+    where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+  }
+  PersonCreateOrConnectWithoutAppearancesInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutAppearancesInput']; // PersonCreateWithoutAppearancesInput!
+    where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+  }
+  PersonCreateOrConnectWithoutAppearsInInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutAppearsInInput']; // PersonCreateWithoutAppearsInInput!
+    where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+  }
+  PersonCreateOrConnectWithoutPreferredAliasInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutPreferredAliasInput']; // PersonCreateWithoutPreferredAliasInput!
+    where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+  }
+  PersonCreateWithoutAliasesInput: { // input type
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutPersonInput'] | null; // AppearanceCreateNestedManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceCreateNestedManyWithoutPersonInput'] | null; // FaceCreateNestedManyWithoutPersonInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    description?: string | null; // String
+    ireneBotId?: number | null; // Int
+    name: string; // String!
+    preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PersonCreateWithoutAppearancesInput: { // input type
+    aliases?: NexusGenInputs['AliasCreateNestedManyWithoutPersonInput'] | null; // AliasCreateNestedManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceCreateNestedManyWithoutPersonInput'] | null; // FaceCreateNestedManyWithoutPersonInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    description?: string | null; // String
+    ireneBotId?: number | null; // Int
+    name: string; // String!
+    preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PersonCreateWithoutAppearsInInput: { // input type
+    aliases?: NexusGenInputs['AliasCreateNestedManyWithoutPersonInput'] | null; // AliasCreateNestedManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutPersonInput'] | null; // AppearanceCreateNestedManyWithoutPersonInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    description?: string | null; // String
+    ireneBotId?: number | null; // Int
+    name: string; // String!
+    preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PersonCreateWithoutPreferredAliasInput: { // input type
+    aliases?: NexusGenInputs['AliasCreateNestedManyWithoutPersonInput'] | null; // AliasCreateNestedManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutPersonInput'] | null; // AppearanceCreateNestedManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceCreateNestedManyWithoutPersonInput'] | null; // FaceCreateNestedManyWithoutPersonInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    description?: string | null; // String
+    ireneBotId?: number | null; // Int
+    name: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PersonUpdateInput: { // input type
+    aliases?: NexusGenInputs['AliasUpdateManyWithoutPersonInput'] | null; // AliasUpdateManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutPersonInput'] | null; // AppearanceUpdateManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceUpdateManyWithoutPersonInput'] | null; // FaceUpdateManyWithoutPersonInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  PersonUpdateOneRequiredWithoutAliasesInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAliasesInput'] | null; // PersonCreateOrConnectWithoutAliasesInput
+    create?: NexusGenInputs['PersonCreateWithoutAliasesInput'] | null; // PersonCreateWithoutAliasesInput
+    update?: NexusGenInputs['PersonUpdateWithoutAliasesInput'] | null; // PersonUpdateWithoutAliasesInput
+    upsert?: NexusGenInputs['PersonUpsertWithoutAliasesInput'] | null; // PersonUpsertWithoutAliasesInput
+  }
+  PersonUpdateOneRequiredWithoutAppearancesInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAppearancesInput'] | null; // PersonCreateOrConnectWithoutAppearancesInput
+    create?: NexusGenInputs['PersonCreateWithoutAppearancesInput'] | null; // PersonCreateWithoutAppearancesInput
+    update?: NexusGenInputs['PersonUpdateWithoutAppearancesInput'] | null; // PersonUpdateWithoutAppearancesInput
+    upsert?: NexusGenInputs['PersonUpsertWithoutAppearancesInput'] | null; // PersonUpsertWithoutAppearancesInput
+  }
+  PersonUpdateOneWithoutAppearsInInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAppearsInInput'] | null; // PersonCreateOrConnectWithoutAppearsInInput
+    create?: NexusGenInputs['PersonCreateWithoutAppearsInInput'] | null; // PersonCreateWithoutAppearsInInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['PersonUpdateWithoutAppearsInInput'] | null; // PersonUpdateWithoutAppearsInInput
+    upsert?: NexusGenInputs['PersonUpsertWithoutAppearsInInput'] | null; // PersonUpsertWithoutAppearsInInput
+  }
+  PersonUpdateOneWithoutPreferredAliasInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutPreferredAliasInput'] | null; // PersonCreateOrConnectWithoutPreferredAliasInput
+    create?: NexusGenInputs['PersonCreateWithoutPreferredAliasInput'] | null; // PersonCreateWithoutPreferredAliasInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['PersonUpdateWithoutPreferredAliasInput'] | null; // PersonUpdateWithoutPreferredAliasInput
+    upsert?: NexusGenInputs['PersonUpsertWithoutPreferredAliasInput'] | null; // PersonUpsertWithoutPreferredAliasInput
+  }
+  PersonUpdateWithoutAliasesInput: { // input type
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutPersonInput'] | null; // AppearanceUpdateManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceUpdateManyWithoutPersonInput'] | null; // FaceUpdateManyWithoutPersonInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  PersonUpdateWithoutAppearancesInput: { // input type
+    aliases?: NexusGenInputs['AliasUpdateManyWithoutPersonInput'] | null; // AliasUpdateManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceUpdateManyWithoutPersonInput'] | null; // FaceUpdateManyWithoutPersonInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  PersonUpdateWithoutAppearsInInput: { // input type
+    aliases?: NexusGenInputs['AliasUpdateManyWithoutPersonInput'] | null; // AliasUpdateManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutPersonInput'] | null; // AppearanceUpdateManyWithoutPersonInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  PersonUpdateWithoutPreferredAliasInput: { // input type
+    aliases?: NexusGenInputs['AliasUpdateManyWithoutPersonInput'] | null; // AliasUpdateManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutPersonInput'] | null; // AppearanceUpdateManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceUpdateManyWithoutPersonInput'] | null; // FaceUpdateManyWithoutPersonInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  PersonUpsertWithoutAliasesInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutAliasesInput']; // PersonCreateWithoutAliasesInput!
+    update: NexusGenInputs['PersonUpdateWithoutAliasesInput']; // PersonUpdateWithoutAliasesInput!
+  }
+  PersonUpsertWithoutAppearancesInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutAppearancesInput']; // PersonCreateWithoutAppearancesInput!
+    update: NexusGenInputs['PersonUpdateWithoutAppearancesInput']; // PersonUpdateWithoutAppearancesInput!
+  }
+  PersonUpsertWithoutAppearsInInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutAppearsInInput']; // PersonCreateWithoutAppearsInInput!
+    update: NexusGenInputs['PersonUpdateWithoutAppearsInInput']; // PersonUpdateWithoutAppearsInInput!
+  }
+  PersonUpsertWithoutPreferredAliasInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutPreferredAliasInput']; // PersonCreateWithoutPreferredAliasInput!
+    update: NexusGenInputs['PersonUpdateWithoutPreferredAliasInput']; // PersonUpdateWithoutPreferredAliasInput!
+  }
   PersonWhereInput: { // input type
     AND?: NexusGenInputs['PersonWhereInput'][] | null; // [PersonWhereInput!]
     NOT?: NexusGenInputs['PersonWhereInput'][] | null; // [PersonWhereInput!]
@@ -367,12 +1376,77 @@ export interface NexusGenInputs {
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    preferredAlias?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
+    preferredAliasId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  PersonWhereUniqueInput: { // input type
+    id?: number | null; // Int
+    ireneBotId?: number | null; // Int
+  }
+  RoleCreateNestedManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['RoleCreateOrConnectWithoutUserInput'][] | null; // [RoleCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['RoleCreateWithoutUserInput'][] | null; // [RoleCreateWithoutUserInput!]
+  }
+  RoleCreateOrConnectWithoutUserInput: { // input type
+    create: NexusGenInputs['RoleCreateWithoutUserInput']; // RoleCreateWithoutUserInput!
+    where: NexusGenInputs['RoleWhereUniqueInput']; // RoleWhereUniqueInput!
+  }
+  RoleCreateWithoutUserInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    name: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   RoleListRelationFilter: { // input type
     every?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
     none?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
     some?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
+  }
+  RoleScalarWhereInput: { // input type
+    AND?: NexusGenInputs['RoleScalarWhereInput'][] | null; // [RoleScalarWhereInput!]
+    NOT?: NexusGenInputs['RoleScalarWhereInput'][] | null; // [RoleScalarWhereInput!]
+    OR?: NexusGenInputs['RoleScalarWhereInput'][] | null; // [RoleScalarWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    userId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+  }
+  RoleUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  RoleUpdateManyWithWhereWithoutUserInput: { // input type
+    data: NexusGenInputs['RoleUpdateManyMutationInput']; // RoleUpdateManyMutationInput!
+    where: NexusGenInputs['RoleScalarWhereInput']; // RoleScalarWhereInput!
+  }
+  RoleUpdateManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['RoleCreateOrConnectWithoutUserInput'][] | null; // [RoleCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['RoleCreateWithoutUserInput'][] | null; // [RoleCreateWithoutUserInput!]
+    delete?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['RoleScalarWhereInput'][] | null; // [RoleScalarWhereInput!]
+    disconnect?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
+    set?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
+    update?: NexusGenInputs['RoleUpdateWithWhereUniqueWithoutUserInput'][] | null; // [RoleUpdateWithWhereUniqueWithoutUserInput!]
+    updateMany?: NexusGenInputs['RoleUpdateManyWithWhereWithoutUserInput'][] | null; // [RoleUpdateManyWithWhereWithoutUserInput!]
+    upsert?: NexusGenInputs['RoleUpsertWithWhereUniqueWithoutUserInput'][] | null; // [RoleUpsertWithWhereUniqueWithoutUserInput!]
+  }
+  RoleUpdateWithWhereUniqueWithoutUserInput: { // input type
+    data: NexusGenInputs['RoleUpdateWithoutUserInput']; // RoleUpdateWithoutUserInput!
+    where: NexusGenInputs['RoleWhereUniqueInput']; // RoleWhereUniqueInput!
+  }
+  RoleUpdateWithoutUserInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  RoleUpsertWithWhereUniqueWithoutUserInput: { // input type
+    create: NexusGenInputs['RoleCreateWithoutUserInput']; // RoleCreateWithoutUserInput!
+    update: NexusGenInputs['RoleUpdateWithoutUserInput']; // RoleUpdateWithoutUserInput!
+    where: NexusGenInputs['RoleWhereUniqueInput']; // RoleWhereUniqueInput!
   }
   RoleUserRoleCompoundUniqueInput: { // input type
     name: string; // String!
@@ -392,6 +1466,9 @@ export interface NexusGenInputs {
   RoleWhereUniqueInput: { // input type
     id?: number | null; // Int
     userRole?: NexusGenInputs['RoleUserRoleCompoundUniqueInput'] | null; // RoleUserRoleCompoundUniqueInput
+  }
+  StringFieldUpdateOperationsInput: { // input type
+    set?: string | null; // String
   }
   StringFilter: { // input type
     contains?: string | null; // String
@@ -421,10 +1498,124 @@ export interface NexusGenInputs {
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
+  TagCreateNestedManyWithoutAddedByInput: { // input type
+    connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutAddedByInput'][] | null; // [TagCreateOrConnectWithoutAddedByInput!]
+    create?: NexusGenInputs['TagCreateWithoutAddedByInput'][] | null; // [TagCreateWithoutAddedByInput!]
+  }
+  TagCreateNestedManyWithoutImageInput: { // input type
+    connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutImageInput'][] | null; // [TagCreateOrConnectWithoutImageInput!]
+    create?: NexusGenInputs['TagCreateWithoutImageInput'][] | null; // [TagCreateWithoutImageInput!]
+  }
+  TagCreateOrConnectWithoutAddedByInput: { // input type
+    create: NexusGenInputs['TagCreateWithoutAddedByInput']; // TagCreateWithoutAddedByInput!
+    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
+  }
+  TagCreateOrConnectWithoutImageInput: { // input type
+    create: NexusGenInputs['TagCreateWithoutImageInput']; // TagCreateWithoutImageInput!
+    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
+  }
+  TagCreateWithoutAddedByInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    image: NexusGenInputs['ImageCreateNestedOneWithoutTagsInput']; // ImageCreateNestedOneWithoutTagsInput!
+    name: string; // String!
+    source: NexusGenEnums['TagSource']; // TagSource!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  TagCreateWithoutImageInput: { // input type
+    addedBy?: NexusGenInputs['UserCreateNestedOneWithoutCratedTagsInput'] | null; // UserCreateNestedOneWithoutCratedTagsInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    name: string; // String!
+    source: NexusGenEnums['TagSource']; // TagSource!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   TagListRelationFilter: { // input type
     every?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
     none?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
     some?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
+  }
+  TagScalarWhereInput: { // input type
+    AND?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
+    NOT?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
+    OR?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
+    addedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    imageId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    source?: NexusGenInputs['EnumTagSourceFilter'] | null; // EnumTagSourceFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  TagUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumTagSourceFieldUpdateOperationsInput'] | null; // EnumTagSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  TagUpdateManyWithWhereWithoutAddedByInput: { // input type
+    data: NexusGenInputs['TagUpdateManyMutationInput']; // TagUpdateManyMutationInput!
+    where: NexusGenInputs['TagScalarWhereInput']; // TagScalarWhereInput!
+  }
+  TagUpdateManyWithWhereWithoutImageInput: { // input type
+    data: NexusGenInputs['TagUpdateManyMutationInput']; // TagUpdateManyMutationInput!
+    where: NexusGenInputs['TagScalarWhereInput']; // TagScalarWhereInput!
+  }
+  TagUpdateManyWithoutAddedByInput: { // input type
+    connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutAddedByInput'][] | null; // [TagCreateOrConnectWithoutAddedByInput!]
+    create?: NexusGenInputs['TagCreateWithoutAddedByInput'][] | null; // [TagCreateWithoutAddedByInput!]
+    delete?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
+    disconnect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    set?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    update?: NexusGenInputs['TagUpdateWithWhereUniqueWithoutAddedByInput'][] | null; // [TagUpdateWithWhereUniqueWithoutAddedByInput!]
+    updateMany?: NexusGenInputs['TagUpdateManyWithWhereWithoutAddedByInput'][] | null; // [TagUpdateManyWithWhereWithoutAddedByInput!]
+    upsert?: NexusGenInputs['TagUpsertWithWhereUniqueWithoutAddedByInput'][] | null; // [TagUpsertWithWhereUniqueWithoutAddedByInput!]
+  }
+  TagUpdateManyWithoutImageInput: { // input type
+    connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutImageInput'][] | null; // [TagCreateOrConnectWithoutImageInput!]
+    create?: NexusGenInputs['TagCreateWithoutImageInput'][] | null; // [TagCreateWithoutImageInput!]
+    delete?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
+    disconnect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    set?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
+    update?: NexusGenInputs['TagUpdateWithWhereUniqueWithoutImageInput'][] | null; // [TagUpdateWithWhereUniqueWithoutImageInput!]
+    updateMany?: NexusGenInputs['TagUpdateManyWithWhereWithoutImageInput'][] | null; // [TagUpdateManyWithWhereWithoutImageInput!]
+    upsert?: NexusGenInputs['TagUpsertWithWhereUniqueWithoutImageInput'][] | null; // [TagUpsertWithWhereUniqueWithoutImageInput!]
+  }
+  TagUpdateWithWhereUniqueWithoutAddedByInput: { // input type
+    data: NexusGenInputs['TagUpdateWithoutAddedByInput']; // TagUpdateWithoutAddedByInput!
+    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
+  }
+  TagUpdateWithWhereUniqueWithoutImageInput: { // input type
+    data: NexusGenInputs['TagUpdateWithoutImageInput']; // TagUpdateWithoutImageInput!
+    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
+  }
+  TagUpdateWithoutAddedByInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    image?: NexusGenInputs['ImageUpdateOneRequiredWithoutTagsInput'] | null; // ImageUpdateOneRequiredWithoutTagsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumTagSourceFieldUpdateOperationsInput'] | null; // EnumTagSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  TagUpdateWithoutImageInput: { // input type
+    addedBy?: NexusGenInputs['UserUpdateOneWithoutCratedTagsInput'] | null; // UserUpdateOneWithoutCratedTagsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    source?: NexusGenInputs['EnumTagSourceFieldUpdateOperationsInput'] | null; // EnumTagSourceFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  TagUpsertWithWhereUniqueWithoutAddedByInput: { // input type
+    create: NexusGenInputs['TagCreateWithoutAddedByInput']; // TagCreateWithoutAddedByInput!
+    update: NexusGenInputs['TagUpdateWithoutAddedByInput']; // TagUpdateWithoutAddedByInput!
+    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
+  }
+  TagUpsertWithWhereUniqueWithoutImageInput: { // input type
+    create: NexusGenInputs['TagCreateWithoutImageInput']; // TagCreateWithoutImageInput!
+    update: NexusGenInputs['TagUpdateWithoutImageInput']; // TagUpdateWithoutImageInput!
+    where: NexusGenInputs['TagWhereUniqueInput']; // TagWhereUniqueInput!
   }
   TagWhereInput: { // input type
     AND?: NexusGenInputs['TagWhereInput'][] | null; // [TagWhereInput!]
@@ -442,6 +1633,199 @@ export interface NexusGenInputs {
   }
   TagWhereUniqueInput: { // input type
     id?: number | null; // Int
+  }
+  UserCreateNestedOneWithoutCratedTagsInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutCratedTagsInput'] | null; // UserCreateOrConnectWithoutCratedTagsInput
+    create?: NexusGenInputs['UserCreateWithoutCratedTagsInput'] | null; // UserCreateWithoutCratedTagsInput
+  }
+  UserCreateNestedOneWithoutImagesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutImagesInput'] | null; // UserCreateOrConnectWithoutImagesInput
+    create?: NexusGenInputs['UserCreateWithoutImagesInput'] | null; // UserCreateWithoutImagesInput
+  }
+  UserCreateNestedOneWithoutTaggedAppearancesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutTaggedAppearancesInput'] | null; // UserCreateOrConnectWithoutTaggedAppearancesInput
+    create?: NexusGenInputs['UserCreateWithoutTaggedAppearancesInput'] | null; // UserCreateWithoutTaggedAppearancesInput
+  }
+  UserCreateOrConnectWithoutCratedTagsInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutCratedTagsInput']; // UserCreateWithoutCratedTagsInput!
+    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+  }
+  UserCreateOrConnectWithoutImagesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutImagesInput']; // UserCreateWithoutImagesInput!
+    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+  }
+  UserCreateOrConnectWithoutMarkedFacesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutMarkedFacesInput']; // UserCreateWithoutMarkedFacesInput!
+    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+  }
+  UserCreateOrConnectWithoutTaggedAppearancesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutTaggedAppearancesInput']; // UserCreateWithoutTaggedAppearancesInput!
+    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+  }
+  UserCreateWithoutCratedTagsInput: { // input type
+    bot?: boolean | null; // Boolean
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    image?: string | null; // String
+    images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceCreateNestedManyWithoutAddedByInput'] | null; // FaceCreateNestedManyWithoutAddedByInput
+    name?: string | null; // String
+    roles?: NexusGenInputs['RoleCreateNestedManyWithoutUserInput'] | null; // RoleCreateNestedManyWithoutUserInput
+    taggedAppearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutAddedByInput'] | null; // AppearanceCreateNestedManyWithoutAddedByInput
+    token?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  UserCreateWithoutImagesInput: { // input type
+    bot?: boolean | null; // Boolean
+    cratedTags?: NexusGenInputs['TagCreateNestedManyWithoutAddedByInput'] | null; // TagCreateNestedManyWithoutAddedByInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    image?: string | null; // String
+    markedFaces?: NexusGenInputs['FaceCreateNestedManyWithoutAddedByInput'] | null; // FaceCreateNestedManyWithoutAddedByInput
+    name?: string | null; // String
+    roles?: NexusGenInputs['RoleCreateNestedManyWithoutUserInput'] | null; // RoleCreateNestedManyWithoutUserInput
+    taggedAppearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutAddedByInput'] | null; // AppearanceCreateNestedManyWithoutAddedByInput
+    token?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  UserCreateWithoutMarkedFacesInput: { // input type
+    bot?: boolean | null; // Boolean
+    cratedTags?: NexusGenInputs['TagCreateNestedManyWithoutAddedByInput'] | null; // TagCreateNestedManyWithoutAddedByInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    image?: string | null; // String
+    images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
+    name?: string | null; // String
+    roles?: NexusGenInputs['RoleCreateNestedManyWithoutUserInput'] | null; // RoleCreateNestedManyWithoutUserInput
+    taggedAppearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutAddedByInput'] | null; // AppearanceCreateNestedManyWithoutAddedByInput
+    token?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  UserCreateWithoutTaggedAppearancesInput: { // input type
+    bot?: boolean | null; // Boolean
+    cratedTags?: NexusGenInputs['TagCreateNestedManyWithoutAddedByInput'] | null; // TagCreateNestedManyWithoutAddedByInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    image?: string | null; // String
+    images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceCreateNestedManyWithoutAddedByInput'] | null; // FaceCreateNestedManyWithoutAddedByInput
+    name?: string | null; // String
+    roles?: NexusGenInputs['RoleCreateNestedManyWithoutUserInput'] | null; // RoleCreateNestedManyWithoutUserInput
+    token?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  UserUpdateOneRequiredWithoutTaggedAppearancesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutTaggedAppearancesInput'] | null; // UserCreateOrConnectWithoutTaggedAppearancesInput
+    create?: NexusGenInputs['UserCreateWithoutTaggedAppearancesInput'] | null; // UserCreateWithoutTaggedAppearancesInput
+    update?: NexusGenInputs['UserUpdateWithoutTaggedAppearancesInput'] | null; // UserUpdateWithoutTaggedAppearancesInput
+    upsert?: NexusGenInputs['UserUpsertWithoutTaggedAppearancesInput'] | null; // UserUpsertWithoutTaggedAppearancesInput
+  }
+  UserUpdateOneWithoutCratedTagsInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutCratedTagsInput'] | null; // UserCreateOrConnectWithoutCratedTagsInput
+    create?: NexusGenInputs['UserCreateWithoutCratedTagsInput'] | null; // UserCreateWithoutCratedTagsInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['UserUpdateWithoutCratedTagsInput'] | null; // UserUpdateWithoutCratedTagsInput
+    upsert?: NexusGenInputs['UserUpsertWithoutCratedTagsInput'] | null; // UserUpsertWithoutCratedTagsInput
+  }
+  UserUpdateOneWithoutImagesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutImagesInput'] | null; // UserCreateOrConnectWithoutImagesInput
+    create?: NexusGenInputs['UserCreateWithoutImagesInput'] | null; // UserCreateWithoutImagesInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['UserUpdateWithoutImagesInput'] | null; // UserUpdateWithoutImagesInput
+    upsert?: NexusGenInputs['UserUpsertWithoutImagesInput'] | null; // UserUpsertWithoutImagesInput
+  }
+  UserUpdateOneWithoutMarkedFacesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutMarkedFacesInput'] | null; // UserCreateOrConnectWithoutMarkedFacesInput
+    create?: NexusGenInputs['UserCreateWithoutMarkedFacesInput'] | null; // UserCreateWithoutMarkedFacesInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['UserUpdateWithoutMarkedFacesInput'] | null; // UserUpdateWithoutMarkedFacesInput
+    upsert?: NexusGenInputs['UserUpsertWithoutMarkedFacesInput'] | null; // UserUpsertWithoutMarkedFacesInput
+  }
+  UserUpdateWithoutCratedTagsInput: { // input type
+    bot?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceUpdateManyWithoutAddedByInput'] | null; // FaceUpdateManyWithoutAddedByInput
+    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    roles?: NexusGenInputs['RoleUpdateManyWithoutUserInput'] | null; // RoleUpdateManyWithoutUserInput
+    taggedAppearances?: NexusGenInputs['AppearanceUpdateManyWithoutAddedByInput'] | null; // AppearanceUpdateManyWithoutAddedByInput
+    token?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  UserUpdateWithoutImagesInput: { // input type
+    bot?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    cratedTags?: NexusGenInputs['TagUpdateManyWithoutAddedByInput'] | null; // TagUpdateManyWithoutAddedByInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    markedFaces?: NexusGenInputs['FaceUpdateManyWithoutAddedByInput'] | null; // FaceUpdateManyWithoutAddedByInput
+    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    roles?: NexusGenInputs['RoleUpdateManyWithoutUserInput'] | null; // RoleUpdateManyWithoutUserInput
+    taggedAppearances?: NexusGenInputs['AppearanceUpdateManyWithoutAddedByInput'] | null; // AppearanceUpdateManyWithoutAddedByInput
+    token?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  UserUpdateWithoutMarkedFacesInput: { // input type
+    bot?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    cratedTags?: NexusGenInputs['TagUpdateManyWithoutAddedByInput'] | null; // TagUpdateManyWithoutAddedByInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
+    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    roles?: NexusGenInputs['RoleUpdateManyWithoutUserInput'] | null; // RoleUpdateManyWithoutUserInput
+    taggedAppearances?: NexusGenInputs['AppearanceUpdateManyWithoutAddedByInput'] | null; // AppearanceUpdateManyWithoutAddedByInput
+    token?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  UserUpdateWithoutTaggedAppearancesInput: { // input type
+    bot?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    cratedTags?: NexusGenInputs['TagUpdateManyWithoutAddedByInput'] | null; // TagUpdateManyWithoutAddedByInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceUpdateManyWithoutAddedByInput'] | null; // FaceUpdateManyWithoutAddedByInput
+    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    roles?: NexusGenInputs['RoleUpdateManyWithoutUserInput'] | null; // RoleUpdateManyWithoutUserInput
+    token?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  UserUpsertWithoutCratedTagsInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutCratedTagsInput']; // UserCreateWithoutCratedTagsInput!
+    update: NexusGenInputs['UserUpdateWithoutCratedTagsInput']; // UserUpdateWithoutCratedTagsInput!
+  }
+  UserUpsertWithoutImagesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutImagesInput']; // UserCreateWithoutImagesInput!
+    update: NexusGenInputs['UserUpdateWithoutImagesInput']; // UserUpdateWithoutImagesInput!
+  }
+  UserUpsertWithoutMarkedFacesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutMarkedFacesInput']; // UserCreateWithoutMarkedFacesInput!
+    update: NexusGenInputs['UserUpdateWithoutMarkedFacesInput']; // UserUpdateWithoutMarkedFacesInput!
+  }
+  UserUpsertWithoutTaggedAppearancesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutTaggedAppearancesInput']; // UserCreateWithoutTaggedAppearancesInput!
+    update: NexusGenInputs['UserUpdateWithoutTaggedAppearancesInput']; // UserUpdateWithoutTaggedAppearancesInput!
   }
   UserWhereInput: { // input type
     AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
@@ -461,6 +1845,11 @@ export interface NexusGenInputs {
     taggedAppearances?: NexusGenInputs['AppearanceListRelationFilter'] | null; // AppearanceListRelationFilter
     token?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  UserWhereUniqueInput: { // input type
+    email?: string | null; // String
+    id?: number | null; // Int
+    token?: string | null; // String
   }
 }
 
@@ -483,6 +1872,7 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Alias: PrismaClient.Alias;
   Appearance: PrismaClient.Appearance;
   Face: PrismaClient.Face;
   Image: PrismaClient.Image;
@@ -505,6 +1895,12 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
+  Alias: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    name: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
   Appearance: { // field return type
     addedBy: NexusGenRootTypes['User']; // User!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -558,16 +1954,20 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    createOnePerson: NexusGenRootTypes['Person']; // Person!
     labelImage: NexusGenRootTypes['Image'] | null; // Image
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     scanFaces: NexusGenRootTypes['Image'] | null; // Image
     unlinkFace: number; // Int!
+    upsertOnePerson: NexusGenRootTypes['Person']; // Person!
   }
   Person: { // field return type
+    aliases: NexusGenRootTypes['Alias'][]; // [Alias!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     name: string; // String!
+    preferredAlias: NexusGenRootTypes['Alias'] | null; // Alias
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: { // field return type
@@ -598,6 +1998,12 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  Alias: { // field return type name
+    createdAt: 'DateTime'
+    id: 'Int'
+    name: 'String'
+    updatedAt: 'DateTime'
+  }
   Appearance: { // field return type name
     addedBy: 'User'
     createdAt: 'DateTime'
@@ -651,16 +2057,20 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     addAppearance: 'Appearance'
+    createOnePerson: 'Person'
     labelImage: 'Image'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
     scanFaces: 'Image'
     unlinkFace: 'Int'
+    upsertOnePerson: 'Person'
   }
   Person: { // field return type name
+    aliases: 'Alias'
     createdAt: 'DateTime'
     id: 'Int'
     name: 'String'
+    preferredAlias: 'Alias'
     updatedAt: 'DateTime'
   }
   Query: { // field return type name
@@ -715,6 +2125,9 @@ export interface NexusGenArgTypes {
       imageId: number; // Int!
       personId: number; // Int!
     }
+    createOnePerson: { // args
+      data: NexusGenInputs['PersonCreateInput']; // PersonCreateInput!
+    }
     labelImage: { // args
       faces: NexusGenInputs['FaceInput'][]; // [FaceInput!]!
       ireneBotId?: number | null; // Int
@@ -737,6 +2150,18 @@ export interface NexusGenArgTypes {
     unlinkFace: { // args
       appearanceId: number; // Int!
       faceId: number; // Int!
+    }
+    upsertOnePerson: { // args
+      create: NexusGenInputs['PersonCreateInput']; // PersonCreateInput!
+      update: NexusGenInputs['PersonUpdateInput']; // PersonUpdateInput!
+      where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+    }
+  }
+  Person: {
+    aliases: { // args
+      cursor?: NexusGenInputs['AliasWhereUniqueInput'] | null; // AliasWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
     }
   }
   Query: {

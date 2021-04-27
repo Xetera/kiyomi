@@ -1,0 +1,9 @@
+mutation upsertPerson(
+  $where: PersonWhereUniqueInput!
+  $update: PersonUpdateInput!
+  $create: PersonCreateInput!
+) {
+  upsertOnePerson(where: $where, update: $update, create: $create) {
+    id
+  }
+}

@@ -35,7 +35,11 @@ export interface NexusGenInputs {
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
     person?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    preferredAliasOf?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  AliasWhereUniqueInput: { // input type
+    id?: number | null; // Int
   }
   AppearanceAppearanceCompoundUniqueInput: { // input type
     imageId: number; // Int!
@@ -359,6 +363,8 @@ export interface NexusGenInputs {
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    preferredAlias?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
+    preferredAliasId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   RoleListRelationFilter: { // input type
@@ -475,6 +481,7 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Alias: PrismaClient.Alias;
   Appearance: PrismaClient.Appearance;
   Face: PrismaClient.Face;
   Image: PrismaClient.Image;
@@ -497,6 +504,12 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
+  Alias: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    name: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
   Appearance: { // field return type
     addedBy: NexusGenRootTypes['User']; // User!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -555,9 +568,11 @@ export interface NexusGenFieldTypes {
     unlinkFace: number; // Int!
   }
   Person: { // field return type
+    aliases: NexusGenRootTypes['Alias'][]; // [Alias!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     name: string; // String!
+    preferredAlias: NexusGenRootTypes['Alias'] | null; // Alias
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: { // field return type
@@ -588,6 +603,12 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  Alias: { // field return type name
+    createdAt: 'DateTime'
+    id: 'Int'
+    name: 'String'
+    updatedAt: 'DateTime'
+  }
   Appearance: { // field return type name
     addedBy: 'User'
     createdAt: 'DateTime'
@@ -646,9 +667,11 @@ export interface NexusGenFieldTypeNames {
     unlinkFace: 'Int'
   }
   Person: { // field return type name
+    aliases: 'Alias'
     createdAt: 'DateTime'
     id: 'Int'
     name: 'String'
+    preferredAlias: 'Alias'
     updatedAt: 'DateTime'
   }
   Query: { // field return type name
@@ -713,6 +736,13 @@ export interface NexusGenArgTypes {
     unlinkFace: { // args
       appearanceId: number; // Int!
       faceId: number; // Int!
+    }
+  }
+  Person: {
+    aliases: { // args
+      cursor?: NexusGenInputs['AliasWhereUniqueInput'] | null; // AliasWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
     }
   }
   Query: {

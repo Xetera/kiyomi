@@ -1,0 +1,10 @@
+{
+  "extends": "..",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "baseUrl": "..",
+    "paths": {
+      "@/*": ["../*"]
+    }
+  }
+}
