@@ -2,6 +2,13 @@
 ### Do not make changes to this file directly
 
 
+type Alias {
+  createdAt: DateTime!
+  id: Int!
+  name: String!
+  updatedAt: DateTime!
+}
+
 input AliasListRelationFilter {
   every: AliasWhereInput
   none: AliasWhereInput
@@ -17,7 +24,12 @@ input AliasWhereInput {
   name: StringFilter
   person: PersonWhereInput
   personId: IntFilter
+  preferredAliasOf: PersonWhereInput
   updatedAt: DateTimeFilter
+}
+
+input AliasWhereUniqueInput {
+  id: Int
 }
 
 type Appearance {
@@ -487,9 +499,11 @@ input NestedStringNullableFilter {
 }
 
 type Person {
+  aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
   createdAt: DateTime!
   id: Int!
   name: String!
+  preferredAlias: Alias
   updatedAt: DateTime!
 }
 
@@ -505,6 +519,8 @@ input PersonWhereInput {
   id: IntFilter
   ireneBotId: IntNullableFilter
   name: StringFilter
+  preferredAlias: AliasWhereInput
+  preferredAliasId: IntNullableFilter
   updatedAt: DateTimeFilter
 }
 

@@ -45,26 +45,30 @@ model Tag {
 }
 
 model Alias {
-  id         Int      @id @default(autoincrement())
-  name       String
-  person     Person   @relation(fields: [personId], references: [id])
-  personId   Int      @map(name: "person_id")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+  id               Int      @id @default(autoincrement())
+  name             String
+  person           Person   @relation(fields: [personId], references: [id])
+  personId         Int      @map(name: "person_id")
+  preferredAliasOf Person?  @relation("preferred_alias")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("aliases")
+  @@unique([personId, name], name: "personAlias")
 }
 
 model Person {
-  id          Int      @id @default(autoincrement())
-  description String?
-  name        String
-  aliases     Alias[]
-  appearsIn   Face[]   @relation("face_person")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
-  ireneBotId Int?     @map("irene_bot_id") @unique
-  appearances Appearance[]
+  id               Int          @id @default(autoincrement())
+  description      String?
+  name             String
+  preferredAlias   Alias?       @relation("preferred_alias", fields: [preferredAliasId], references: [id])
+  preferredAliasId Int?         @map("preferred_alias_id")
+  aliases          Alias[]
+  appearsIn        Face[]       @relation("face_person")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @default(now()) @updatedAt @map("updated_at")
+  ireneBotId       Int?         @unique @map("irene_bot_id")
+  appearances      Appearance[]
   @@index([name], name: "person.name.index")
   @@map("persons")
 }
@@ -198,7 +202,7 @@ model Image {
   user         User?        @relation(fields: [userId], references: [id])
   appearances  Appearance[] @relation("image_appearances")
   faceScanDate DateTime?    @map("face_scan_date")
-  ireneBotId Int? @unique
+  ireneBotId   Int?         @unique
   tags         Tag[]
   faces        Face[]
 

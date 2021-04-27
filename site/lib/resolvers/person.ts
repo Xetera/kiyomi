@@ -6,6 +6,7 @@ import {
   nonNull,
   stringArg,
   list,
+  mutationField,
 } from "nexus";
 
 export const Person = objectType({
@@ -14,6 +15,8 @@ export const Person = objectType({
     t.model
       .id()
       .name()
+      .aliases()
+      .preferredAlias()
       .updatedAt()
       .createdAt();
   },
@@ -35,3 +38,8 @@ export const Query = queryField((t) => {
     },
   });
 });
+
+export const PrivateMutation = mutationField(t => {
+  t.crud.createOnePerson()
+  t.crud.upsertOnePerson()
+})
