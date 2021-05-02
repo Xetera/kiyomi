@@ -1787,6 +1787,7 @@ export type Query = {
   image?: Maybe<Image>;
   images: Array<Image>;
   me?: Maybe<User>;
+  people: Array<Person>;
   searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
@@ -1803,6 +1804,14 @@ export type QueryImagesArgs = {
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
+};
+
+
+export type QueryPeopleArgs = {
+  cursor?: Maybe<PersonWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+  where?: Maybe<PersonWhereInput>;
 };
 
 
@@ -2545,7 +2554,7 @@ export type RemoveAppearanceMutation = (
   { __typename?: 'Mutation' }
   & { appearance: (
     { __typename?: 'Appearance' }
-    & AppearanceWithFacesFragment
+    & Pick<Appearance, 'id'>
   ) }
 );
 
@@ -2794,10 +2803,10 @@ export const useAddAppearanceMutation = <
 export const RemoveAppearanceDocument = `
     mutation RemoveAppearance($appearanceId: Int!) {
   appearance: removeAppearance(appearanceId: $appearanceId) {
-    ...AppearanceWithFaces
+    id
   }
 }
-    ${AppearanceWithFacesFragmentDoc}`;
+    `;
 export const useRemoveAppearanceMutation = <
       TError = unknown,
       TContext = unknown

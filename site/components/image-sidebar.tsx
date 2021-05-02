@@ -3,11 +3,19 @@ import React from "react";
 import { Palette } from "./palette-color";
 import { Tags } from "./tags";
 import { CascadeChildren } from "./animations/cascade-children";
-import { RiEdit2Line, RiQuestionLine } from "react-icons/ri";
+import {
+  RiEdit2Line,
+  RiQuestionLine,
+  RiScan2Line,
+  RiSearch2Fill,
+  RiSearchEyeFill,
+} from "react-icons/ri";
 import { format } from "date-fns";
 import { User } from "./user";
 import { ImageContext } from "@/models/contexts";
-import { Flex, Heading, Text } from "@chakra-ui/layout";
+import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
+import { Button } from "@chakra-ui/button";
+import { Tooltip } from "@chakra-ui/tooltip";
 
 function SidebarSection({ title, children }) {
   return (
@@ -96,6 +104,13 @@ export default function ImageSidebar() {
         <div>
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
+        <Box>
+          <Tooltip label="Ask for this image to be scanned for data">
+            <Button size="sm" leftIcon={<RiScan2Line />} width="100%">
+              Request A {image.faceScanDate ? "Rescan" : "Scan"}
+            </Button>
+          </Tooltip>
+        </Box>
       </CascadeChildren>
     </aside>
   );

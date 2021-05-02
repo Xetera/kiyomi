@@ -248,7 +248,7 @@ export default function ImageDisplay({ onEdit }) {
         </a>
         <Hr className="flex-1" />
       </div>
-      {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
+      {
         <section className="mt-5">
           <Flex mb={3} justifyContent="space-between" flexFlow="row">
             <Flex flexDirection="column">
@@ -284,7 +284,7 @@ export default function ImageDisplay({ onEdit }) {
             })}
           </CascadeChildren>
         </section>
-      )}
+      }
     </div>
   );
 }

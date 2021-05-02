@@ -1770,6 +1770,7 @@ export type Query = {
   image?: Maybe<Image>;
   images: Array<Image>;
   me?: Maybe<User>;
+  people: Array<Person>;
   searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
@@ -1786,6 +1787,14 @@ export type QueryImagesArgs = {
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
+};
+
+
+export type QueryPeopleArgs = {
+  cursor?: Maybe<PersonWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+  where?: Maybe<PersonWhereInput>;
 };
 
 
@@ -2493,7 +2502,7 @@ export type RemoveAppearanceMutation = (
   { __typename?: 'Mutation' }
   & { appearance: (
     { __typename?: 'Appearance' }
-    & AppearanceWithFacesFragment
+    & Pick<Appearance, 'id'>
   ) }
 );
 
@@ -2564,6 +2573,21 @@ export type UpsertPersonMutation = (
     { __typename?: 'Person' }
     & Pick<Person, 'id'>
   ) }
+);
+
+export type AllPersonsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllPersonsQuery = (
+  { __typename?: 'Query' }
+  & { people: Array<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'id' | 'name'>
+    & { aliases: Array<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )> }
+  )> }
 );
 
 export const AppearanceDataFragmentDoc = gql`
@@ -2671,10 +2695,10 @@ export const AddAppearanceDocument = gql`
 export const RemoveAppearanceDocument = gql`
     mutation RemoveAppearance($appearanceId: Int!) {
   appearance: removeAppearance(appearanceId: $appearanceId) {
-    ...AppearanceWithFaces
+    id
   }
 }
-    ${AppearanceWithFacesFragmentDoc}`;
+    `;
 export const LinkFaceDocument = gql`
     mutation LinkFace($appearanceId: Int!, $faceId: Int!) {
   appearance: linkFace(faceId: $faceId, appearanceId: $appearanceId) {
@@ -2712,6 +2736,17 @@ export const UpsertPersonDocument = gql`
   }
 }
     `;
+export const AllPersonsDocument = gql`
+    query allPersons {
+  people {
+    id
+    name
+    aliases {
+      name
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
@@ -2746,6 +2781,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     upsertPerson(variables: UpsertPersonMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertPersonMutation> {
       return withWrapper(() => client.request<UpsertPersonMutation>(UpsertPersonDocument, variables, requestHeaders));
+    },
+    allPersons(variables?: AllPersonsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AllPersonsQuery> {
+      return withWrapper(() => client.request<AllPersonsQuery>(AllPersonsDocument, variables, requestHeaders));
     }
   };
 }

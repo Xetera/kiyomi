@@ -8,7 +8,7 @@ import {
   useRemoveAppearanceMutation,
   useUnlinkFaceMutation,
 } from "@/__generated__/graphql";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { maxPortraitHeight, PersonPortrait } from "./person-preview";
 import dynamic from "next/dynamic";
 import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
@@ -17,6 +17,7 @@ import { PersonSearchbar } from "./search";
 import _ from "lodash";
 import { DropResult } from "react-beautiful-dnd";
 import { RiDeleteBin2Fill } from "react-icons/ri";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 
 const DragDropContext = dynamic(
   () => {
@@ -95,6 +96,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
   );
   console.log(props.image.appearances);
   console.log({ appearanceMap });
+
   const unknownFacesMap = _.keyBy(props.image.unknownFaces, (f) => f.id);
   // TODO: update this once users can create new faces on this screen
   const allFaces = useMemo(() => {
@@ -195,61 +197,23 @@ export function ImageEditModal(props: ImageEditModalProps) {
         </Heading>
         <PersonSearchbar onSelect={addAppearance_} />
         {Object.entries(appearances).map(([id, appearance]) => (
-          <Box key={id}>
+          <Flex key={id} flexFlow="column">
             <Flex justifyContent="space-between">
               <ModalHeading>{appearance.person.name}</ModalHeading>
               <RiDeleteBin2Fill onClick={() => removeAppearance_(Number(id))} />
             </Flex>
-            <Droppable droppableId={id}>
+            <Droppable droppableId={id} direction="horizontal">
               {(provided) => (
                 <Flex
                   ref={provided.innerRef}
-                  className="flex flex-row"
+                  flexFlow="column wrap"
+                  minHeight="150px"
+                  height="100%"
                   {...provided.droppableProps}
                 >
-                  <Box minHeight="150px" height="100%">
-                    {appearance.faces.map((face, i) => (
-                      <Draggable
-                        draggableId={(console.log(face), face.id.toString())}
-                        key={face.id}
-                        index={i}
-                      >
-                        {(provided, i) => (
-                          <DraggableFace
-                            face={face}
-                            src={props.image.rawUrl}
-                            ref={provided.innerRef}
-                            style={{
-                              background: i.isDragging ? "red" : "inherit",
-                            }}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          />
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </Box>
-                </Flex>
-              )}
-            </Droppable>
-          </Box>
-        ))}
-        <Heading mb={2} size="md" color="gray.300">
-          Unlabeled Faces
-        </Heading>
-        <Box>
-          <Droppable droppableId="unknown">
-            {(provided) => (
-              <Flex
-                ref={provided.innerRef}
-                className="flex flex-row"
-                {...provided.droppableProps}
-              >
-                <Box minHeight="150px" height="100%">
-                  {Object.values(unknownFaces).map((face, i) => (
+                  {appearance.faces.map((face, i) => (
                     <Draggable
-                      draggableId={face.id.toString()}
+                      draggableId={(console.log(face), face.id.toString())}
                       key={face.id}
                       index={i}
                     >
@@ -267,7 +231,45 @@ export function ImageEditModal(props: ImageEditModalProps) {
                       )}
                     </Draggable>
                   ))}
-                </Box>
+                  {provided.placeholder}
+                </Flex>
+              )}
+            </Droppable>
+          </Flex>
+        ))}
+        <Heading mb={2} size="md" color="gray.300">
+          Unlabeled Faces
+        </Heading>
+        <Box>
+          <Droppable droppableId="unknown" direction="horizontal">
+            {(provided) => (
+              <Flex
+                ref={provided.innerRef}
+                className="flex flex-row"
+                minHeight="150px"
+                height="100%"
+                {...provided.droppableProps}
+              >
+                {Object.values(unknownFaces).map((face, i) => (
+                  <Draggable
+                    draggableId={face.id.toString()}
+                    key={face.id}
+                    index={i}
+                  >
+                    {(provided, i) => (
+                      <DraggableFace
+                        face={face}
+                        src={props.image.rawUrl}
+                        ref={provided.innerRef}
+                        style={{
+                          background: i.isDragging ? "red" : "inherit",
+                        }}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      />
+                    )}
+                  </Draggable>
+                ))}
                 {provided.placeholder}
               </Flex>
             )}

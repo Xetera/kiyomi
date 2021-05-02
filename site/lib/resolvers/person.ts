@@ -31,13 +31,17 @@ export const Query = queryField((t) => {
     async resolve(_, args, ctx) {
       return ctx.prisma.$queryRaw(
         `
-        SELECT * FROM persons where name ILIKE $1 LIMIT 25;
+        SELECT * FROM persons where persons.name ILIKE $1 LIMIT 25;
       `,
         `%${args.query}%`
       );
     },
   });
 });
+
+export const PrivateQuery = queryField(t => {
+  t.crud.people({ pagination: true, filtering: true });
+})
 
 export const PrivateMutation = mutationField(t => {
   t.crud.createOnePerson()

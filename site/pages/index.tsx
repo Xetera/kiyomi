@@ -93,7 +93,7 @@ export default function Home() {
               <Input
                 placeholder="Search for an image"
                 color="white"
-                background="black"
+                background="trueGray.900"
                 borderColor="rgb(2, 3, 4)"
               />
             </InputGroup>
@@ -112,6 +112,7 @@ export default function Home() {
           <Grid
             gap={2}
             gridAutoFlow="dense"
+            gridAutoRows="300px"
             gridTemplateColumns={[
               "repeat(auto-fit, minmax(150px, 1fr))",
               "repeat(auto-fill, minmax(220px, 1fr))",
