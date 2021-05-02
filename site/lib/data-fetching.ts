@@ -80,7 +80,6 @@ export function wrapRequest<T>(f: ServerSideProps): GetServerSideProps<T & Extra
 
     const session = await getSession(ctx)
     if (req.url?.startsWith('/_next')) {
-      console.log('server side request')
       return {
         props: { session },
       };
