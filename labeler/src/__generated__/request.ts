@@ -815,6 +815,7 @@ export type Image = {
   /** The url the image was taken from (if applicable). Not guaranteed to be a direct image url. */
   source?: Maybe<Scalars['String']>;
   tags: Array<Tag>;
+  thumbnail: Thumbnail;
   unknownFaces: Array<Face>;
   uploadType: UploadType;
   uploadedBy?: Maybe<User>;
@@ -2121,6 +2122,14 @@ export type TagWhereInput = {
 
 export type TagWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
+};
+
+/** Preview urls of an image */
+export type Thumbnail = {
+  __typename?: 'Thumbnail';
+  large: Scalars['String'];
+  medium: Scalars['String'];
+  small: Scalars['String'];
 };
 
 export enum UploadType {

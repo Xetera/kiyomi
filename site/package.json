@@ -15,6 +15,7 @@
     "@chakra-ui/react": "^1.5.1",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@jsmonday/imgproxy": "^0.1.0",
     "@mapbox/node-pre-gyp": "^1.0.2",
     "@prisma/client": "2.19.0",
     "@trpc/react": "^3.5.1",

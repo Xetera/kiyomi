@@ -1,8 +1,4 @@
-import {
-  Appearance,
-  Image as ImageData,
-  Person,
-} from "@/__generated__/graphql";
+import { Image as ImageData, Person, Thumbnail } from "@/__generated__/graphql";
 import Link from "next/link";
 import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -11,7 +7,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { AppearanceDataFragment } from "@/__generated__/request";
 
 export type ImageGridElementProps = {
-  image: Pick<ImageData, "createdAt" | "id" | "url" | "rawUrl"> & {
+  image: Pick<ImageData, "createdAt" | "id" | "url"> & {
+    thumbnail: Pick<Thumbnail, "small">;
     appearances: Array<{
       person: Pick<Person, "name">;
     }>;
@@ -47,7 +44,7 @@ export function ImageGridElement(props: ImageGridElementProps) {
             height="100%"
             loading="lazy"
             onLoad={() => setLoaded(true)}
-            src={image.rawUrl}
+            src={image.thumbnail.small}
             // src={"a"}
           />
         </Skeleton>

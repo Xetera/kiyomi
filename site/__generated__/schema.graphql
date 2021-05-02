@@ -252,6 +252,7 @@ type Image {
   """
   source: String
   tags(cursor: TagWhereUniqueInput, skip: Int, take: Int): [Tag!]!
+  thumbnail: Thumbnail!
   unknownFaces: [Face!]!
   uploadType: UploadType!
   uploadedBy: User
@@ -646,6 +647,13 @@ input TagWhereInput {
 
 input TagWhereUniqueInput {
   id: Int
+}
+
+"""Preview urls of an image"""
+type Thumbnail {
+  large: String!
+  medium: String!
+  small: String!
 }
 
 enum UploadType {

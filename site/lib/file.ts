@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { promisify } from "util";
 import { createHash } from "crypto";
 import { MimeType } from "@prisma/client";
-import getColors from "get-image-colors";
+import ImgProxy from "@jsmonday/imgproxy"
 import { Readable } from "stream";
 import sharp from "sharp";
 
@@ -173,3 +173,9 @@ export async function convertImage(
   }
   return convertWebp(buffer);
 }
+
+export const imgproxy = new ImgProxy({
+  key: process.env.IMGPROXY_KEY,
+  salt: process.env.IMGPROXY_SALT,
+  url: process.env.IMGPROXY_URL
+});

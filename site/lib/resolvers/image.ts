@@ -11,10 +11,26 @@ import {
 } from "nexus";
 import { hasRole, Role } from "../permissions";
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client";
+import { Image as ImageType } from "@prisma/client"
+import { imgproxy } from "../file";
 
-export const User = objectType({
+export const Thumbnail = objectType({
+  name: "Thumbnail",
+  description: "Preview urls of an image",
+  definition(t) {
+    t.nonNull.string("large")
+    t.nonNull.string("medium")
+    t.nonNull.string("small")
+  }
+})
+
+export const Image = objectType({
   name: "Image",
   definition(t) {
+    function rawUrl(image: ImageType) {
+      const baseCdnUrl = process.env.NEXT_PUBLIC_BASE_URL_CDN;
+      return `${baseCdnUrl}/${image.slug}.${image.mimetype.toLowerCase()}`;
+    }
     t.model
       .id()
       .width({
@@ -66,6 +82,17 @@ export const User = objectType({
       .faceScanDate()
       .createdAt()
       .createdAt();
+    t.field("thumbnail", {
+      type: nonNull(Thumbnail),
+      resolve(img) {
+        const base = imgproxy.image(rawUrl(img)).width(0).resizeType("fill").extension("webp")
+        return {
+          small: base.height(350).get(),
+          medium: base.height(500).get(),
+          large: base.height(900).get(),
+        }
+      }
+    })
     t.field("fileSize", {
       type: nonNull("String"),
       description:
@@ -83,8 +110,7 @@ export const User = objectType({
     t.nonNull.string("rawUrl", {
       description: "Direct link to the image on the CDN",
       resolve(p) {
-        const baseCdnUrl = process.env.NEXT_PUBLIC_BASE_URL_CDN;
-        return `${baseCdnUrl}/${p.slug}.${p.mimetype.toLowerCase()}`;
+        return rawUrl(p)
       },
     });
     t.nonNull.float("aspectRatio", {

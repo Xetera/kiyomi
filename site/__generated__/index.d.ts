@@ -495,6 +495,11 @@ export interface NexusGenObjects {
   Query: {};
   Role: PrismaClient.Role;
   Tag: PrismaClient.Tag;
+  Thumbnail: { // root type
+    large: string; // String!
+    medium: string; // String!
+    small: string; // String!
+  }
   User: PrismaClient.User;
 }
 
@@ -559,6 +564,7 @@ export interface NexusGenFieldTypes {
     slug: string; // String!
     source: string | null; // String
     tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
+    thumbnail: NexusGenRootTypes['Thumbnail']; // Thumbnail!
     unknownFaces: NexusGenRootTypes['Face'][]; // [Face!]!
     uploadType: NexusGenEnums['UploadType']; // UploadType!
     uploadedBy: NexusGenRootTypes['User'] | null; // User
@@ -596,6 +602,11 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     name: string; // String!
     source: NexusGenEnums['TagSource']; // TagSource!
+  }
+  Thumbnail: { // field return type
+    large: string; // String!
+    medium: string; // String!
+    small: string; // String!
   }
   User: { // field return type
     avatar: string | null; // String
@@ -658,6 +669,7 @@ export interface NexusGenFieldTypeNames {
     slug: 'String'
     source: 'String'
     tags: 'Tag'
+    thumbnail: 'Thumbnail'
     unknownFaces: 'Face'
     uploadType: 'UploadType'
     uploadedBy: 'User'
@@ -695,6 +707,11 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'DateTime'
     name: 'String'
     source: 'TagSource'
+  }
+  Thumbnail: { // field return type name
+    large: 'String'
+    medium: 'String'
+    small: 'String'
   }
   User: { // field return type name
     avatar: 'String'

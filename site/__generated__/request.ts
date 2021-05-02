@@ -815,6 +815,7 @@ export type Image = {
   /** The url the image was taken from (if applicable). Not guaranteed to be a direct image url. */
   source?: Maybe<Scalars['String']>;
   tags: Array<Tag>;
+  thumbnail: Thumbnail;
   unknownFaces: Array<Face>;
   uploadType: UploadType;
   uploadedBy?: Maybe<User>;
@@ -2123,6 +2124,14 @@ export type TagWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
 };
 
+/** Preview urls of an image */
+export type Thumbnail = {
+  __typename?: 'Thumbnail';
+  large: Scalars['String'];
+  medium: Scalars['String'];
+  small: Scalars['String'];
+};
+
 export enum UploadType {
   Token = 'TOKEN',
   Website = 'WEBSITE'
@@ -2436,7 +2445,10 @@ export type ImageDataFragment = (
 export type GridImageFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'url' | 'rawUrl' | 'aspectRatio' | 'createdAt'>
-  & { uploadedBy?: Maybe<(
+  & { thumbnail: (
+    { __typename?: 'Thumbnail' }
+    & Pick<Thumbnail, 'small'>
+  ), uploadedBy?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'name'>
   )>, appearances: Array<(
@@ -2634,6 +2646,9 @@ export const GridImageFragmentDoc = gql`
     fragment GridImage on Image {
   id
   url
+  thumbnail {
+    small
+  }
   rawUrl
   aspectRatio
   uploadedBy {
