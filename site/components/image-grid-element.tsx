@@ -13,7 +13,7 @@ import { AppearanceDataFragment } from "@/__generated__/request";
 export type ImageGridElementProps = {
   image: Pick<ImageData, "createdAt" | "id" | "url" | "rawUrl"> & {
     appearances: {
-      name: Pick<Person, "name">;
+      person: Pick<Person, "name">;
     };
   };
 };
@@ -63,7 +63,6 @@ export function ImageGridElement(props: ImageGridElementProps) {
               background="linear-gradient(to bottom, transparent, rgba(0, 0, 0, var(--gradient)))"
               sx={{
                 "--gradient": 0.1,
-                // "linear-gradient(to bottom, transparent 2%, var(--gradient) 99%)",
               }}
               justifyContent="space-between"
               p={2}
