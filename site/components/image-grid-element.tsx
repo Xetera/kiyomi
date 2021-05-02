@@ -12,9 +12,9 @@ import { AppearanceDataFragment } from "@/__generated__/request";
 
 export type ImageGridElementProps = {
   image: Pick<ImageData, "createdAt" | "id" | "url" | "rawUrl"> & {
-    appearances: {
+    appearances: Array<{
       person: Pick<Person, "name">;
-    };
+    }>;
   };
 };
 
