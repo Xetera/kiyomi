@@ -1,12 +1,21 @@
-import { HomepageQuery } from "@/__generated__/graphql";
+import {
+  Appearance,
+  Image as ImageData,
+  Person,
+} from "@/__generated__/graphql";
 import Link from "next/link";
 import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import format from "date-fns/format";
 import { AnimatePresence, motion } from "framer-motion";
+import { AppearanceDataFragment } from "@/__generated__/request";
 
 export type ImageGridElementProps = {
-  image: HomepageQuery["images"][number];
+  image: Pick<ImageData, "createdAt" | "id" | "url" | "rawUrl"> & {
+    appearances: {
+      name: Pick<Person, "name">;
+    };
+  };
 };
 
 const MotionBox = motion(Box);
@@ -15,7 +24,7 @@ export function ImageGridElement(props: ImageGridElementProps) {
   const [hovering, setHovering] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const { image } = props;
-  console.log(image.createdAt);
+
   return (
     <Link href={image.url} key={image.id} passHref>
       <Flex

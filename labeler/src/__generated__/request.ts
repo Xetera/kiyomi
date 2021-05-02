@@ -2141,6 +2141,7 @@ export type User = {
 
 export type UserImagesArgs = {
   cursor?: Maybe<ImageWhereUniqueInput>;
+  orderBy?: Maybe<Array<ImageOrderByInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;

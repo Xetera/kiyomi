@@ -657,7 +657,7 @@ type User {
   avatar: String
   bot: Boolean!
   id: Int!
-  images(cursor: ImageWhereUniqueInput, skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
   roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
 }

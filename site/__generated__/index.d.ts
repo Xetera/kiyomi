@@ -771,6 +771,7 @@ export interface NexusGenArgTypes {
   User: {
     images: { // args
       cursor?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+      orderBy?: NexusGenInputs['ImageOrderByInput'][] | null; // [ImageOrderByInput!]
       skip?: number | null; // Int
       take?: number | null; // Int
       where?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput

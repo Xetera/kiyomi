@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   Heading,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
@@ -12,7 +13,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { capitalize, flatMap } from "lodash";
-import debounce from "lodash/lodash";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useDebounce } from "react-use";
@@ -92,7 +92,7 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
         position="absolute"
         zIndex="10"
         width="100%"
-        gap={2}
+        gap={3}
         top="100%"
         background="black"
       >
@@ -100,54 +100,74 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
           !isModalForceClosed &&
           data?.hits.map((person) => (
             <Button
-              borderRadius="sm"
+              borderRadius="md"
+              overflow="hidden"
               height="auto"
+              padding="0"
               key={person.id}
-              p={2}
               _hover={{
                 background: "black",
               }}
               onClick={() => select(person.id)}
               justifyContent="start"
             >
-              <img src="https://placewaifu.com/image/40/50" />
-              <Flex flexFlow="column" textAlign="left">
-                <Heading
-                  fontWeight="bold"
-                  size="sm"
-                  mb={1}
-                  color="gray.500"
-                  cursor="pointer"
-                  _hover={{
-                    color: "gray.100",
-                  }}
-                >
-                  {person.name}
-                </Heading>
-                <Text size="xs" fontWeight="normal" mb={2}>
-                  Placeholder description
-                </Text>
-                <Text
-                  fontSize="xs"
-                  fontWeight="400"
-                  color="trueGray.200"
-                  mb={1}
-                >
-                  Also known as
-                </Text>
-                <Flex flexFlow="row wrap">
-                  {intersperse(
-                    person.aliases.map((alias) => (
-                      <Text color="gray.500" fontWeight="400" fontSize="sm">
-                        {capitalize(alias)}
+              <Image
+                src="https://placewaifu.com/image/40/50"
+                height="100%"
+                width="100%"
+                maxWidth="90px"
+                objectFit="cover"
+              />
+              <Grid
+                flexFlow="column"
+                justifyContent="space-between"
+                textAlign="left"
+                gap={2}
+                p={3}
+                width="100%"
+              >
+                <Box>
+                  <Heading
+                    fontWeight="bold"
+                    size="sm"
+                    mb={1}
+                    color="trueGray.100"
+                    cursor="pointer"
+                  >
+                    {person.name}
+                  </Heading>
+                  <Text
+                    size="xs"
+                    fontWeight="normal"
+                    mb={2}
+                    color="trueGray.400"
+                  >
+                    Placeholder description
+                  </Text>
+                </Box>
+                <Flex flexFlow="row wrap" alignItems="center">
+                  <Text
+                    fontSize="xs"
+                    fontWeight="400"
+                    color="trueGray.200"
+                    mr={1}
+                  >
+                    Also known as
+                  </Text>
+                  <Flex flexFlow="row wrap" alignItems="center">
+                    {intersperse(
+                      person.aliases.map((alias) => (
+                        <Text color="gray.500" fontWeight="400" fontSize="sm">
+                          {capitalize(alias)}
+                        </Text>
+                      )),
+                      <Text color="gray.700" fontWeight="500" m="0 4px">
+                        •
                       </Text>
-                    )),
-                    <Text color="gray.700" fontWeight="500" m="0 4px">
-                      •
-                    </Text>
-                  )}
+                    )}
+                  </Flex>
                 </Flex>
-              </Flex>
+              </Grid>
             </Button>
           ))}
       </Grid>

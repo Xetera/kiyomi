@@ -3,19 +3,14 @@ import React from "react";
 import { Palette } from "./palette-color";
 import { Tags } from "./tags";
 import { CascadeChildren } from "./animations/cascade-children";
-import {
-  RiEdit2Line,
-  RiQuestionLine,
-  RiScan2Line,
-  RiSearch2Fill,
-  RiSearchEyeFill,
-} from "react-icons/ri";
+import { RiQuestionLine, RiScan2Line, RiUser3Fill } from "react-icons/ri";
 import { format } from "date-fns";
 import { User } from "./user";
 import { ImageContext } from "@/models/contexts";
-import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
+import { Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-import { Tooltip } from "@chakra-ui/tooltip";
+import { Grid } from "@chakra-ui/react";
+import { useSession } from "next-auth/client";
 
 function SidebarSection({ title, children }) {
   return (
@@ -37,8 +32,13 @@ function SidebarSection({ title, children }) {
   );
 }
 
-export default function ImageSidebar() {
+export type ImageSidebarProps = {
+  onEdit: () => void;
+};
+
+export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const image = React.useContext(ImageContext);
+  const [session] = useSession();
   if (!image) {
     return null;
   }
@@ -104,13 +104,22 @@ export default function ImageSidebar() {
         <div>
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
-        <Box>
-          <Tooltip label="Ask for this image to be scanned for data">
-            <Button size="sm" leftIcon={<RiScan2Line />} width="100%">
-              Request A {image.faceScanDate ? "Rescan" : "Scan"}
-            </Button>
-          </Tooltip>
-        </Box>
+        <Heading as="h2" size="sm" color="trueGray.300">
+          Admin Controls
+        </Heading>
+        <Grid gap={2}>
+          <Button
+            onClick={onEdit}
+            size="sm"
+            leftIcon={<RiUser3Fill />}
+            width="100%"
+          >
+            Edit Faces
+          </Button>
+          <Button size="sm" leftIcon={<RiScan2Line />} width="100%">
+            Request A {image.faceScanDate ? "Rescan" : "Scan"}
+          </Button>
+        </Grid>
       </CascadeChildren>
     </aside>
   );

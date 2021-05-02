@@ -21,6 +21,7 @@ const theme = extendTheme({
   },
   config: {
     initialColorMode: "dark",
+    useSystemColorMode: true,
   },
   colors: {
     ...colors,

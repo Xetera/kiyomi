@@ -8,6 +8,7 @@ import { useMeQuery } from "@/__generated__/graphql";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { prefetchQuery } from "@/lib/client-helpers";
+import ImageGrid from "@/components/image-grid";
 
 function Image() {
   const { data } = useMeQuery();
@@ -24,7 +25,7 @@ function Image() {
             <User user={data.me} bottom={<h1>hi</h1>} />
           </div>
         </div>
-        <Gallery images={data.me.images} />
+        <ImageGrid images={data.me.images} />
       </div>
     </div>
   );

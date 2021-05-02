@@ -1,8 +1,6 @@
 import {
   objectType,
   queryField,
-  intArg,
-  queryType,
   nonNull,
   stringArg,
   list,

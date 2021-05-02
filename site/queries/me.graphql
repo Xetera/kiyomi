@@ -1,8 +1,8 @@
 query Me {
   me {
     ...UserData
-    images {
-      ...ImageData
+    images(orderBy: { createdAt: asc }) {
+      ...GridImage
     }
   }
 }
