@@ -1787,6 +1787,7 @@ export type Query = {
   image?: Maybe<Image>;
   images: Array<Image>;
   me?: Maybe<User>;
+  people: Array<Person>;
   searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
@@ -1803,6 +1804,14 @@ export type QueryImagesArgs = {
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
+};
+
+
+export type QueryPeopleArgs = {
+  cursor?: Maybe<PersonWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+  where?: Maybe<PersonWhereInput>;
 };
 
 
@@ -2149,6 +2158,7 @@ export type User = {
 
 export type UserImagesArgs = {
   cursor?: Maybe<ImageWhereUniqueInput>;
+  orderBy?: Maybe<Array<ImageOrderByInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
@@ -2462,14 +2472,7 @@ export type HomepageQuery = (
   { __typename?: 'Query' }
   & { images: Array<(
     { __typename?: 'Image' }
-    & Pick<Image, 'id' | 'url' | 'rawUrl' | 'aspectRatio' | 'createdAt'>
-    & { uploadedBy?: Maybe<(
-      { __typename?: 'User' }
-      & UserDataFragment
-    )>, appearances: Array<(
-      { __typename?: 'Appearance' }
-      & AppearanceDataFragment
-    )> }
+    & GridImageFragment
   )> }
 );
 
@@ -2482,6 +2485,22 @@ export type ImageDataFragment = (
   )> }
 );
 
+export type GridImageFragment = (
+  { __typename?: 'Image' }
+  & Pick<Image, 'id' | 'url' | 'rawUrl' | 'aspectRatio' | 'createdAt'>
+  & { uploadedBy?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name'>
+  )>, appearances: Array<(
+    { __typename?: 'Appearance' }
+    & Pick<Appearance, 'id'>
+    & { person: (
+      { __typename?: 'Person' }
+      & Pick<Person, 'name'>
+    ) }
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2491,7 +2510,7 @@ export type MeQuery = (
     { __typename?: 'User' }
     & { images: Array<(
       { __typename?: 'Image' }
-      & ImageDataFragment
+      & GridImageFragment
     )> }
     & UserDataFragment
   )> }
@@ -2545,7 +2564,7 @@ export type RemoveAppearanceMutation = (
   { __typename?: 'Mutation' }
   & { appearance: (
     { __typename?: 'Appearance' }
-    & AppearanceWithFacesFragment
+    & Pick<Appearance, 'id'>
   ) }
 );
 
@@ -2633,6 +2652,25 @@ export const ImageDataFragmentDoc = `
   }
 }
     `;
+export const GridImageFragmentDoc = `
+    fragment GridImage on Image {
+  id
+  url
+  rawUrl
+  aspectRatio
+  uploadedBy {
+    id
+    name
+  }
+  appearances {
+    id
+    person {
+      name
+    }
+  }
+  createdAt
+}
+    `;
 export const FaceDataFragmentDoc = `
     fragment FaceData on Face {
   id
@@ -2706,21 +2744,10 @@ export const useOneImageQuery = <
 export const HomepageDocument = `
     query Homepage($take: Int!, $skip: Int!) {
   images(orderBy: {createdAt: desc}, take: $take, skip: $skip) {
-    id
-    url
-    rawUrl
-    aspectRatio
-    uploadedBy {
-      ...UserData
-    }
-    appearances {
-      ...AppearanceData
-    }
-    createdAt
+    ...GridImage
   }
 }
-    ${UserDataFragmentDoc}
-${AppearanceDataFragmentDoc}`;
+    ${GridImageFragmentDoc}`;
 export const useHomepageQuery = <
       TData = HomepageQuery,
       TError = unknown
@@ -2737,13 +2764,13 @@ export const MeDocument = `
     query Me {
   me {
     ...UserData
-    images {
-      ...ImageData
+    images(orderBy: {createdAt: asc}) {
+      ...GridImage
     }
   }
 }
     ${UserDataFragmentDoc}
-${ImageDataFragmentDoc}`;
+${GridImageFragmentDoc}`;
 export const useMeQuery = <
       TData = MeQuery,
       TError = unknown
@@ -2794,10 +2821,10 @@ export const useAddAppearanceMutation = <
 export const RemoveAppearanceDocument = `
     mutation RemoveAppearance($appearanceId: Int!) {
   appearance: removeAppearance(appearanceId: $appearanceId) {
-    ...AppearanceWithFaces
+    id
   }
 }
-    ${AppearanceWithFacesFragmentDoc}`;
+    `;
 export const useRemoveAppearanceMutation = <
       TError = unknown,
       TContext = unknown

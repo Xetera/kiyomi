@@ -1770,6 +1770,7 @@ export type Query = {
   image?: Maybe<Image>;
   images: Array<Image>;
   me?: Maybe<User>;
+  people: Array<Person>;
   searchPerson: Array<Person>;
   user?: Maybe<User>;
 };
@@ -1786,6 +1787,14 @@ export type QueryImagesArgs = {
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
+};
+
+
+export type QueryPeopleArgs = {
+  cursor?: Maybe<PersonWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+  where?: Maybe<PersonWhereInput>;
 };
 
 
@@ -2132,6 +2141,7 @@ export type User = {
 
 export type UserImagesArgs = {
   cursor?: Maybe<ImageWhereUniqueInput>;
+  orderBy?: Maybe<Array<ImageOrderByInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;

@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { RiSearchLine } from "react-icons/ri";
 import { wrapRequest } from "@/lib/data-fetching";
+import ImageGrid from "@/components/image-grid";
 
 function getKey(index: number, prevData: any) {
   if (!index) {
@@ -93,7 +94,7 @@ export default function Home() {
               <Input
                 placeholder="Search for an image"
                 color="white"
-                background="black"
+                background="trueGray.900"
                 borderColor="rgb(2, 3, 4)"
               />
             </InputGroup>
@@ -109,26 +110,7 @@ export default function Home() {
           px={5}
           maxWidth="7xl"
         >
-          <Grid
-            gap={2}
-            gridAutoFlow="dense"
-            gridTemplateColumns={[
-              "repeat(auto-fit, minmax(150px, 1fr))",
-              "repeat(auto-fill, minmax(220px, 1fr))",
-            ]}
-          >
-            {data?.images.map((image) => (
-              <Box
-                maxHeight="385px"
-                key={image.id}
-                {...(image.aspectRatio > 1.5
-                  ? { gridColumn: "auto / span 2" }
-                  : {})}
-              >
-                <ImageGridElement image={image} />
-              </Box>
-            ))}
-          </Grid>
+          {data && <ImageGrid images={data.images} />}
         </Box>
       </Box>
     </>

@@ -26,6 +26,10 @@ export interface NexusGenInputs {
     none?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
     some?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
   }
+  AliasPersonAliasCompoundUniqueInput: { // input type
+    name: string; // String!
+    personId: number; // Int!
+  }
   AliasWhereInput: { // input type
     AND?: NexusGenInputs['AliasWhereInput'][] | null; // [AliasWhereInput!]
     NOT?: NexusGenInputs['AliasWhereInput'][] | null; // [AliasWhereInput!]
@@ -40,6 +44,7 @@ export interface NexusGenInputs {
   }
   AliasWhereUniqueInput: { // input type
     id?: number | null; // Int
+    personAlias?: NexusGenInputs['AliasPersonAliasCompoundUniqueInput'] | null; // AliasPersonAliasCompoundUniqueInput
   }
   AppearanceAppearanceCompoundUniqueInput: { // input type
     imageId: number; // Int!
@@ -766,6 +771,7 @@ export interface NexusGenArgTypes {
   User: {
     images: { // args
       cursor?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+      orderBy?: NexusGenInputs['ImageOrderByInput'][] | null; // [ImageOrderByInput!]
       skip?: number | null; // Int
       take?: number | null; // Int
       where?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput

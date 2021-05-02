@@ -1,15 +1,5 @@
 query Homepage($take: Int!, $skip: Int!) {
   images(orderBy: { createdAt: desc }, take: $take, skip: $skip) {
-    id
-    url
-    rawUrl
-    aspectRatio
-    uploadedBy {
-      ...UserData
-    }
-    appearances {
-      ...AppearanceData
-    }
-    createdAt
+    ...GridImage
   }
 }

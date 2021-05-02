@@ -51,6 +51,11 @@ input AliasListRelationFilter {
   some: AliasWhereInput
 }
 
+input AliasPersonAliasCompoundUniqueInput {
+  name: String!
+  personId: Int!
+}
+
 input AliasScalarWhereInput {
   AND: [AliasScalarWhereInput!]
   NOT: [AliasScalarWhereInput!]
@@ -141,6 +146,7 @@ input AliasWhereInput {
 
 input AliasWhereUniqueInput {
   id: Int
+  personAlias: AliasPersonAliasCompoundUniqueInput
 }
 
 type Appearance {
@@ -1692,6 +1698,7 @@ type Query {
   image(slug: String!): Image
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
+  people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   searchPerson(query: String!): [Person!]!
   user(id: Int): User
 }
@@ -2019,7 +2026,7 @@ type User {
   avatar: String
   bot: Boolean!
   id: Int!
-  images(cursor: ImageWhereUniqueInput, skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
   roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
 }

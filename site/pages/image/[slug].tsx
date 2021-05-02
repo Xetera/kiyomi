@@ -71,9 +71,8 @@ const Image = () => {
               style={{
                 ...(image.width! < 1000 ? { filter: "blur(2px)" } : {}),
                 boxShadow: "inset 0 0 30px 15px #212121",
-                zIndex: -1,
-                WebkitMaskImage:
-                  "linear-gradient(to top, transparent 2%, black 73%)",
+                // zIndex: -1,
+                // background: "linear-gradient(to top, transparent, black)",
               }}
               className="absolute w-full opacity-[0.05] max-h-full object-cover object-center"
             />
@@ -86,10 +85,10 @@ const Image = () => {
                     {image.caption}
                   </h1>
                 )}
-                <ImageDisplay onEdit={() => setEditOpen(true)} />
+                <ImageDisplay />
               </div>
-              <div className="overflow-hidden h-[min-content] min-w-[250px]">
-                <ImageSidebar />
+              <div className="h-[min-content] min-w-[250px]">
+                <ImageSidebar onEdit={() => setEditOpen(true)} />
               </div>
             </article>
           </div>

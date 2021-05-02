@@ -23,7 +23,7 @@ mutation AddAppearance($imageId: Int!, $personId: Int!) {
 
 mutation RemoveAppearance($appearanceId: Int!) {
   appearance: removeAppearance(appearanceId: $appearanceId) {
-    ...AppearanceWithFaces
+    id
   }
 }
 

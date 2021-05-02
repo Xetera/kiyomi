@@ -17,3 +17,21 @@ fragment ImageData on Image {
     name
   }
 }
+
+fragment GridImage on Image {
+  id
+  url
+  rawUrl
+  aspectRatio
+  uploadedBy {
+    id
+    name
+  }
+  appearances {
+    id
+    person {
+      name
+    }
+  }
+  createdAt
+}

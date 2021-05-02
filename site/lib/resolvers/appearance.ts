@@ -89,9 +89,10 @@ export const Mutation = mutationField((t) => {
         throw Error("User not logged in");
       }
       const appearance = await prisma.appearance.delete({
+        include: { faces: true },
         where: { id: args.appearanceId },
       });
-      return appearance[0];
+      return appearance;
     },
   });
 });

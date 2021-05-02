@@ -13,6 +13,7 @@ export const User = objectType({
       .bot()
       .images({
         pagination: true,
+        ordering: true,
         filtering: true,
         async resolve(root, { where, ...args }, ctx, info, resolver) {
           const MAX_IMAGES_PAGE = 100;

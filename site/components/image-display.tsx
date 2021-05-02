@@ -64,7 +64,7 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
   );
 }
 
-export default function ImageDisplay({ onEdit }) {
+export default function ImageDisplay() {
   const image = React.useContext(ImageContext);
   const imageRef = React.useRef<HTMLImageElement | null>();
   const parentRef = React.useRef<HTMLDivElement | null>();
@@ -260,9 +260,6 @@ export default function ImageDisplay({ onEdit }) {
                 </p>
               )}
             </Flex>
-            <Button onClick={onEdit} size="sm">
-              Edit Faces
-            </Button>
           </Flex>
           <CascadeChildren className="grid faces-grid flex-row gap-4">
             {image.unknownFaces?.map((face) => {

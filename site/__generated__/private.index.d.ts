@@ -56,6 +56,10 @@ export interface NexusGenInputs {
     none?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
     some?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
   }
+  AliasPersonAliasCompoundUniqueInput: { // input type
+    name: string; // String!
+    personId: number; // Int!
+  }
   AliasScalarWhereInput: { // input type
     AND?: NexusGenInputs['AliasScalarWhereInput'][] | null; // [AliasScalarWhereInput!]
     NOT?: NexusGenInputs['AliasScalarWhereInput'][] | null; // [AliasScalarWhereInput!]
@@ -135,6 +139,7 @@ export interface NexusGenInputs {
   }
   AliasWhereUniqueInput: { // input type
     id?: number | null; // Int
+    personAlias?: NexusGenInputs['AliasPersonAliasCompoundUniqueInput'] | null; // AliasPersonAliasCompoundUniqueInput
   }
   AppearanceAppearanceCompoundUniqueInput: { // input type
     imageId: number; // Int!
@@ -1974,6 +1979,7 @@ export interface NexusGenFieldTypes {
     image: NexusGenRootTypes['Image'] | null; // Image
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     me: NexusGenRootTypes['User'] | null; // User
+    people: NexusGenRootTypes['Person'][]; // [Person!]!
     searchPerson: NexusGenRootTypes['Person'][]; // [Person!]!
     user: NexusGenRootTypes['User'] | null; // User
   }
@@ -2077,6 +2083,7 @@ export interface NexusGenFieldTypeNames {
     image: 'Image'
     images: 'Image'
     me: 'User'
+    people: 'Person'
     searchPerson: 'Person'
     user: 'User'
   }
@@ -2175,6 +2182,12 @@ export interface NexusGenArgTypes {
       take?: number | null; // Int
       where?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     }
+    people: { // args
+      cursor?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+      where?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    }
     searchPerson: { // args
       query: string; // String!
     }
@@ -2185,6 +2198,7 @@ export interface NexusGenArgTypes {
   User: {
     images: { // args
       cursor?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+      orderBy?: NexusGenInputs['ImageOrderByInput'][] | null; // [ImageOrderByInput!]
       skip?: number | null; // Int
       take?: number | null; // Int
       where?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
