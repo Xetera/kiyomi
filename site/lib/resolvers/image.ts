@@ -12,7 +12,7 @@ import {
 import { hasRole, Role } from "../permissions";
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client";
 import { Image as ImageType } from "@prisma/client"
-import { imgproxy } from "../file";
+import { imgproxy } from "../imgproxy";
 
 export const Thumbnail = objectType({
   name: "Thumbnail",

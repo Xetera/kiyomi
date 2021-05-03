@@ -173,9 +173,3 @@ export async function convertImage(
   }
   return convertWebp(buffer);
 }
-
-export const imgproxy = new ImgProxy({
-  key: process.env.IMGPROXY_KEY,
-  salt: process.env.IMGPROXY_SALT,
-  url: process.env.IMGPROXY_URL
-});

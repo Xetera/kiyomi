@@ -1,3 +1,4 @@
+quality: 90
 ingress:
   enabled: true
   annotations:

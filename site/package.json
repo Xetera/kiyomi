@@ -25,6 +25,7 @@
     "aws-sdk": "^2.815.0",
     "babel-plugin-superjson-next": "^0.2.3",
     "classnames": "^2.2.6",
+    "create-hmac": "^1.1.7",
     "date-fns": "^2.16.1",
     "fluent-ffmpeg": "^2.1.2",
     "framer-motion": "^4",
