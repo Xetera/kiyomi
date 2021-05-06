@@ -3,14 +3,20 @@ import React from "react";
 import { Palette } from "./palette-color";
 import { Tags } from "./tags";
 import { CascadeChildren } from "./animations/cascade-children";
-import { RiQuestionLine, RiScan2Line, RiUser3Fill } from "react-icons/ri";
+import {
+  RiHeart2Line,
+  RiQuestionLine,
+  RiScan2Line,
+  RiUser3Fill,
+} from "react-icons/ri";
 import { format } from "date-fns";
 import { User } from "./user";
 import { ImageContext } from "@/models/contexts";
-import { Heading, Text } from "@chakra-ui/layout";
+import { Box, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-import { Grid } from "@chakra-ui/react";
+import { Grid, Spinner } from "@chakra-ui/react";
 import { useSession } from "next-auth/client";
+import { useToggleLikeMutation } from "@/__generated__/graphql";
 
 function SidebarSection({ title, children }) {
   return (
@@ -38,10 +44,18 @@ export type ImageSidebarProps = {
 
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const image = React.useContext(ImageContext);
+  const { data, mutate, isLoading } = useToggleLikeMutation();
   const [session] = useSession();
   if (!image) {
     return null;
   }
+  function toggleLike() {
+    if (!image) {
+      return;
+    }
+    mutate({ id: image.id });
+  }
+  const liked = data?.toggleLike.liked ?? image.liked;
   const uploadDate = new Date(image.createdAt);
   return (
     <aside className="align-start text-sm rounded">
@@ -104,6 +118,24 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         <div>
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
+        <Box>
+          {session && (
+            <Button
+              leftIcon={<RiHeart2Line />}
+              background="rose.500"
+              color="white"
+              size="sm"
+              width="100%"
+              _hover={{
+                background: "rose.400",
+              }}
+              onClick={toggleLike}
+            >
+              {isLoading && <Spinner />}
+              {liked ? "Unlike" : "Like"}
+            </Button>
+          )}
+        </Box>
         <Heading as="h2" size="sm" color="trueGray.300">
           Admin Controls
         </Heading>

@@ -556,6 +556,7 @@ export interface NexusGenFieldTypes {
     height: number; // Int!
     id: number; // Int!
     isNsfw: boolean; // Boolean!
+    liked: boolean | null; // Boolean
     mimetype: NexusGenEnums['MimeType']; // MimeType!
     pHash: string | null; // String
     palette: number[]; // [Int!]!
@@ -576,6 +577,7 @@ export interface NexusGenFieldTypes {
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    toggleLike: NexusGenRootTypes['Image']; // Image!
     unlinkFace: number; // Int!
   }
   Person: { // field return type
@@ -661,6 +663,7 @@ export interface NexusGenFieldTypeNames {
     height: 'Int'
     id: 'Int'
     isNsfw: 'Boolean'
+    liked: 'Boolean'
     mimetype: 'MimeType'
     pHash: 'String'
     palette: 'Int'
@@ -681,6 +684,7 @@ export interface NexusGenFieldTypeNames {
     addAppearance: 'Appearance'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
+    toggleLike: 'Image'
     unlinkFace: 'Int'
   }
   Person: { // field return type name
@@ -754,6 +758,9 @@ export interface NexusGenArgTypes {
     }
     removeAppearance: { // args
       appearanceId: number; // Int!
+    }
+    toggleLike: { // args
+      imageId: number; // Int!
     }
     unlinkFace: { // args
       appearanceId: number; // Int!

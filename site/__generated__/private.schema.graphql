@@ -782,6 +782,9 @@ type Image {
   """( ͡° ͜ʖ ͡°)"""
   isNsfw: Boolean!
 
+  """False if not logged in"""
+  liked: Boolean
+
   """The IANA media type of the image."""
   mimetype: MimeType!
 
@@ -1317,6 +1320,7 @@ type Mutation {
 
   """Scan image for faces asynchronously. Only available to admin accounts"""
   scanFaces(slug: String!): Image
+  toggleLike(imageId: Int!): Image!
 
   """
   Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data

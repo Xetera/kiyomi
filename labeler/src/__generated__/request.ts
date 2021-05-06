@@ -800,6 +800,8 @@ export type Image = {
   id: Scalars['Int'];
   /** ( ͡° ͜ʖ ͡°) */
   isNsfw: Scalars['Boolean'];
+  /** False if not logged in */
+  liked?: Maybe<Scalars['Boolean']>;
   /** The IANA media type of the image. */
   mimetype: MimeType;
   /** Block hash of the image, useful for doing reverse search using hamming distance. */
@@ -1332,6 +1334,7 @@ export type Mutation = {
   removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
+  toggleLike: Image;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
   upsertOnePerson: Person;
@@ -1373,6 +1376,11 @@ export type MutationRemoveAppearanceArgs = {
 
 export type MutationScanFacesArgs = {
   slug: Scalars['String'];
+};
+
+
+export type MutationToggleLikeArgs = {
+  imageId: Scalars['Int'];
 };
 
 

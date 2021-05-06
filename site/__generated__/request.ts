@@ -800,6 +800,8 @@ export type Image = {
   id: Scalars['Int'];
   /** ( ͡° ͜ʖ ͡°) */
   isNsfw: Scalars['Boolean'];
+  /** False if not logged in */
+  liked?: Maybe<Scalars['Boolean']>;
   /** The IANA media type of the image. */
   mimetype: MimeType;
   /** Block hash of the image, useful for doing reverse search using hamming distance. */
@@ -1332,6 +1334,7 @@ export type Mutation = {
   removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
+  toggleLike: Image;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
   upsertOnePerson: Person;
@@ -1373,6 +1376,11 @@ export type MutationRemoveAppearanceArgs = {
 
 export type MutationScanFacesArgs = {
   slug: Scalars['String'];
+};
+
+
+export type MutationToggleLikeArgs = {
+  imageId: Scalars['Int'];
 };
 
 
@@ -2461,21 +2469,6 @@ export type GridImageFragment = (
   )> }
 );
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = (
-  { __typename?: 'Query' }
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & { images: Array<(
-      { __typename?: 'Image' }
-      & GridImageFragment
-    )> }
-    & UserDataFragment
-  )> }
-);
-
 export type SearchPersonQueryVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -2575,6 +2568,35 @@ export type GetUploadResultQuery = (
     )> }
     & ImageDataFragment
   )> }
+);
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & GridImageFragment
+    )> }
+    & UserDataFragment
+  )> }
+);
+
+export type ToggleLikeMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type ToggleLikeMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleLike: (
+    { __typename?: 'Image' }
+    & Pick<Image, 'liked'>
+    & ImageDataFragment
+  ) }
 );
 
 export type UserDataFragment = (
@@ -2699,17 +2721,6 @@ export const HomepageDocument = gql`
   }
 }
     ${GridImageFragmentDoc}`;
-export const MeDocument = gql`
-    query Me {
-  me {
-    ...UserData
-    images(orderBy: {createdAt: asc}) {
-      ...GridImage
-    }
-  }
-}
-    ${UserDataFragmentDoc}
-${GridImageFragmentDoc}`;
 export const SearchPersonDocument = gql`
     query SearchPerson($name: String!) {
   searchPerson(query: $name) {
@@ -2762,6 +2773,25 @@ export const GetUploadResultDocument = gql`
 }
     ${FaceDataFragmentDoc}
 ${ImageDataFragmentDoc}`;
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...UserData
+    images(orderBy: {createdAt: asc}) {
+      ...GridImage
+    }
+  }
+}
+    ${UserDataFragmentDoc}
+${GridImageFragmentDoc}`;
+export const ToggleLikeDocument = gql`
+    mutation toggleLike($id: Int!) {
+  toggleLike(imageId: $id) {
+    ...ImageData
+    liked
+  }
+}
+    ${ImageDataFragmentDoc}`;
 export const UpsertPersonDocument = gql`
     mutation upsertPerson($where: PersonWhereUniqueInput!, $update: PersonUpdateInput!, $create: PersonCreateInput!) {
   upsertOnePerson(where: $where, update: $update, create: $create) {
@@ -2791,9 +2821,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Homepage(variables: HomepageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<HomepageQuery> {
       return withWrapper(() => client.request<HomepageQuery>(HomepageDocument, variables, requestHeaders));
     },
-    Me(variables?: MeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MeQuery> {
-      return withWrapper(() => client.request<MeQuery>(MeDocument, variables, requestHeaders));
-    },
     SearchPerson(variables: SearchPersonQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchPersonQuery> {
       return withWrapper(() => client.request<SearchPersonQuery>(SearchPersonDocument, variables, requestHeaders));
     },
@@ -2811,6 +2838,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getUploadResult(variables: GetUploadResultQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUploadResultQuery> {
       return withWrapper(() => client.request<GetUploadResultQuery>(GetUploadResultDocument, variables, requestHeaders));
+    },
+    Me(variables?: MeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MeQuery> {
+      return withWrapper(() => client.request<MeQuery>(MeDocument, variables, requestHeaders));
+    },
+    toggleLike(variables: ToggleLikeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ToggleLikeMutation> {
+      return withWrapper(() => client.request<ToggleLikeMutation>(ToggleLikeDocument, variables, requestHeaders));
     },
     upsertPerson(variables: UpsertPersonMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertPersonMutation> {
       return withWrapper(() => client.request<UpsertPersonMutation>(UpsertPersonDocument, variables, requestHeaders));

@@ -119,6 +119,21 @@ export const Image = objectType({
         return p.width / p.height;
       }
     })
+    t.field("liked", {
+      type: "Boolean",
+      description: "False if not logged in",
+      resolve(image, _, { prisma, user }) {
+        if (!user) return false;
+        return prisma.imageLike.findUnique({
+          where: {
+            likedImage: {
+              userId: user.id,
+              imageId: image.id
+            }
+          }
+        }).then(Boolean)
+      }
+    })
     t.field("unknownFaces", {
       type: nonNull(list(nonNull("Face"))),
       async resolve(image, _args, { prisma }) {
@@ -177,6 +192,38 @@ export const Query = queryField((t) => {
     },
   });
 });
+
+export const Mutation = mutationField(t => {
+  t.field("toggleLike", {
+    type: nonNull("Image"),
+    args: {
+      imageId: nonNull("Int")
+    },
+    async authorize(_, { }, { user }) {
+      return Boolean(user);
+    },
+    async resolve(_, { imageId }, { prisma, user }) {
+      const likedImage = { userId: user!.id, imageId }
+      const exists = await prisma.imageLike.findUnique({
+        select: { id: true },
+        where: { likedImage }
+      })
+      if (exists) {
+        const result = await prisma.imageLike.delete({
+          where: { likedImage },
+          include: { image: true }
+        })
+        return result.image
+      } else {
+        const result = await prisma.imageLike.create({
+          data: likedImage,
+          include: { image: true }
+        })
+        return result.image
+      }
+    }
+  })
+})
 
 export const PrivateFaceInput = inputObjectType({
   name: "FaceInput",
@@ -339,7 +386,7 @@ export const PrivateMutation = mutationField((t) => {
           }
         },
       });
-      console.log({ role })
+
       return Boolean(role)
     },
     async resolve(_root, { slug }, { prisma, amqp }) {
@@ -359,8 +406,4 @@ export const PrivateMutation = mutationField((t) => {
       return image;
     },
   });
-  // t.nonNull.list.field("similarImages", {
-  //   type: "Image",
-  //   resolve(t) {},
-  // });
 });

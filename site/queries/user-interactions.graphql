@@ -6,3 +6,10 @@ query Me {
     }
   }
 }
+
+mutation toggleLike($id: Int!) {
+  toggleLike(imageId: $id) {
+    ...ImageData
+    liked
+  }
+}

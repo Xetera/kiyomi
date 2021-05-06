@@ -817,6 +817,8 @@ export type Image = {
   id: Scalars['Int'];
   /** ( ͡° ͜ʖ ͡°) */
   isNsfw: Scalars['Boolean'];
+  /** False if not logged in */
+  liked?: Maybe<Scalars['Boolean']>;
   /** The IANA media type of the image. */
   mimetype: MimeType;
   /** Block hash of the image, useful for doing reverse search using hamming distance. */
@@ -1349,6 +1351,7 @@ export type Mutation = {
   removeAppearance: Appearance;
   /** Scan image for faces asynchronously. Only available to admin accounts */
   scanFaces?: Maybe<Image>;
+  toggleLike: Image;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
   upsertOnePerson: Person;
@@ -1390,6 +1393,11 @@ export type MutationRemoveAppearanceArgs = {
 
 export type MutationScanFacesArgs = {
   slug: Scalars['String'];
+};
+
+
+export type MutationToggleLikeArgs = {
+  imageId: Scalars['Int'];
 };
 
 
@@ -2431,7 +2439,7 @@ export type OneImageQuery = (
   { __typename?: 'Query' }
   & { image?: Maybe<(
     { __typename?: 'Image' }
-    & Pick<Image, 'faceScanDate'>
+    & Pick<Image, 'liked' | 'faceScanDate'>
     & { unknownFaces: Array<(
       { __typename?: 'Face' }
       & { appearance?: Maybe<(
@@ -2510,21 +2518,6 @@ export type GridImageFragment = (
       { __typename?: 'Person' }
       & Pick<Person, 'name'>
     ) }
-  )> }
-);
-
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = (
-  { __typename?: 'Query' }
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & { images: Array<(
-      { __typename?: 'Image' }
-      & GridImageFragment
-    )> }
-    & UserDataFragment
   )> }
 );
 
@@ -2627,6 +2620,35 @@ export type GetUploadResultQuery = (
     )> }
     & ImageDataFragment
   )> }
+);
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & GridImageFragment
+    )> }
+    & UserDataFragment
+  )> }
+);
+
+export type ToggleLikeMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type ToggleLikeMutation = (
+  { __typename?: 'Mutation' }
+  & { toggleLike: (
+    { __typename?: 'Image' }
+    & Pick<Image, 'liked'>
+    & ImageDataFragment
+  ) }
 );
 
 export type UserDataFragment = (
@@ -2733,6 +2755,7 @@ export const OneImageDocument = `
         ...FaceData
       }
     }
+    liked
     uploadedBy {
       ...UserData
     }
@@ -2773,29 +2796,6 @@ export const useHomepageQuery = <
     useQuery<HomepageQuery, TError, TData>(
       ['Homepage', variables],
       fetcher<HomepageQuery, HomepageQueryVariables>(HomepageDocument, variables),
-      options
-    );
-export const MeDocument = `
-    query Me {
-  me {
-    ...UserData
-    images(orderBy: {createdAt: asc}) {
-      ...GridImage
-    }
-  }
-}
-    ${UserDataFragmentDoc}
-${GridImageFragmentDoc}`;
-export const useMeQuery = <
-      TData = MeQuery,
-      TError = unknown
-    >(
-      variables?: MeQueryVariables, 
-      options?: UseQueryOptions<MeQuery, TError, TData>
-    ) => 
-    useQuery<MeQuery, TError, TData>(
-      ['Me', variables],
-      fetcher<MeQuery, MeQueryVariables>(MeDocument, variables),
       options
     );
 export const SearchPersonDocument = `
@@ -2904,6 +2904,45 @@ export const useGetUploadResultQuery = <
     useQuery<GetUploadResultQuery, TError, TData>(
       ['getUploadResult', variables],
       fetcher<GetUploadResultQuery, GetUploadResultQueryVariables>(GetUploadResultDocument, variables),
+      options
+    );
+export const MeDocument = `
+    query Me {
+  me {
+    ...UserData
+    images(orderBy: {createdAt: asc}) {
+      ...GridImage
+    }
+  }
+}
+    ${UserDataFragmentDoc}
+${GridImageFragmentDoc}`;
+export const useMeQuery = <
+      TData = MeQuery,
+      TError = unknown
+    >(
+      variables?: MeQueryVariables, 
+      options?: UseQueryOptions<MeQuery, TError, TData>
+    ) => 
+    useQuery<MeQuery, TError, TData>(
+      ['Me', variables],
+      fetcher<MeQuery, MeQueryVariables>(MeDocument, variables),
+      options
+    );
+export const ToggleLikeDocument = `
+    mutation toggleLike($id: Int!) {
+  toggleLike(imageId: $id) {
+    ...ImageData
+    liked
+  }
+}
+    ${ImageDataFragmentDoc}`;
+export const useToggleLikeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ToggleLikeMutation, TError, ToggleLikeMutationVariables, TContext>) => 
+    useMutation<ToggleLikeMutation, TError, ToggleLikeMutationVariables, TContext>(
+      (variables?: ToggleLikeMutationVariables) => fetcher<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, variables)(),
       options
     );
 export { fetcher }

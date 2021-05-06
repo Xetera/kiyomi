@@ -1947,6 +1947,7 @@ export interface NexusGenFieldTypes {
     height: number; // Int!
     id: number; // Int!
     isNsfw: boolean; // Boolean!
+    liked: boolean | null; // Boolean
     mimetype: NexusGenEnums['MimeType']; // MimeType!
     pHash: string | null; // String
     palette: number[]; // [Int!]!
@@ -1970,6 +1971,7 @@ export interface NexusGenFieldTypes {
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     scanFaces: NexusGenRootTypes['Image'] | null; // Image
+    toggleLike: NexusGenRootTypes['Image']; // Image!
     unlinkFace: number; // Int!
     upsertOnePerson: NexusGenRootTypes['Person']; // Person!
   }
@@ -2057,6 +2059,7 @@ export interface NexusGenFieldTypeNames {
     height: 'Int'
     id: 'Int'
     isNsfw: 'Boolean'
+    liked: 'Boolean'
     mimetype: 'MimeType'
     pHash: 'String'
     palette: 'Int'
@@ -2080,6 +2083,7 @@ export interface NexusGenFieldTypeNames {
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
     scanFaces: 'Image'
+    toggleLike: 'Image'
     unlinkFace: 'Int'
     upsertOnePerson: 'Person'
   }
@@ -2170,6 +2174,9 @@ export interface NexusGenArgTypes {
     }
     scanFaces: { // args
       slug: string; // String!
+    }
+    toggleLike: { // args
+      imageId: number; // Int!
     }
     unlinkFace: { // args
       appearanceId: number; // Int!
