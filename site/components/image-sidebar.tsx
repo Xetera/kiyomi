@@ -4,19 +4,24 @@ import { Palette } from "./palette-color";
 import { Tags } from "./tags";
 import { CascadeChildren } from "./animations/cascade-children";
 import {
+  RiEmotionSadFill,
   RiHeart2Line,
+  RiHeart3Line,
+  RiHeartAddFill,
   RiQuestionLine,
   RiScan2Line,
   RiUser3Fill,
+  RiUserHeartFill,
 } from "react-icons/ri";
 import { format } from "date-fns";
 import { User } from "./user";
 import { ImageContext } from "@/models/contexts";
 import { Box, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-import { Grid, Spinner } from "@chakra-ui/react";
+import { Grid, Spinner, useToast, UseToastOptions } from "@chakra-ui/react";
 import { useSession } from "next-auth/client";
 import { useToggleLikeMutation } from "@/__generated__/graphql";
+import QueueButton from "./queue-button";
 
 function SidebarSection({ title, children }) {
   return (
@@ -43,6 +48,7 @@ export type ImageSidebarProps = {
 };
 
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
+  const toast = useToast();
   const image = React.useContext(ImageContext);
   const { data, mutate, isLoading } = useToggleLikeMutation();
   const [session] = useSession();
@@ -52,6 +58,23 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   function toggleLike() {
     if (!image) {
       return;
+    }
+    const toastProps: UseToastOptions = {
+      variant: "solid",
+      position: "bottom-right",
+    };
+    if (liked) {
+      toast({
+        ...toastProps,
+        status: "info",
+        title: "You unliked this image",
+      });
+    } else {
+      toast({
+        ...toastProps,
+        status: "success",
+        title: "You liked this image",
+      });
     }
     mutate({ id: image.id });
   }
@@ -119,22 +142,17 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
         <Box>
-          {session && (
-            <Button
-              leftIcon={<RiHeart2Line />}
-              background="rose.500"
-              color="white"
-              size="sm"
-              width="100%"
-              _hover={{
-                background: "rose.400",
-              }}
-              onClick={toggleLike}
-            >
-              {isLoading && <Spinner />}
-              {liked ? "Unlike" : "Like"}
-            </Button>
-          )}
+          <Button
+            background={liked ? "rose.500" : "trueGray.400"}
+            color="white"
+            size="sm"
+            _hover={{
+              background: "rose.400",
+            }}
+            onClick={toggleLike}
+          >
+            {isLoading ? <Spinner size="sm" /> : <RiHeartAddFill />}
+          </Button>
         </Box>
         <Heading as="h2" size="sm" color="trueGray.300">
           Admin Controls
@@ -148,9 +166,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           >
             Edit Faces
           </Button>
-          <Button size="sm" leftIcon={<RiScan2Line />} width="100%">
-            Request A {image.faceScanDate ? "Rescan" : "Scan"}
-          </Button>
+          <QueueButton slug={image.slug} scanDate={image.faceScanDate} />
         </Grid>
       </CascadeChildren>
     </aside>

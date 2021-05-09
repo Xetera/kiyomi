@@ -11,18 +11,19 @@ import {
 } from "nexus";
 import { hasRole, Role } from "../permissions";
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client";
-import { Image as ImageType } from "@prisma/client"
+import { Image as ImageType } from "@prisma/client";
 import { imgproxy } from "../imgproxy";
+import { formatDuration, intervalToDuration, sub } from "date-fns";
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
   description: "Preview urls of an image",
   definition(t) {
-    t.nonNull.string("large")
-    t.nonNull.string("medium")
-    t.nonNull.string("small")
-  }
-})
+    t.nonNull.string("large");
+    t.nonNull.string("medium");
+    t.nonNull.string("small");
+  },
+});
 
 export const Image = objectType({
   name: "Image",
@@ -85,14 +86,18 @@ export const Image = objectType({
     t.field("thumbnail", {
       type: nonNull(Thumbnail),
       resolve(img) {
-        const base = imgproxy.image(rawUrl(img)).width(0).resizeType("fill").extension("webp")
+        const base = imgproxy
+          .image(rawUrl(img))
+          .width(0)
+          .resizeType("fill")
+          .extension("webp");
         return {
           small: base.height(350).get(),
           medium: base.height(500).get(),
           large: base.height(900).get(),
-        }
-      }
-    })
+        };
+      },
+    });
     t.field("fileSize", {
       type: nonNull("String"),
       description:
@@ -110,30 +115,32 @@ export const Image = objectType({
     t.nonNull.string("rawUrl", {
       description: "Direct link to the image on the CDN",
       resolve(p) {
-        return rawUrl(p)
+        return rawUrl(p);
       },
     });
     t.nonNull.float("aspectRatio", {
       description: "The aspect ratio of the image",
       resolve(p) {
         return p.width / p.height;
-      }
-    })
+      },
+    });
     t.field("liked", {
       type: "Boolean",
       description: "False if not logged in",
       resolve(image, _, { prisma, user }) {
         if (!user) return false;
-        return prisma.imageLike.findUnique({
-          where: {
-            likedImage: {
-              userId: user.id,
-              imageId: image.id
-            }
-          }
-        }).then(Boolean)
-      }
-    })
+        return prisma.imageLike
+          .findUnique({
+            where: {
+              likedImage: {
+                userId: user.id,
+                imageId: image.id,
+              },
+            },
+          })
+          .then(Boolean);
+      },
+    });
     t.field("unknownFaces", {
       type: nonNull(list(nonNull("Face"))),
       async resolve(image, _args, { prisma }) {
@@ -169,15 +176,20 @@ export const Query = queryField((t) => {
     pagination: true,
     ordering: true,
     resolve(root, args, ctx, info, original) {
-      return original(root, {
-        ...args,
-        where: {
-          ...args.where,
-          public: { equals: true }
-        }
-      }, ctx, info)
-    }
-  })
+      return original(
+        root,
+        {
+          ...args,
+          where: {
+            ...args.where,
+            public: { equals: true },
+          },
+        },
+        ctx,
+        info
+      );
+    },
+  });
   t.field("image", {
     type: "Image",
     description: "Find a single image by its slug.",
@@ -193,37 +205,115 @@ export const Query = queryField((t) => {
   });
 });
 
-export const Mutation = mutationField(t => {
+export const Mutation = mutationField((t) => {
+  t.field("scanFaces", {
+    type: nonNull(QueueInformation),
+    description: "Queue an image to get scanned for faces",
+    args: {
+      slug: nonNull(stringArg()),
+    },
+    async authorize(_, args, { prisma, user }) {
+      if (!user) {
+        return false;
+      }
+      return true;
+      // allowing any logged in user for now
+
+      // const role = await prisma.role.findUnique({
+      //   where: {
+      //     userRole: {
+      //       userId: user.id,
+      //       name: Role.Administrator,
+      //     },
+      //   },
+      // });
+
+      // return Boolean(role);
+    },
+    async resolve(_root, { slug }, { prisma, amqp }) {
+      const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler";
+      if (!amqp) {
+        throw Error("Could not establish AMQP connection");
+      }
+
+      const existingImage = await prisma.image.findUnique({
+        where: {
+          slug,
+        },
+      });
+      if (!existingImage) {
+        throw Error("No such image");
+      }
+      const { faceScanRequestDate, faceScanDate } = existingImage;
+      const minuteThreshold = 30;
+
+      const tooSoon =
+        faceScanRequestDate &&
+        sub(new Date(), { minutes: minuteThreshold }) < faceScanRequestDate;
+
+      const scannedAfterRequest =
+        faceScanDate &&
+        faceScanRequestDate &&
+        faceScanRequestDate > faceScanDate;
+
+      if (tooSoon && !scannedAfterRequest) {
+        const duration = intervalToDuration({
+          start: faceScanRequestDate!,
+          end: new Date(),
+        });
+        const durationString = formatDuration(duration);
+        throw Error(
+          `This image was already queued for scanning ${durationString} ago.`
+        );
+      }
+
+      const channel = await amqp.createChannel();
+      const queueInfo = await channel.assertQueue(queueName);
+      channel.sendToQueue(queueName, Buffer.from(JSON.stringify({ slug })));
+      prisma.image
+        .update({
+          where: { slug },
+          data: { faceScanRequestDate: new Date() },
+        })
+        .catch((err) => {
+          console.error(`Couldn't set face recognition request date`);
+          console.error(err);
+        });
+      return {
+        queueSize: queueInfo.messageCount,
+      };
+    },
+  });
   t.field("toggleLike", {
     type: nonNull("Image"),
     args: {
-      imageId: nonNull("Int")
+      imageId: nonNull("Int"),
     },
-    async authorize(_, { }, { user }) {
+    async authorize(_, {}, { user }) {
       return Boolean(user);
     },
     async resolve(_, { imageId }, { prisma, user }) {
-      const likedImage = { userId: user!.id, imageId }
+      const likedImage = { userId: user!.id, imageId };
       const exists = await prisma.imageLike.findUnique({
         select: { id: true },
-        where: { likedImage }
-      })
+        where: { likedImage },
+      });
       if (exists) {
         const result = await prisma.imageLike.delete({
           where: { likedImage },
-          include: { image: true }
-        })
-        return result.image
+          include: { image: true },
+        });
+        return result.image;
       } else {
         const result = await prisma.imageLike.create({
           data: likedImage,
-          include: { image: true }
-        })
-        return result.image
+          include: { image: true },
+        });
+        return result.image;
       }
-    }
-  })
-})
+    },
+  });
+});
 
 export const PrivateFaceInput = inputObjectType({
   name: "FaceInput",
@@ -234,6 +324,13 @@ export const PrivateFaceInput = inputObjectType({
     t.nonNull.float("height");
     t.nonNull.float("certainty");
     t.nonNull.list.nonNull.float("descriptor");
+  },
+});
+
+export const QueueInformation = objectType({
+  name: "QueueInfo",
+  definition(t) {
+    t.nonNull.int("queueSize");
   },
 });
 
@@ -268,7 +365,15 @@ export const PrivateMutation = mutationField((t) => {
     },
     async resolve(
       _root,
-      { slug, faces, personName, ireneBotId, replacePreviousScan, pHash, palette },
+      {
+        slug,
+        faces,
+        personName,
+        ireneBotId,
+        replacePreviousScan,
+        pHash,
+        palette,
+      },
       { prisma, user }
     ) {
       if (!user) {
@@ -300,8 +405,8 @@ export const PrivateMutation = mutationField((t) => {
       }
       let existingPerson: Person | undefined = existingAppearance?.personId
         ? (await prisma.person.findUnique({
-          where: { ireneBotId: existingAppearance.personId },
-        })) ?? undefined
+            where: { ireneBotId: existingAppearance.personId },
+          })) ?? undefined
         : undefined;
 
       if (faces.length === 1 && personName && !existingPerson) {
@@ -342,7 +447,7 @@ export const PrivateMutation = mutationField((t) => {
           data: {
             faceScanDate: new Date(),
             pHash: pHash,
-            palette
+            palette,
           },
         })
         .catch((err) => {
@@ -363,46 +468,6 @@ export const PrivateMutation = mutationField((t) => {
       if (faces.length > 0) {
         await prisma.$executeRaw`${Prisma.raw(BASE_STRING + templatedString)}`;
       }
-      return image;
-    },
-  });
-  t.field("scanFaces", {
-    type: "Image",
-    description:
-      "Scan image for faces asynchronously. Only available to admin accounts",
-    args: {
-      slug: nonNull(stringArg()),
-    },
-    async authorize(_, args, { prisma, user }) {
-      if (!user) {
-        return false;
-      }
-      // indexed query
-      const role = await prisma.role.findUnique({
-        where: {
-          userRole: {
-            userId: user.id,
-            name: Role.Administrator
-          }
-        },
-      });
-
-      return Boolean(role)
-    },
-    async resolve(_root, { slug }, { prisma, amqp }) {
-      const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler";
-      if (!amqp) {
-        throw Error("Could not establish AMQP connection");
-      }
-
-      const channel = await amqp.createChannel();
-      await channel.assertQueue(queueName);
-      channel.sendToQueue(queueName, Buffer.from(JSON.stringify({ slug })));
-      const image = await prisma.image.findUnique({
-        where: {
-          slug,
-        },
-      });
       return image;
     },
   });

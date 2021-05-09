@@ -268,6 +268,25 @@ type Image {
   width: Int!
 }
 
+input ImageLikeListRelationFilter {
+  every: ImageLikeWhereInput
+  none: ImageLikeWhereInput
+  some: ImageLikeWhereInput
+}
+
+input ImageLikeWhereInput {
+  AND: [ImageLikeWhereInput!]
+  NOT: [ImageLikeWhereInput!]
+  OR: [ImageLikeWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  image: ImageWhereInput
+  imageId: IntFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntFilter
+}
+
 input ImageListRelationFilter {
   every: ImageWhereInput
   none: ImageWhereInput
@@ -279,6 +298,7 @@ input ImageOrderByInput {
   caption: SortOrder
   createdAt: SortOrder
   faceScanDate: SortOrder
+  faceScanRequestDate: SortOrder
   fileName: SortOrder
   hash: SortOrder
   height: SortOrder
@@ -307,6 +327,7 @@ input ImageWhereInput {
   caption: StringNullableFilter
   createdAt: DateTimeFilter
   faceScanDate: DateTimeNullableFilter
+  faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
   fileName: StringNullableFilter
   hash: StringFilter
@@ -314,6 +335,7 @@ input ImageWhereInput {
   id: IntFilter
   ireneBotId: IntNullableFilter
   isNsfw: BoolFilter
+  likes: ImageLikeListRelationFilter
   mimetype: EnumMimeTypeFilter
   pHash: StringNullableFilter
   palette: IntNullableListFilter
@@ -385,6 +407,9 @@ type Mutation {
 
   """Removes an appearance from an image"""
   removeAppearance(appearanceId: Int!): Appearance!
+
+  """Queue an image to get scanned for faces"""
+  scanFaces(slug: String!): QueueInfo!
   toggleLike(imageId: Int!): Image!
 
   """
@@ -549,6 +574,10 @@ enum QueryMode {
   insensitive
 }
 
+type QueueInfo {
+  queueSize: Int!
+}
+
 type Role {
   createdAt: DateTime!
   name: String!
@@ -685,6 +714,7 @@ input UserWhereInput {
   emailVerified: DateTimeNullableFilter
   id: IntFilter
   image: StringNullableFilter
+  imageLikes: ImageLikeListRelationFilter
   images: ImageListRelationFilter
   markedFaces: FaceListRelationFilter
   name: StringNullableFilter

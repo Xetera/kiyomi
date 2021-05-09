@@ -835,6 +835,12 @@ input ImageCreateNestedOneWithoutAppearancesInput {
   create: ImageCreateWithoutAppearancesInput
 }
 
+input ImageCreateNestedOneWithoutLikesInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutLikesInput
+  create: ImageCreateWithoutLikesInput
+}
+
 input ImageCreateNestedOneWithoutTagsInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutTagsInput
@@ -848,6 +854,11 @@ input ImageCreateOrConnectWithoutAppearancesInput {
 
 input ImageCreateOrConnectWithoutFacesInput {
   create: ImageCreateWithoutFacesInput!
+  where: ImageWhereUniqueInput!
+}
+
+input ImageCreateOrConnectWithoutLikesInput {
+  create: ImageCreateWithoutLikesInput!
   where: ImageWhereUniqueInput!
 }
 
@@ -866,12 +877,14 @@ input ImageCreateWithoutAppearancesInput {
   caption: String
   createdAt: DateTime
   faceScanDate: DateTime
+  faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
   hash: String!
   height: Int!
   ireneBotId: Int
   isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
@@ -892,6 +905,35 @@ input ImageCreateWithoutFacesInput {
   caption: String
   createdAt: DateTime
   faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  fileName: String
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutLikesInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
   hash: String!
   height: Int!
@@ -917,12 +959,14 @@ input ImageCreateWithoutTagsInput {
   caption: String
   createdAt: DateTime
   faceScanDate: DateTime
+  faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
   hash: String!
   height: Int!
   ireneBotId: Int
   isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
@@ -942,12 +986,14 @@ input ImageCreateWithoutUserInput {
   caption: String
   createdAt: DateTime
   faceScanDate: DateTime
+  faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
   hash: String!
   height: Int!
   ireneBotId: Int
   isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
@@ -965,6 +1011,155 @@ input ImageCreatepaletteInput {
   set: [Int!]
 }
 
+input ImageLikeCreateNestedManyWithoutImageInput {
+  connect: [ImageLikeWhereUniqueInput!]
+  connectOrCreate: [ImageLikeCreateOrConnectWithoutImageInput!]
+  create: [ImageLikeCreateWithoutImageInput!]
+}
+
+input ImageLikeCreateNestedManyWithoutUserInput {
+  connect: [ImageLikeWhereUniqueInput!]
+  connectOrCreate: [ImageLikeCreateOrConnectWithoutUserInput!]
+  create: [ImageLikeCreateWithoutUserInput!]
+}
+
+input ImageLikeCreateOrConnectWithoutImageInput {
+  create: ImageLikeCreateWithoutImageInput!
+  where: ImageLikeWhereUniqueInput!
+}
+
+input ImageLikeCreateOrConnectWithoutUserInput {
+  create: ImageLikeCreateWithoutUserInput!
+  where: ImageLikeWhereUniqueInput!
+}
+
+input ImageLikeCreateWithoutImageInput {
+  createdAt: DateTime
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutImageLikesInput!
+}
+
+input ImageLikeCreateWithoutUserInput {
+  createdAt: DateTime
+  image: ImageCreateNestedOneWithoutLikesInput!
+  updatedAt: DateTime
+}
+
+input ImageLikeLikedImageCompoundUniqueInput {
+  imageId: Int!
+  userId: Int!
+}
+
+input ImageLikeListRelationFilter {
+  every: ImageLikeWhereInput
+  none: ImageLikeWhereInput
+  some: ImageLikeWhereInput
+}
+
+input ImageLikeScalarWhereInput {
+  AND: [ImageLikeScalarWhereInput!]
+  NOT: [ImageLikeScalarWhereInput!]
+  OR: [ImageLikeScalarWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  imageId: IntFilter
+  updatedAt: DateTimeFilter
+  userId: IntFilter
+}
+
+input ImageLikeUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ImageLikeUpdateManyWithWhereWithoutImageInput {
+  data: ImageLikeUpdateManyMutationInput!
+  where: ImageLikeScalarWhereInput!
+}
+
+input ImageLikeUpdateManyWithWhereWithoutUserInput {
+  data: ImageLikeUpdateManyMutationInput!
+  where: ImageLikeScalarWhereInput!
+}
+
+input ImageLikeUpdateManyWithoutImageInput {
+  connect: [ImageLikeWhereUniqueInput!]
+  connectOrCreate: [ImageLikeCreateOrConnectWithoutImageInput!]
+  create: [ImageLikeCreateWithoutImageInput!]
+  delete: [ImageLikeWhereUniqueInput!]
+  deleteMany: [ImageLikeScalarWhereInput!]
+  disconnect: [ImageLikeWhereUniqueInput!]
+  set: [ImageLikeWhereUniqueInput!]
+  update: [ImageLikeUpdateWithWhereUniqueWithoutImageInput!]
+  updateMany: [ImageLikeUpdateManyWithWhereWithoutImageInput!]
+  upsert: [ImageLikeUpsertWithWhereUniqueWithoutImageInput!]
+}
+
+input ImageLikeUpdateManyWithoutUserInput {
+  connect: [ImageLikeWhereUniqueInput!]
+  connectOrCreate: [ImageLikeCreateOrConnectWithoutUserInput!]
+  create: [ImageLikeCreateWithoutUserInput!]
+  delete: [ImageLikeWhereUniqueInput!]
+  deleteMany: [ImageLikeScalarWhereInput!]
+  disconnect: [ImageLikeWhereUniqueInput!]
+  set: [ImageLikeWhereUniqueInput!]
+  update: [ImageLikeUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [ImageLikeUpdateManyWithWhereWithoutUserInput!]
+  upsert: [ImageLikeUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input ImageLikeUpdateWithWhereUniqueWithoutImageInput {
+  data: ImageLikeUpdateWithoutImageInput!
+  where: ImageLikeWhereUniqueInput!
+}
+
+input ImageLikeUpdateWithWhereUniqueWithoutUserInput {
+  data: ImageLikeUpdateWithoutUserInput!
+  where: ImageLikeWhereUniqueInput!
+}
+
+input ImageLikeUpdateWithoutImageInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneRequiredWithoutImageLikesInput
+}
+
+input ImageLikeUpdateWithoutUserInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  image: ImageUpdateOneRequiredWithoutLikesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ImageLikeUpsertWithWhereUniqueWithoutImageInput {
+  create: ImageLikeCreateWithoutImageInput!
+  update: ImageLikeUpdateWithoutImageInput!
+  where: ImageLikeWhereUniqueInput!
+}
+
+input ImageLikeUpsertWithWhereUniqueWithoutUserInput {
+  create: ImageLikeCreateWithoutUserInput!
+  update: ImageLikeUpdateWithoutUserInput!
+  where: ImageLikeWhereUniqueInput!
+}
+
+input ImageLikeWhereInput {
+  AND: [ImageLikeWhereInput!]
+  NOT: [ImageLikeWhereInput!]
+  OR: [ImageLikeWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  image: ImageWhereInput
+  imageId: IntFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntFilter
+}
+
+input ImageLikeWhereUniqueInput {
+  id: Int
+  likedImage: ImageLikeLikedImageCompoundUniqueInput
+}
+
 input ImageListRelationFilter {
   every: ImageWhereInput
   none: ImageWhereInput
@@ -976,6 +1171,7 @@ input ImageOrderByInput {
   caption: SortOrder
   createdAt: SortOrder
   faceScanDate: SortOrder
+  faceScanRequestDate: SortOrder
   fileName: SortOrder
   hash: SortOrder
   height: SortOrder
@@ -1003,6 +1199,7 @@ input ImageScalarWhereInput {
   caption: StringNullableFilter
   createdAt: DateTimeFilter
   faceScanDate: DateTimeNullableFilter
+  faceScanRequestDate: DateTimeNullableFilter
   fileName: StringNullableFilter
   hash: StringFilter
   height: IntFilter
@@ -1027,6 +1224,7 @@ input ImageUpdateManyMutationInput {
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   fileName: NullableStringFieldUpdateOperationsInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
@@ -1078,6 +1276,14 @@ input ImageUpdateOneRequiredWithoutFacesInput {
   upsert: ImageUpsertWithoutFacesInput
 }
 
+input ImageUpdateOneRequiredWithoutLikesInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutLikesInput
+  create: ImageCreateWithoutLikesInput
+  update: ImageUpdateWithoutLikesInput
+  upsert: ImageUpsertWithoutLikesInput
+}
+
 input ImageUpdateOneRequiredWithoutTagsInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutTagsInput
@@ -1096,12 +1302,14 @@ input ImageUpdateWithoutAppearancesInput {
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
@@ -1122,6 +1330,35 @@ input ImageUpdateWithoutFacesInput {
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutLikesInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
@@ -1147,12 +1384,14 @@ input ImageUpdateWithoutTagsInput {
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
@@ -1172,12 +1411,14 @@ input ImageUpdateWithoutUserInput {
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
@@ -1211,6 +1452,11 @@ input ImageUpsertWithoutFacesInput {
   update: ImageUpdateWithoutFacesInput!
 }
 
+input ImageUpsertWithoutLikesInput {
+  create: ImageCreateWithoutLikesInput!
+  update: ImageUpdateWithoutLikesInput!
+}
+
 input ImageUpsertWithoutTagsInput {
   create: ImageCreateWithoutTagsInput!
   update: ImageUpdateWithoutTagsInput!
@@ -1225,6 +1471,7 @@ input ImageWhereInput {
   caption: StringNullableFilter
   createdAt: DateTimeFilter
   faceScanDate: DateTimeNullableFilter
+  faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
   fileName: StringNullableFilter
   hash: StringFilter
@@ -1232,6 +1479,7 @@ input ImageWhereInput {
   id: IntFilter
   ireneBotId: IntNullableFilter
   isNsfw: BoolFilter
+  likes: ImageLikeListRelationFilter
   mimetype: EnumMimeTypeFilter
   pHash: StringNullableFilter
   palette: IntNullableListFilter
@@ -1318,8 +1566,8 @@ type Mutation {
   """Removes an appearance from an image"""
   removeAppearance(appearanceId: Int!): Appearance!
 
-  """Scan image for faces asynchronously. Only available to admin accounts"""
-  scanFaces(slug: String!): Image
+  """Queue an image to get scanned for faces"""
+  scanFaces(slug: String!): QueueInfo!
   toggleLike(imageId: Int!): Image!
 
   """
@@ -1713,6 +1961,10 @@ enum QueryMode {
   insensitive
 }
 
+type QueueInfo {
+  queueSize: Int!
+}
+
 type Role {
   createdAt: DateTime!
   name: String!
@@ -2049,6 +2301,12 @@ input UserCreateNestedOneWithoutCratedTagsInput {
   create: UserCreateWithoutCratedTagsInput
 }
 
+input UserCreateNestedOneWithoutImageLikesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutImageLikesInput
+  create: UserCreateWithoutImageLikesInput
+}
+
 input UserCreateNestedOneWithoutImagesInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutImagesInput
@@ -2063,6 +2321,11 @@ input UserCreateNestedOneWithoutTaggedAppearancesInput {
 
 input UserCreateOrConnectWithoutCratedTagsInput {
   create: UserCreateWithoutCratedTagsInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutImageLikesInput {
+  create: UserCreateWithoutImageLikesInput!
   where: UserWhereUniqueInput!
 }
 
@@ -2087,6 +2350,23 @@ input UserCreateWithoutCratedTagsInput {
   email: String
   emailVerified: DateTime
   image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  roles: RoleCreateNestedManyWithoutUserInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
+input UserCreateWithoutImageLikesInput {
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  image: String
   images: ImageCreateNestedManyWithoutUserInput
   markedFaces: FaceCreateNestedManyWithoutAddedByInput
   name: String
@@ -2103,6 +2383,7 @@ input UserCreateWithoutImagesInput {
   email: String
   emailVerified: DateTime
   image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   markedFaces: FaceCreateNestedManyWithoutAddedByInput
   name: String
   roles: RoleCreateNestedManyWithoutUserInput
@@ -2118,6 +2399,7 @@ input UserCreateWithoutMarkedFacesInput {
   email: String
   emailVerified: DateTime
   image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   images: ImageCreateNestedManyWithoutUserInput
   name: String
   roles: RoleCreateNestedManyWithoutUserInput
@@ -2133,12 +2415,21 @@ input UserCreateWithoutTaggedAppearancesInput {
   email: String
   emailVerified: DateTime
   image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   images: ImageCreateNestedManyWithoutUserInput
   markedFaces: FaceCreateNestedManyWithoutAddedByInput
   name: String
   roles: RoleCreateNestedManyWithoutUserInput
   token: String
   updatedAt: DateTime
+}
+
+input UserUpdateOneRequiredWithoutImageLikesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutImageLikesInput
+  create: UserCreateWithoutImageLikesInput
+  update: UserUpdateWithoutImageLikesInput
+  upsert: UserUpsertWithoutImageLikesInput
 }
 
 input UserUpdateOneRequiredWithoutTaggedAppearancesInput {
@@ -2185,6 +2476,23 @@ input UserUpdateWithoutCratedTagsInput {
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
   image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  roles: RoleUpdateManyWithoutUserInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserUpdateWithoutImageLikesInput {
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  image: NullableStringFieldUpdateOperationsInput
   images: ImageUpdateManyWithoutUserInput
   markedFaces: FaceUpdateManyWithoutAddedByInput
   name: NullableStringFieldUpdateOperationsInput
@@ -2201,6 +2509,7 @@ input UserUpdateWithoutImagesInput {
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
   image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
   markedFaces: FaceUpdateManyWithoutAddedByInput
   name: NullableStringFieldUpdateOperationsInput
   roles: RoleUpdateManyWithoutUserInput
@@ -2216,6 +2525,7 @@ input UserUpdateWithoutMarkedFacesInput {
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
   image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
   images: ImageUpdateManyWithoutUserInput
   name: NullableStringFieldUpdateOperationsInput
   roles: RoleUpdateManyWithoutUserInput
@@ -2231,6 +2541,7 @@ input UserUpdateWithoutTaggedAppearancesInput {
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
   image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
   images: ImageUpdateManyWithoutUserInput
   markedFaces: FaceUpdateManyWithoutAddedByInput
   name: NullableStringFieldUpdateOperationsInput
@@ -2242,6 +2553,11 @@ input UserUpdateWithoutTaggedAppearancesInput {
 input UserUpsertWithoutCratedTagsInput {
   create: UserCreateWithoutCratedTagsInput!
   update: UserUpdateWithoutCratedTagsInput!
+}
+
+input UserUpsertWithoutImageLikesInput {
+  create: UserCreateWithoutImageLikesInput!
+  update: UserUpdateWithoutImageLikesInput!
 }
 
 input UserUpsertWithoutImagesInput {
@@ -2270,6 +2586,7 @@ input UserWhereInput {
   emailVerified: DateTimeNullableFilter
   id: IntFilter
   image: StringNullableFilter
+  imageLikes: ImageLikeListRelationFilter
   images: ImageListRelationFilter
   markedFaces: FaceListRelationFilter
   name: StringNullableFilter

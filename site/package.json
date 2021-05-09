@@ -8,7 +8,8 @@
     "generate": "prisma generate",
     "codegen": "SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node -P tsconfig.generator.json --transpile-only lib/schema.ts",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "ts-node": "ts-node -r tsconfig-paths/register -P tsconfig.generator.json"
   },
   "dependencies": {
     "@apollo/client": "^3.3.11",
@@ -82,6 +83,7 @@
     "cross-env": "^7.0.3",
     "prisma": "2.19.0",
     "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   }
 }

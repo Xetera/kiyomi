@@ -70,17 +70,6 @@ export function rgbToHsl(r: number, g: number, b: number) {
   return { h, s, l };
 }
 
-export function fetcher(url: string, init?: RequestInit) {
-  return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`, {
-    credentials: "include",
-    ...init,
-  }).then((r) => r.json());
-}
-
-export function useGet<T, K>(url: string, config: ConfigInterface<T, K>) {
-  return useSWR(url, fetcher, config);
-}
-
 export const IMAGES_PER_FETCH = 40;
 
 export type ImagesResponse = {

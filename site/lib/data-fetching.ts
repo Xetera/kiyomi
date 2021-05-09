@@ -1,13 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import { fetcher, PromiseReturnType } from "./shared";
+import { PromiseReturnType } from "./shared";
 import { publicImageFields } from "./transformer";
 import { getSdk } from "@/__generated__/request";
 import { GraphQLClient } from "graphql-request";
-import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from "next";
 import { getSession } from "next-auth/client";
 
 export const client = new GraphQLClient(
-  `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`,
+  `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`
 );
 
 export const sdk = getSdk(client);
@@ -67,32 +71,33 @@ export const getImage = (slug: string, db: PrismaClient) => {
   });
 };
 
-export type ExtraServerSideProps = {
-};
+export type ExtraServerSideProps = {};
 
 export type ServerSideProps = (
-  ctx: ExtraServerSideProps & GetServerSidePropsContext,
+  ctx: ExtraServerSideProps & GetServerSidePropsContext
 ) => ReturnType<GetServerSideProps>;
 
-export function wrapRequest<T>(f: ServerSideProps): GetServerSideProps<T & ExtraServerSideProps> {
+export function wrapRequest<T>(
+  f: ServerSideProps
+): GetServerSideProps<T & ExtraServerSideProps> {
   return async (ctx) => {
-    const { req, res, ...rest } = ctx
+    const { req, res, ...rest } = ctx;
 
-    const session = await getSession(ctx)
-    if (req.url?.startsWith('/_next')) {
+    const session = await getSession(ctx);
+    if (req.url?.startsWith("/_next")) {
       return {
         props: { session },
       };
     }
-    const data: GetServerSidePropsResult<any> = await f({ req, res, ...rest })
+    const data: GetServerSidePropsResult<any> = await f({ req, res, ...rest });
     if (!("props" in data)) {
       // @ts-ignore
-      data.props = {}
+      data.props = {};
     }
     // @ts-ignore
-    data.props.session = session
-    return data
-  }
+    data.props.session = session;
+    return data;
+  };
 }
 
 export type GetImage = PromiseReturnType<typeof getImage>;

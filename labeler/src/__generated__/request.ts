@@ -854,6 +854,12 @@ export type ImageCreateNestedOneWithoutAppearancesInput = {
   create?: Maybe<ImageCreateWithoutAppearancesInput>;
 };
 
+export type ImageCreateNestedOneWithoutLikesInput = {
+  connect?: Maybe<ImageWhereUniqueInput>;
+  connectOrCreate?: Maybe<ImageCreateOrConnectWithoutLikesInput>;
+  create?: Maybe<ImageCreateWithoutLikesInput>;
+};
+
 export type ImageCreateNestedOneWithoutTagsInput = {
   connect?: Maybe<ImageWhereUniqueInput>;
   connectOrCreate?: Maybe<ImageCreateOrConnectWithoutTagsInput>;
@@ -867,6 +873,11 @@ export type ImageCreateOrConnectWithoutAppearancesInput = {
 
 export type ImageCreateOrConnectWithoutFacesInput = {
   create: ImageCreateWithoutFacesInput;
+  where: ImageWhereUniqueInput;
+};
+
+export type ImageCreateOrConnectWithoutLikesInput = {
+  create: ImageCreateWithoutLikesInput;
   where: ImageWhereUniqueInput;
 };
 
@@ -885,12 +896,14 @@ export type ImageCreateWithoutAppearancesInput = {
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
   faces?: Maybe<FaceCreateNestedManyWithoutImageInput>;
   fileName?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   height: Scalars['Int'];
   ireneBotId?: Maybe<Scalars['Int']>;
   isNsfw?: Maybe<Scalars['Boolean']>;
+  likes?: Maybe<ImageLikeCreateNestedManyWithoutImageInput>;
   mimetype: MimeType;
   pHash?: Maybe<Scalars['String']>;
   palette?: Maybe<ImageCreatepaletteInput>;
@@ -911,6 +924,35 @@ export type ImageCreateWithoutFacesInput = {
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
+  fileName?: Maybe<Scalars['String']>;
+  hash: Scalars['String'];
+  height: Scalars['Int'];
+  ireneBotId?: Maybe<Scalars['Int']>;
+  isNsfw?: Maybe<Scalars['Boolean']>;
+  likes?: Maybe<ImageLikeCreateNestedManyWithoutImageInput>;
+  mimetype: MimeType;
+  pHash?: Maybe<Scalars['String']>;
+  palette?: Maybe<ImageCreatepaletteInput>;
+  public?: Maybe<Scalars['Boolean']>;
+  slug: Scalars['String'];
+  source?: Maybe<Scalars['String']>;
+  tags?: Maybe<TagCreateNestedManyWithoutImageInput>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  uploadType: UploadType;
+  user?: Maybe<UserCreateNestedOneWithoutImagesInput>;
+  views?: Maybe<Scalars['Int']>;
+  width: Scalars['Int'];
+};
+
+export type ImageCreateWithoutLikesInput = {
+  appearances?: Maybe<AppearanceCreateNestedManyWithoutImageInput>;
+  bytes?: Maybe<Scalars['Int']>;
+  caption?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
+  faces?: Maybe<FaceCreateNestedManyWithoutImageInput>;
   fileName?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   height: Scalars['Int'];
@@ -936,12 +978,14 @@ export type ImageCreateWithoutTagsInput = {
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
   faces?: Maybe<FaceCreateNestedManyWithoutImageInput>;
   fileName?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   height: Scalars['Int'];
   ireneBotId?: Maybe<Scalars['Int']>;
   isNsfw?: Maybe<Scalars['Boolean']>;
+  likes?: Maybe<ImageLikeCreateNestedManyWithoutImageInput>;
   mimetype: MimeType;
   pHash?: Maybe<Scalars['String']>;
   palette?: Maybe<ImageCreatepaletteInput>;
@@ -961,12 +1005,14 @@ export type ImageCreateWithoutUserInput = {
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
   faces?: Maybe<FaceCreateNestedManyWithoutImageInput>;
   fileName?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   height: Scalars['Int'];
   ireneBotId?: Maybe<Scalars['Int']>;
   isNsfw?: Maybe<Scalars['Boolean']>;
+  likes?: Maybe<ImageLikeCreateNestedManyWithoutImageInput>;
   mimetype: MimeType;
   pHash?: Maybe<Scalars['String']>;
   palette?: Maybe<ImageCreatepaletteInput>;
@@ -984,6 +1030,155 @@ export type ImageCreatepaletteInput = {
   set?: Maybe<Array<Scalars['Int']>>;
 };
 
+export type ImageLikeCreateNestedManyWithoutImageInput = {
+  connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutImageInput>>;
+  create?: Maybe<Array<ImageLikeCreateWithoutImageInput>>;
+};
+
+export type ImageLikeCreateNestedManyWithoutUserInput = {
+  connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutUserInput>>;
+  create?: Maybe<Array<ImageLikeCreateWithoutUserInput>>;
+};
+
+export type ImageLikeCreateOrConnectWithoutImageInput = {
+  create: ImageLikeCreateWithoutImageInput;
+  where: ImageLikeWhereUniqueInput;
+};
+
+export type ImageLikeCreateOrConnectWithoutUserInput = {
+  create: ImageLikeCreateWithoutUserInput;
+  where: ImageLikeWhereUniqueInput;
+};
+
+export type ImageLikeCreateWithoutImageInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user: UserCreateNestedOneWithoutImageLikesInput;
+};
+
+export type ImageLikeCreateWithoutUserInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  image: ImageCreateNestedOneWithoutLikesInput;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type ImageLikeLikedImageCompoundUniqueInput = {
+  imageId: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
+export type ImageLikeListRelationFilter = {
+  every?: Maybe<ImageLikeWhereInput>;
+  none?: Maybe<ImageLikeWhereInput>;
+  some?: Maybe<ImageLikeWhereInput>;
+};
+
+export type ImageLikeScalarWhereInput = {
+  AND?: Maybe<Array<ImageLikeScalarWhereInput>>;
+  NOT?: Maybe<Array<ImageLikeScalarWhereInput>>;
+  OR?: Maybe<Array<ImageLikeScalarWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  imageId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  userId?: Maybe<IntFilter>;
+};
+
+export type ImageLikeUpdateManyMutationInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type ImageLikeUpdateManyWithWhereWithoutImageInput = {
+  data: ImageLikeUpdateManyMutationInput;
+  where: ImageLikeScalarWhereInput;
+};
+
+export type ImageLikeUpdateManyWithWhereWithoutUserInput = {
+  data: ImageLikeUpdateManyMutationInput;
+  where: ImageLikeScalarWhereInput;
+};
+
+export type ImageLikeUpdateManyWithoutImageInput = {
+  connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutImageInput>>;
+  create?: Maybe<Array<ImageLikeCreateWithoutImageInput>>;
+  delete?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  deleteMany?: Maybe<Array<ImageLikeScalarWhereInput>>;
+  disconnect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  set?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  update?: Maybe<Array<ImageLikeUpdateWithWhereUniqueWithoutImageInput>>;
+  updateMany?: Maybe<Array<ImageLikeUpdateManyWithWhereWithoutImageInput>>;
+  upsert?: Maybe<Array<ImageLikeUpsertWithWhereUniqueWithoutImageInput>>;
+};
+
+export type ImageLikeUpdateManyWithoutUserInput = {
+  connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutUserInput>>;
+  create?: Maybe<Array<ImageLikeCreateWithoutUserInput>>;
+  delete?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  deleteMany?: Maybe<Array<ImageLikeScalarWhereInput>>;
+  disconnect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  set?: Maybe<Array<ImageLikeWhereUniqueInput>>;
+  update?: Maybe<Array<ImageLikeUpdateWithWhereUniqueWithoutUserInput>>;
+  updateMany?: Maybe<Array<ImageLikeUpdateManyWithWhereWithoutUserInput>>;
+  upsert?: Maybe<Array<ImageLikeUpsertWithWhereUniqueWithoutUserInput>>;
+};
+
+export type ImageLikeUpdateWithWhereUniqueWithoutImageInput = {
+  data: ImageLikeUpdateWithoutImageInput;
+  where: ImageLikeWhereUniqueInput;
+};
+
+export type ImageLikeUpdateWithWhereUniqueWithoutUserInput = {
+  data: ImageLikeUpdateWithoutUserInput;
+  where: ImageLikeWhereUniqueInput;
+};
+
+export type ImageLikeUpdateWithoutImageInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  user?: Maybe<UserUpdateOneRequiredWithoutImageLikesInput>;
+};
+
+export type ImageLikeUpdateWithoutUserInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  image?: Maybe<ImageUpdateOneRequiredWithoutLikesInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type ImageLikeUpsertWithWhereUniqueWithoutImageInput = {
+  create: ImageLikeCreateWithoutImageInput;
+  update: ImageLikeUpdateWithoutImageInput;
+  where: ImageLikeWhereUniqueInput;
+};
+
+export type ImageLikeUpsertWithWhereUniqueWithoutUserInput = {
+  create: ImageLikeCreateWithoutUserInput;
+  update: ImageLikeUpdateWithoutUserInput;
+  where: ImageLikeWhereUniqueInput;
+};
+
+export type ImageLikeWhereInput = {
+  AND?: Maybe<Array<ImageLikeWhereInput>>;
+  NOT?: Maybe<Array<ImageLikeWhereInput>>;
+  OR?: Maybe<Array<ImageLikeWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  image?: Maybe<ImageWhereInput>;
+  imageId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  user?: Maybe<UserWhereInput>;
+  userId?: Maybe<IntFilter>;
+};
+
+export type ImageLikeWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+  likedImage?: Maybe<ImageLikeLikedImageCompoundUniqueInput>;
+};
+
 export type ImageListRelationFilter = {
   every?: Maybe<ImageWhereInput>;
   none?: Maybe<ImageWhereInput>;
@@ -995,6 +1190,7 @@ export type ImageOrderByInput = {
   caption?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
   faceScanDate?: Maybe<SortOrder>;
+  faceScanRequestDate?: Maybe<SortOrder>;
   fileName?: Maybe<SortOrder>;
   hash?: Maybe<SortOrder>;
   height?: Maybe<SortOrder>;
@@ -1022,6 +1218,7 @@ export type ImageScalarWhereInput = {
   caption?: Maybe<StringNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   faceScanDate?: Maybe<DateTimeNullableFilter>;
+  faceScanRequestDate?: Maybe<DateTimeNullableFilter>;
   fileName?: Maybe<StringNullableFilter>;
   hash?: Maybe<StringFilter>;
   height?: Maybe<IntFilter>;
@@ -1046,6 +1243,7 @@ export type ImageUpdateManyMutationInput = {
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
   hash?: Maybe<StringFieldUpdateOperationsInput>;
   height?: Maybe<IntFieldUpdateOperationsInput>;
@@ -1097,6 +1295,14 @@ export type ImageUpdateOneRequiredWithoutFacesInput = {
   upsert?: Maybe<ImageUpsertWithoutFacesInput>;
 };
 
+export type ImageUpdateOneRequiredWithoutLikesInput = {
+  connect?: Maybe<ImageWhereUniqueInput>;
+  connectOrCreate?: Maybe<ImageCreateOrConnectWithoutLikesInput>;
+  create?: Maybe<ImageCreateWithoutLikesInput>;
+  update?: Maybe<ImageUpdateWithoutLikesInput>;
+  upsert?: Maybe<ImageUpsertWithoutLikesInput>;
+};
+
 export type ImageUpdateOneRequiredWithoutTagsInput = {
   connect?: Maybe<ImageWhereUniqueInput>;
   connectOrCreate?: Maybe<ImageCreateOrConnectWithoutTagsInput>;
@@ -1115,12 +1321,14 @@ export type ImageUpdateWithoutAppearancesInput = {
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   faces?: Maybe<FaceUpdateManyWithoutImageInput>;
   fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
   hash?: Maybe<StringFieldUpdateOperationsInput>;
   height?: Maybe<IntFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
   isNsfw?: Maybe<BoolFieldUpdateOperationsInput>;
+  likes?: Maybe<ImageLikeUpdateManyWithoutImageInput>;
   mimetype?: Maybe<EnumMimeTypeFieldUpdateOperationsInput>;
   pHash?: Maybe<NullableStringFieldUpdateOperationsInput>;
   palette?: Maybe<ImageUpdatepaletteInput>;
@@ -1141,6 +1349,35 @@ export type ImageUpdateWithoutFacesInput = {
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  hash?: Maybe<StringFieldUpdateOperationsInput>;
+  height?: Maybe<IntFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  isNsfw?: Maybe<BoolFieldUpdateOperationsInput>;
+  likes?: Maybe<ImageLikeUpdateManyWithoutImageInput>;
+  mimetype?: Maybe<EnumMimeTypeFieldUpdateOperationsInput>;
+  pHash?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  palette?: Maybe<ImageUpdatepaletteInput>;
+  public?: Maybe<BoolFieldUpdateOperationsInput>;
+  slug?: Maybe<StringFieldUpdateOperationsInput>;
+  source?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  tags?: Maybe<TagUpdateManyWithoutImageInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  uploadType?: Maybe<EnumUploadTypeFieldUpdateOperationsInput>;
+  user?: Maybe<UserUpdateOneWithoutImagesInput>;
+  views?: Maybe<IntFieldUpdateOperationsInput>;
+  width?: Maybe<IntFieldUpdateOperationsInput>;
+};
+
+export type ImageUpdateWithoutLikesInput = {
+  appearances?: Maybe<AppearanceUpdateManyWithoutImageInput>;
+  bytes?: Maybe<IntFieldUpdateOperationsInput>;
+  caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faces?: Maybe<FaceUpdateManyWithoutImageInput>;
   fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
   hash?: Maybe<StringFieldUpdateOperationsInput>;
   height?: Maybe<IntFieldUpdateOperationsInput>;
@@ -1166,12 +1403,14 @@ export type ImageUpdateWithoutTagsInput = {
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   faces?: Maybe<FaceUpdateManyWithoutImageInput>;
   fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
   hash?: Maybe<StringFieldUpdateOperationsInput>;
   height?: Maybe<IntFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
   isNsfw?: Maybe<BoolFieldUpdateOperationsInput>;
+  likes?: Maybe<ImageLikeUpdateManyWithoutImageInput>;
   mimetype?: Maybe<EnumMimeTypeFieldUpdateOperationsInput>;
   pHash?: Maybe<NullableStringFieldUpdateOperationsInput>;
   palette?: Maybe<ImageUpdatepaletteInput>;
@@ -1191,12 +1430,14 @@ export type ImageUpdateWithoutUserInput = {
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   faces?: Maybe<FaceUpdateManyWithoutImageInput>;
   fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
   hash?: Maybe<StringFieldUpdateOperationsInput>;
   height?: Maybe<IntFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
   isNsfw?: Maybe<BoolFieldUpdateOperationsInput>;
+  likes?: Maybe<ImageLikeUpdateManyWithoutImageInput>;
   mimetype?: Maybe<EnumMimeTypeFieldUpdateOperationsInput>;
   pHash?: Maybe<NullableStringFieldUpdateOperationsInput>;
   palette?: Maybe<ImageUpdatepaletteInput>;
@@ -1230,6 +1471,11 @@ export type ImageUpsertWithoutFacesInput = {
   update: ImageUpdateWithoutFacesInput;
 };
 
+export type ImageUpsertWithoutLikesInput = {
+  create: ImageCreateWithoutLikesInput;
+  update: ImageUpdateWithoutLikesInput;
+};
+
 export type ImageUpsertWithoutTagsInput = {
   create: ImageCreateWithoutTagsInput;
   update: ImageUpdateWithoutTagsInput;
@@ -1244,6 +1490,7 @@ export type ImageWhereInput = {
   caption?: Maybe<StringNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   faceScanDate?: Maybe<DateTimeNullableFilter>;
+  faceScanRequestDate?: Maybe<DateTimeNullableFilter>;
   faces?: Maybe<FaceListRelationFilter>;
   fileName?: Maybe<StringNullableFilter>;
   hash?: Maybe<StringFilter>;
@@ -1251,6 +1498,7 @@ export type ImageWhereInput = {
   id?: Maybe<IntFilter>;
   ireneBotId?: Maybe<IntNullableFilter>;
   isNsfw?: Maybe<BoolFilter>;
+  likes?: Maybe<ImageLikeListRelationFilter>;
   mimetype?: Maybe<EnumMimeTypeFilter>;
   pHash?: Maybe<StringNullableFilter>;
   palette?: Maybe<IntNullableListFilter>;
@@ -1332,8 +1580,8 @@ export type Mutation = {
   linkFace: Appearance;
   /** Removes an appearance from an image */
   removeAppearance: Appearance;
-  /** Scan image for faces asynchronously. Only available to admin accounts */
-  scanFaces?: Maybe<Image>;
+  /** Queue an image to get scanned for faces */
+  scanFaces: QueueInfo;
   toggleLike: Image;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
@@ -1821,6 +2069,11 @@ export enum QueryMode {
   Insensitive = 'insensitive'
 }
 
+export type QueueInfo = {
+  __typename?: 'QueueInfo';
+  queueSize: Scalars['Int'];
+};
+
 export type Role = {
   __typename?: 'Role';
   createdAt: Scalars['DateTime'];
@@ -2177,6 +2430,12 @@ export type UserCreateNestedOneWithoutCratedTagsInput = {
   create?: Maybe<UserCreateWithoutCratedTagsInput>;
 };
 
+export type UserCreateNestedOneWithoutImageLikesInput = {
+  connect?: Maybe<UserWhereUniqueInput>;
+  connectOrCreate?: Maybe<UserCreateOrConnectWithoutImageLikesInput>;
+  create?: Maybe<UserCreateWithoutImageLikesInput>;
+};
+
 export type UserCreateNestedOneWithoutImagesInput = {
   connect?: Maybe<UserWhereUniqueInput>;
   connectOrCreate?: Maybe<UserCreateOrConnectWithoutImagesInput>;
@@ -2191,6 +2450,11 @@ export type UserCreateNestedOneWithoutTaggedAppearancesInput = {
 
 export type UserCreateOrConnectWithoutCratedTagsInput = {
   create: UserCreateWithoutCratedTagsInput;
+  where: UserWhereUniqueInput;
+};
+
+export type UserCreateOrConnectWithoutImageLikesInput = {
+  create: UserCreateWithoutImageLikesInput;
   where: UserWhereUniqueInput;
 };
 
@@ -2215,6 +2479,23 @@ export type UserCreateWithoutCratedTagsInput = {
   email?: Maybe<Scalars['String']>;
   emailVerified?: Maybe<Scalars['DateTime']>;
   image?: Maybe<Scalars['String']>;
+  imageLikes?: Maybe<ImageLikeCreateNestedManyWithoutUserInput>;
+  images?: Maybe<ImageCreateNestedManyWithoutUserInput>;
+  markedFaces?: Maybe<FaceCreateNestedManyWithoutAddedByInput>;
+  name?: Maybe<Scalars['String']>;
+  roles?: Maybe<RoleCreateNestedManyWithoutUserInput>;
+  taggedAppearances?: Maybe<AppearanceCreateNestedManyWithoutAddedByInput>;
+  token?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type UserCreateWithoutImageLikesInput = {
+  bot?: Maybe<Scalars['Boolean']>;
+  cratedTags?: Maybe<TagCreateNestedManyWithoutAddedByInput>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  email?: Maybe<Scalars['String']>;
+  emailVerified?: Maybe<Scalars['DateTime']>;
+  image?: Maybe<Scalars['String']>;
   images?: Maybe<ImageCreateNestedManyWithoutUserInput>;
   markedFaces?: Maybe<FaceCreateNestedManyWithoutAddedByInput>;
   name?: Maybe<Scalars['String']>;
@@ -2231,6 +2512,7 @@ export type UserCreateWithoutImagesInput = {
   email?: Maybe<Scalars['String']>;
   emailVerified?: Maybe<Scalars['DateTime']>;
   image?: Maybe<Scalars['String']>;
+  imageLikes?: Maybe<ImageLikeCreateNestedManyWithoutUserInput>;
   markedFaces?: Maybe<FaceCreateNestedManyWithoutAddedByInput>;
   name?: Maybe<Scalars['String']>;
   roles?: Maybe<RoleCreateNestedManyWithoutUserInput>;
@@ -2246,6 +2528,7 @@ export type UserCreateWithoutMarkedFacesInput = {
   email?: Maybe<Scalars['String']>;
   emailVerified?: Maybe<Scalars['DateTime']>;
   image?: Maybe<Scalars['String']>;
+  imageLikes?: Maybe<ImageLikeCreateNestedManyWithoutUserInput>;
   images?: Maybe<ImageCreateNestedManyWithoutUserInput>;
   name?: Maybe<Scalars['String']>;
   roles?: Maybe<RoleCreateNestedManyWithoutUserInput>;
@@ -2261,12 +2544,21 @@ export type UserCreateWithoutTaggedAppearancesInput = {
   email?: Maybe<Scalars['String']>;
   emailVerified?: Maybe<Scalars['DateTime']>;
   image?: Maybe<Scalars['String']>;
+  imageLikes?: Maybe<ImageLikeCreateNestedManyWithoutUserInput>;
   images?: Maybe<ImageCreateNestedManyWithoutUserInput>;
   markedFaces?: Maybe<FaceCreateNestedManyWithoutAddedByInput>;
   name?: Maybe<Scalars['String']>;
   roles?: Maybe<RoleCreateNestedManyWithoutUserInput>;
   token?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type UserUpdateOneRequiredWithoutImageLikesInput = {
+  connect?: Maybe<UserWhereUniqueInput>;
+  connectOrCreate?: Maybe<UserCreateOrConnectWithoutImageLikesInput>;
+  create?: Maybe<UserCreateWithoutImageLikesInput>;
+  update?: Maybe<UserUpdateWithoutImageLikesInput>;
+  upsert?: Maybe<UserUpsertWithoutImageLikesInput>;
 };
 
 export type UserUpdateOneRequiredWithoutTaggedAppearancesInput = {
@@ -2313,6 +2605,23 @@ export type UserUpdateWithoutCratedTagsInput = {
   email?: Maybe<NullableStringFieldUpdateOperationsInput>;
   emailVerified?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   image?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  imageLikes?: Maybe<ImageLikeUpdateManyWithoutUserInput>;
+  images?: Maybe<ImageUpdateManyWithoutUserInput>;
+  markedFaces?: Maybe<FaceUpdateManyWithoutAddedByInput>;
+  name?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  roles?: Maybe<RoleUpdateManyWithoutUserInput>;
+  taggedAppearances?: Maybe<AppearanceUpdateManyWithoutAddedByInput>;
+  token?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type UserUpdateWithoutImageLikesInput = {
+  bot?: Maybe<BoolFieldUpdateOperationsInput>;
+  cratedTags?: Maybe<TagUpdateManyWithoutAddedByInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  email?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  emailVerified?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  image?: Maybe<NullableStringFieldUpdateOperationsInput>;
   images?: Maybe<ImageUpdateManyWithoutUserInput>;
   markedFaces?: Maybe<FaceUpdateManyWithoutAddedByInput>;
   name?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -2329,6 +2638,7 @@ export type UserUpdateWithoutImagesInput = {
   email?: Maybe<NullableStringFieldUpdateOperationsInput>;
   emailVerified?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   image?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  imageLikes?: Maybe<ImageLikeUpdateManyWithoutUserInput>;
   markedFaces?: Maybe<FaceUpdateManyWithoutAddedByInput>;
   name?: Maybe<NullableStringFieldUpdateOperationsInput>;
   roles?: Maybe<RoleUpdateManyWithoutUserInput>;
@@ -2344,6 +2654,7 @@ export type UserUpdateWithoutMarkedFacesInput = {
   email?: Maybe<NullableStringFieldUpdateOperationsInput>;
   emailVerified?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   image?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  imageLikes?: Maybe<ImageLikeUpdateManyWithoutUserInput>;
   images?: Maybe<ImageUpdateManyWithoutUserInput>;
   name?: Maybe<NullableStringFieldUpdateOperationsInput>;
   roles?: Maybe<RoleUpdateManyWithoutUserInput>;
@@ -2359,6 +2670,7 @@ export type UserUpdateWithoutTaggedAppearancesInput = {
   email?: Maybe<NullableStringFieldUpdateOperationsInput>;
   emailVerified?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   image?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  imageLikes?: Maybe<ImageLikeUpdateManyWithoutUserInput>;
   images?: Maybe<ImageUpdateManyWithoutUserInput>;
   markedFaces?: Maybe<FaceUpdateManyWithoutAddedByInput>;
   name?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -2370,6 +2682,11 @@ export type UserUpdateWithoutTaggedAppearancesInput = {
 export type UserUpsertWithoutCratedTagsInput = {
   create: UserCreateWithoutCratedTagsInput;
   update: UserUpdateWithoutCratedTagsInput;
+};
+
+export type UserUpsertWithoutImageLikesInput = {
+  create: UserCreateWithoutImageLikesInput;
+  update: UserUpdateWithoutImageLikesInput;
 };
 
 export type UserUpsertWithoutImagesInput = {
@@ -2398,6 +2715,7 @@ export type UserWhereInput = {
   emailVerified?: Maybe<DateTimeNullableFilter>;
   id?: Maybe<IntFilter>;
   image?: Maybe<StringNullableFilter>;
+  imageLikes?: Maybe<ImageLikeListRelationFilter>;
   images?: Maybe<ImageListRelationFilter>;
   markedFaces?: Maybe<FaceListRelationFilter>;
   name?: Maybe<StringNullableFilter>;

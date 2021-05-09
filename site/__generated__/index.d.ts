@@ -162,6 +162,23 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedFloatFilter'] | null; // NestedFloatFilter
     notIn?: number[] | null; // [Float!]
   }
+  ImageLikeListRelationFilter: { // input type
+    every?: NexusGenInputs['ImageLikeWhereInput'] | null; // ImageLikeWhereInput
+    none?: NexusGenInputs['ImageLikeWhereInput'] | null; // ImageLikeWhereInput
+    some?: NexusGenInputs['ImageLikeWhereInput'] | null; // ImageLikeWhereInput
+  }
+  ImageLikeWhereInput: { // input type
+    AND?: NexusGenInputs['ImageLikeWhereInput'][] | null; // [ImageLikeWhereInput!]
+    NOT?: NexusGenInputs['ImageLikeWhereInput'][] | null; // [ImageLikeWhereInput!]
+    OR?: NexusGenInputs['ImageLikeWhereInput'][] | null; // [ImageLikeWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    image?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    imageId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+  }
   ImageListRelationFilter: { // input type
     every?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     none?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
@@ -172,6 +189,7 @@ export interface NexusGenInputs {
     caption?: NexusGenEnums['SortOrder'] | null; // SortOrder
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     faceScanDate?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    faceScanRequestDate?: NexusGenEnums['SortOrder'] | null; // SortOrder
     fileName?: NexusGenEnums['SortOrder'] | null; // SortOrder
     hash?: NexusGenEnums['SortOrder'] | null; // SortOrder
     height?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -199,6 +217,7 @@ export interface NexusGenInputs {
     caption?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     faceScanDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    faceScanRequestDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     faces?: NexusGenInputs['FaceListRelationFilter'] | null; // FaceListRelationFilter
     fileName?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
@@ -206,6 +225,7 @@ export interface NexusGenInputs {
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     isNsfw?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
+    likes?: NexusGenInputs['ImageLikeListRelationFilter'] | null; // ImageLikeListRelationFilter
     mimetype?: NexusGenInputs['EnumMimeTypeFilter'] | null; // EnumMimeTypeFilter
     pHash?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     palette?: NexusGenInputs['IntNullableListFilter'] | null; // IntNullableListFilter
@@ -457,6 +477,7 @@ export interface NexusGenInputs {
     emailVerified?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     image?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    imageLikes?: NexusGenInputs['ImageLikeListRelationFilter'] | null; // ImageLikeListRelationFilter
     images?: NexusGenInputs['ImageListRelationFilter'] | null; // ImageListRelationFilter
     markedFaces?: NexusGenInputs['FaceListRelationFilter'] | null; // FaceListRelationFilter
     name?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
@@ -493,6 +514,9 @@ export interface NexusGenObjects {
   Mutation: {};
   Person: PrismaClient.Person;
   Query: {};
+  QueueInfo: { // root type
+    queueSize: number; // Int!
+  }
   Role: PrismaClient.Role;
   Tag: PrismaClient.Tag;
   Thumbnail: { // root type
@@ -577,6 +601,7 @@ export interface NexusGenFieldTypes {
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    scanFaces: NexusGenRootTypes['QueueInfo']; // QueueInfo!
     toggleLike: NexusGenRootTypes['Image']; // Image!
     unlinkFace: number; // Int!
   }
@@ -594,6 +619,9 @@ export interface NexusGenFieldTypes {
     me: NexusGenRootTypes['User'] | null; // User
     searchPerson: NexusGenRootTypes['Person'][]; // [Person!]!
     user: NexusGenRootTypes['User'] | null; // User
+  }
+  QueueInfo: { // field return type
+    queueSize: number; // Int!
   }
   Role: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -684,6 +712,7 @@ export interface NexusGenFieldTypeNames {
     addAppearance: 'Appearance'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
+    scanFaces: 'QueueInfo'
     toggleLike: 'Image'
     unlinkFace: 'Int'
   }
@@ -701,6 +730,9 @@ export interface NexusGenFieldTypeNames {
     me: 'User'
     searchPerson: 'Person'
     user: 'User'
+  }
+  QueueInfo: { // field return type name
+    queueSize: 'Int'
   }
   Role: { // field return type name
     createdAt: 'DateTime'
@@ -758,6 +790,9 @@ export interface NexusGenArgTypes {
     }
     removeAppearance: { // args
       appearanceId: number; // Int!
+    }
+    scanFaces: { // args
+      slug: string; // String!
     }
     toggleLike: { // args
       imageId: number; // Int!
