@@ -11,7 +11,6 @@ RUN apt-get update && \
     libc6-dev \
     libssl-dev
 
-RUN npm i -g pnpm
 RUN yarn global add ts-node typescript
 COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
@@ -20,11 +19,8 @@ COPY src src
 RUN yarn build
 RUN yarn tf
 
-FROM python:3.8-slim
-# Install node
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt update && apt-get install -y nodejs
-RUN apt-get install -y libssl-dev build-essential
+FROM nikolaik/python-nodejs:python3.8-nodejs14-slim
+RUN apt update && apt-get install -y --no-install-recommends libssl-dev build-essential && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/app
 
@@ -32,9 +28,9 @@ ENV NODE_ENV=production
 
 COPY requirements.txt requirements.txt
 COPY package.json yarn.lock ./
-RUN yarn global add node-pre-gyp
 RUN yarn --production --frozen-lockfile
 RUN pip3 install -r requirements.txt
+RUN apt autoremove
 COPY --from=build /opt/app/dist dist
 COPY *.py ./
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
