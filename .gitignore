@@ -37,7 +37,7 @@ ansible/.env
 site/test.sh
 site/dump.sql
 site/.next
-**/*.txt
+site/**/*.txt
 .vscode
 labeler/**/*.jpg
 labeler/**/*.png
