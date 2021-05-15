@@ -31,7 +31,7 @@ COPY requirements.txt requirements.txt
 COPY package.json yarn.lock ./
 RUN yarn global add node-pre-gyp
 RUN yarn --production --frozen-lockfile
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 COPY --from=build /opt/app/dist dist
 COPY *.py ./
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
