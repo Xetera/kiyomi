@@ -279,6 +279,7 @@ export const Mutation = mutationField((t) => {
           console.error(`Couldn't set face recognition request date`);
           console.error(err);
         });
+      console.log(`Got an image queue request for ${slug}`)
       return {
         queueSize: queueInfo.messageCount,
       };

@@ -25,10 +25,23 @@ export type Alias = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type AliasCreateManyPersonInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type AliasCreateManyPersonInputEnvelope = {
+  data?: Maybe<Array<AliasCreateManyPersonInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
 export type AliasCreateNestedManyWithoutPersonInput = {
   connect?: Maybe<Array<AliasWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AliasCreateOrConnectWithoutPersonInput>>;
   create?: Maybe<Array<AliasCreateWithoutPersonInput>>;
+  createMany?: Maybe<AliasCreateManyPersonInputEnvelope>;
 };
 
 export type AliasCreateNestedOneWithoutPreferredAliasOfInput = {
@@ -98,6 +111,7 @@ export type AliasUpdateManyWithoutPersonInput = {
   connect?: Maybe<Array<AliasWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AliasCreateOrConnectWithoutPersonInput>>;
   create?: Maybe<Array<AliasCreateWithoutPersonInput>>;
+  createMany?: Maybe<AliasCreateManyPersonInputEnvelope>;
   delete?: Maybe<Array<AliasWhereUniqueInput>>;
   deleteMany?: Maybe<Array<AliasScalarWhereInput>>;
   disconnect?: Maybe<Array<AliasWhereUniqueInput>>;
@@ -188,22 +202,64 @@ export type AppearanceAppearanceCompoundUniqueInput = {
   personId: Scalars['Int'];
 };
 
+export type AppearanceCreateManyAddedByInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type AppearanceCreateManyAddedByInputEnvelope = {
+  data?: Maybe<Array<AppearanceCreateManyAddedByInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type AppearanceCreateManyImageInput = {
+  addedById: Scalars['Int'];
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  personId: Scalars['Int'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type AppearanceCreateManyImageInputEnvelope = {
+  data?: Maybe<Array<AppearanceCreateManyImageInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type AppearanceCreateManyPersonInput = {
+  addedById: Scalars['Int'];
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  imageId: Scalars['Int'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type AppearanceCreateManyPersonInputEnvelope = {
+  data?: Maybe<Array<AppearanceCreateManyPersonInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
 export type AppearanceCreateNestedManyWithoutAddedByInput = {
   connect?: Maybe<Array<AppearanceWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AppearanceCreateOrConnectWithoutAddedByInput>>;
   create?: Maybe<Array<AppearanceCreateWithoutAddedByInput>>;
+  createMany?: Maybe<AppearanceCreateManyAddedByInputEnvelope>;
 };
 
 export type AppearanceCreateNestedManyWithoutImageInput = {
   connect?: Maybe<Array<AppearanceWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AppearanceCreateOrConnectWithoutImageInput>>;
   create?: Maybe<Array<AppearanceCreateWithoutImageInput>>;
+  createMany?: Maybe<AppearanceCreateManyImageInputEnvelope>;
 };
 
 export type AppearanceCreateNestedManyWithoutPersonInput = {
   connect?: Maybe<Array<AppearanceWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AppearanceCreateOrConnectWithoutPersonInput>>;
   create?: Maybe<Array<AppearanceCreateWithoutPersonInput>>;
+  createMany?: Maybe<AppearanceCreateManyPersonInputEnvelope>;
 };
 
 export type AppearanceCreateOrConnectWithoutAddedByInput = {
@@ -300,6 +356,7 @@ export type AppearanceUpdateManyWithoutAddedByInput = {
   connect?: Maybe<Array<AppearanceWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AppearanceCreateOrConnectWithoutAddedByInput>>;
   create?: Maybe<Array<AppearanceCreateWithoutAddedByInput>>;
+  createMany?: Maybe<AppearanceCreateManyAddedByInputEnvelope>;
   delete?: Maybe<Array<AppearanceWhereUniqueInput>>;
   deleteMany?: Maybe<Array<AppearanceScalarWhereInput>>;
   disconnect?: Maybe<Array<AppearanceWhereUniqueInput>>;
@@ -313,6 +370,7 @@ export type AppearanceUpdateManyWithoutImageInput = {
   connect?: Maybe<Array<AppearanceWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AppearanceCreateOrConnectWithoutImageInput>>;
   create?: Maybe<Array<AppearanceCreateWithoutImageInput>>;
+  createMany?: Maybe<AppearanceCreateManyImageInputEnvelope>;
   delete?: Maybe<Array<AppearanceWhereUniqueInput>>;
   deleteMany?: Maybe<Array<AppearanceScalarWhereInput>>;
   disconnect?: Maybe<Array<AppearanceWhereUniqueInput>>;
@@ -326,6 +384,7 @@ export type AppearanceUpdateManyWithoutPersonInput = {
   connect?: Maybe<Array<AppearanceWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<AppearanceCreateOrConnectWithoutPersonInput>>;
   create?: Maybe<Array<AppearanceCreateWithoutPersonInput>>;
+  createMany?: Maybe<AppearanceCreateManyPersonInputEnvelope>;
   delete?: Maybe<Array<AppearanceWhereUniqueInput>>;
   deleteMany?: Maybe<Array<AppearanceScalarWhereInput>>;
   disconnect?: Maybe<Array<AppearanceWhereUniqueInput>>;
@@ -842,10 +901,44 @@ export type ImageTagsArgs = {
   take?: Maybe<Scalars['Int']>;
 };
 
+export type ImageCreateManyUserInput = {
+  bytes?: Maybe<Scalars['Int']>;
+  caption?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
+  fileName?: Maybe<Scalars['String']>;
+  hash: Scalars['String'];
+  height: Scalars['Int'];
+  id?: Maybe<Scalars['Int']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
+  isNsfw?: Maybe<Scalars['Boolean']>;
+  mimetype: MimeType;
+  pHash?: Maybe<Scalars['String']>;
+  palette?: Maybe<ImageCreateManypaletteInput>;
+  public?: Maybe<Scalars['Boolean']>;
+  slug: Scalars['String'];
+  source?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  uploadType: UploadType;
+  views?: Maybe<Scalars['Int']>;
+  width: Scalars['Int'];
+};
+
+export type ImageCreateManyUserInputEnvelope = {
+  data?: Maybe<Array<ImageCreateManyUserInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type ImageCreateManypaletteInput = {
+  set?: Maybe<Array<Scalars['Int']>>;
+};
+
 export type ImageCreateNestedManyWithoutUserInput = {
   connect?: Maybe<Array<ImageWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<ImageCreateOrConnectWithoutUserInput>>;
   create?: Maybe<Array<ImageCreateWithoutUserInput>>;
+  createMany?: Maybe<ImageCreateManyUserInputEnvelope>;
 };
 
 export type ImageCreateNestedOneWithoutAppearancesInput = {
@@ -1030,16 +1123,42 @@ export type ImageCreatepaletteInput = {
   set?: Maybe<Array<Scalars['Int']>>;
 };
 
+export type ImageLikeCreateManyImageInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId: Scalars['Int'];
+};
+
+export type ImageLikeCreateManyImageInputEnvelope = {
+  data?: Maybe<Array<ImageLikeCreateManyImageInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type ImageLikeCreateManyUserInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  imageId: Scalars['Int'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type ImageLikeCreateManyUserInputEnvelope = {
+  data?: Maybe<Array<ImageLikeCreateManyUserInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
 export type ImageLikeCreateNestedManyWithoutImageInput = {
   connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutImageInput>>;
   create?: Maybe<Array<ImageLikeCreateWithoutImageInput>>;
+  createMany?: Maybe<ImageLikeCreateManyImageInputEnvelope>;
 };
 
 export type ImageLikeCreateNestedManyWithoutUserInput = {
   connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutUserInput>>;
   create?: Maybe<Array<ImageLikeCreateWithoutUserInput>>;
+  createMany?: Maybe<ImageLikeCreateManyUserInputEnvelope>;
 };
 
 export type ImageLikeCreateOrConnectWithoutImageInput = {
@@ -1105,6 +1224,7 @@ export type ImageLikeUpdateManyWithoutImageInput = {
   connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutImageInput>>;
   create?: Maybe<Array<ImageLikeCreateWithoutImageInput>>;
+  createMany?: Maybe<ImageLikeCreateManyImageInputEnvelope>;
   delete?: Maybe<Array<ImageLikeWhereUniqueInput>>;
   deleteMany?: Maybe<Array<ImageLikeScalarWhereInput>>;
   disconnect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
@@ -1118,6 +1238,7 @@ export type ImageLikeUpdateManyWithoutUserInput = {
   connect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<ImageLikeCreateOrConnectWithoutUserInput>>;
   create?: Maybe<Array<ImageLikeCreateWithoutUserInput>>;
+  createMany?: Maybe<ImageLikeCreateManyUserInputEnvelope>;
   delete?: Maybe<Array<ImageLikeWhereUniqueInput>>;
   deleteMany?: Maybe<Array<ImageLikeScalarWhereInput>>;
   disconnect?: Maybe<Array<ImageLikeWhereUniqueInput>>;
@@ -1270,6 +1391,7 @@ export type ImageUpdateManyWithoutUserInput = {
   connect?: Maybe<Array<ImageWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<ImageCreateOrConnectWithoutUserInput>>;
   create?: Maybe<Array<ImageCreateWithoutUserInput>>;
+  createMany?: Maybe<ImageCreateManyUserInputEnvelope>;
   delete?: Maybe<Array<ImageWhereUniqueInput>>;
   deleteMany?: Maybe<Array<ImageScalarWhereInput>>;
   disconnect?: Maybe<Array<ImageWhereUniqueInput>>;
@@ -1452,6 +1574,7 @@ export type ImageUpdateWithoutUserInput = {
 };
 
 export type ImageUpdatepaletteInput = {
+  push?: Maybe<Scalars['Int']>;
   set?: Maybe<Array<Scalars['Int']>>;
 };
 
@@ -2080,10 +2203,23 @@ export type Role = {
   name: Scalars['String'];
 };
 
+export type RoleCreateManyUserInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type RoleCreateManyUserInputEnvelope = {
+  data?: Maybe<Array<RoleCreateManyUserInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
 export type RoleCreateNestedManyWithoutUserInput = {
   connect?: Maybe<Array<RoleWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<RoleCreateOrConnectWithoutUserInput>>;
   create?: Maybe<Array<RoleCreateWithoutUserInput>>;
+  createMany?: Maybe<RoleCreateManyUserInputEnvelope>;
 };
 
 export type RoleCreateOrConnectWithoutUserInput = {
@@ -2129,6 +2265,7 @@ export type RoleUpdateManyWithoutUserInput = {
   connect?: Maybe<Array<RoleWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<RoleCreateOrConnectWithoutUserInput>>;
   create?: Maybe<Array<RoleCreateWithoutUserInput>>;
+  createMany?: Maybe<RoleCreateManyUserInputEnvelope>;
   delete?: Maybe<Array<RoleWhereUniqueInput>>;
   deleteMany?: Maybe<Array<RoleScalarWhereInput>>;
   disconnect?: Maybe<Array<RoleWhereUniqueInput>>;
@@ -2224,16 +2361,46 @@ export type Tag = {
   source: TagSource;
 };
 
+export type TagCreateManyAddedByInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  imageId: Scalars['Int'];
+  name: Scalars['String'];
+  source: TagSource;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type TagCreateManyAddedByInputEnvelope = {
+  data?: Maybe<Array<TagCreateManyAddedByInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type TagCreateManyImageInput = {
+  addedById?: Maybe<Scalars['Int']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  source: TagSource;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type TagCreateManyImageInputEnvelope = {
+  data?: Maybe<Array<TagCreateManyImageInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
 export type TagCreateNestedManyWithoutAddedByInput = {
   connect?: Maybe<Array<TagWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<TagCreateOrConnectWithoutAddedByInput>>;
   create?: Maybe<Array<TagCreateWithoutAddedByInput>>;
+  createMany?: Maybe<TagCreateManyAddedByInputEnvelope>;
 };
 
 export type TagCreateNestedManyWithoutImageInput = {
   connect?: Maybe<Array<TagWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<TagCreateOrConnectWithoutImageInput>>;
   create?: Maybe<Array<TagCreateWithoutImageInput>>;
+  createMany?: Maybe<TagCreateManyImageInputEnvelope>;
 };
 
 export type TagCreateOrConnectWithoutAddedByInput = {
@@ -2306,6 +2473,7 @@ export type TagUpdateManyWithoutAddedByInput = {
   connect?: Maybe<Array<TagWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<TagCreateOrConnectWithoutAddedByInput>>;
   create?: Maybe<Array<TagCreateWithoutAddedByInput>>;
+  createMany?: Maybe<TagCreateManyAddedByInputEnvelope>;
   delete?: Maybe<Array<TagWhereUniqueInput>>;
   deleteMany?: Maybe<Array<TagScalarWhereInput>>;
   disconnect?: Maybe<Array<TagWhereUniqueInput>>;
@@ -2319,6 +2487,7 @@ export type TagUpdateManyWithoutImageInput = {
   connect?: Maybe<Array<TagWhereUniqueInput>>;
   connectOrCreate?: Maybe<Array<TagCreateOrConnectWithoutImageInput>>;
   create?: Maybe<Array<TagCreateWithoutImageInput>>;
+  createMany?: Maybe<TagCreateManyImageInputEnvelope>;
   delete?: Maybe<Array<TagWhereUniqueInput>>;
   deleteMany?: Maybe<Array<TagScalarWhereInput>>;
   disconnect?: Maybe<Array<TagWhereUniqueInput>>;

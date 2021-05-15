@@ -21,10 +21,21 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  AliasCreateManyPersonInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    name: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AliasCreateManyPersonInputEnvelope: { // input type
+    data?: NexusGenInputs['AliasCreateManyPersonInput'][] | null; // [AliasCreateManyPersonInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
   AliasCreateNestedManyWithoutPersonInput: { // input type
     connect?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AliasCreateOrConnectWithoutPersonInput'][] | null; // [AliasCreateOrConnectWithoutPersonInput!]
     create?: NexusGenInputs['AliasCreateWithoutPersonInput'][] | null; // [AliasCreateWithoutPersonInput!]
+    createMany?: NexusGenInputs['AliasCreateManyPersonInputEnvelope'] | null; // AliasCreateManyPersonInputEnvelope
   }
   AliasCreateNestedOneWithoutPreferredAliasOfInput: { // input type
     connect?: NexusGenInputs['AliasWhereUniqueInput'] | null; // AliasWhereUniqueInput
@@ -83,6 +94,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AliasCreateOrConnectWithoutPersonInput'][] | null; // [AliasCreateOrConnectWithoutPersonInput!]
     create?: NexusGenInputs['AliasCreateWithoutPersonInput'][] | null; // [AliasCreateWithoutPersonInput!]
+    createMany?: NexusGenInputs['AliasCreateManyPersonInputEnvelope'] | null; // AliasCreateManyPersonInputEnvelope
     delete?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
     deleteMany?: NexusGenInputs['AliasScalarWhereInput'][] | null; // [AliasScalarWhereInput!]
     disconnect?: NexusGenInputs['AliasWhereUniqueInput'][] | null; // [AliasWhereUniqueInput!]
@@ -145,20 +157,56 @@ export interface NexusGenInputs {
     imageId: number; // Int!
     personId: number; // Int!
   }
+  AppearanceCreateManyAddedByInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    imageId: number; // Int!
+    personId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AppearanceCreateManyAddedByInputEnvelope: { // input type
+    data?: NexusGenInputs['AppearanceCreateManyAddedByInput'][] | null; // [AppearanceCreateManyAddedByInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  AppearanceCreateManyImageInput: { // input type
+    addedById: number; // Int!
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    personId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AppearanceCreateManyImageInputEnvelope: { // input type
+    data?: NexusGenInputs['AppearanceCreateManyImageInput'][] | null; // [AppearanceCreateManyImageInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  AppearanceCreateManyPersonInput: { // input type
+    addedById: number; // Int!
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    imageId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  AppearanceCreateManyPersonInputEnvelope: { // input type
+    data?: NexusGenInputs['AppearanceCreateManyPersonInput'][] | null; // [AppearanceCreateManyPersonInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
   AppearanceCreateNestedManyWithoutAddedByInput: { // input type
     connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutAddedByInput'][] | null; // [AppearanceCreateOrConnectWithoutAddedByInput!]
     create?: NexusGenInputs['AppearanceCreateWithoutAddedByInput'][] | null; // [AppearanceCreateWithoutAddedByInput!]
+    createMany?: NexusGenInputs['AppearanceCreateManyAddedByInputEnvelope'] | null; // AppearanceCreateManyAddedByInputEnvelope
   }
   AppearanceCreateNestedManyWithoutImageInput: { // input type
     connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutImageInput'][] | null; // [AppearanceCreateOrConnectWithoutImageInput!]
     create?: NexusGenInputs['AppearanceCreateWithoutImageInput'][] | null; // [AppearanceCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['AppearanceCreateManyImageInputEnvelope'] | null; // AppearanceCreateManyImageInputEnvelope
   }
   AppearanceCreateNestedManyWithoutPersonInput: { // input type
     connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutPersonInput'][] | null; // [AppearanceCreateOrConnectWithoutPersonInput!]
     create?: NexusGenInputs['AppearanceCreateWithoutPersonInput'][] | null; // [AppearanceCreateWithoutPersonInput!]
+    createMany?: NexusGenInputs['AppearanceCreateManyPersonInputEnvelope'] | null; // AppearanceCreateManyPersonInputEnvelope
   }
   AppearanceCreateOrConnectWithoutAddedByInput: { // input type
     create: NexusGenInputs['AppearanceCreateWithoutAddedByInput']; // AppearanceCreateWithoutAddedByInput!
@@ -240,6 +288,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutAddedByInput'][] | null; // [AppearanceCreateOrConnectWithoutAddedByInput!]
     create?: NexusGenInputs['AppearanceCreateWithoutAddedByInput'][] | null; // [AppearanceCreateWithoutAddedByInput!]
+    createMany?: NexusGenInputs['AppearanceCreateManyAddedByInputEnvelope'] | null; // AppearanceCreateManyAddedByInputEnvelope
     delete?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     deleteMany?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
     disconnect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
@@ -252,6 +301,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutImageInput'][] | null; // [AppearanceCreateOrConnectWithoutImageInput!]
     create?: NexusGenInputs['AppearanceCreateWithoutImageInput'][] | null; // [AppearanceCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['AppearanceCreateManyImageInputEnvelope'] | null; // AppearanceCreateManyImageInputEnvelope
     delete?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     deleteMany?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
     disconnect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
@@ -264,6 +314,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutPersonInput'][] | null; // [AppearanceCreateOrConnectWithoutPersonInput!]
     create?: NexusGenInputs['AppearanceCreateWithoutPersonInput'][] | null; // [AppearanceCreateWithoutPersonInput!]
+    createMany?: NexusGenInputs['AppearanceCreateManyPersonInputEnvelope'] | null; // AppearanceCreateManyPersonInputEnvelope
     delete?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
     deleteMany?: NexusGenInputs['AppearanceScalarWhereInput'][] | null; // [AppearanceScalarWhereInput!]
     disconnect?: NexusGenInputs['AppearanceWhereUniqueInput'][] | null; // [AppearanceWhereUniqueInput!]
@@ -640,10 +691,41 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedFloatFilter'] | null; // NestedFloatFilter
     notIn?: number[] | null; // [Float!]
   }
+  ImageCreateManyUserInput: { // input type
+    bytes?: number | null; // Int
+    caption?: string | null; // String
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    faceScanDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    faceScanRequestDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    fileName?: string | null; // String
+    hash: string; // String!
+    height: number; // Int!
+    id?: number | null; // Int
+    ireneBotId?: number | null; // Int
+    isNsfw?: boolean | null; // Boolean
+    mimetype: NexusGenEnums['MimeType']; // MimeType!
+    pHash?: string | null; // String
+    palette?: NexusGenInputs['ImageCreateManypaletteInput'] | null; // ImageCreateManypaletteInput
+    public?: boolean | null; // Boolean
+    slug: string; // String!
+    source?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    uploadType: NexusGenEnums['UploadType']; // UploadType!
+    views?: number | null; // Int
+    width: number; // Int!
+  }
+  ImageCreateManyUserInputEnvelope: { // input type
+    data?: NexusGenInputs['ImageCreateManyUserInput'][] | null; // [ImageCreateManyUserInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  ImageCreateManypaletteInput: { // input type
+    set?: number[] | null; // [Int!]
+  }
   ImageCreateNestedManyWithoutUserInput: { // input type
     connect?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutUserInput'][] | null; // [ImageCreateOrConnectWithoutUserInput!]
     create?: NexusGenInputs['ImageCreateWithoutUserInput'][] | null; // [ImageCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['ImageCreateManyUserInputEnvelope'] | null; // ImageCreateManyUserInputEnvelope
   }
   ImageCreateNestedOneWithoutAppearancesInput: { // input type
     connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
@@ -813,15 +895,37 @@ export interface NexusGenInputs {
   ImageCreatepaletteInput: { // input type
     set?: number[] | null; // [Int!]
   }
+  ImageLikeCreateManyImageInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    userId: number; // Int!
+  }
+  ImageLikeCreateManyImageInputEnvelope: { // input type
+    data?: NexusGenInputs['ImageLikeCreateManyImageInput'][] | null; // [ImageLikeCreateManyImageInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  ImageLikeCreateManyUserInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    imageId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  ImageLikeCreateManyUserInputEnvelope: { // input type
+    data?: NexusGenInputs['ImageLikeCreateManyUserInput'][] | null; // [ImageLikeCreateManyUserInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
   ImageLikeCreateNestedManyWithoutImageInput: { // input type
     connect?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['ImageLikeCreateOrConnectWithoutImageInput'][] | null; // [ImageLikeCreateOrConnectWithoutImageInput!]
     create?: NexusGenInputs['ImageLikeCreateWithoutImageInput'][] | null; // [ImageLikeCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['ImageLikeCreateManyImageInputEnvelope'] | null; // ImageLikeCreateManyImageInputEnvelope
   }
   ImageLikeCreateNestedManyWithoutUserInput: { // input type
     connect?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['ImageLikeCreateOrConnectWithoutUserInput'][] | null; // [ImageLikeCreateOrConnectWithoutUserInput!]
     create?: NexusGenInputs['ImageLikeCreateWithoutUserInput'][] | null; // [ImageLikeCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['ImageLikeCreateManyUserInputEnvelope'] | null; // ImageLikeCreateManyUserInputEnvelope
   }
   ImageLikeCreateOrConnectWithoutImageInput: { // input type
     create: NexusGenInputs['ImageLikeCreateWithoutImageInput']; // ImageLikeCreateWithoutImageInput!
@@ -876,6 +980,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['ImageLikeCreateOrConnectWithoutImageInput'][] | null; // [ImageLikeCreateOrConnectWithoutImageInput!]
     create?: NexusGenInputs['ImageLikeCreateWithoutImageInput'][] | null; // [ImageLikeCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['ImageLikeCreateManyImageInputEnvelope'] | null; // ImageLikeCreateManyImageInputEnvelope
     delete?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
     deleteMany?: NexusGenInputs['ImageLikeScalarWhereInput'][] | null; // [ImageLikeScalarWhereInput!]
     disconnect?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
@@ -888,6 +993,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['ImageLikeCreateOrConnectWithoutUserInput'][] | null; // [ImageLikeCreateOrConnectWithoutUserInput!]
     create?: NexusGenInputs['ImageLikeCreateWithoutUserInput'][] | null; // [ImageLikeCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['ImageLikeCreateManyUserInputEnvelope'] | null; // ImageLikeCreateManyUserInputEnvelope
     delete?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
     deleteMany?: NexusGenInputs['ImageLikeScalarWhereInput'][] | null; // [ImageLikeScalarWhereInput!]
     disconnect?: NexusGenInputs['ImageLikeWhereUniqueInput'][] | null; // [ImageLikeWhereUniqueInput!]
@@ -1026,6 +1132,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutUserInput'][] | null; // [ImageCreateOrConnectWithoutUserInput!]
     create?: NexusGenInputs['ImageCreateWithoutUserInput'][] | null; // [ImageCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['ImageCreateManyUserInputEnvelope'] | null; // ImageCreateManyUserInputEnvelope
     delete?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
     deleteMany?: NexusGenInputs['ImageScalarWhereInput'][] | null; // [ImageScalarWhereInput!]
     disconnect?: NexusGenInputs['ImageWhereUniqueInput'][] | null; // [ImageWhereUniqueInput!]
@@ -1197,6 +1304,7 @@ export interface NexusGenInputs {
     width?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
   }
   ImageUpdatepaletteInput: { // input type
+    push?: number | null; // Int
     set?: number[] | null; // [Int!]
   }
   ImageUpsertWithWhereUniqueWithoutUserInput: { // input type
@@ -1609,10 +1717,21 @@ export interface NexusGenInputs {
     id?: number | null; // Int
     ireneBotId?: number | null; // Int
   }
+  RoleCreateManyUserInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    name: string; // String!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  RoleCreateManyUserInputEnvelope: { // input type
+    data?: NexusGenInputs['RoleCreateManyUserInput'][] | null; // [RoleCreateManyUserInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
   RoleCreateNestedManyWithoutUserInput: { // input type
     connect?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['RoleCreateOrConnectWithoutUserInput'][] | null; // [RoleCreateOrConnectWithoutUserInput!]
     create?: NexusGenInputs['RoleCreateWithoutUserInput'][] | null; // [RoleCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['RoleCreateManyUserInputEnvelope'] | null; // RoleCreateManyUserInputEnvelope
   }
   RoleCreateOrConnectWithoutUserInput: { // input type
     create: NexusGenInputs['RoleCreateWithoutUserInput']; // RoleCreateWithoutUserInput!
@@ -1651,6 +1770,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['RoleCreateOrConnectWithoutUserInput'][] | null; // [RoleCreateOrConnectWithoutUserInput!]
     create?: NexusGenInputs['RoleCreateWithoutUserInput'][] | null; // [RoleCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['RoleCreateManyUserInputEnvelope'] | null; // RoleCreateManyUserInputEnvelope
     delete?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
     deleteMany?: NexusGenInputs['RoleScalarWhereInput'][] | null; // [RoleScalarWhereInput!]
     disconnect?: NexusGenInputs['RoleWhereUniqueInput'][] | null; // [RoleWhereUniqueInput!]
@@ -1723,15 +1843,41 @@ export interface NexusGenInputs {
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
+  TagCreateManyAddedByInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    imageId: number; // Int!
+    name: string; // String!
+    source: NexusGenEnums['TagSource']; // TagSource!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  TagCreateManyAddedByInputEnvelope: { // input type
+    data?: NexusGenInputs['TagCreateManyAddedByInput'][] | null; // [TagCreateManyAddedByInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  TagCreateManyImageInput: { // input type
+    addedById?: number | null; // Int
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    name: string; // String!
+    source: NexusGenEnums['TagSource']; // TagSource!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  TagCreateManyImageInputEnvelope: { // input type
+    data?: NexusGenInputs['TagCreateManyImageInput'][] | null; // [TagCreateManyImageInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
   TagCreateNestedManyWithoutAddedByInput: { // input type
     connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutAddedByInput'][] | null; // [TagCreateOrConnectWithoutAddedByInput!]
     create?: NexusGenInputs['TagCreateWithoutAddedByInput'][] | null; // [TagCreateWithoutAddedByInput!]
+    createMany?: NexusGenInputs['TagCreateManyAddedByInputEnvelope'] | null; // TagCreateManyAddedByInputEnvelope
   }
   TagCreateNestedManyWithoutImageInput: { // input type
     connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutImageInput'][] | null; // [TagCreateOrConnectWithoutImageInput!]
     create?: NexusGenInputs['TagCreateWithoutImageInput'][] | null; // [TagCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['TagCreateManyImageInputEnvelope'] | null; // TagCreateManyImageInputEnvelope
   }
   TagCreateOrConnectWithoutAddedByInput: { // input type
     create: NexusGenInputs['TagCreateWithoutAddedByInput']; // TagCreateWithoutAddedByInput!
@@ -1790,6 +1936,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutAddedByInput'][] | null; // [TagCreateOrConnectWithoutAddedByInput!]
     create?: NexusGenInputs['TagCreateWithoutAddedByInput'][] | null; // [TagCreateWithoutAddedByInput!]
+    createMany?: NexusGenInputs['TagCreateManyAddedByInputEnvelope'] | null; // TagCreateManyAddedByInputEnvelope
     delete?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
     deleteMany?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
     disconnect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
@@ -1802,6 +1949,7 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['TagCreateOrConnectWithoutImageInput'][] | null; // [TagCreateOrConnectWithoutImageInput!]
     create?: NexusGenInputs['TagCreateWithoutImageInput'][] | null; // [TagCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['TagCreateManyImageInputEnvelope'] | null; // TagCreateManyImageInputEnvelope
     delete?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]
     deleteMany?: NexusGenInputs['TagScalarWhereInput'][] | null; // [TagScalarWhereInput!]
     disconnect?: NexusGenInputs['TagWhereUniqueInput'][] | null; // [TagWhereUniqueInput!]

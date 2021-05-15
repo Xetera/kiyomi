@@ -9,10 +9,23 @@ type Alias {
   updatedAt: DateTime!
 }
 
+input AliasCreateManyPersonInput {
+  createdAt: DateTime
+  id: Int
+  name: String!
+  updatedAt: DateTime
+}
+
+input AliasCreateManyPersonInputEnvelope {
+  data: [AliasCreateManyPersonInput!]
+  skipDuplicates: Boolean
+}
+
 input AliasCreateNestedManyWithoutPersonInput {
   connect: [AliasWhereUniqueInput!]
   connectOrCreate: [AliasCreateOrConnectWithoutPersonInput!]
   create: [AliasCreateWithoutPersonInput!]
+  createMany: AliasCreateManyPersonInputEnvelope
 }
 
 input AliasCreateNestedOneWithoutPreferredAliasOfInput {
@@ -82,6 +95,7 @@ input AliasUpdateManyWithoutPersonInput {
   connect: [AliasWhereUniqueInput!]
   connectOrCreate: [AliasCreateOrConnectWithoutPersonInput!]
   create: [AliasCreateWithoutPersonInput!]
+  createMany: AliasCreateManyPersonInputEnvelope
   delete: [AliasWhereUniqueInput!]
   deleteMany: [AliasScalarWhereInput!]
   disconnect: [AliasWhereUniqueInput!]
@@ -164,22 +178,64 @@ input AppearanceAppearanceCompoundUniqueInput {
   personId: Int!
 }
 
+input AppearanceCreateManyAddedByInput {
+  createdAt: DateTime
+  id: Int
+  imageId: Int!
+  personId: Int!
+  updatedAt: DateTime
+}
+
+input AppearanceCreateManyAddedByInputEnvelope {
+  data: [AppearanceCreateManyAddedByInput!]
+  skipDuplicates: Boolean
+}
+
+input AppearanceCreateManyImageInput {
+  addedById: Int!
+  createdAt: DateTime
+  id: Int
+  personId: Int!
+  updatedAt: DateTime
+}
+
+input AppearanceCreateManyImageInputEnvelope {
+  data: [AppearanceCreateManyImageInput!]
+  skipDuplicates: Boolean
+}
+
+input AppearanceCreateManyPersonInput {
+  addedById: Int!
+  createdAt: DateTime
+  id: Int
+  imageId: Int!
+  updatedAt: DateTime
+}
+
+input AppearanceCreateManyPersonInputEnvelope {
+  data: [AppearanceCreateManyPersonInput!]
+  skipDuplicates: Boolean
+}
+
 input AppearanceCreateNestedManyWithoutAddedByInput {
   connect: [AppearanceWhereUniqueInput!]
   connectOrCreate: [AppearanceCreateOrConnectWithoutAddedByInput!]
   create: [AppearanceCreateWithoutAddedByInput!]
+  createMany: AppearanceCreateManyAddedByInputEnvelope
 }
 
 input AppearanceCreateNestedManyWithoutImageInput {
   connect: [AppearanceWhereUniqueInput!]
   connectOrCreate: [AppearanceCreateOrConnectWithoutImageInput!]
   create: [AppearanceCreateWithoutImageInput!]
+  createMany: AppearanceCreateManyImageInputEnvelope
 }
 
 input AppearanceCreateNestedManyWithoutPersonInput {
   connect: [AppearanceWhereUniqueInput!]
   connectOrCreate: [AppearanceCreateOrConnectWithoutPersonInput!]
   create: [AppearanceCreateWithoutPersonInput!]
+  createMany: AppearanceCreateManyPersonInputEnvelope
 }
 
 input AppearanceCreateOrConnectWithoutAddedByInput {
@@ -276,6 +332,7 @@ input AppearanceUpdateManyWithoutAddedByInput {
   connect: [AppearanceWhereUniqueInput!]
   connectOrCreate: [AppearanceCreateOrConnectWithoutAddedByInput!]
   create: [AppearanceCreateWithoutAddedByInput!]
+  createMany: AppearanceCreateManyAddedByInputEnvelope
   delete: [AppearanceWhereUniqueInput!]
   deleteMany: [AppearanceScalarWhereInput!]
   disconnect: [AppearanceWhereUniqueInput!]
@@ -289,6 +346,7 @@ input AppearanceUpdateManyWithoutImageInput {
   connect: [AppearanceWhereUniqueInput!]
   connectOrCreate: [AppearanceCreateOrConnectWithoutImageInput!]
   create: [AppearanceCreateWithoutImageInput!]
+  createMany: AppearanceCreateManyImageInputEnvelope
   delete: [AppearanceWhereUniqueInput!]
   deleteMany: [AppearanceScalarWhereInput!]
   disconnect: [AppearanceWhereUniqueInput!]
@@ -302,6 +360,7 @@ input AppearanceUpdateManyWithoutPersonInput {
   connect: [AppearanceWhereUniqueInput!]
   connectOrCreate: [AppearanceCreateOrConnectWithoutPersonInput!]
   create: [AppearanceCreateWithoutPersonInput!]
+  createMany: AppearanceCreateManyPersonInputEnvelope
   delete: [AppearanceWhereUniqueInput!]
   deleteMany: [AppearanceScalarWhereInput!]
   disconnect: [AppearanceWhereUniqueInput!]
@@ -823,10 +882,44 @@ type Image {
   width: Int!
 }
 
+input ImageCreateManyUserInput {
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  fileName: String
+  hash: String!
+  height: Int!
+  id: Int
+  ireneBotId: Int
+  isNsfw: Boolean
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreateManypaletteInput
+  public: Boolean
+  slug: String!
+  source: String
+  updatedAt: DateTime
+  uploadType: UploadType!
+  views: Int
+  width: Int!
+}
+
+input ImageCreateManyUserInputEnvelope {
+  data: [ImageCreateManyUserInput!]
+  skipDuplicates: Boolean
+}
+
+input ImageCreateManypaletteInput {
+  set: [Int!]
+}
+
 input ImageCreateNestedManyWithoutUserInput {
   connect: [ImageWhereUniqueInput!]
   connectOrCreate: [ImageCreateOrConnectWithoutUserInput!]
   create: [ImageCreateWithoutUserInput!]
+  createMany: ImageCreateManyUserInputEnvelope
 }
 
 input ImageCreateNestedOneWithoutAppearancesInput {
@@ -1011,16 +1104,42 @@ input ImageCreatepaletteInput {
   set: [Int!]
 }
 
+input ImageLikeCreateManyImageInput {
+  createdAt: DateTime
+  id: Int
+  updatedAt: DateTime
+  userId: Int!
+}
+
+input ImageLikeCreateManyImageInputEnvelope {
+  data: [ImageLikeCreateManyImageInput!]
+  skipDuplicates: Boolean
+}
+
+input ImageLikeCreateManyUserInput {
+  createdAt: DateTime
+  id: Int
+  imageId: Int!
+  updatedAt: DateTime
+}
+
+input ImageLikeCreateManyUserInputEnvelope {
+  data: [ImageLikeCreateManyUserInput!]
+  skipDuplicates: Boolean
+}
+
 input ImageLikeCreateNestedManyWithoutImageInput {
   connect: [ImageLikeWhereUniqueInput!]
   connectOrCreate: [ImageLikeCreateOrConnectWithoutImageInput!]
   create: [ImageLikeCreateWithoutImageInput!]
+  createMany: ImageLikeCreateManyImageInputEnvelope
 }
 
 input ImageLikeCreateNestedManyWithoutUserInput {
   connect: [ImageLikeWhereUniqueInput!]
   connectOrCreate: [ImageLikeCreateOrConnectWithoutUserInput!]
   create: [ImageLikeCreateWithoutUserInput!]
+  createMany: ImageLikeCreateManyUserInputEnvelope
 }
 
 input ImageLikeCreateOrConnectWithoutImageInput {
@@ -1086,6 +1205,7 @@ input ImageLikeUpdateManyWithoutImageInput {
   connect: [ImageLikeWhereUniqueInput!]
   connectOrCreate: [ImageLikeCreateOrConnectWithoutImageInput!]
   create: [ImageLikeCreateWithoutImageInput!]
+  createMany: ImageLikeCreateManyImageInputEnvelope
   delete: [ImageLikeWhereUniqueInput!]
   deleteMany: [ImageLikeScalarWhereInput!]
   disconnect: [ImageLikeWhereUniqueInput!]
@@ -1099,6 +1219,7 @@ input ImageLikeUpdateManyWithoutUserInput {
   connect: [ImageLikeWhereUniqueInput!]
   connectOrCreate: [ImageLikeCreateOrConnectWithoutUserInput!]
   create: [ImageLikeCreateWithoutUserInput!]
+  createMany: ImageLikeCreateManyUserInputEnvelope
   delete: [ImageLikeWhereUniqueInput!]
   deleteMany: [ImageLikeScalarWhereInput!]
   disconnect: [ImageLikeWhereUniqueInput!]
@@ -1251,6 +1372,7 @@ input ImageUpdateManyWithoutUserInput {
   connect: [ImageWhereUniqueInput!]
   connectOrCreate: [ImageCreateOrConnectWithoutUserInput!]
   create: [ImageCreateWithoutUserInput!]
+  createMany: ImageCreateManyUserInputEnvelope
   delete: [ImageWhereUniqueInput!]
   deleteMany: [ImageScalarWhereInput!]
   disconnect: [ImageWhereUniqueInput!]
@@ -1433,6 +1555,7 @@ input ImageUpdateWithoutUserInput {
 }
 
 input ImageUpdatepaletteInput {
+  push: Int
   set: [Int!]
 }
 
@@ -1970,10 +2093,23 @@ type Role {
   name: String!
 }
 
+input RoleCreateManyUserInput {
+  createdAt: DateTime
+  id: Int
+  name: String!
+  updatedAt: DateTime
+}
+
+input RoleCreateManyUserInputEnvelope {
+  data: [RoleCreateManyUserInput!]
+  skipDuplicates: Boolean
+}
+
 input RoleCreateNestedManyWithoutUserInput {
   connect: [RoleWhereUniqueInput!]
   connectOrCreate: [RoleCreateOrConnectWithoutUserInput!]
   create: [RoleCreateWithoutUserInput!]
+  createMany: RoleCreateManyUserInputEnvelope
 }
 
 input RoleCreateOrConnectWithoutUserInput {
@@ -2019,6 +2155,7 @@ input RoleUpdateManyWithoutUserInput {
   connect: [RoleWhereUniqueInput!]
   connectOrCreate: [RoleCreateOrConnectWithoutUserInput!]
   create: [RoleCreateWithoutUserInput!]
+  createMany: RoleCreateManyUserInputEnvelope
   delete: [RoleWhereUniqueInput!]
   deleteMany: [RoleScalarWhereInput!]
   disconnect: [RoleWhereUniqueInput!]
@@ -2113,16 +2250,46 @@ type Tag {
   source: TagSource!
 }
 
+input TagCreateManyAddedByInput {
+  createdAt: DateTime
+  id: Int
+  imageId: Int!
+  name: String!
+  source: TagSource!
+  updatedAt: DateTime
+}
+
+input TagCreateManyAddedByInputEnvelope {
+  data: [TagCreateManyAddedByInput!]
+  skipDuplicates: Boolean
+}
+
+input TagCreateManyImageInput {
+  addedById: Int
+  createdAt: DateTime
+  id: Int
+  name: String!
+  source: TagSource!
+  updatedAt: DateTime
+}
+
+input TagCreateManyImageInputEnvelope {
+  data: [TagCreateManyImageInput!]
+  skipDuplicates: Boolean
+}
+
 input TagCreateNestedManyWithoutAddedByInput {
   connect: [TagWhereUniqueInput!]
   connectOrCreate: [TagCreateOrConnectWithoutAddedByInput!]
   create: [TagCreateWithoutAddedByInput!]
+  createMany: TagCreateManyAddedByInputEnvelope
 }
 
 input TagCreateNestedManyWithoutImageInput {
   connect: [TagWhereUniqueInput!]
   connectOrCreate: [TagCreateOrConnectWithoutImageInput!]
   create: [TagCreateWithoutImageInput!]
+  createMany: TagCreateManyImageInputEnvelope
 }
 
 input TagCreateOrConnectWithoutAddedByInput {
@@ -2195,6 +2362,7 @@ input TagUpdateManyWithoutAddedByInput {
   connect: [TagWhereUniqueInput!]
   connectOrCreate: [TagCreateOrConnectWithoutAddedByInput!]
   create: [TagCreateWithoutAddedByInput!]
+  createMany: TagCreateManyAddedByInputEnvelope
   delete: [TagWhereUniqueInput!]
   deleteMany: [TagScalarWhereInput!]
   disconnect: [TagWhereUniqueInput!]
@@ -2208,6 +2376,7 @@ input TagUpdateManyWithoutImageInput {
   connect: [TagWhereUniqueInput!]
   connectOrCreate: [TagCreateOrConnectWithoutImageInput!]
   create: [TagCreateWithoutImageInput!]
+  createMany: TagCreateManyImageInputEnvelope
   delete: [TagWhereUniqueInput!]
   deleteMany: [TagScalarWhereInput!]
   disconnect: [TagWhereUniqueInput!]
