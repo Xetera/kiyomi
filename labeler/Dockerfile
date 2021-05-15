@@ -21,7 +21,7 @@ RUN yarn build
 RUN yarn tf
 
 FROM node:14-slim
-RUN apt-get update && apt-get install -y libssl-dev build-essential python3
+RUN apt-get update && apt-get install -y libssl-dev build-essential python3 python3-pip
 
 WORKDIR /opt/app
 
