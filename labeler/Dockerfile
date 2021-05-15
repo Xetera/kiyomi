@@ -21,7 +21,7 @@ RUN yarn build
 RUN yarn tf
 
 FROM node:14-slim
-RUN sudo apt-get install software-properties-common && sudo add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get install software-properties-common && add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update && apt-get install -y libssl-dev build-essential python3.8 python3-pip
 
 WORKDIR /opt/app
