@@ -94,8 +94,6 @@ export function ImageEditModal(props: ImageEditModalProps) {
       faces: f.faces,
     })
   );
-  console.log(props.image.appearances);
-  console.log({ appearanceMap });
 
   const unknownFacesMap = _.keyBy(props.image.unknownFaces, (f) => f.id);
   // TODO: update this once users can create new faces on this screen
@@ -162,7 +160,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
     if (!destination || destination?.droppableId === source.droppableId) {
       return;
     }
-    console.log({ result });
+
     const faceId = Number(draggableId);
     if (
       destination.droppableId === "unknown" &&
@@ -186,8 +184,6 @@ export function ImageEditModal(props: ImageEditModalProps) {
       await unlinkFace_(faceId, Number(source.droppableId));
       await linkFace_(faceId, Number(destination.droppableId));
     }
-    console.log(destination);
-    console.log(source);
   }
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -213,7 +209,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
                 >
                   {appearance.faces.map((face, i) => (
                     <Draggable
-                      draggableId={(console.log(face), face.id.toString())}
+                      draggableId={face.id.toString()}
                       key={face.id}
                       index={i}
                     >

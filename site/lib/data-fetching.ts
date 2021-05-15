@@ -99,5 +99,3 @@ export function wrapRequest<T>(
     return data;
   };
 }
-
-export type GetImage = PromiseReturnType<typeof getImage>;

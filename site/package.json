@@ -42,7 +42,7 @@
     "modern-normalize": "^1.0.0",
     "multer": "^1.4.2",
     "nanoid": "^3.1.20",
-    "next": "10.1.2",
+    "next": "^10.2.0",
     "next-apollo": "^5.0.4",
     "next-auth": "^3.13.3",
     "nexus": "^1.0.0",

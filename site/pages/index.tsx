@@ -35,6 +35,7 @@ function Tab({ active, children }) {
 }
 
 export default function Home() {
+  console.log("rendering home");
   const pageRef = React.useRef(null);
   const [activeTab, setActiveTab] = React.useState(0);
   const [fetching, setFetching] = React.useState(false);
@@ -118,7 +119,10 @@ export default function Home() {
 }
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
-  const dehydratedState = await prefetchQuery("HomepageQuery", { botUser: 2 });
+  const dehydratedState = await prefetchQuery("Homepage", {
+    take: 100,
+    skip: 0,
+  });
   return {
     props: {
       session: await getSession(ctx),

@@ -24,6 +24,7 @@ const Image = () => {
   const { data, isFetching, refetch } = useOneImageQuery({
     slug: slug as string,
   });
+
   function closeModal() {
     refetch();
     setEditOpen(false);
@@ -128,6 +129,7 @@ export const getServerSideProps = wrapRequest(async (ctx) => {
   const dehydratedState = await prefetchQuery("OneImage", { slug });
   return {
     props: {
+      slug,
       dehydratedState,
     },
   };

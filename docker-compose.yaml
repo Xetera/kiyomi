@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.2"
 
 volumes:
   # not important to get indexed immediately
@@ -31,4 +31,4 @@ services:
       POSTGRES_DATABASE: simp
       POSTGRES_USER: postgres
     volumes:
-      - sp_pg
+      - sp_pg:/var/lib/postgresql/data
