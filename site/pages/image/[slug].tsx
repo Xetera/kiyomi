@@ -8,17 +8,10 @@ import NextHead from "next/head";
 import { RiSpyLine } from "react-icons/ri";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import {
-  MimeType,
-  useOneImageQuery,
-  useConnectionGraphQuery,
-  ImageConnectionEdge,
-} from "@/__generated__/graphql";
+import { useOneImageQuery } from "@/__generated__/graphql";
 import { ImageEditModal } from "@/components/image-edit-modal";
-import { GetServerSideProps } from "next";
 import { prefetchQuery } from "@/lib/client-helpers";
 import { prisma } from "@/lib/db";
-import { getSession } from "next-auth/client";
 import { wrapRequest } from "@/lib/data-fetching";
 import { Flex, Heading, Text } from "@chakra-ui/layout";
 import {
@@ -28,8 +21,6 @@ import {
 } from "@/components/context-sidebar";
 import { Box } from "@chakra-ui/react";
 import { FaceAppearance } from "@/components/face-appearance";
-
-import dynamic from "next/dynamic";
 import { GraphDisplay } from "@/components/graph-display";
 
 const Image = () => {

@@ -61,7 +61,7 @@ export async function imageConnections(
         person: true,
       },
     });
-    console.log(appearances);
+
     const next = await queryPersonConnections(
       appearances.map((app) => app.personId),
       appearances.map((app) => app.imageId),
@@ -92,8 +92,6 @@ export async function imageConnections(
           all.images.every((other) => other.id !== im.id)
         )
       );
-      console.log({ a: all.people });
-      console.log({ b: level.people });
       all.people = all.people.concat(
         level.people.filter((pe) =>
           all.people.every((other) => other.id !== pe.id)

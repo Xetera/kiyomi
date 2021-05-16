@@ -24,7 +24,8 @@ import {
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/client";
 import { useToggleLikeMutation } from "@/__generated__/graphql";
-import QueueButton from "./queue-button";
+import useQueue from "./queue-button";
+import { useRouter } from "next/router";
 
 function SidebarSection({ title, children }) {
   return (
@@ -48,7 +49,7 @@ export type ImageSidebarProps = {
   onEdit: () => void;
 };
 
-function Tag({ text, icon, onClick }) {
+function Tag({ text, icon, onClick, disabled = false }) {
   return (
     <Flex
       alignItems="center"
@@ -57,6 +58,7 @@ function Tag({ text, icon, onClick }) {
       cursor="pointer"
       onClick={onClick}
       fontSize={["sm", null, null, "md"]}
+      color={disabled ? "trueGray.600" : "trueGray.300"}
     >
       <Box mr={2}>{icon}</Box>
       <Text fontWeight="600">{text}</Text>
@@ -67,6 +69,7 @@ function Tag({ text, icon, onClick }) {
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const toast = useToast();
   const image = React.useContext(ImageContext);
+  const router = useRouter();
   const { data, mutate, isLoading } = useToggleLikeMutation();
   const [session] = useSession();
   if (!image) {
@@ -97,13 +100,19 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   }
   const liked = data?.toggleLike.liked ?? image.liked;
   const uploadDate = new Date(image.createdAt);
+  const request = useQueue({ slug: router.query.slug as string });
   return (
     <Stack className="align-start text-sm rounded" maxWidth="600px" mx="auto">
       <CascadeChildren className="grid gap-4 text-sm">
         <Flex>
           <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
           <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
-          <Tag icon={<RiScan2Line />} text="Request scan" />
+          <Tag
+            icon={<RiScan2Line />}
+            text="Request scan"
+            onClick={request}
+            disabled
+          />
         </Flex>
         <Flex flexDirection="row" alignItems="top">
           <User

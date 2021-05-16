@@ -1,15 +1,11 @@
 import { useAddToQueueMutation } from "@/__generated__/graphql";
 import { Button, useToast } from "@chakra-ui/react";
-import image from "next/image";
-import React from "react";
-import { RiScan2Line } from "react-icons/ri";
 
 type QueueButtonProps = {
   slug: string;
-  scanDate: Date;
 };
 
-export default function QueueButton({ scanDate, slug }: QueueButtonProps) {
+export default function useQueue({ slug }: QueueButtonProps) {
   const { mutateAsync } = useAddToQueueMutation();
   const toast = useToast();
   async function addToQueue() {
@@ -30,14 +26,5 @@ export default function QueueButton({ scanDate, slug }: QueueButtonProps) {
       });
     }
   }
-  return (
-    <Button
-      size="sm"
-      leftIcon={<RiScan2Line />}
-      width="100%"
-      onClick={addToQueue}
-    >
-      Request A {scanDate ? "Rescan" : "Scan"}
-    </Button>
-  );
+  return addToQueue;
 }
