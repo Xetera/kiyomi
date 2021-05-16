@@ -5,10 +5,16 @@ const prisma = new PrismaClient();
 
 const url = "http://localhost:3000";
 async function main() {
+  const role = {
+    name: "ADMINISTRATOR",
+  };
   const jiubot = await prisma.user.upsert({
     where: { email: "bot@kiyomi.io" },
     update: {
       image: "https://my.simp.pics/ymT4UWHNEeBFtn-x.webp",
+      roles: {
+        create: role,
+      },
     },
     create: {
       email: "bot@kiyomi.io",
@@ -16,6 +22,9 @@ async function main() {
       name: "JiuBot",
       bot: true,
       token: generateUserToken(),
+      roles: {
+        create: role,
+      },
     },
   });
   console.log(`Generated JiuBot with token ${jiubot.token}`);

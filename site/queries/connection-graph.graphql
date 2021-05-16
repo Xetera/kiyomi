@@ -1,0 +1,18 @@
+query connectionGraph($slug: String!) {
+  imageConnections(depth: 2, slug: $slug) {
+    edges {
+      type
+      to
+      from
+    }
+    people {
+      id
+      name
+    }
+    images {
+      slug
+      id
+      rawUrl
+    }
+  }
+}

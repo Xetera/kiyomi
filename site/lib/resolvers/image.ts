@@ -8,12 +8,15 @@ import {
   list,
   mutationField,
   inputObjectType,
+  intArg,
+  enumType,
 } from "nexus";
 import { hasRole, Role } from "../permissions";
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client";
 import { Image as ImageType } from "@prisma/client";
 import { imgproxy } from "../imgproxy";
 import { formatDuration, intervalToDuration, sub } from "date-fns";
+import { imageConnections } from "../graph";
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
@@ -167,6 +170,52 @@ export const Image = objectType({
         });
       },
     });
+
+    const MAX_CONNECTIONS_DEPT = 4;
+    t.nonNull.field("connections", {
+      type: ImageConnections,
+      description: `A graph of connections people in this image share with others based on images they appear together in up to a depth of ${MAX_CONNECTIONS_DEPT}`,
+      args: {
+        depth: nonNull(intArg({ default: 2 })),
+      },
+      async resolve(base, { depth: maxDepth }, { prisma }) {
+        return imageConnections(base, maxDepth, prisma);
+      },
+    });
+  },
+});
+
+export const EdgeType = enumType({
+  name: "ImageConnectionEdge",
+  members: ["IMAGE_TO_PERSON", "PERSON_TO_IMAGE"],
+});
+
+export const ImageEdge = objectType({
+  name: "ImageEdge",
+  definition(t) {
+    // we are assuming that all objects in the database
+    // are uniquely identified by an integer value
+    // regardless of their type
+    t.nonNull.int("from");
+    t.nonNull.int("to");
+    t.field("type", {
+      type: EdgeType,
+    });
+  },
+});
+
+export const ImageConnections = objectType({
+  name: "ImageConnections",
+  definition(t) {
+    t.nonNull.list.nonNull.field("images", {
+      type: "Image",
+    });
+    t.nonNull.list.nonNull.field("people", {
+      type: "Person",
+    });
+    t.nonNull.list.nonNull.field("edges", {
+      type: ImageEdge,
+    });
   },
 });
 
@@ -201,6 +250,20 @@ export const Query = queryField((t) => {
       return await prisma.image.findUnique({
         where: { slug },
       });
+    },
+  });
+  t.field("imageConnections", {
+    type: ImageConnections,
+    args: {
+      slug: nonNull(stringArg()),
+      depth: nonNull(intArg({ default: 2 })),
+    },
+    async resolve(t, { slug, depth: maxDepth }, { prisma }) {
+      const base = await prisma.image.findUnique({ where: { slug } });
+      if (!base) {
+        throw Error("Invalid image slug");
+      }
+      return imageConnections(base, maxDepth, prisma);
     },
   });
 });
@@ -279,7 +342,7 @@ export const Mutation = mutationField((t) => {
           console.error(`Couldn't set face recognition request date`);
           console.error(err);
         });
-      console.log(`Got an image queue request for ${slug}`)
+      console.log(`Got an image queue request for ${slug}`);
       return {
         queueSize: queueInfo.messageCount,
       };

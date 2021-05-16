@@ -822,6 +822,11 @@ type Image {
   aspectRatio: Float!
   bytes: Int!
   caption: String
+
+  """
+  A graph of connections people in this image share with others based on images they appear together in up to a depth of 4
+  """
+  connections(depth: Int! = 2): ImageConnections!
   createdAt: DateTime!
   faceScanDate: DateTime
 
@@ -880,6 +885,17 @@ type Image {
 
   """Width of the image in pixels."""
   width: Int!
+}
+
+enum ImageConnectionEdge {
+  IMAGE_TO_PERSON
+  PERSON_TO_IMAGE
+}
+
+type ImageConnections {
+  edges: [ImageEdge!]!
+  images: [Image!]!
+  people: [Person!]!
 }
 
 input ImageCreateManyUserInput {
@@ -1102,6 +1118,12 @@ input ImageCreateWithoutUserInput {
 
 input ImageCreatepaletteInput {
   set: [Int!]
+}
+
+type ImageEdge {
+  from: Int!
+  to: Int!
+  type: ImageConnectionEdge
 }
 
 input ImageLikeCreateManyImageInput {
@@ -2072,6 +2094,7 @@ input PersonWhereUniqueInput {
 type Query {
   """Find a single image by its slug."""
   image(slug: String!): Image
+  imageConnections(depth: Int! = 2, slug: String!): ImageConnections
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
   people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!

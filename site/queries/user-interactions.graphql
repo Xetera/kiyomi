@@ -4,6 +4,9 @@ query Me {
     images(orderBy: { createdAt: asc }) {
       ...GridImage
     }
+    roles {
+      ...UserRoleData
+    }
   }
 }
 

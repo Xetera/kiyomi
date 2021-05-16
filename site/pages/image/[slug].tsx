@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ImageDisplay from "@/components/image-display";
 import ImageSidebar from "@/components/image-sidebar";
 import { FaceContext, ImageContext } from "@/models/contexts";
@@ -8,22 +8,39 @@ import NextHead from "next/head";
 import { RiSpyLine } from "react-icons/ri";
 import ReactModal from "react-modal";
 import { useRouter } from "next/router";
-import { MimeType, useOneImageQuery } from "@/__generated__/graphql";
+import {
+  MimeType,
+  useOneImageQuery,
+  useConnectionGraphQuery,
+  ImageConnectionEdge,
+} from "@/__generated__/graphql";
 import { ImageEditModal } from "@/components/image-edit-modal";
 import { GetServerSideProps } from "next";
 import { prefetchQuery } from "@/lib/client-helpers";
 import { prisma } from "@/lib/db";
 import { getSession } from "next-auth/client";
 import { wrapRequest } from "@/lib/data-fetching";
+import { Flex, Heading, Text } from "@chakra-ui/layout";
+import {
+  ContextSidebar,
+  SidebarItem,
+  WithSidebar,
+} from "@/components/context-sidebar";
+import { Box } from "@chakra-ui/react";
+import { FaceAppearance } from "@/components/face-appearance";
+
+import dynamic from "next/dynamic";
+import { GraphDisplay } from "@/components/graph-display";
 
 const Image = () => {
   const [isEditOpen, setEditOpen] = React.useState(false);
   const router = useRouter();
-  const slug = router.query.slug as string | undefined;
+  const slug = router.query.slug as string;
   const [face, setFace] = React.useState("");
-  const { data, isFetching, refetch } = useOneImageQuery({
-    slug: slug as string,
-  });
+  // best approximation for width
+  const [containerWidth, setContainerWidth] = React.useState(600);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { data, isFetching, refetch } = useOneImageQuery({ slug });
 
   function closeModal() {
     refetch();
@@ -38,6 +55,19 @@ const Image = () => {
       classList.remove("overflow-hidden");
     }
   }, [isEditOpen]);
+
+  React.useEffect(() => {
+    const dimensions = containerRef.current?.getBoundingClientRect();
+    console.log({ dimensions });
+    if (dimensions) {
+      setContainerWidth(dimensions.width);
+    }
+  }, []);
+  const personIds = React.useMemo(
+    () => data?.image?.appearances.map((r) => r.person.id) ?? [],
+    [data]
+  );
+
   if (!data) {
     return null;
   }
@@ -57,43 +87,75 @@ const Image = () => {
 
       <ImageContext.Provider value={image}>
         <Navbar />
-        {!image.public && (
-          <div className="text-gray-400 rounded border-b-1 border-theme-subtle text-sm lg:text-base">
-            <div className="max-w-7xl mx-auto py-3 px-4 flex items-center font-semibold">
-              <RiSpyLine className="mr-2" />
-              This image is unlisted and can only be viewed with a link.
-            </div>
-          </div>
-        )}
-        <div className="w-full relative overflow-hidden">
-          {image.mimetype !== MimeType.Gif && (
-            <img
-              src={image.rawUrl}
-              style={{
-                ...(image.width! < 1000 ? { filter: "blur(2px)" } : {}),
-                boxShadow: "inset 0 0 30px 15px #212121",
-                // zIndex: -1,
-                // background: "linear-gradient(to top, transparent, black)",
-              }}
-              className="absolute w-full opacity-[0.05] max-h-full object-cover object-center"
+        <WithSidebar
+          sidebar={
+            <ContextSidebar
+              items={[
+                <SidebarItem title="In this Image">
+                  {image.appearances.map((app) => (
+                    <FaceAppearance
+                      image={image}
+                      face={app.faces[0]}
+                      key={app.id}
+                      person={app.person}
+                    />
+                  ))}
+                  {image.unknownFaces.map((face) => (
+                    <FaceAppearance key={face.id} image={image} face={face} />
+                  ))}
+                </SidebarItem>,
+              ]}
             />
-          )}
-          <div className="justify-center mx-auto max-w-7xl px-4 lg:my-24 my-4">
-            <article className="flex gap-8 justify-center md:flex-row flex-col">
-              <div className="flex">
-                {image.caption && (
-                  <h1 className="text-2xl font-black mb-2 text-blueGray-500">
-                    {image.caption}
-                  </h1>
-                )}
-                <ImageDisplay />
+          }
+        >
+          <Flex direction="row" flex={1}>
+            <Box flex={1}>
+              <Flex></Flex>
+              <div className="text-gray-400 rounded text-sm lg:text-base mx-auto">
+                <Flex
+                  fontWeight="semibold"
+                  alignItems="center"
+                  justifyContent="center"
+                  mx="auto"
+                  className="max-w-7xl py-3 px-4"
+                >
+                  <RiSpyLine className="mr-2" />
+                  <Text textAlign="center">
+                    This image is unlisted and can only be viewed with a link.
+                  </Text>
+                </Flex>
               </div>
-              <div className="h-[min-content] min-w-[250px]">
-                <ImageSidebar onEdit={() => setEditOpen(true)} />
+              <div className="w-full relative overflow-hidden">
+                <div className="justify-center mx-auto max-w-7xl px-4 lg:mb-12 mb-4">
+                  <article
+                    className="flex gap-8 justify-center flex-col"
+                    ref={containerRef}
+                  >
+                    <Flex mt={[4, null, 6]} mb={[0, null, 6]}>
+                      {image.caption && (
+                        <h1 className="text-2xl font-black mb-2 text-blueGray-500">
+                          {image.caption}
+                        </h1>
+                      )}
+                      <ImageDisplay />
+                    </Flex>
+                    <div className="h-[min-content] min-w-[250px]">
+                      <ImageSidebar onEdit={() => setEditOpen(true)} />
+                    </div>
+                    <Flex maxWidth="600px" mx="auto" width="100%">
+                      <Heading fontSize="sm">Image Graph</Heading>
+                    </Flex>
+                    <GraphDisplay
+                      slug={slug}
+                      width={containerWidth}
+                      currentPersonIds={personIds}
+                    />
+                  </article>
+                </div>
               </div>
-            </article>
-          </div>
-        </div>
+            </Box>
+          </Flex>
+        </WithSidebar>
         <Footer />
         <ReactModal
           isOpen={isEditOpen}

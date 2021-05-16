@@ -1,4 +1,4 @@
-import { createSdk } from "@/scripts/client";
+import { createSdk } from "../../client";
 import fetch from "node-fetch";
 const prod = process.env.NODE_ENV === "production";
 

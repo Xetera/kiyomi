@@ -21,7 +21,7 @@ export default function ImageGrid({ images }: ImageGridProps) {
         <Box
           maxHeight="385px"
           key={image.id}
-          {...(image.aspectRatio > 1.5 ? { gridColumn: "auto / span 2" } : {})}
+          {...(image.aspectRatio > 1.4 ? { gridColumn: "auto / span 2" } : {})}
         >
           <ImageGridElement image={image} />
         </Box>

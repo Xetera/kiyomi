@@ -1,20 +1,49 @@
 import { rgbToHsl } from "@/lib/shared";
-import { HTMLAttributes } from "react";
+import { Box, Grid, Text } from "@chakra-ui/layout";
+import { Flex } from "@chakra-ui/react";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { HTMLAttributes } from "react";
 
 function decimalToHex(num: number) {
   return `#${num.toString(16)}`;
 }
 
+const MotionText = motion(Text);
+
 export function PaletteColor({ color }: { color: number }) {
   const colorHex = color.toString(16);
+  const [hovering, setHovering] = React.useState(false);
   return (
-    <div className="flex flex-row items-center">
-      <span
-        style={{ background: decimalToHex(color) }}
-        className="h-6 w-6 hover:h-6 animate rounded-full border-1 border-theme-light"
-      />
-      <pre className="ml-2 text-sm">#{colorHex}</pre>
-    </div>
+    <Flex
+      width="100%"
+      height="24px"
+      flexDirection="row"
+      alignItems="center"
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      position="relative"
+      background={decimalToHex(color)}
+    >
+      <AnimatePresence>
+        {hovering && (
+          <MotionText
+            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            position="absolute"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            fontWeight="600"
+            fontSize="xs"
+            width="100%"
+          >
+            #{colorHex}
+          </MotionText>
+        )}
+      </AnimatePresence>
+    </Flex>
   );
 }
 
@@ -23,10 +52,19 @@ export function Palette({
   ...rest
 }: HTMLAttributes<HTMLDivElement> & { colors: number[] }) {
   return (
-    <section className="grid grid-flow-row mt-2 gap-2 text-gray-400" {...rest}>
+    <Grid
+      gridAutoFlow="column"
+      mt={2}
+      as="section"
+      {...rest}
+      border="1px solid"
+      borderColor="gray.900"
+      borderRadius="sm"
+      overflow="hidden"
+    >
       {colors.slice(0, 5).map((color) => (
         <PaletteColor color={color} key={color} />
       ))}
-    </section>
+    </Grid>
   );
 }

@@ -236,8 +236,7 @@ export default function ImageDisplay() {
           className="flex object-contain overflow-hidden m-auto rounded"
         />
       </div>
-
-      <div className="flex items-center w-full mt-4">
+      {/* <div className="flex items-center w-full mt-4">
         <a
           href={image.rawUrl}
           rel="external nofollower noopener"
@@ -247,8 +246,8 @@ export default function ImageDisplay() {
           View Original
         </a>
         <Hr className="flex-1" />
-      </div>
-      {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
+      </div> */}
+      {/* {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
         <section className="mt-5">
           <Flex mb={3} justifyContent="space-between" flexFlow="row">
             <Flex flexDirection="column">
@@ -281,7 +280,7 @@ export default function ImageDisplay() {
             })}
           </CascadeChildren>
         </section>
-      )}
+      )} */}
     </div>
   );
 }

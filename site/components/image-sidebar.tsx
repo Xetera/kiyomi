@@ -4,21 +4,24 @@ import { Palette } from "./palette-color";
 import { Tags } from "./tags";
 import { CascadeChildren } from "./animations/cascade-children";
 import {
-  RiEmotionSadFill,
-  RiHeart2Line,
-  RiHeart3Line,
   RiHeartAddFill,
+  RiHeartFill,
   RiQuestionLine,
   RiScan2Line,
   RiUser3Fill,
-  RiUserHeartFill,
 } from "react-icons/ri";
 import { format } from "date-fns";
 import { User } from "./user";
 import { ImageContext } from "@/models/contexts";
-import { Box, Heading, Text } from "@chakra-ui/layout";
+import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-import { Grid, Spinner, useToast, UseToastOptions } from "@chakra-ui/react";
+import {
+  grid,
+  Grid,
+  Spinner,
+  useToast,
+  UseToastOptions,
+} from "@chakra-ui/react";
 import { useSession } from "next-auth/client";
 import { useToggleLikeMutation } from "@/__generated__/graphql";
 import QueueButton from "./queue-button";
@@ -36,9 +39,7 @@ function SidebarSection({ title, children }) {
       >
         {title}
       </Heading>
-      <Text size="sm" color="InactiveCaption">
-        {children}
-      </Text>
+      <Text size="sm">{children}</Text>
     </>
   );
 }
@@ -46,6 +47,22 @@ function SidebarSection({ title, children }) {
 export type ImageSidebarProps = {
   onEdit: () => void;
 };
+
+function Tag({ text, icon, onClick }) {
+  return (
+    <Flex
+      alignItems="center"
+      pr={4}
+      pb={2}
+      cursor="pointer"
+      onClick={onClick}
+      fontSize={["sm", null, null, "md"]}
+    >
+      <Box mr={2}>{icon}</Box>
+      <Text fontWeight="600">{text}</Text>
+    </Flex>
+  );
+}
 
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const toast = useToast();
@@ -81,9 +98,14 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const liked = data?.toggleLike.liked ?? image.liked;
   const uploadDate = new Date(image.createdAt);
   return (
-    <aside className="align-start text-sm rounded">
+    <Stack className="align-start text-sm rounded" maxWidth="600px" mx="auto">
       <CascadeChildren className="grid gap-4 text-sm">
-        <div className="flex flex-row align-top">
+        <Flex>
+          <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
+          <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
+          <Tag icon={<RiScan2Line />} text="Request scan" />
+        </Flex>
+        <Flex flexDirection="row" alignItems="top">
           <User
             user={image.uploadedBy}
             bottom={
@@ -95,11 +117,13 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
               </time>
             }
           />
-        </div>
+        </Flex>
         <hr className="border-theme-subtle" />
-        <div
+        <Grid
+          gap={2}
           className="grid gap-2"
-          style={{ gridTemplateColumns: "min-content 1fr" }}
+          fontColor="gray.500"
+          gridTemplateColumns="min-content 1fr"
         >
           <SidebarSection title={"Dimensions"}>
             <p className="font-semibold">
@@ -111,9 +135,6 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           </SidebarSection>
           <SidebarSection title={"Type"}>
             <p className="font-semibold">{image.mimetype.toUpperCase()}</p>
-          </SidebarSection>
-          <SidebarSection title={"NSFW?"}>
-            <p className="font-semibold">{image.isNsfw ? "Yes" : "No"}</p>
           </SidebarSection>
           <SidebarSection
             title={
@@ -131,13 +152,18 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
                 : "Never"}
             </p>
           </SidebarSection>
-        </div>
+        </Grid>
         {image.tags?.length > 0 ? (
           <Tags tags={image.tags.map((tag) => tag.name)} />
         ) : (
           <div />
         )}
         <Palette colors={image.palette} />
+        {/* {image.tags?.length > 0 ? (
+          <Tags tags={image.tags.map((tag) => tag.name)} />
+        ) : (
+          <div />
+        )}
         <div>
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
@@ -167,8 +193,8 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
             Edit Faces
           </Button>
           <QueueButton slug={image.slug} scanDate={image.faceScanDate} />
-        </Grid>
+        </Grid> */}
       </CascadeChildren>
-    </aside>
+    </Stack>
   );
 }

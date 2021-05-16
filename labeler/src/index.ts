@@ -7,11 +7,15 @@ import { canDetectFaces, checkWeights, detectFaces } from "./face-recognition";
 import axios from "axios";
 import { colorPalette, phash } from "./ffi";
 
+const authorization = config.get("userToken");
+
 const client = new GraphQLClient(`${config.get("backendUrl")}/api/internal`, {
   headers: {
-    authorization: config.get("userToken"),
+    authorization: authorization,
   },
 });
+
+console.log(`Created API client with token: ${authorization}`);
 
 const faceRecognitionQueueName = config.get("faceRecognitionQueue");
 const faceRecognitionRetryExchangeName = "face-recognition-retry";
@@ -100,10 +104,10 @@ async function processFaces(conn: amqp.Connection) {
       const [faces, hash, palette] = await Promise.all([
         detectFaces(imageBuffer.data),
         phash(imageBuffer.data),
-        colorPalette(imageBuffer.data)
+        colorPalette(imageBuffer.data),
       ]);
       console.timeEnd(label);
-      
+
       await sdk.labelImage({
         slug: msg.slug,
         ireneBotId: msg.ireneBotIdolId,

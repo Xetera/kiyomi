@@ -864,6 +864,8 @@ export type Image = {
   aspectRatio: Scalars['Float'];
   bytes: Scalars['Int'];
   caption?: Maybe<Scalars['String']>;
+  /** A graph of connections people in this image share with others based on images they appear together in up to a depth of 4 */
+  connections: ImageConnections;
   createdAt: Scalars['DateTime'];
   faceScanDate?: Maybe<Scalars['DateTime']>;
   /** The name the image file was uploaded with. */
@@ -913,10 +915,27 @@ export type ImageAppearancesArgs = {
 };
 
 
+export type ImageConnectionsArgs = {
+  depth?: Scalars['Int'];
+};
+
+
 export type ImageTagsArgs = {
   cursor?: Maybe<TagWhereUniqueInput>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
+};
+
+export enum ImageConnectionEdge {
+  ImageToPerson = 'IMAGE_TO_PERSON',
+  PersonToImage = 'PERSON_TO_IMAGE'
+}
+
+export type ImageConnections = {
+  __typename?: 'ImageConnections';
+  edges: Array<ImageEdge>;
+  images: Array<Image>;
+  people: Array<Person>;
 };
 
 export type ImageCreateManyUserInput = {
@@ -1139,6 +1158,13 @@ export type ImageCreateWithoutUserInput = {
 
 export type ImageCreatepaletteInput = {
   set?: Maybe<Array<Scalars['Int']>>;
+};
+
+export type ImageEdge = {
+  __typename?: 'ImageEdge';
+  from: Scalars['Int'];
+  to: Scalars['Int'];
+  type?: Maybe<ImageConnectionEdge>;
 };
 
 export type ImageLikeCreateManyImageInput = {
@@ -2166,6 +2192,7 @@ export type Query = {
   __typename?: 'Query';
   /** Find a single image by its slug. */
   image?: Maybe<Image>;
+  imageConnections?: Maybe<ImageConnections>;
   images: Array<Image>;
   me?: Maybe<User>;
   people: Array<Person>;
@@ -2175,6 +2202,12 @@ export type Query = {
 
 
 export type QueryImageArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryImageConnectionsArgs = {
+  depth?: Scalars['Int'];
   slug: Scalars['String'];
 };
 
@@ -2960,6 +2993,10 @@ export type OneImageQuery = (
       )> }
     )>, uploadedBy?: Maybe<(
       { __typename?: 'User' }
+      & { roles: Array<(
+        { __typename?: 'Role' }
+        & UserRoleDataFragment
+      )> }
       & UserDataFragment
     )> }
     & ImageDataFragment
@@ -2973,6 +3010,28 @@ export type AppearanceDataFragment = (
     { __typename?: 'Person' }
     & Pick<Person, 'id' | 'name'>
   ) }
+);
+
+export type ConnectionGraphQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type ConnectionGraphQuery = (
+  { __typename?: 'Query' }
+  & { imageConnections?: Maybe<(
+    { __typename?: 'ImageConnections' }
+    & { edges: Array<(
+      { __typename?: 'ImageEdge' }
+      & Pick<ImageEdge, 'type' | 'to' | 'from'>
+    )>, people: Array<(
+      { __typename?: 'Person' }
+      & Pick<Person, 'id' | 'name'>
+    )>, images: Array<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'slug' | 'id' | 'rawUrl'>
+    )> }
+  )> }
 );
 
 export type FaceDataFragment = (
@@ -3133,6 +3192,9 @@ export type MeQuery = (
     & { images: Array<(
       { __typename?: 'Image' }
       & GridImageFragment
+    )>, roles: Array<(
+      { __typename?: 'Role' }
+      & UserRoleDataFragment
     )> }
     & UserDataFragment
   )> }
@@ -3154,7 +3216,12 @@ export type ToggleLikeMutation = (
 
 export type UserDataFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'name' | 'avatar'>
+  & Pick<User, 'id' | 'name' | 'avatar' | 'bot'>
+);
+
+export type UserRoleDataFragment = (
+  { __typename?: 'Role' }
+  & Pick<Role, 'name'>
 );
 
 export const AppearanceDataFragmentDoc = `
@@ -3235,6 +3302,12 @@ export const UserDataFragmentDoc = `
   id
   name
   avatar
+  bot
+}
+    `;
+export const UserRoleDataFragmentDoc = `
+    fragment UserRoleData on Role {
+  name
 }
     `;
 export const AddToQueueDocument = `
@@ -3274,6 +3347,9 @@ export const OneImageDocument = `
     liked
     uploadedBy {
       ...UserData
+      roles {
+        ...UserRoleData
+      }
     }
     ...ImageData
     faceScanDate
@@ -3282,6 +3358,7 @@ export const OneImageDocument = `
     ${FaceDataFragmentDoc}
 ${AppearanceDataFragmentDoc}
 ${UserDataFragmentDoc}
+${UserRoleDataFragmentDoc}
 ${ImageDataFragmentDoc}`;
 export const useOneImageQuery = <
       TData = OneImageQuery,
@@ -3293,6 +3370,38 @@ export const useOneImageQuery = <
     useQuery<OneImageQuery, TError, TData>(
       ['OneImage', variables],
       fetcher<OneImageQuery, OneImageQueryVariables>(OneImageDocument, variables),
+      options
+    );
+export const ConnectionGraphDocument = `
+    query connectionGraph($slug: String!) {
+  imageConnections(depth: 2, slug: $slug) {
+    edges {
+      type
+      to
+      from
+    }
+    people {
+      id
+      name
+    }
+    images {
+      slug
+      id
+      rawUrl
+    }
+  }
+}
+    `;
+export const useConnectionGraphQuery = <
+      TData = ConnectionGraphQuery,
+      TError = unknown
+    >(
+      variables: ConnectionGraphQueryVariables, 
+      options?: UseQueryOptions<ConnectionGraphQuery, TError, TData>
+    ) => 
+    useQuery<ConnectionGraphQuery, TError, TData>(
+      ['connectionGraph', variables],
+      fetcher<ConnectionGraphQuery, ConnectionGraphQueryVariables>(ConnectionGraphDocument, variables),
       options
     );
 export const HomepageDocument = `
@@ -3429,10 +3538,14 @@ export const MeDocument = `
     images(orderBy: {createdAt: asc}) {
       ...GridImage
     }
+    roles {
+      ...UserRoleData
+    }
   }
 }
     ${UserDataFragmentDoc}
-${GridImageFragmentDoc}`;
+${GridImageFragmentDoc}
+${UserRoleDataFragmentDoc}`;
 export const useMeQuery = <
       TData = MeQuery,
       TError = unknown

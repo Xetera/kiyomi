@@ -1,5 +1,6 @@
 import colors from "tailwindcss/colors";
 import { extendTheme } from "@chakra-ui/react";
+import { createBreakpoints } from "@chakra-ui/theme-tools";
 
 const fontFamily = `
     "Inter",
@@ -14,6 +15,14 @@ const fontFamily = `
 		'Segoe UI Emoji'
 `;
 
+const breakpoints = createBreakpoints({
+  sm: "30em",
+  md: "37em",
+  lg: "62em",
+  xl: "80em",
+  "2xl": "96em",
+});
+
 const theme = extendTheme({
   fonts: {
     body: fontFamily,
@@ -23,6 +32,7 @@ const theme = extendTheme({
     initialColorMode: "dark",
     useSystemColorMode: true,
   },
+  breakpoints,
   colors: {
     ...colors,
     brand: {
@@ -60,4 +70,4 @@ const theme = extendTheme({
   },
 });
 
-export default theme
+export default theme;

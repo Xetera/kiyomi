@@ -2287,6 +2287,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   FaceSource: PrismaClient.FaceSource
+  ImageConnectionEdge: "IMAGE_TO_PERSON" | "PERSON_TO_IMAGE"
   MimeType: PrismaClient.MimeType
   QueryMode: PrismaClient.QueryMode
   SortOrder: PrismaClient.SortOrder
@@ -2308,6 +2309,16 @@ export interface NexusGenObjects {
   Appearance: PrismaClient.Appearance;
   Face: PrismaClient.Face;
   Image: PrismaClient.Image;
+  ImageConnections: { // root type
+    edges: NexusGenRootTypes['ImageEdge'][]; // [ImageEdge!]!
+    images: NexusGenRootTypes['Image'][]; // [Image!]!
+    people: NexusGenRootTypes['Person'][]; // [Person!]!
+  }
+  ImageEdge: { // root type
+    from: number; // Int!
+    to: number; // Int!
+    type?: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
+  }
   Mutation: {};
   Person: PrismaClient.Person;
   Query: {};
@@ -2369,6 +2380,7 @@ export interface NexusGenFieldTypes {
     aspectRatio: number; // Float!
     bytes: number; // Int!
     caption: string | null; // String
+    connections: NexusGenRootTypes['ImageConnections']; // ImageConnections!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     faceScanDate: NexusGenScalars['DateTime'] | null; // DateTime
     fileName: string | null; // String
@@ -2394,6 +2406,16 @@ export interface NexusGenFieldTypes {
     views: number; // Int!
     width: number; // Int!
   }
+  ImageConnections: { // field return type
+    edges: NexusGenRootTypes['ImageEdge'][]; // [ImageEdge!]!
+    images: NexusGenRootTypes['Image'][]; // [Image!]!
+    people: NexusGenRootTypes['Person'][]; // [Person!]!
+  }
+  ImageEdge: { // field return type
+    from: number; // Int!
+    to: number; // Int!
+    type: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
+  }
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     createOnePerson: NexusGenRootTypes['Person']; // Person!
@@ -2415,6 +2437,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     image: NexusGenRootTypes['Image'] | null; // Image
+    imageConnections: NexusGenRootTypes['ImageConnections'] | null; // ImageConnections
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     me: NexusGenRootTypes['User'] | null; // User
     people: NexusGenRootTypes['Person'][]; // [Person!]!
@@ -2484,6 +2507,7 @@ export interface NexusGenFieldTypeNames {
     aspectRatio: 'Float'
     bytes: 'Int'
     caption: 'String'
+    connections: 'ImageConnections'
     createdAt: 'DateTime'
     faceScanDate: 'DateTime'
     fileName: 'String'
@@ -2509,6 +2533,16 @@ export interface NexusGenFieldTypeNames {
     views: 'Int'
     width: 'Int'
   }
+  ImageConnections: { // field return type name
+    edges: 'ImageEdge'
+    images: 'Image'
+    people: 'Person'
+  }
+  ImageEdge: { // field return type name
+    from: 'Int'
+    to: 'Int'
+    type: 'ImageConnectionEdge'
+  }
   Mutation: { // field return type name
     addAppearance: 'Appearance'
     createOnePerson: 'Person'
@@ -2530,6 +2564,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     image: 'Image'
+    imageConnections: 'ImageConnections'
     images: 'Image'
     me: 'User'
     people: 'Person'
@@ -2577,6 +2612,9 @@ export interface NexusGenArgTypes {
       cursor?: NexusGenInputs['AppearanceWhereUniqueInput'] | null; // AppearanceWhereUniqueInput
       skip?: number | null; // Int
       take?: number | null; // Int
+    }
+    connections: { // args
+      depth: number; // Int!
     }
     tags: { // args
       cursor?: NexusGenInputs['TagWhereUniqueInput'] | null; // TagWhereUniqueInput
@@ -2633,6 +2671,10 @@ export interface NexusGenArgTypes {
   }
   Query: {
     image: { // args
+      slug: string; // String!
+    }
+    imageConnections: { // args
+      depth: number; // Int!
       slug: string; // String!
     }
     images: { // args

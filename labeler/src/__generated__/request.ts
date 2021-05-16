@@ -846,6 +846,8 @@ export type Image = {
   aspectRatio: Scalars['Float'];
   bytes: Scalars['Int'];
   caption?: Maybe<Scalars['String']>;
+  /** A graph of connections people in this image share with others based on images they appear together in up to a depth of 4 */
+  connections: ImageConnections;
   createdAt: Scalars['DateTime'];
   faceScanDate?: Maybe<Scalars['DateTime']>;
   /** The name the image file was uploaded with. */
@@ -895,10 +897,27 @@ export type ImageAppearancesArgs = {
 };
 
 
+export type ImageConnectionsArgs = {
+  depth?: Scalars['Int'];
+};
+
+
 export type ImageTagsArgs = {
   cursor?: Maybe<TagWhereUniqueInput>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
+};
+
+export enum ImageConnectionEdge {
+  ImageToPerson = 'IMAGE_TO_PERSON',
+  PersonToImage = 'PERSON_TO_IMAGE'
+}
+
+export type ImageConnections = {
+  __typename?: 'ImageConnections';
+  edges: Array<ImageEdge>;
+  images: Array<Image>;
+  people: Array<Person>;
 };
 
 export type ImageCreateManyUserInput = {
@@ -1121,6 +1140,13 @@ export type ImageCreateWithoutUserInput = {
 
 export type ImageCreatepaletteInput = {
   set?: Maybe<Array<Scalars['Int']>>;
+};
+
+export type ImageEdge = {
+  __typename?: 'ImageEdge';
+  from: Scalars['Int'];
+  to: Scalars['Int'];
+  type?: Maybe<ImageConnectionEdge>;
 };
 
 export type ImageLikeCreateManyImageInput = {
@@ -2148,6 +2174,7 @@ export type Query = {
   __typename?: 'Query';
   /** Find a single image by its slug. */
   image?: Maybe<Image>;
+  imageConnections?: Maybe<ImageConnections>;
   images: Array<Image>;
   me?: Maybe<User>;
   people: Array<Person>;
@@ -2157,6 +2184,12 @@ export type Query = {
 
 
 export type QueryImageArgs = {
+  slug: Scalars['String'];
+};
+
+
+export type QueryImageConnectionsArgs = {
+  depth?: Scalars['Int'];
   slug: Scalars['String'];
 };
 
