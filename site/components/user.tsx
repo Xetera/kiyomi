@@ -14,7 +14,7 @@ export function User({
   bottom,
 }: {
   user?: Maybe<
-    Pick<UserData, "bot" | "name" | "roles" | "avatar"> & {
+    Pick<UserData, "bot" | "name" | "avatar"> & {
       roles: Array<Pick<Role, "name">>;
     }
   >;

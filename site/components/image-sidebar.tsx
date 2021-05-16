@@ -19,6 +19,7 @@ import {
   grid,
   Grid,
   Spinner,
+  Tooltip,
   useToast,
   UseToastOptions,
 } from "@chakra-ui/react";
@@ -49,8 +50,10 @@ export type ImageSidebarProps = {
   onEdit: () => void;
 };
 
+type TagProps = {};
+
 function Tag({ text, icon, onClick, disabled = false }) {
-  return (
+  const data = (
     <Flex
       alignItems="center"
       pr={4}
@@ -64,6 +67,10 @@ function Tag({ text, icon, onClick, disabled = false }) {
       <Text fontWeight="600">{text}</Text>
     </Flex>
   );
+  if (disabled) {
+    return <Tooltip label="Already requested">{data}</Tooltip>;
+  }
+  return data;
 }
 
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
@@ -107,12 +114,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         <Flex>
           <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
           <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
-          <Tag
-            icon={<RiScan2Line />}
-            text="Request scan"
-            onClick={request}
-            disabled
-          />
+          <Tag icon={<RiScan2Line />} text="Request scan" onClick={request} />
         </Flex>
         <Flex flexDirection="row" alignItems="top">
           <User
