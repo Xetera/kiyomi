@@ -857,6 +857,530 @@ export type FloatFilter = {
   notIn?: Maybe<Array<Scalars['Float']>>;
 };
 
+export type Group = {
+  __typename?: 'Group';
+  aliases: Array<GroupAlias>;
+  avatar?: Maybe<Image>;
+  banner?: Maybe<Image>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Int'];
+  members: Array<GroupMember>;
+  name: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+};
+
+
+export type GroupAliasesArgs = {
+  cursor?: Maybe<GroupAliasWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
+export type GroupMembersArgs = {
+  cursor?: Maybe<GroupMemberWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+export type GroupAlias = {
+  __typename?: 'GroupAlias';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type GroupAliasCreateManyGroupInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupAliasCreateManyGroupInputEnvelope = {
+  data?: Maybe<Array<GroupAliasCreateManyGroupInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type GroupAliasCreateNestedManyWithoutGroupInput = {
+  connect?: Maybe<Array<GroupAliasWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<GroupAliasCreateOrConnectWithoutGroupInput>>;
+  create?: Maybe<Array<GroupAliasCreateWithoutGroupInput>>;
+  createMany?: Maybe<GroupAliasCreateManyGroupInputEnvelope>;
+};
+
+export type GroupAliasCreateOrConnectWithoutGroupInput = {
+  create: GroupAliasCreateWithoutGroupInput;
+  where: GroupAliasWhereUniqueInput;
+};
+
+export type GroupAliasCreateWithoutGroupInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupAliasListRelationFilter = {
+  every?: Maybe<GroupAliasWhereInput>;
+  none?: Maybe<GroupAliasWhereInput>;
+  some?: Maybe<GroupAliasWhereInput>;
+};
+
+export type GroupAliasScalarWhereInput = {
+  AND?: Maybe<Array<GroupAliasScalarWhereInput>>;
+  NOT?: Maybe<Array<GroupAliasScalarWhereInput>>;
+  OR?: Maybe<Array<GroupAliasScalarWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  groupId?: Maybe<IntFilter>;
+  id?: Maybe<IntFilter>;
+  name?: Maybe<StringFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type GroupAliasUpdateManyMutationInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  name?: Maybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupAliasUpdateManyWithWhereWithoutGroupInput = {
+  data: GroupAliasUpdateManyMutationInput;
+  where: GroupAliasScalarWhereInput;
+};
+
+export type GroupAliasUpdateManyWithoutGroupInput = {
+  connect?: Maybe<Array<GroupAliasWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<GroupAliasCreateOrConnectWithoutGroupInput>>;
+  create?: Maybe<Array<GroupAliasCreateWithoutGroupInput>>;
+  createMany?: Maybe<GroupAliasCreateManyGroupInputEnvelope>;
+  delete?: Maybe<Array<GroupAliasWhereUniqueInput>>;
+  deleteMany?: Maybe<Array<GroupAliasScalarWhereInput>>;
+  disconnect?: Maybe<Array<GroupAliasWhereUniqueInput>>;
+  set?: Maybe<Array<GroupAliasWhereUniqueInput>>;
+  update?: Maybe<Array<GroupAliasUpdateWithWhereUniqueWithoutGroupInput>>;
+  updateMany?: Maybe<Array<GroupAliasUpdateManyWithWhereWithoutGroupInput>>;
+  upsert?: Maybe<Array<GroupAliasUpsertWithWhereUniqueWithoutGroupInput>>;
+};
+
+export type GroupAliasUpdateWithWhereUniqueWithoutGroupInput = {
+  data: GroupAliasUpdateWithoutGroupInput;
+  where: GroupAliasWhereUniqueInput;
+};
+
+export type GroupAliasUpdateWithoutGroupInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  name?: Maybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupAliasUpsertWithWhereUniqueWithoutGroupInput = {
+  create: GroupAliasCreateWithoutGroupInput;
+  update: GroupAliasUpdateWithoutGroupInput;
+  where: GroupAliasWhereUniqueInput;
+};
+
+export type GroupAliasWhereInput = {
+  AND?: Maybe<Array<GroupAliasWhereInput>>;
+  NOT?: Maybe<Array<GroupAliasWhereInput>>;
+  OR?: Maybe<Array<GroupAliasWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  group?: Maybe<GroupWhereInput>;
+  groupId?: Maybe<IntFilter>;
+  id?: Maybe<IntFilter>;
+  name?: Maybe<StringFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type GroupAliasWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type GroupCreateInput = {
+  aliases?: Maybe<GroupAliasCreateNestedManyWithoutGroupInput>;
+  avatar?: Maybe<ImageCreateNestedOneWithoutAvatarOfInput>;
+  banner?: Maybe<ImageCreateNestedOneWithoutBannerOfInput>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
+  members?: Maybe<GroupMemberCreateNestedManyWithoutGroupInput>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupCreateNestedOneWithoutAvatarInput = {
+  connect?: Maybe<GroupWhereUniqueInput>;
+  connectOrCreate?: Maybe<GroupCreateOrConnectWithoutAvatarInput>;
+  create?: Maybe<GroupCreateWithoutAvatarInput>;
+};
+
+export type GroupCreateNestedOneWithoutBannerInput = {
+  connect?: Maybe<GroupWhereUniqueInput>;
+  connectOrCreate?: Maybe<GroupCreateOrConnectWithoutBannerInput>;
+  create?: Maybe<GroupCreateWithoutBannerInput>;
+};
+
+export type GroupCreateNestedOneWithoutMembersInput = {
+  connect?: Maybe<GroupWhereUniqueInput>;
+  connectOrCreate?: Maybe<GroupCreateOrConnectWithoutMembersInput>;
+  create?: Maybe<GroupCreateWithoutMembersInput>;
+};
+
+export type GroupCreateOrConnectWithoutAvatarInput = {
+  create: GroupCreateWithoutAvatarInput;
+  where: GroupWhereUniqueInput;
+};
+
+export type GroupCreateOrConnectWithoutBannerInput = {
+  create: GroupCreateWithoutBannerInput;
+  where: GroupWhereUniqueInput;
+};
+
+export type GroupCreateOrConnectWithoutMembersInput = {
+  create: GroupCreateWithoutMembersInput;
+  where: GroupWhereUniqueInput;
+};
+
+export type GroupCreateWithoutAvatarInput = {
+  aliases?: Maybe<GroupAliasCreateNestedManyWithoutGroupInput>;
+  banner?: Maybe<ImageCreateNestedOneWithoutBannerOfInput>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
+  members?: Maybe<GroupMemberCreateNestedManyWithoutGroupInput>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupCreateWithoutBannerInput = {
+  aliases?: Maybe<GroupAliasCreateNestedManyWithoutGroupInput>;
+  avatar?: Maybe<ImageCreateNestedOneWithoutAvatarOfInput>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
+  members?: Maybe<GroupMemberCreateNestedManyWithoutGroupInput>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupCreateWithoutMembersInput = {
+  aliases?: Maybe<GroupAliasCreateNestedManyWithoutGroupInput>;
+  avatar?: Maybe<ImageCreateNestedOneWithoutAvatarOfInput>;
+  banner?: Maybe<ImageCreateNestedOneWithoutBannerOfInput>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupMember = {
+  __typename?: 'GroupMember';
+  createdAt: Scalars['DateTime'];
+  endDate?: Maybe<Scalars['DateTime']>;
+  group: Group;
+  id: Scalars['Int'];
+  joinDate: Scalars['DateTime'];
+  person: Person;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type GroupMemberCreateManyGroupInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  endDate?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['Int']>;
+  joinDate: Scalars['DateTime'];
+  personId: Scalars['Int'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupMemberCreateManyGroupInputEnvelope = {
+  data?: Maybe<Array<GroupMemberCreateManyGroupInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type GroupMemberCreateManyPersonInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  endDate?: Maybe<Scalars['DateTime']>;
+  groupId: Scalars['Int'];
+  id?: Maybe<Scalars['Int']>;
+  joinDate: Scalars['DateTime'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupMemberCreateManyPersonInputEnvelope = {
+  data?: Maybe<Array<GroupMemberCreateManyPersonInput>>;
+  skipDuplicates?: Maybe<Scalars['Boolean']>;
+};
+
+export type GroupMemberCreateNestedManyWithoutGroupInput = {
+  connect?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<GroupMemberCreateOrConnectWithoutGroupInput>>;
+  create?: Maybe<Array<GroupMemberCreateWithoutGroupInput>>;
+  createMany?: Maybe<GroupMemberCreateManyGroupInputEnvelope>;
+};
+
+export type GroupMemberCreateNestedManyWithoutPersonInput = {
+  connect?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<GroupMemberCreateOrConnectWithoutPersonInput>>;
+  create?: Maybe<Array<GroupMemberCreateWithoutPersonInput>>;
+  createMany?: Maybe<GroupMemberCreateManyPersonInputEnvelope>;
+};
+
+export type GroupMemberCreateOrConnectWithoutGroupInput = {
+  create: GroupMemberCreateWithoutGroupInput;
+  where: GroupMemberWhereUniqueInput;
+};
+
+export type GroupMemberCreateOrConnectWithoutPersonInput = {
+  create: GroupMemberCreateWithoutPersonInput;
+  where: GroupMemberWhereUniqueInput;
+};
+
+export type GroupMemberCreateWithoutGroupInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  endDate?: Maybe<Scalars['DateTime']>;
+  joinDate: Scalars['DateTime'];
+  person: PersonCreateNestedOneWithoutMemberOfInput;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupMemberCreateWithoutPersonInput = {
+  createdAt?: Maybe<Scalars['DateTime']>;
+  endDate?: Maybe<Scalars['DateTime']>;
+  group: GroupCreateNestedOneWithoutMembersInput;
+  joinDate: Scalars['DateTime'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type GroupMemberListRelationFilter = {
+  every?: Maybe<GroupMemberWhereInput>;
+  none?: Maybe<GroupMemberWhereInput>;
+  some?: Maybe<GroupMemberWhereInput>;
+};
+
+export type GroupMemberMemberCompoundUniqueInput = {
+  groupId: Scalars['Int'];
+  personId: Scalars['Int'];
+};
+
+export type GroupMemberScalarWhereInput = {
+  AND?: Maybe<Array<GroupMemberScalarWhereInput>>;
+  NOT?: Maybe<Array<GroupMemberScalarWhereInput>>;
+  OR?: Maybe<Array<GroupMemberScalarWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  endDate?: Maybe<DateTimeNullableFilter>;
+  groupId?: Maybe<IntFilter>;
+  id?: Maybe<IntFilter>;
+  joinDate?: Maybe<DateTimeFilter>;
+  personId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type GroupMemberUpdateManyMutationInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  endDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  joinDate?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupMemberUpdateManyWithWhereWithoutGroupInput = {
+  data: GroupMemberUpdateManyMutationInput;
+  where: GroupMemberScalarWhereInput;
+};
+
+export type GroupMemberUpdateManyWithWhereWithoutPersonInput = {
+  data: GroupMemberUpdateManyMutationInput;
+  where: GroupMemberScalarWhereInput;
+};
+
+export type GroupMemberUpdateManyWithoutGroupInput = {
+  connect?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<GroupMemberCreateOrConnectWithoutGroupInput>>;
+  create?: Maybe<Array<GroupMemberCreateWithoutGroupInput>>;
+  createMany?: Maybe<GroupMemberCreateManyGroupInputEnvelope>;
+  delete?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  deleteMany?: Maybe<Array<GroupMemberScalarWhereInput>>;
+  disconnect?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  set?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  update?: Maybe<Array<GroupMemberUpdateWithWhereUniqueWithoutGroupInput>>;
+  updateMany?: Maybe<Array<GroupMemberUpdateManyWithWhereWithoutGroupInput>>;
+  upsert?: Maybe<Array<GroupMemberUpsertWithWhereUniqueWithoutGroupInput>>;
+};
+
+export type GroupMemberUpdateManyWithoutPersonInput = {
+  connect?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  connectOrCreate?: Maybe<Array<GroupMemberCreateOrConnectWithoutPersonInput>>;
+  create?: Maybe<Array<GroupMemberCreateWithoutPersonInput>>;
+  createMany?: Maybe<GroupMemberCreateManyPersonInputEnvelope>;
+  delete?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  deleteMany?: Maybe<Array<GroupMemberScalarWhereInput>>;
+  disconnect?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  set?: Maybe<Array<GroupMemberWhereUniqueInput>>;
+  update?: Maybe<Array<GroupMemberUpdateWithWhereUniqueWithoutPersonInput>>;
+  updateMany?: Maybe<Array<GroupMemberUpdateManyWithWhereWithoutPersonInput>>;
+  upsert?: Maybe<Array<GroupMemberUpsertWithWhereUniqueWithoutPersonInput>>;
+};
+
+export type GroupMemberUpdateWithWhereUniqueWithoutGroupInput = {
+  data: GroupMemberUpdateWithoutGroupInput;
+  where: GroupMemberWhereUniqueInput;
+};
+
+export type GroupMemberUpdateWithWhereUniqueWithoutPersonInput = {
+  data: GroupMemberUpdateWithoutPersonInput;
+  where: GroupMemberWhereUniqueInput;
+};
+
+export type GroupMemberUpdateWithoutGroupInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  endDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  joinDate?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  person?: Maybe<PersonUpdateOneRequiredWithoutMemberOfInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupMemberUpdateWithoutPersonInput = {
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  endDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  group?: Maybe<GroupUpdateOneRequiredWithoutMembersInput>;
+  joinDate?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupMemberUpsertWithWhereUniqueWithoutGroupInput = {
+  create: GroupMemberCreateWithoutGroupInput;
+  update: GroupMemberUpdateWithoutGroupInput;
+  where: GroupMemberWhereUniqueInput;
+};
+
+export type GroupMemberUpsertWithWhereUniqueWithoutPersonInput = {
+  create: GroupMemberCreateWithoutPersonInput;
+  update: GroupMemberUpdateWithoutPersonInput;
+  where: GroupMemberWhereUniqueInput;
+};
+
+export type GroupMemberWhereInput = {
+  AND?: Maybe<Array<GroupMemberWhereInput>>;
+  NOT?: Maybe<Array<GroupMemberWhereInput>>;
+  OR?: Maybe<Array<GroupMemberWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  endDate?: Maybe<DateTimeNullableFilter>;
+  group?: Maybe<GroupWhereInput>;
+  groupId?: Maybe<IntFilter>;
+  id?: Maybe<IntFilter>;
+  joinDate?: Maybe<DateTimeFilter>;
+  person?: Maybe<PersonWhereInput>;
+  personId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type GroupMemberWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+  member?: Maybe<GroupMemberMemberCompoundUniqueInput>;
+};
+
+export type GroupUpdateInput = {
+  aliases?: Maybe<GroupAliasUpdateManyWithoutGroupInput>;
+  avatar?: Maybe<ImageUpdateOneWithoutAvatarOfInput>;
+  banner?: Maybe<ImageUpdateOneWithoutBannerOfInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  members?: Maybe<GroupMemberUpdateManyWithoutGroupInput>;
+  name?: Maybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupUpdateOneRequiredWithoutMembersInput = {
+  connect?: Maybe<GroupWhereUniqueInput>;
+  connectOrCreate?: Maybe<GroupCreateOrConnectWithoutMembersInput>;
+  create?: Maybe<GroupCreateWithoutMembersInput>;
+  update?: Maybe<GroupUpdateWithoutMembersInput>;
+  upsert?: Maybe<GroupUpsertWithoutMembersInput>;
+};
+
+export type GroupUpdateOneWithoutAvatarInput = {
+  connect?: Maybe<GroupWhereUniqueInput>;
+  connectOrCreate?: Maybe<GroupCreateOrConnectWithoutAvatarInput>;
+  create?: Maybe<GroupCreateWithoutAvatarInput>;
+  delete?: Maybe<Scalars['Boolean']>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<GroupUpdateWithoutAvatarInput>;
+  upsert?: Maybe<GroupUpsertWithoutAvatarInput>;
+};
+
+export type GroupUpdateOneWithoutBannerInput = {
+  connect?: Maybe<GroupWhereUniqueInput>;
+  connectOrCreate?: Maybe<GroupCreateOrConnectWithoutBannerInput>;
+  create?: Maybe<GroupCreateWithoutBannerInput>;
+  delete?: Maybe<Scalars['Boolean']>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<GroupUpdateWithoutBannerInput>;
+  upsert?: Maybe<GroupUpsertWithoutBannerInput>;
+};
+
+export type GroupUpdateWithoutAvatarInput = {
+  aliases?: Maybe<GroupAliasUpdateManyWithoutGroupInput>;
+  banner?: Maybe<ImageUpdateOneWithoutBannerOfInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  members?: Maybe<GroupMemberUpdateManyWithoutGroupInput>;
+  name?: Maybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupUpdateWithoutBannerInput = {
+  aliases?: Maybe<GroupAliasUpdateManyWithoutGroupInput>;
+  avatar?: Maybe<ImageUpdateOneWithoutAvatarOfInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  members?: Maybe<GroupMemberUpdateManyWithoutGroupInput>;
+  name?: Maybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupUpdateWithoutMembersInput = {
+  aliases?: Maybe<GroupAliasUpdateManyWithoutGroupInput>;
+  avatar?: Maybe<ImageUpdateOneWithoutAvatarOfInput>;
+  banner?: Maybe<ImageUpdateOneWithoutBannerOfInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  name?: Maybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type GroupUpsertWithoutAvatarInput = {
+  create: GroupCreateWithoutAvatarInput;
+  update: GroupUpdateWithoutAvatarInput;
+};
+
+export type GroupUpsertWithoutBannerInput = {
+  create: GroupCreateWithoutBannerInput;
+  update: GroupUpdateWithoutBannerInput;
+};
+
+export type GroupUpsertWithoutMembersInput = {
+  create: GroupCreateWithoutMembersInput;
+  update: GroupUpdateWithoutMembersInput;
+};
+
+export type GroupWhereInput = {
+  AND?: Maybe<Array<GroupWhereInput>>;
+  NOT?: Maybe<Array<GroupWhereInput>>;
+  OR?: Maybe<Array<GroupWhereInput>>;
+  aliases?: Maybe<GroupAliasListRelationFilter>;
+  avatar?: Maybe<ImageWhereInput>;
+  avatarId?: Maybe<IntNullableFilter>;
+  banner?: Maybe<ImageWhereInput>;
+  bannerId?: Maybe<IntNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  ireneBotId?: Maybe<IntNullableFilter>;
+  members?: Maybe<GroupMemberListRelationFilter>;
+  name?: Maybe<StringFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type GroupWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
 export type Image = {
   __typename?: 'Image';
   appearances: Array<Appearance>;
@@ -984,6 +1508,18 @@ export type ImageCreateNestedOneWithoutAppearancesInput = {
   create?: Maybe<ImageCreateWithoutAppearancesInput>;
 };
 
+export type ImageCreateNestedOneWithoutAvatarOfInput = {
+  connect?: Maybe<ImageWhereUniqueInput>;
+  connectOrCreate?: Maybe<ImageCreateOrConnectWithoutAvatarOfInput>;
+  create?: Maybe<ImageCreateWithoutAvatarOfInput>;
+};
+
+export type ImageCreateNestedOneWithoutBannerOfInput = {
+  connect?: Maybe<ImageWhereUniqueInput>;
+  connectOrCreate?: Maybe<ImageCreateOrConnectWithoutBannerOfInput>;
+  create?: Maybe<ImageCreateWithoutBannerOfInput>;
+};
+
 export type ImageCreateNestedOneWithoutLikesInput = {
   connect?: Maybe<ImageWhereUniqueInput>;
   connectOrCreate?: Maybe<ImageCreateOrConnectWithoutLikesInput>;
@@ -998,6 +1534,16 @@ export type ImageCreateNestedOneWithoutTagsInput = {
 
 export type ImageCreateOrConnectWithoutAppearancesInput = {
   create: ImageCreateWithoutAppearancesInput;
+  where: ImageWhereUniqueInput;
+};
+
+export type ImageCreateOrConnectWithoutAvatarOfInput = {
+  create: ImageCreateWithoutAvatarOfInput;
+  where: ImageWhereUniqueInput;
+};
+
+export type ImageCreateOrConnectWithoutBannerOfInput = {
+  create: ImageCreateWithoutBannerOfInput;
   where: ImageWhereUniqueInput;
 };
 
@@ -1022,6 +1568,66 @@ export type ImageCreateOrConnectWithoutUserInput = {
 };
 
 export type ImageCreateWithoutAppearancesInput = {
+  avatarOf?: Maybe<GroupCreateNestedOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupCreateNestedOneWithoutBannerInput>;
+  bytes?: Maybe<Scalars['Int']>;
+  caption?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
+  faces?: Maybe<FaceCreateNestedManyWithoutImageInput>;
+  fileName?: Maybe<Scalars['String']>;
+  hash: Scalars['String'];
+  height: Scalars['Int'];
+  ireneBotId?: Maybe<Scalars['Int']>;
+  isNsfw?: Maybe<Scalars['Boolean']>;
+  likes?: Maybe<ImageLikeCreateNestedManyWithoutImageInput>;
+  mimetype: MimeType;
+  pHash?: Maybe<Scalars['String']>;
+  palette?: Maybe<ImageCreatepaletteInput>;
+  public?: Maybe<Scalars['Boolean']>;
+  slug: Scalars['String'];
+  source?: Maybe<Scalars['String']>;
+  tags?: Maybe<TagCreateNestedManyWithoutImageInput>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  uploadType: UploadType;
+  user?: Maybe<UserCreateNestedOneWithoutImagesInput>;
+  views?: Maybe<Scalars['Int']>;
+  width: Scalars['Int'];
+};
+
+export type ImageCreateWithoutAvatarOfInput = {
+  appearances?: Maybe<AppearanceCreateNestedManyWithoutImageInput>;
+  bannerOf?: Maybe<GroupCreateNestedOneWithoutBannerInput>;
+  bytes?: Maybe<Scalars['Int']>;
+  caption?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  faceScanDate?: Maybe<Scalars['DateTime']>;
+  faceScanRequestDate?: Maybe<Scalars['DateTime']>;
+  faces?: Maybe<FaceCreateNestedManyWithoutImageInput>;
+  fileName?: Maybe<Scalars['String']>;
+  hash: Scalars['String'];
+  height: Scalars['Int'];
+  ireneBotId?: Maybe<Scalars['Int']>;
+  isNsfw?: Maybe<Scalars['Boolean']>;
+  likes?: Maybe<ImageLikeCreateNestedManyWithoutImageInput>;
+  mimetype: MimeType;
+  pHash?: Maybe<Scalars['String']>;
+  palette?: Maybe<ImageCreatepaletteInput>;
+  public?: Maybe<Scalars['Boolean']>;
+  slug: Scalars['String'];
+  source?: Maybe<Scalars['String']>;
+  tags?: Maybe<TagCreateNestedManyWithoutImageInput>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  uploadType: UploadType;
+  user?: Maybe<UserCreateNestedOneWithoutImagesInput>;
+  views?: Maybe<Scalars['Int']>;
+  width: Scalars['Int'];
+};
+
+export type ImageCreateWithoutBannerOfInput = {
+  appearances?: Maybe<AppearanceCreateNestedManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupCreateNestedOneWithoutAvatarInput>;
   bytes?: Maybe<Scalars['Int']>;
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
@@ -1050,6 +1656,8 @@ export type ImageCreateWithoutAppearancesInput = {
 
 export type ImageCreateWithoutFacesInput = {
   appearances?: Maybe<AppearanceCreateNestedManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupCreateNestedOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupCreateNestedOneWithoutBannerInput>;
   bytes?: Maybe<Scalars['Int']>;
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
@@ -1077,6 +1685,8 @@ export type ImageCreateWithoutFacesInput = {
 
 export type ImageCreateWithoutLikesInput = {
   appearances?: Maybe<AppearanceCreateNestedManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupCreateNestedOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupCreateNestedOneWithoutBannerInput>;
   bytes?: Maybe<Scalars['Int']>;
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
@@ -1104,6 +1714,8 @@ export type ImageCreateWithoutLikesInput = {
 
 export type ImageCreateWithoutTagsInput = {
   appearances?: Maybe<AppearanceCreateNestedManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupCreateNestedOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupCreateNestedOneWithoutBannerInput>;
   bytes?: Maybe<Scalars['Int']>;
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
@@ -1131,6 +1743,8 @@ export type ImageCreateWithoutTagsInput = {
 
 export type ImageCreateWithoutUserInput = {
   appearances?: Maybe<AppearanceCreateNestedManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupCreateNestedOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupCreateNestedOneWithoutBannerInput>;
   bytes?: Maybe<Scalars['Int']>;
   caption?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['DateTime']>;
@@ -1477,12 +2091,92 @@ export type ImageUpdateOneRequiredWithoutTagsInput = {
   upsert?: Maybe<ImageUpsertWithoutTagsInput>;
 };
 
+export type ImageUpdateOneWithoutAvatarOfInput = {
+  connect?: Maybe<ImageWhereUniqueInput>;
+  connectOrCreate?: Maybe<ImageCreateOrConnectWithoutAvatarOfInput>;
+  create?: Maybe<ImageCreateWithoutAvatarOfInput>;
+  delete?: Maybe<Scalars['Boolean']>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<ImageUpdateWithoutAvatarOfInput>;
+  upsert?: Maybe<ImageUpsertWithoutAvatarOfInput>;
+};
+
+export type ImageUpdateOneWithoutBannerOfInput = {
+  connect?: Maybe<ImageWhereUniqueInput>;
+  connectOrCreate?: Maybe<ImageCreateOrConnectWithoutBannerOfInput>;
+  create?: Maybe<ImageCreateWithoutBannerOfInput>;
+  delete?: Maybe<Scalars['Boolean']>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<ImageUpdateWithoutBannerOfInput>;
+  upsert?: Maybe<ImageUpsertWithoutBannerOfInput>;
+};
+
 export type ImageUpdateWithWhereUniqueWithoutUserInput = {
   data: ImageUpdateWithoutUserInput;
   where: ImageWhereUniqueInput;
 };
 
 export type ImageUpdateWithoutAppearancesInput = {
+  avatarOf?: Maybe<GroupUpdateOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupUpdateOneWithoutBannerInput>;
+  bytes?: Maybe<IntFieldUpdateOperationsInput>;
+  caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faces?: Maybe<FaceUpdateManyWithoutImageInput>;
+  fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  hash?: Maybe<StringFieldUpdateOperationsInput>;
+  height?: Maybe<IntFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  isNsfw?: Maybe<BoolFieldUpdateOperationsInput>;
+  likes?: Maybe<ImageLikeUpdateManyWithoutImageInput>;
+  mimetype?: Maybe<EnumMimeTypeFieldUpdateOperationsInput>;
+  pHash?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  palette?: Maybe<ImageUpdatepaletteInput>;
+  public?: Maybe<BoolFieldUpdateOperationsInput>;
+  slug?: Maybe<StringFieldUpdateOperationsInput>;
+  source?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  tags?: Maybe<TagUpdateManyWithoutImageInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  uploadType?: Maybe<EnumUploadTypeFieldUpdateOperationsInput>;
+  user?: Maybe<UserUpdateOneWithoutImagesInput>;
+  views?: Maybe<IntFieldUpdateOperationsInput>;
+  width?: Maybe<IntFieldUpdateOperationsInput>;
+};
+
+export type ImageUpdateWithoutAvatarOfInput = {
+  appearances?: Maybe<AppearanceUpdateManyWithoutImageInput>;
+  bannerOf?: Maybe<GroupUpdateOneWithoutBannerInput>;
+  bytes?: Maybe<IntFieldUpdateOperationsInput>;
+  caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  faceScanDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faceScanRequestDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
+  faces?: Maybe<FaceUpdateManyWithoutImageInput>;
+  fileName?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  hash?: Maybe<StringFieldUpdateOperationsInput>;
+  height?: Maybe<IntFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  isNsfw?: Maybe<BoolFieldUpdateOperationsInput>;
+  likes?: Maybe<ImageLikeUpdateManyWithoutImageInput>;
+  mimetype?: Maybe<EnumMimeTypeFieldUpdateOperationsInput>;
+  pHash?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  palette?: Maybe<ImageUpdatepaletteInput>;
+  public?: Maybe<BoolFieldUpdateOperationsInput>;
+  slug?: Maybe<StringFieldUpdateOperationsInput>;
+  source?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  tags?: Maybe<TagUpdateManyWithoutImageInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  uploadType?: Maybe<EnumUploadTypeFieldUpdateOperationsInput>;
+  user?: Maybe<UserUpdateOneWithoutImagesInput>;
+  views?: Maybe<IntFieldUpdateOperationsInput>;
+  width?: Maybe<IntFieldUpdateOperationsInput>;
+};
+
+export type ImageUpdateWithoutBannerOfInput = {
+  appearances?: Maybe<AppearanceUpdateManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupUpdateOneWithoutAvatarInput>;
   bytes?: Maybe<IntFieldUpdateOperationsInput>;
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -1511,6 +2205,8 @@ export type ImageUpdateWithoutAppearancesInput = {
 
 export type ImageUpdateWithoutFacesInput = {
   appearances?: Maybe<AppearanceUpdateManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupUpdateOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupUpdateOneWithoutBannerInput>;
   bytes?: Maybe<IntFieldUpdateOperationsInput>;
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -1538,6 +2234,8 @@ export type ImageUpdateWithoutFacesInput = {
 
 export type ImageUpdateWithoutLikesInput = {
   appearances?: Maybe<AppearanceUpdateManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupUpdateOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupUpdateOneWithoutBannerInput>;
   bytes?: Maybe<IntFieldUpdateOperationsInput>;
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -1565,6 +2263,8 @@ export type ImageUpdateWithoutLikesInput = {
 
 export type ImageUpdateWithoutTagsInput = {
   appearances?: Maybe<AppearanceUpdateManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupUpdateOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupUpdateOneWithoutBannerInput>;
   bytes?: Maybe<IntFieldUpdateOperationsInput>;
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -1592,6 +2292,8 @@ export type ImageUpdateWithoutTagsInput = {
 
 export type ImageUpdateWithoutUserInput = {
   appearances?: Maybe<AppearanceUpdateManyWithoutImageInput>;
+  avatarOf?: Maybe<GroupUpdateOneWithoutAvatarInput>;
+  bannerOf?: Maybe<GroupUpdateOneWithoutBannerInput>;
   bytes?: Maybe<IntFieldUpdateOperationsInput>;
   caption?: Maybe<NullableStringFieldUpdateOperationsInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -1633,6 +2335,16 @@ export type ImageUpsertWithoutAppearancesInput = {
   update: ImageUpdateWithoutAppearancesInput;
 };
 
+export type ImageUpsertWithoutAvatarOfInput = {
+  create: ImageCreateWithoutAvatarOfInput;
+  update: ImageUpdateWithoutAvatarOfInput;
+};
+
+export type ImageUpsertWithoutBannerOfInput = {
+  create: ImageCreateWithoutBannerOfInput;
+  update: ImageUpdateWithoutBannerOfInput;
+};
+
 export type ImageUpsertWithoutFacesInput = {
   create: ImageCreateWithoutFacesInput;
   update: ImageUpdateWithoutFacesInput;
@@ -1653,6 +2365,8 @@ export type ImageWhereInput = {
   NOT?: Maybe<Array<ImageWhereInput>>;
   OR?: Maybe<Array<ImageWhereInput>>;
   appearances?: Maybe<AppearanceListRelationFilter>;
+  avatarOf?: Maybe<GroupWhereInput>;
+  bannerOf?: Maybe<GroupWhereInput>;
   bytes?: Maybe<IntFilter>;
   caption?: Maybe<StringNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
@@ -1752,6 +2466,7 @@ export type Mutation = {
   toggleLike: Image;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
+  upsertOneGroup: Group;
   upsertOnePerson: Person;
 };
 
@@ -1802,6 +2517,13 @@ export type MutationToggleLikeArgs = {
 export type MutationUnlinkFaceArgs = {
   appearanceId: Scalars['Int'];
   faceId: Scalars['Int'];
+};
+
+
+export type MutationUpsertOneGroupArgs = {
+  create: GroupCreateInput;
+  update: GroupUpdateInput;
+  where: GroupWhereUniqueInput;
 };
 
 
@@ -1967,6 +2689,7 @@ export type PersonCreateInput = {
   createdAt?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  memberOf?: Maybe<GroupMemberCreateNestedManyWithoutPersonInput>;
   name: Scalars['String'];
   preferredAlias?: Maybe<AliasCreateNestedOneWithoutPreferredAliasOfInput>;
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -1982,6 +2705,12 @@ export type PersonCreateNestedOneWithoutAppearancesInput = {
   connect?: Maybe<PersonWhereUniqueInput>;
   connectOrCreate?: Maybe<PersonCreateOrConnectWithoutAppearancesInput>;
   create?: Maybe<PersonCreateWithoutAppearancesInput>;
+};
+
+export type PersonCreateNestedOneWithoutMemberOfInput = {
+  connect?: Maybe<PersonWhereUniqueInput>;
+  connectOrCreate?: Maybe<PersonCreateOrConnectWithoutMemberOfInput>;
+  create?: Maybe<PersonCreateWithoutMemberOfInput>;
 };
 
 export type PersonCreateNestedOneWithoutPreferredAliasInput = {
@@ -2005,6 +2734,11 @@ export type PersonCreateOrConnectWithoutAppearsInInput = {
   where: PersonWhereUniqueInput;
 };
 
+export type PersonCreateOrConnectWithoutMemberOfInput = {
+  create: PersonCreateWithoutMemberOfInput;
+  where: PersonWhereUniqueInput;
+};
+
 export type PersonCreateOrConnectWithoutPreferredAliasInput = {
   create: PersonCreateWithoutPreferredAliasInput;
   where: PersonWhereUniqueInput;
@@ -2016,6 +2750,7 @@ export type PersonCreateWithoutAliasesInput = {
   createdAt?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  memberOf?: Maybe<GroupMemberCreateNestedManyWithoutPersonInput>;
   name: Scalars['String'];
   preferredAlias?: Maybe<AliasCreateNestedOneWithoutPreferredAliasOfInput>;
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -2027,6 +2762,7 @@ export type PersonCreateWithoutAppearancesInput = {
   createdAt?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  memberOf?: Maybe<GroupMemberCreateNestedManyWithoutPersonInput>;
   name: Scalars['String'];
   preferredAlias?: Maybe<AliasCreateNestedOneWithoutPreferredAliasOfInput>;
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -2035,6 +2771,19 @@ export type PersonCreateWithoutAppearancesInput = {
 export type PersonCreateWithoutAppearsInInput = {
   aliases?: Maybe<AliasCreateNestedManyWithoutPersonInput>;
   appearances?: Maybe<AppearanceCreateNestedManyWithoutPersonInput>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
+  memberOf?: Maybe<GroupMemberCreateNestedManyWithoutPersonInput>;
+  name: Scalars['String'];
+  preferredAlias?: Maybe<AliasCreateNestedOneWithoutPreferredAliasOfInput>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type PersonCreateWithoutMemberOfInput = {
+  aliases?: Maybe<AliasCreateNestedManyWithoutPersonInput>;
+  appearances?: Maybe<AppearanceCreateNestedManyWithoutPersonInput>;
+  appearsIn?: Maybe<FaceCreateNestedManyWithoutPersonInput>;
   createdAt?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   ireneBotId?: Maybe<Scalars['Int']>;
@@ -2050,6 +2799,7 @@ export type PersonCreateWithoutPreferredAliasInput = {
   createdAt?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  memberOf?: Maybe<GroupMemberCreateNestedManyWithoutPersonInput>;
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
@@ -2061,6 +2811,7 @@ export type PersonUpdateInput = {
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   description?: Maybe<NullableStringFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  memberOf?: Maybe<GroupMemberUpdateManyWithoutPersonInput>;
   name?: Maybe<StringFieldUpdateOperationsInput>;
   preferredAlias?: Maybe<AliasUpdateOneWithoutPreferredAliasOfInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -2080,6 +2831,14 @@ export type PersonUpdateOneRequiredWithoutAppearancesInput = {
   create?: Maybe<PersonCreateWithoutAppearancesInput>;
   update?: Maybe<PersonUpdateWithoutAppearancesInput>;
   upsert?: Maybe<PersonUpsertWithoutAppearancesInput>;
+};
+
+export type PersonUpdateOneRequiredWithoutMemberOfInput = {
+  connect?: Maybe<PersonWhereUniqueInput>;
+  connectOrCreate?: Maybe<PersonCreateOrConnectWithoutMemberOfInput>;
+  create?: Maybe<PersonCreateWithoutMemberOfInput>;
+  update?: Maybe<PersonUpdateWithoutMemberOfInput>;
+  upsert?: Maybe<PersonUpsertWithoutMemberOfInput>;
 };
 
 export type PersonUpdateOneWithoutAppearsInInput = {
@@ -2108,6 +2867,7 @@ export type PersonUpdateWithoutAliasesInput = {
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   description?: Maybe<NullableStringFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  memberOf?: Maybe<GroupMemberUpdateManyWithoutPersonInput>;
   name?: Maybe<StringFieldUpdateOperationsInput>;
   preferredAlias?: Maybe<AliasUpdateOneWithoutPreferredAliasOfInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -2119,6 +2879,7 @@ export type PersonUpdateWithoutAppearancesInput = {
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   description?: Maybe<NullableStringFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  memberOf?: Maybe<GroupMemberUpdateManyWithoutPersonInput>;
   name?: Maybe<StringFieldUpdateOperationsInput>;
   preferredAlias?: Maybe<AliasUpdateOneWithoutPreferredAliasOfInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
@@ -2127,6 +2888,19 @@ export type PersonUpdateWithoutAppearancesInput = {
 export type PersonUpdateWithoutAppearsInInput = {
   aliases?: Maybe<AliasUpdateManyWithoutPersonInput>;
   appearances?: Maybe<AppearanceUpdateManyWithoutPersonInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  description?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  memberOf?: Maybe<GroupMemberUpdateManyWithoutPersonInput>;
+  name?: Maybe<StringFieldUpdateOperationsInput>;
+  preferredAlias?: Maybe<AliasUpdateOneWithoutPreferredAliasOfInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type PersonUpdateWithoutMemberOfInput = {
+  aliases?: Maybe<AliasUpdateManyWithoutPersonInput>;
+  appearances?: Maybe<AppearanceUpdateManyWithoutPersonInput>;
+  appearsIn?: Maybe<FaceUpdateManyWithoutPersonInput>;
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   description?: Maybe<NullableStringFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
@@ -2142,6 +2916,7 @@ export type PersonUpdateWithoutPreferredAliasInput = {
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   description?: Maybe<NullableStringFieldUpdateOperationsInput>;
   ireneBotId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  memberOf?: Maybe<GroupMemberUpdateManyWithoutPersonInput>;
   name?: Maybe<StringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
 };
@@ -2161,6 +2936,11 @@ export type PersonUpsertWithoutAppearsInInput = {
   update: PersonUpdateWithoutAppearsInInput;
 };
 
+export type PersonUpsertWithoutMemberOfInput = {
+  create: PersonCreateWithoutMemberOfInput;
+  update: PersonUpdateWithoutMemberOfInput;
+};
+
 export type PersonUpsertWithoutPreferredAliasInput = {
   create: PersonCreateWithoutPreferredAliasInput;
   update: PersonUpdateWithoutPreferredAliasInput;
@@ -2177,6 +2957,7 @@ export type PersonWhereInput = {
   description?: Maybe<StringNullableFilter>;
   id?: Maybe<IntFilter>;
   ireneBotId?: Maybe<IntNullableFilter>;
+  memberOf?: Maybe<GroupMemberListRelationFilter>;
   name?: Maybe<StringFilter>;
   preferredAlias?: Maybe<AliasWhereInput>;
   preferredAliasId?: Maybe<IntNullableFilter>;

@@ -58,17 +58,18 @@ model Alias {
 }
 
 model Person {
-  id               Int          @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   description      String?
   name             String
-  preferredAlias   Alias?       @relation("preferred_alias", fields: [preferredAliasId], references: [id])
-  preferredAliasId Int?         @map("preferred_alias_id")
+  preferredAlias   Alias?        @relation("preferred_alias", fields: [preferredAliasId], references: [id])
+  preferredAliasId Int?          @map("preferred_alias_id")
   aliases          Alias[]
-  appearsIn        Face[]       @relation("face_person")
-  createdAt        DateTime     @default(now()) @map("created_at")
-  updatedAt        DateTime     @default(now()) @updatedAt @map("updated_at")
-  ireneBotId       Int?         @unique @map("irene_bot_id")
+  appearsIn        Face[]        @relation("face_person")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at")
+  ireneBotId       Int?          @unique @map("irene_bot_id")
   appearances      Appearance[]
+  memberOf         GroupMember[]
 
   @@index([name], name: "person.name.index")
   @@map("persons")
@@ -209,6 +210,8 @@ model Image {
   tags                Tag[]
   faces               Face[]
   likes               ImageLike[]
+  bannerOf            Group?       @relation("banner")
+  avatarOf            Group?       @relation("avatar")
 
   @@index([slug], name: "images.slug_index")
   @@map("images")
@@ -225,6 +228,48 @@ model ImageLike {
 
   @@unique([userId, imageId], name: "likedImage")
   @@map("image_likes")
+}
+
+model GroupMember {
+  id        Int       @id @default(autoincrement())
+  person    Person    @relation(fields: [personId], references: [id])
+  personId  Int
+  group     Group     @relation(fields: [groupId], references: [id])
+  groupId   Int
+  startDate  DateTime?
+  endDate   DateTime?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([groupId, personId], name: "member")
+  @@map("group_members")
+}
+
+model GroupAlias {
+  id        Int      @id @default(autoincrement())
+  name      String
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   Int      @map("group_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("group_aliases")
+}
+
+model Group {
+  id         Int           @id @default(autoincrement())
+  name       String
+  aliases    GroupAlias[]
+  members    GroupMember[]
+  banner     Image?        @relation("banner", fields: [bannerId], references: [id])
+  bannerId   Int?          @map("banner_id")
+  avatar     Image?        @relation("avatar", fields: [avatarId], references: [id])
+  avatarId   Int?          @map("avatar_id")
+  ireneBotId Int?          @unique @map("irene_bot_id")
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map("groups")
 }
 
 enum UploadType {

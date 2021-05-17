@@ -6,3 +6,5 @@ export * as Appearance from "./appearance";
 export * as Person from "./person";
 export * as Role from "./role";
 export * as Alias from "./alias";
+export * as Group from "./group";
+export * as GroupMember from "./group-member";

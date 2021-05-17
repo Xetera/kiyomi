@@ -162,6 +162,68 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedFloatFilter'] | null; // NestedFloatFilter
     notIn?: number[] | null; // [Float!]
   }
+  GroupAliasListRelationFilter: { // input type
+    every?: NexusGenInputs['GroupAliasWhereInput'] | null; // GroupAliasWhereInput
+    none?: NexusGenInputs['GroupAliasWhereInput'] | null; // GroupAliasWhereInput
+    some?: NexusGenInputs['GroupAliasWhereInput'] | null; // GroupAliasWhereInput
+  }
+  GroupAliasWhereInput: { // input type
+    AND?: NexusGenInputs['GroupAliasWhereInput'][] | null; // [GroupAliasWhereInput!]
+    NOT?: NexusGenInputs['GroupAliasWhereInput'][] | null; // [GroupAliasWhereInput!]
+    OR?: NexusGenInputs['GroupAliasWhereInput'][] | null; // [GroupAliasWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    group?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
+    groupId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GroupAliasWhereUniqueInput: { // input type
+    id?: number | null; // Int
+  }
+  GroupMemberListRelationFilter: { // input type
+    every?: NexusGenInputs['GroupMemberWhereInput'] | null; // GroupMemberWhereInput
+    none?: NexusGenInputs['GroupMemberWhereInput'] | null; // GroupMemberWhereInput
+    some?: NexusGenInputs['GroupMemberWhereInput'] | null; // GroupMemberWhereInput
+  }
+  GroupMemberMemberCompoundUniqueInput: { // input type
+    groupId: number; // Int!
+    personId: number; // Int!
+  }
+  GroupMemberWhereInput: { // input type
+    AND?: NexusGenInputs['GroupMemberWhereInput'][] | null; // [GroupMemberWhereInput!]
+    NOT?: NexusGenInputs['GroupMemberWhereInput'][] | null; // [GroupMemberWhereInput!]
+    OR?: NexusGenInputs['GroupMemberWhereInput'][] | null; // [GroupMemberWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    endDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    group?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
+    groupId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    joinDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    person?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GroupMemberWhereUniqueInput: { // input type
+    id?: number | null; // Int
+    member?: NexusGenInputs['GroupMemberMemberCompoundUniqueInput'] | null; // GroupMemberMemberCompoundUniqueInput
+  }
+  GroupWhereInput: { // input type
+    AND?: NexusGenInputs['GroupWhereInput'][] | null; // [GroupWhereInput!]
+    NOT?: NexusGenInputs['GroupWhereInput'][] | null; // [GroupWhereInput!]
+    OR?: NexusGenInputs['GroupWhereInput'][] | null; // [GroupWhereInput!]
+    aliases?: NexusGenInputs['GroupAliasListRelationFilter'] | null; // GroupAliasListRelationFilter
+    avatar?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    avatarId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    banner?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    bannerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    members?: NexusGenInputs['GroupMemberListRelationFilter'] | null; // GroupMemberListRelationFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
   ImageLikeListRelationFilter: { // input type
     every?: NexusGenInputs['ImageLikeWhereInput'] | null; // ImageLikeWhereInput
     none?: NexusGenInputs['ImageLikeWhereInput'] | null; // ImageLikeWhereInput
@@ -213,6 +275,8 @@ export interface NexusGenInputs {
     NOT?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
     OR?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
     appearances?: NexusGenInputs['AppearanceListRelationFilter'] | null; // AppearanceListRelationFilter
+    avatarOf?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
+    bannerOf?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
     bytes?: NexusGenInputs['IntFilter'] | null; // IntFilter
     caption?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
@@ -387,6 +451,7 @@ export interface NexusGenInputs {
     description?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    memberOf?: NexusGenInputs['GroupMemberListRelationFilter'] | null; // GroupMemberListRelationFilter
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
     preferredAlias?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
     preferredAliasId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
@@ -511,6 +576,9 @@ export interface NexusGenObjects {
   Alias: PrismaClient.Alias;
   Appearance: PrismaClient.Appearance;
   Face: PrismaClient.Face;
+  Group: PrismaClient.Group;
+  GroupAlias: PrismaClient.GroupAlias;
+  GroupMember: PrismaClient.GroupMember;
   Image: PrismaClient.Image;
   ImageConnections: { // root type
     edges: NexusGenRootTypes['ImageEdge'][]; // [ImageEdge!]!
@@ -577,6 +645,31 @@ export interface NexusGenFieldTypes {
     width: number; // Float!
     x: number; // Float!
     y: number; // Float!
+  }
+  Group: { // field return type
+    aliases: NexusGenRootTypes['GroupAlias'][]; // [GroupAlias!]!
+    avatar: NexusGenRootTypes['Image'] | null; // Image
+    banner: NexusGenRootTypes['Image'] | null; // Image
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    members: NexusGenRootTypes['GroupMember'][]; // [GroupMember!]!
+    name: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  GroupAlias: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    name: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  GroupMember: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    endDate: NexusGenScalars['DateTime'] | null; // DateTime
+    group: NexusGenRootTypes['Group']; // Group!
+    id: number; // Int!
+    joinDate: NexusGenScalars['DateTime']; // DateTime!
+    person: NexusGenRootTypes['Person']; // Person!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Image: { // field return type
     appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
@@ -701,6 +794,31 @@ export interface NexusGenFieldTypeNames {
     x: 'Float'
     y: 'Float'
   }
+  Group: { // field return type name
+    aliases: 'GroupAlias'
+    avatar: 'Image'
+    banner: 'Image'
+    createdAt: 'DateTime'
+    id: 'Int'
+    members: 'GroupMember'
+    name: 'String'
+    updatedAt: 'DateTime'
+  }
+  GroupAlias: { // field return type name
+    createdAt: 'DateTime'
+    id: 'Int'
+    name: 'String'
+    updatedAt: 'DateTime'
+  }
+  GroupMember: { // field return type name
+    createdAt: 'DateTime'
+    endDate: 'DateTime'
+    group: 'Group'
+    id: 'Int'
+    joinDate: 'DateTime'
+    person: 'Person'
+    updatedAt: 'DateTime'
+  }
   Image: { // field return type name
     appearances: 'Appearance'
     aspectRatio: 'Float'
@@ -798,6 +916,18 @@ export interface NexusGenArgTypes {
   Appearance: {
     faces: { // args
       cursor?: NexusGenInputs['FaceWhereUniqueInput'] | null; // FaceWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
+  }
+  Group: {
+    aliases: { // args
+      cursor?: NexusGenInputs['GroupAliasWhereUniqueInput'] | null; // GroupAliasWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
+    members: { // args
+      cursor?: NexusGenInputs['GroupMemberWhereUniqueInput'] | null; // GroupMemberWhereUniqueInput
       skip?: number | null; // Int
       take?: number | null; // Int
     }

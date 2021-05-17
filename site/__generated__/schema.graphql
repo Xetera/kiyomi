@@ -201,6 +201,104 @@ input FloatFilter {
   notIn: [Float!]
 }
 
+type Group {
+  aliases(cursor: GroupAliasWhereUniqueInput, skip: Int, take: Int): [GroupAlias!]!
+  avatar: Image
+  banner: Image
+  createdAt: DateTime!
+  id: Int!
+  members(cursor: GroupMemberWhereUniqueInput, skip: Int, take: Int): [GroupMember!]!
+  name: String!
+  updatedAt: DateTime!
+}
+
+type GroupAlias {
+  createdAt: DateTime!
+  id: Int!
+  name: String!
+  updatedAt: DateTime!
+}
+
+input GroupAliasListRelationFilter {
+  every: GroupAliasWhereInput
+  none: GroupAliasWhereInput
+  some: GroupAliasWhereInput
+}
+
+input GroupAliasWhereInput {
+  AND: [GroupAliasWhereInput!]
+  NOT: [GroupAliasWhereInput!]
+  OR: [GroupAliasWhereInput!]
+  createdAt: DateTimeFilter
+  group: GroupWhereInput
+  groupId: IntFilter
+  id: IntFilter
+  name: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input GroupAliasWhereUniqueInput {
+  id: Int
+}
+
+type GroupMember {
+  createdAt: DateTime!
+  endDate: DateTime
+  group: Group!
+  id: Int!
+  joinDate: DateTime!
+  person: Person!
+  updatedAt: DateTime!
+}
+
+input GroupMemberListRelationFilter {
+  every: GroupMemberWhereInput
+  none: GroupMemberWhereInput
+  some: GroupMemberWhereInput
+}
+
+input GroupMemberMemberCompoundUniqueInput {
+  groupId: Int!
+  personId: Int!
+}
+
+input GroupMemberWhereInput {
+  AND: [GroupMemberWhereInput!]
+  NOT: [GroupMemberWhereInput!]
+  OR: [GroupMemberWhereInput!]
+  createdAt: DateTimeFilter
+  endDate: DateTimeNullableFilter
+  group: GroupWhereInput
+  groupId: IntFilter
+  id: IntFilter
+  joinDate: DateTimeFilter
+  person: PersonWhereInput
+  personId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input GroupMemberWhereUniqueInput {
+  id: Int
+  member: GroupMemberMemberCompoundUniqueInput
+}
+
+input GroupWhereInput {
+  AND: [GroupWhereInput!]
+  NOT: [GroupWhereInput!]
+  OR: [GroupWhereInput!]
+  aliases: GroupAliasListRelationFilter
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  ireneBotId: IntNullableFilter
+  members: GroupMemberListRelationFilter
+  name: StringFilter
+  updatedAt: DateTimeFilter
+}
+
 type Image {
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
 
@@ -345,6 +443,8 @@ input ImageWhereInput {
   NOT: [ImageWhereInput!]
   OR: [ImageWhereInput!]
   appearances: AppearanceListRelationFilter
+  avatarOf: GroupWhereInput
+  bannerOf: GroupWhereInput
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
@@ -576,6 +676,7 @@ input PersonWhereInput {
   description: StringNullableFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
+  memberOf: GroupMemberListRelationFilter
   name: StringFilter
   preferredAlias: AliasWhereInput
   preferredAliasId: IntNullableFilter
