@@ -1017,8 +1017,8 @@ type GroupMember {
   endDate: DateTime
   group: Group!
   id: Int!
-  joinDate: DateTime!
   person: Person!
+  startDate: DateTime
   updatedAt: DateTime!
 }
 
@@ -1026,8 +1026,8 @@ input GroupMemberCreateManyGroupInput {
   createdAt: DateTime
   endDate: DateTime
   id: Int
-  joinDate: DateTime!
   personId: Int!
+  startDate: DateTime
   updatedAt: DateTime
 }
 
@@ -1041,7 +1041,7 @@ input GroupMemberCreateManyPersonInput {
   endDate: DateTime
   groupId: Int!
   id: Int
-  joinDate: DateTime!
+  startDate: DateTime
   updatedAt: DateTime
 }
 
@@ -1077,8 +1077,8 @@ input GroupMemberCreateOrConnectWithoutPersonInput {
 input GroupMemberCreateWithoutGroupInput {
   createdAt: DateTime
   endDate: DateTime
-  joinDate: DateTime!
   person: PersonCreateNestedOneWithoutMemberOfInput!
+  startDate: DateTime
   updatedAt: DateTime
 }
 
@@ -1086,7 +1086,7 @@ input GroupMemberCreateWithoutPersonInput {
   createdAt: DateTime
   endDate: DateTime
   group: GroupCreateNestedOneWithoutMembersInput!
-  joinDate: DateTime!
+  startDate: DateTime
   updatedAt: DateTime
 }
 
@@ -1109,15 +1109,15 @@ input GroupMemberScalarWhereInput {
   endDate: DateTimeNullableFilter
   groupId: IntFilter
   id: IntFilter
-  joinDate: DateTimeFilter
   personId: IntFilter
+  startDate: DateTimeNullableFilter
   updatedAt: DateTimeFilter
 }
 
 input GroupMemberUpdateManyMutationInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   endDate: NullableDateTimeFieldUpdateOperationsInput
-  joinDate: DateTimeFieldUpdateOperationsInput
+  startDate: NullableDateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -1172,8 +1172,8 @@ input GroupMemberUpdateWithWhereUniqueWithoutPersonInput {
 input GroupMemberUpdateWithoutGroupInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   endDate: NullableDateTimeFieldUpdateOperationsInput
-  joinDate: DateTimeFieldUpdateOperationsInput
   person: PersonUpdateOneRequiredWithoutMemberOfInput
+  startDate: NullableDateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -1181,7 +1181,7 @@ input GroupMemberUpdateWithoutPersonInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   endDate: NullableDateTimeFieldUpdateOperationsInput
   group: GroupUpdateOneRequiredWithoutMembersInput
-  joinDate: DateTimeFieldUpdateOperationsInput
+  startDate: NullableDateTimeFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
@@ -1206,9 +1206,9 @@ input GroupMemberWhereInput {
   group: GroupWhereInput
   groupId: IntFilter
   id: IntFilter
-  joinDate: DateTimeFilter
   person: PersonWhereInput
   personId: IntFilter
+  startDate: DateTimeNullableFilter
   updatedAt: DateTimeFilter
 }
 

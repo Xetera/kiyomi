@@ -199,9 +199,9 @@ export interface NexusGenInputs {
     group?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
     groupId?: NexusGenInputs['IntFilter'] | null; // IntFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    joinDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     person?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   GroupMemberWhereUniqueInput: { // input type
@@ -667,8 +667,8 @@ export interface NexusGenFieldTypes {
     endDate: NexusGenScalars['DateTime'] | null; // DateTime
     group: NexusGenRootTypes['Group']; // Group!
     id: number; // Int!
-    joinDate: NexusGenScalars['DateTime']; // DateTime!
     person: NexusGenRootTypes['Person']; // Person!
+    startDate: NexusGenScalars['DateTime'] | null; // DateTime
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Image: { // field return type
@@ -815,8 +815,8 @@ export interface NexusGenFieldTypeNames {
     endDate: 'DateTime'
     group: 'Group'
     id: 'Int'
-    joinDate: 'DateTime'
     person: 'Person'
+    startDate: 'DateTime'
     updatedAt: 'DateTime'
   }
   Image: { // field return type name

@@ -849,8 +849,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     endDate?: NexusGenScalars['DateTime'] | null; // DateTime
     id?: number | null; // Int
-    joinDate: NexusGenScalars['DateTime']; // DateTime!
     personId: number; // Int!
+    startDate?: NexusGenScalars['DateTime'] | null; // DateTime
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   GroupMemberCreateManyGroupInputEnvelope: { // input type
@@ -862,7 +862,7 @@ export interface NexusGenInputs {
     endDate?: NexusGenScalars['DateTime'] | null; // DateTime
     groupId: number; // Int!
     id?: number | null; // Int
-    joinDate: NexusGenScalars['DateTime']; // DateTime!
+    startDate?: NexusGenScalars['DateTime'] | null; // DateTime
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   GroupMemberCreateManyPersonInputEnvelope: { // input type
@@ -892,15 +892,15 @@ export interface NexusGenInputs {
   GroupMemberCreateWithoutGroupInput: { // input type
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     endDate?: NexusGenScalars['DateTime'] | null; // DateTime
-    joinDate: NexusGenScalars['DateTime']; // DateTime!
     person: NexusGenInputs['PersonCreateNestedOneWithoutMemberOfInput']; // PersonCreateNestedOneWithoutMemberOfInput!
+    startDate?: NexusGenScalars['DateTime'] | null; // DateTime
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   GroupMemberCreateWithoutPersonInput: { // input type
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     endDate?: NexusGenScalars['DateTime'] | null; // DateTime
     group: NexusGenInputs['GroupCreateNestedOneWithoutMembersInput']; // GroupCreateNestedOneWithoutMembersInput!
-    joinDate: NexusGenScalars['DateTime']; // DateTime!
+    startDate?: NexusGenScalars['DateTime'] | null; // DateTime
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   GroupMemberListRelationFilter: { // input type
@@ -920,14 +920,14 @@ export interface NexusGenInputs {
     endDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     groupId?: NexusGenInputs['IntFilter'] | null; // IntFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    joinDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   GroupMemberUpdateManyMutationInput: { // input type
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     endDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
-    joinDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    startDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
   GroupMemberUpdateManyWithWhereWithoutGroupInput: { // input type
@@ -975,15 +975,15 @@ export interface NexusGenInputs {
   GroupMemberUpdateWithoutGroupInput: { // input type
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     endDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
-    joinDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     person?: NexusGenInputs['PersonUpdateOneRequiredWithoutMemberOfInput'] | null; // PersonUpdateOneRequiredWithoutMemberOfInput
+    startDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
   GroupMemberUpdateWithoutPersonInput: { // input type
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     endDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
     group?: NexusGenInputs['GroupUpdateOneRequiredWithoutMembersInput'] | null; // GroupUpdateOneRequiredWithoutMembersInput
-    joinDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    startDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
   }
   GroupMemberUpsertWithWhereUniqueWithoutGroupInput: { // input type
@@ -1005,9 +1005,9 @@ export interface NexusGenInputs {
     group?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
     groupId?: NexusGenInputs['IntFilter'] | null; // IntFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    joinDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     person?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   GroupMemberWhereUniqueInput: { // input type
@@ -3047,8 +3047,8 @@ export interface NexusGenFieldTypes {
     endDate: NexusGenScalars['DateTime'] | null; // DateTime
     group: NexusGenRootTypes['Group']; // Group!
     id: number; // Int!
-    joinDate: NexusGenScalars['DateTime']; // DateTime!
     person: NexusGenRootTypes['Person']; // Person!
+    startDate: NexusGenScalars['DateTime'] | null; // DateTime
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Image: { // field return type
@@ -3200,8 +3200,8 @@ export interface NexusGenFieldTypeNames {
     endDate: 'DateTime'
     group: 'Group'
     id: 'Int'
-    joinDate: 'DateTime'
     person: 'Person'
+    startDate: 'DateTime'
     updatedAt: 'DateTime'
   }
   Image: { // field return type name

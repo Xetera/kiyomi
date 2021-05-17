@@ -1076,8 +1076,8 @@ export type GroupMember = {
   endDate?: Maybe<Scalars['DateTime']>;
   group: Group;
   id: Scalars['Int'];
-  joinDate: Scalars['DateTime'];
   person: Person;
+  startDate?: Maybe<Scalars['DateTime']>;
   updatedAt: Scalars['DateTime'];
 };
 
@@ -1085,8 +1085,8 @@ export type GroupMemberCreateManyGroupInput = {
   createdAt?: Maybe<Scalars['DateTime']>;
   endDate?: Maybe<Scalars['DateTime']>;
   id?: Maybe<Scalars['Int']>;
-  joinDate: Scalars['DateTime'];
   personId: Scalars['Int'];
+  startDate?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -1100,7 +1100,7 @@ export type GroupMemberCreateManyPersonInput = {
   endDate?: Maybe<Scalars['DateTime']>;
   groupId: Scalars['Int'];
   id?: Maybe<Scalars['Int']>;
-  joinDate: Scalars['DateTime'];
+  startDate?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -1136,8 +1136,8 @@ export type GroupMemberCreateOrConnectWithoutPersonInput = {
 export type GroupMemberCreateWithoutGroupInput = {
   createdAt?: Maybe<Scalars['DateTime']>;
   endDate?: Maybe<Scalars['DateTime']>;
-  joinDate: Scalars['DateTime'];
   person: PersonCreateNestedOneWithoutMemberOfInput;
+  startDate?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -1145,7 +1145,7 @@ export type GroupMemberCreateWithoutPersonInput = {
   createdAt?: Maybe<Scalars['DateTime']>;
   endDate?: Maybe<Scalars['DateTime']>;
   group: GroupCreateNestedOneWithoutMembersInput;
-  joinDate: Scalars['DateTime'];
+  startDate?: Maybe<Scalars['DateTime']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -1168,15 +1168,15 @@ export type GroupMemberScalarWhereInput = {
   endDate?: Maybe<DateTimeNullableFilter>;
   groupId?: Maybe<IntFilter>;
   id?: Maybe<IntFilter>;
-  joinDate?: Maybe<DateTimeFilter>;
   personId?: Maybe<IntFilter>;
+  startDate?: Maybe<DateTimeNullableFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
 };
 
 export type GroupMemberUpdateManyMutationInput = {
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   endDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
-  joinDate?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  startDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
 };
 
@@ -1231,8 +1231,8 @@ export type GroupMemberUpdateWithWhereUniqueWithoutPersonInput = {
 export type GroupMemberUpdateWithoutGroupInput = {
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   endDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
-  joinDate?: Maybe<DateTimeFieldUpdateOperationsInput>;
   person?: Maybe<PersonUpdateOneRequiredWithoutMemberOfInput>;
+  startDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
 };
 
@@ -1240,7 +1240,7 @@ export type GroupMemberUpdateWithoutPersonInput = {
   createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   endDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   group?: Maybe<GroupUpdateOneRequiredWithoutMembersInput>;
-  joinDate?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  startDate?: Maybe<NullableDateTimeFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
 };
 
@@ -1265,9 +1265,9 @@ export type GroupMemberWhereInput = {
   group?: Maybe<GroupWhereInput>;
   groupId?: Maybe<IntFilter>;
   id?: Maybe<IntFilter>;
-  joinDate?: Maybe<DateTimeFilter>;
   person?: Maybe<PersonWhereInput>;
   personId?: Maybe<IntFilter>;
+  startDate?: Maybe<DateTimeNullableFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
 };
 
@@ -1379,6 +1379,7 @@ export type GroupWhereInput = {
 
 export type GroupWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
+  ireneBotId?: Maybe<Scalars['Int']>;
 };
 
 export type Image = {
