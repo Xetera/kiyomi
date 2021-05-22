@@ -21,7 +21,6 @@ export type GraphDisplayProps = {
 export const GraphDisplay = React.memo(
   ({ slug, width, currentPersonIds = [] }: GraphDisplayProps) => {
     const router = useRouter();
-    console.log({ currentPersonIds });
     const isLoneGraph = currentPersonIds.length === 0;
     const { data: graph, refetch: fetchGraph } = useConnectionGraphQuery(
       {
@@ -118,13 +117,11 @@ export const GraphDisplay = React.memo(
           nodeLabel="name"
           linkColor={(r) => `#9898a0`}
           onNodeClick={(node) => {
-            console.log({ node });
             if ("imageSlug" in node) {
               router.push(`/image/${(node as any).imageSlug}`);
             }
           }}
           nodeAutoColorBy={(node: any) => {
-            console.log({ node });
             if ("imageSlug" in node && node.imageSlug !== slug) {
               return "image";
             } else if ("imageSlug" in node && node.imageSlug === slug) {

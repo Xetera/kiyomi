@@ -49,7 +49,6 @@ const Image = () => {
 
   React.useEffect(() => {
     const dimensions = containerRef.current?.getBoundingClientRect();
-    console.log({ dimensions });
     if (dimensions) {
       setContainerWidth(dimensions.width);
     }

@@ -690,7 +690,6 @@ type Query {
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
-  searchPerson(query: String!): [Person!]!
   user(id: Int): User
 }
 

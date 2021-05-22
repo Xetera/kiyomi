@@ -41,7 +41,6 @@ export default function Home() {
   const [fetching, setFetching] = React.useState(false);
   const { y } = useScroll(pageRef);
   const { data } = useHomepageQuery({ take: 100, skip: 0 });
-  console.log(data);
   return (
     <>
       <Navbar />

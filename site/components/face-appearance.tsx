@@ -21,7 +21,6 @@ export function FaceAppearance({ face, person, image }: FaceAppearance) {
       objectFit: "cover",
     },
   });
-  console.log(person);
   return (
     <Grid
       gridAutoFlow="column"

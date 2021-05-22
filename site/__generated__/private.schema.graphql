@@ -2857,7 +2857,6 @@ type Query {
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
   people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
-  searchPerson(query: String!): [Person!]!
   user(id: Int): User
 }
 

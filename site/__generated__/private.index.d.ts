@@ -3119,7 +3119,6 @@ export interface NexusGenFieldTypes {
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     me: NexusGenRootTypes['User'] | null; // User
     people: NexusGenRootTypes['Person'][]; // [Person!]!
-    searchPerson: NexusGenRootTypes['Person'][]; // [Person!]!
     user: NexusGenRootTypes['User'] | null; // User
   }
   QueueInfo: { // field return type
@@ -3273,7 +3272,6 @@ export interface NexusGenFieldTypeNames {
     images: 'Image'
     me: 'User'
     people: 'Person'
-    searchPerson: 'Person'
     user: 'User'
   }
   QueueInfo: { // field return type name
@@ -3416,9 +3414,6 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
       take?: number | null; // Int
       where?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
-    }
-    searchPerson: { // args
-      query: string; // String!
     }
     user: { // args
       id?: number | null; // Int
