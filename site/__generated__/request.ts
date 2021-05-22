@@ -2653,6 +2653,7 @@ export type Person = {
   aliases: Array<Alias>;
   createdAt: Scalars['DateTime'];
   id: Scalars['Int'];
+  memberOf: Array<GroupMember>;
   name: Scalars['String'];
   preferredAlias?: Maybe<Alias>;
   updatedAt: Scalars['DateTime'];
@@ -2661,6 +2662,13 @@ export type Person = {
 
 export type PersonAliasesArgs = {
   cursor?: Maybe<AliasWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
+export type PersonMemberOfArgs = {
+  cursor?: Maybe<GroupMemberWhereUniqueInput>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
 };

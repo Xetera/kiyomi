@@ -660,6 +660,7 @@ type Person {
   aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
   createdAt: DateTime!
   id: Int!
+  memberOf(cursor: GroupMemberWhereUniqueInput, skip: Int, take: Int): [GroupMember!]!
   name: String!
   preferredAlias: Alias
   updatedAt: DateTime!

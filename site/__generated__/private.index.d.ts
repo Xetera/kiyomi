@@ -3108,6 +3108,7 @@ export interface NexusGenFieldTypes {
     aliases: NexusGenRootTypes['Alias'][]; // [Alias!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
+    memberOf: NexusGenRootTypes['GroupMember'][]; // [GroupMember!]!
     name: string; // String!
     preferredAlias: NexusGenRootTypes['Alias'] | null; // Alias
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
@@ -3261,6 +3262,7 @@ export interface NexusGenFieldTypeNames {
     aliases: 'Alias'
     createdAt: 'DateTime'
     id: 'Int'
+    memberOf: 'GroupMember'
     name: 'String'
     preferredAlias: 'Alias'
     updatedAt: 'DateTime'
@@ -3385,6 +3387,11 @@ export interface NexusGenArgTypes {
   Person: {
     aliases: { // args
       cursor?: NexusGenInputs['AliasWhereUniqueInput'] | null; // AliasWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
+    memberOf: { // args
+      cursor?: NexusGenInputs['GroupMemberWhereUniqueInput'] | null; // GroupMemberWhereUniqueInput
       skip?: number | null; // Int
       take?: number | null; // Int
     }
