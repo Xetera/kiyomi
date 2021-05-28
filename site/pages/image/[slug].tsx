@@ -79,23 +79,25 @@ const Image = () => {
         <Navbar />
         <WithSidebar
           sidebar={
-            <ContextSidebar
-              items={[
-                <SidebarItem title="In this Image">
-                  {image.appearances.map((app) => (
-                    <FaceAppearance
-                      image={image}
-                      face={app.faces[0]}
-                      key={app.id}
-                      person={app.person}
-                    />
-                  ))}
-                  {image.unknownFaces.map((face) => (
-                    <FaceAppearance key={face.id} image={image} face={face} />
-                  ))}
-                </SidebarItem>,
-              ]}
-            />
+            (image.appearances.length > 0 || image.unknownFaces.length > 0) && (
+              <ContextSidebar
+                items={[
+                  <SidebarItem title="In this Image">
+                    {image.appearances.map((app) => (
+                      <FaceAppearance
+                        image={image}
+                        face={app.faces[0]}
+                        key={app.id}
+                        person={app.person}
+                      />
+                    ))}
+                    {image.unknownFaces.map((face) => (
+                      <FaceAppearance key={face.id} image={image} face={face} />
+                    ))}
+                  </SidebarItem>,
+                ]}
+              />
+            )
           }
         >
           <Flex direction="row" flex={1}>
