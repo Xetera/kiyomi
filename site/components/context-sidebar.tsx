@@ -40,12 +40,14 @@ export function WithSidebar({
 }: PropsWithChildren<WithSidebarProps>) {
   return (
     <Flex>
-      <Flex
-        display={["none", "block"]}
-        minWidth={["0", "170px", "250px", "350px"]}
-      >
-        {sidebar}
-      </Flex>
+      {sidebar && (
+        <Flex
+          display={["none", "block"]}
+          minWidth={["0", "170px", "250px", "350px"]}
+        >
+          {sidebar}
+        </Flex>
+      )}
       <Box display={["none", "block"]} width="2px" background="gray.900" />
       {children}
     </Flex>
