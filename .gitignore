@@ -43,3 +43,5 @@ labeler/**/*.jpg
 labeler/**/*.png
 labeler/**/*.gif
 labeler/**/*.webp
+**/.idea
+game/dist
