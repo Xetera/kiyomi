@@ -1,16 +1,20 @@
-import { PrismaClient } from "@prisma/client";
-import { fetcher, PromiseReturnType } from "./shared";
-import { publicImageFields } from "./transformer";
-import { getSdk } from "@/__generated__/request";
-import { GraphQLClient } from "graphql-request";
-import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
-import { getSession } from "next-auth/client";
+import { PrismaClient } from "@prisma/client"
+import { PromiseReturnType } from "./shared"
+import { publicImageFields } from "./transformer"
+import { getSdk } from "@/__generated__/request"
+import { GraphQLClient } from "graphql-request"
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from "next"
+import { getSession } from "next-auth/client"
 
 export const client = new GraphQLClient(
-  `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`,
-);
+  `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`
+)
 
-export const sdk = getSdk(client);
+export const sdk = getSdk(client)
 
 export const imageFindOptionsFaceSelection = {
   id: true,
@@ -20,7 +24,7 @@ export const imageFindOptionsFaceSelection = {
   y: true,
   width: true,
   height: true,
-} as const;
+} as const
 
 export const imageFindOptionsAppearanceSelection = {
   id: true,
@@ -30,7 +34,7 @@ export const imageFindOptionsAppearanceSelection = {
       ...imageFindOptionsFaceSelection,
     },
   },
-} as const;
+} as const
 
 export const imageFindOptions = {
   select: {
@@ -58,31 +62,32 @@ export const imageFindOptions = {
       },
     },
   },
-} as const;
+} as const
 
 export const getImage = (slug: string, db: PrismaClient) => {
   return db.image.findUnique({
     ...imageFindOptions,
     where: { slug },
-  });
-};
+  })
+}
 
-export type ExtraServerSideProps = {
-};
+export type ExtraServerSideProps = {}
 
 export type ServerSideProps = (
-  ctx: ExtraServerSideProps & GetServerSidePropsContext,
-) => ReturnType<GetServerSideProps>;
+  ctx: ExtraServerSideProps & GetServerSidePropsContext
+) => ReturnType<GetServerSideProps>
 
-export function wrapRequest<T>(f: ServerSideProps): GetServerSideProps<T & ExtraServerSideProps> {
+export function wrapRequest<T>(
+  f: ServerSideProps
+): GetServerSideProps<T & ExtraServerSideProps> {
   return async (ctx) => {
     const { req, res, ...rest } = ctx
 
     const session = await getSession(ctx)
-    if (req.url?.startsWith('/_next')) {
+    if (req.url?.startsWith("/_next")) {
       return {
         props: { session },
-      };
+      }
     }
     const data: GetServerSidePropsResult<any> = await f({ req, res, ...rest })
     if (!("props" in data)) {
@@ -94,5 +99,3 @@ export function wrapRequest<T>(f: ServerSideProps): GetServerSideProps<T & Extra
     return data
   }
 }
-
-export type GetImage = PromiseReturnType<typeof getImage>;

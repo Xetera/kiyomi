@@ -1,16 +1,32 @@
-import { humanFileSize } from "@/lib/shared";
-import React from "react";
-import { Palette } from "./palette-color";
-import { Tags } from "./tags";
-import { CascadeChildren } from "./animations/cascade-children";
-import { RiQuestionLine, RiScan2Line, RiUser3Fill } from "react-icons/ri";
-import { format } from "date-fns";
-import { User } from "./user";
-import { ImageContext } from "@/models/contexts";
-import { Heading, Text } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
-import { Grid } from "@chakra-ui/react";
-import { useSession } from "next-auth/client";
+import { humanFileSize } from "@/lib/shared"
+import React from "react"
+import { Palette } from "./palette-color"
+import { Tags } from "./tags"
+import { CascadeChildren } from "./animations/cascade-children"
+import {
+  RiHeartAddFill,
+  RiHeartFill,
+  RiQuestionLine,
+  RiScan2Line,
+  RiUser3Fill,
+} from "react-icons/ri"
+import { format } from "date-fns"
+import { User } from "./user"
+import { ImageContext } from "@/models/contexts"
+import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout"
+import { Button } from "@chakra-ui/button"
+import {
+  grid,
+  Grid,
+  Spinner,
+  Tooltip,
+  useToast,
+  UseToastOptions,
+} from "@chakra-ui/react"
+import { useSession } from "next-auth/client"
+import { useToggleLikeMutation } from "@/__generated__/graphql"
+import useQueue from "./queue-button"
+import { useRouter } from "next/router"
 
 function SidebarSection({ title, children }) {
   return (
@@ -25,28 +41,82 @@ function SidebarSection({ title, children }) {
       >
         {title}
       </Heading>
-      <Text size="sm" color="InactiveCaption">
-        {children}
-      </Text>
+      <Text size="sm">{children}</Text>
     </>
-  );
+  )
 }
 
 export type ImageSidebarProps = {
-  onEdit: () => void;
-};
+  onEdit: () => void
+}
+
+type TagProps = {}
+
+function Tag({ text, icon, onClick, disabled = false }) {
+  const data = (
+    <Flex
+      alignItems="center"
+      pr={4}
+      pb={2}
+      cursor="pointer"
+      onClick={onClick}
+      fontSize={["sm", null, null, "md"]}
+      color={disabled ? "trueGray.600" : "trueGray.300"}
+    >
+      <Box mr={2}>{icon}</Box>
+      <Text fontWeight="600">{text}</Text>
+    </Flex>
+  )
+  if (disabled) {
+    return <Tooltip label="Already requested">{data}</Tooltip>
+  }
+  return data
+}
 
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
-  const image = React.useContext(ImageContext);
-  const [session] = useSession();
+  const toast = useToast()
+  const image = React.useContext(ImageContext)
+  const router = useRouter()
+  const { data, mutate, isLoading } = useToggleLikeMutation()
+  const [session] = useSession()
   if (!image) {
-    return null;
+    return null
   }
-  const uploadDate = new Date(image.createdAt);
+  function toggleLike() {
+    if (!image) {
+      return
+    }
+    const toastProps: UseToastOptions = {
+      variant: "solid",
+      position: "bottom-right",
+    }
+    if (liked) {
+      toast({
+        ...toastProps,
+        status: "info",
+        title: "You unliked this image",
+      })
+    } else {
+      toast({
+        ...toastProps,
+        status: "success",
+        title: "You liked this image",
+      })
+    }
+    mutate({ id: image.id })
+  }
+  const liked = data?.toggleLike.liked ?? image.liked
+  const uploadDate = new Date(image.createdAt)
+  const request = useQueue({ slug: router.query.slug as string })
   return (
-    <aside className="align-start text-sm rounded">
+    <Stack className="align-start text-sm rounded" maxWidth="600px" mx="auto">
       <CascadeChildren className="grid gap-4 text-sm">
-        <div className="flex flex-row align-top">
+        <Flex>
+          <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
+          <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
+          <Tag icon={<RiScan2Line />} text="Request scan" onClick={request} />
+        </Flex>
+        <Flex flexDirection="row" alignItems="top">
           <User
             user={image.uploadedBy}
             bottom={
@@ -58,11 +128,13 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
               </time>
             }
           />
-        </div>
+        </Flex>
         <hr className="border-theme-subtle" />
-        <div
+        <Grid
+          gap={2}
           className="grid gap-2"
-          style={{ gridTemplateColumns: "min-content 1fr" }}
+          fontColor="gray.500"
+          gridTemplateColumns="min-content 1fr"
         >
           <SidebarSection title={"Dimensions"}>
             <p className="font-semibold">
@@ -74,9 +146,6 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           </SidebarSection>
           <SidebarSection title={"Type"}>
             <p className="font-semibold">{image.mimetype.toUpperCase()}</p>
-          </SidebarSection>
-          <SidebarSection title={"NSFW?"}>
-            <p className="font-semibold">{image.isNsfw ? "Yes" : "No"}</p>
           </SidebarSection>
           <SidebarSection
             title={
@@ -94,16 +163,34 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
                 : "Never"}
             </p>
           </SidebarSection>
-        </div>
+        </Grid>
         {image.tags?.length > 0 ? (
           <Tags tags={image.tags.map((tag) => tag.name)} />
         ) : (
           <div />
         )}
         <Palette colors={image.palette} />
+        {/* {image.tags?.length > 0 ? (
+          <Tags tags={image.tags.map((tag) => tag.name)} />
+        ) : (
+          <div />
+        )}
         <div>
           {image.source && <p className="text-gray-500">{image.source}</p>}
         </div>
+        <Box>
+          <Button
+            background={liked ? "rose.500" : "trueGray.400"}
+            color="white"
+            size="sm"
+            _hover={{
+              background: "rose.400",
+            }}
+            onClick={toggleLike}
+          >
+            {isLoading ? <Spinner size="sm" /> : <RiHeartAddFill />}
+          </Button>
+        </Box>
         <Heading as="h2" size="sm" color="trueGray.300">
           Admin Controls
         </Heading>
@@ -116,11 +203,9 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           >
             Edit Faces
           </Button>
-          <Button size="sm" leftIcon={<RiScan2Line />} width="100%">
-            Request A {image.faceScanDate ? "Rescan" : "Scan"}
-          </Button>
-        </Grid>
+          <QueueButton slug={image.slug} scanDate={image.faceScanDate} />
+        </Grid> */}
       </CascadeChildren>
-    </aside>
-  );
+    </Stack>
+  )
 }

@@ -1,32 +1,32 @@
-import React from "react";
-import { PersonPortrait } from "./person-preview";
-import { FaceContext, ImageContext } from "@/models/contexts";
-import { CascadeChildren } from "./animations/cascade-children";
-import { AnimatePresence, motion } from "framer-motion";
-import { useToggle } from "react-use";
-import { FaExpand, FaCompress } from "react-icons/fa";
+import React from "react"
+import { PersonPortrait } from "./person-preview"
+import { FaceContext, ImageContext } from "@/models/contexts"
+import { CascadeChildren } from "./animations/cascade-children"
+import { AnimatePresence, motion } from "framer-motion"
+import { useToggle } from "react-use"
+import { FaExpand, FaCompress } from "react-icons/fa"
 import {
   AppearanceDataFragment,
   FaceDataFragment,
   ImageDataFragment,
-} from "@/__generated__/graphql";
-import Hr from "./hr";
-import { Box, Button, Flex } from "@chakra-ui/react";
-import { Text } from "@chakra-ui/layout";
+} from "@/__generated__/graphql"
+import Hr from "./hr"
+import { Box, Button, Flex } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/layout"
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
-  image: ImageDataFragment;
-  appearance?: AppearanceDataFragment;
-  face: FaceDataFragment;
-  forceActive: boolean;
-};
+  image: ImageDataFragment
+  appearance?: AppearanceDataFragment
+  face: FaceDataFragment
+  forceActive: boolean
+}
 
 function Face({ appearance, face, style, forceActive }: FaceProps) {
-  const { face: activeFace } = React.useContext(FaceContext);
+  const { face: activeFace } = React.useContext(FaceContext)
   const motionId = appearance
     ? `appearance:${appearance.id}`
-    : `face:${face.id}`;
-  const active = activeFace === motionId;
+    : `face:${face.id}`
+  const active = activeFace === motionId
   return (
     <AnimatePresence>
       {(active || forceActive) && (
@@ -61,15 +61,15 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
         </motion.div>
       )}
     </AnimatePresence>
-  );
+  )
 }
 
 export default function ImageDisplay() {
-  const image = React.useContext(ImageContext);
-  const imageRef = React.useRef<HTMLImageElement | null>();
-  const parentRef = React.useRef<HTMLDivElement | null>();
-  const { face: activeFace } = React.useContext(FaceContext);
-  const [expanded, toggleExpanded] = useToggle(false);
+  const image = React.useContext(ImageContext)
+  const imageRef = React.useRef<HTMLImageElement | null>()
+  const parentRef = React.useRef<HTMLDivElement | null>()
+  const { face: activeFace } = React.useContext(FaceContext)
+  const [expanded, toggleExpanded] = useToggle(false)
   const defaults = {
     x: 0,
     y: 0,
@@ -80,54 +80,54 @@ export default function ImageDisplay() {
     bottom: 0,
     top: 0,
     toJSON() {},
-  };
-  const [active, setActive] = React.useState(false);
-  const [loaded, setLoaded] = React.useState(false);
-  const facePredictions: any[] = [];
+  }
+  const [active, setActive] = React.useState(false)
+  const [loaded, setLoaded] = React.useState(false)
+  const facePredictions: any[] = []
   // const { data: facePredictions = [] } = useSWR<PredictionResponse>(
   //   `/api/image/face/${image?.slug}`,
   //   fetcher,
   //   { refreshInterval: 0 }
   // );
   React.useEffect(() => {
-    checkSize();
-  }, [expanded]);
+    checkSize()
+  }, [expanded])
 
-  const [parentSize, setParentSize] = React.useState<DOMRect>(defaults);
-  const [imageSize, setImageSize] = React.useState<DOMRect>(defaults);
+  const [parentSize, setParentSize] = React.useState<DOMRect>(defaults)
+  const [imageSize, setImageSize] = React.useState<DOMRect>(defaults)
   function checkSize() {
-    const a = parentRef.current?.getBoundingClientRect();
-    const b = imageRef.current?.getBoundingClientRect();
+    const a = parentRef.current?.getBoundingClientRect()
+    const b = imageRef.current?.getBoundingClientRect()
     if (a) {
-      setParentSize(a);
+      setParentSize(a)
     }
     if (b) {
-      setImageSize(b);
+      setImageSize(b)
     }
   }
 
   React.useEffect(() => {
     // seems to be necessary for refs to initialize properly first
     setTimeout(() => {
-      checkSize();
-    }, 50);
-    window.addEventListener("resize", checkSize);
-    return () => window.removeEventListener("resize", checkSize);
-  }, []);
+      checkSize()
+    }, 50)
+    window.addEventListener("resize", checkSize)
+    return () => window.removeEventListener("resize", checkSize)
+  }, [])
 
   React.useEffect(() => {
     if (loaded) {
-      checkSize();
+      checkSize()
     }
-  }, [loaded]);
+  }, [loaded])
   if (!image) {
-    return null;
+    return null
   }
   const shouldBeExpandable =
     image.height &&
     image.width &&
     image.height > 1200 &&
-    image.height / image.width > 1.2;
+    image.height / image.width > 1.2
 
   function renderFaces(
     faces: FaceDataFragment[],
@@ -147,20 +147,20 @@ export default function ImageDisplay() {
           pointerEvents: "none",
         }}
       />
-    ));
+    ))
   }
 
   const {
     width: parentWidth,
     height: parentHeight,
-  } = parentRef.current?.getBoundingClientRect() ?? { width: 700, height: 800 };
+  } = parentRef.current?.getBoundingClientRect() ?? { width: 700, height: 800 }
 
-  const MAX_WIDTH = 1200;
+  const MAX_WIDTH = 1200
   const imageMaxHeight = !expanded
     ? "70vh"
     : image!.height! <= 800
     ? image!.height
-    : "100%";
+    : "100%"
 
   return (
     <div
@@ -205,23 +205,23 @@ export default function ImageDisplay() {
         {/* @ts-ignore */}
         <img
           ref={(input) => {
-            imageRef.current = input;
+            imageRef.current = input
             // onLoad replacement for SSR
             if (!input) {
-              return;
+              return
             }
-            const img = input;
+            const img = input
 
             const updateFunc = () => {
-              setLoaded(true);
-            };
-            img.onload = updateFunc;
+              setLoaded(true)
+            }
+            img.onload = updateFunc
             img.onerror = () => {
-              updateFunc();
-              img.onerror = null;
-            };
+              updateFunc()
+              img.onerror = null
+            }
             if (img.complete) {
-              updateFunc();
+              updateFunc()
             }
           }}
           src={image.rawUrl}
@@ -236,8 +236,7 @@ export default function ImageDisplay() {
           className="flex object-contain overflow-hidden m-auto rounded"
         />
       </div>
-
-      <div className="flex items-center w-full mt-4">
+      {/* <div className="flex items-center w-full mt-4">
         <a
           href={image.rawUrl}
           rel="external nofollower noopener"
@@ -247,8 +246,8 @@ export default function ImageDisplay() {
           View Original
         </a>
         <Hr className="flex-1" />
-      </div>
-      {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
+      </div> */}
+      {/* {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
         <section className="mt-5">
           <Flex mb={3} justifyContent="space-between" flexFlow="row">
             <Flex flexDirection="column">
@@ -281,7 +280,7 @@ export default function ImageDisplay() {
             })}
           </CascadeChildren>
         </section>
-      )}
+      )} */}
     </div>
-  );
+  )
 }

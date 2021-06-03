@@ -1,0 +1,20 @@
+query personPage($id: Int!) {
+  person(where: { id: $id }) {
+    name
+    aliases {
+      name
+    }
+    preferredAlias {
+      name
+    }
+    appearances {
+      image {
+        ...ImageData
+        thumbnail {
+          medium
+        }
+      }
+      createdAt
+    }
+  }
+}

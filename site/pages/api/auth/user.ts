@@ -1,6 +1,6 @@
-import { generateUserToken } from "@/lib/auth";
-import { handle, withUser } from "@/lib/middleware";
-import { hasRole, Role } from "@/lib/permissions";
+import { generateUserToken } from "@/lib/auth"
+import { handle, withUser } from "@/lib/middleware"
+import { hasRole, Role } from "@/lib/permissions"
 
 export default handle(
   withUser(
@@ -10,9 +10,9 @@ export default handle(
           where: {
             userId: user.id,
           },
-        });
+        })
         if (!hasRole(roles, Role.Administrator)) {
-          return res.status(403).end();
+          return res.status(403).end()
         }
         res.json(
           await db.user.create({
@@ -22,11 +22,11 @@ export default handle(
               bot: req.query.bot === "true",
             },
           })
-        );
+        )
       } else {
-        res.status(405).end();
+        res.status(405).end()
       }
     },
     { strict: true }
   )
-);
+)

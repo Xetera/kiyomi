@@ -1,0 +1,8 @@
+{
+  "semi": false,
+  "endOfLine": "lf",
+  "parser": "typescript",
+  "useTabs": false,
+  "singleQuote": false,
+  "trailingComma": "es5"
+}

@@ -1,4 +1,4 @@
-import useImageSlice from "@/hooks/useImageSlice";
+import useImageSlice from "@/hooks/useImageSlice"
 import {
   AppearanceWithFacesFragment,
   FaceDataFragment,
@@ -7,58 +7,56 @@ import {
   useLinkFaceMutation,
   useRemoveAppearanceMutation,
   useUnlinkFaceMutation,
-} from "@/__generated__/graphql";
-import React, { useMemo, useRef, useState } from "react";
-import { maxPortraitHeight, PersonPortrait } from "./person-preview";
-import dynamic from "next/dynamic";
-import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
-import { Input } from "@chakra-ui/input";
-import { PersonSearchbar } from "./search";
-import _ from "lodash";
-import { DropResult } from "react-beautiful-dnd";
-import { RiDeleteBin2Fill } from "react-icons/ri";
-import useOnClickOutside from "@/hooks/useOnClickOutside";
+} from "@/__generated__/graphql"
+import React, { useMemo, useRef, useState } from "react"
+import { maxPortraitHeight, PersonPortrait } from "./person-preview"
+import dynamic from "next/dynamic"
+import { Box, Flex, Heading, Text } from "@chakra-ui/layout"
+import { Input } from "@chakra-ui/input"
+import { PersonSearchbar } from "./search"
+import _ from "lodash"
+import { DropResult } from "react-beautiful-dnd"
+import { RiDeleteBin2Fill } from "react-icons/ri"
+import useOnClickOutside from "@/hooks/useOnClickOutside"
 
 const DragDropContext = dynamic(
   () => {
-    const promise = import("react-beautiful-dnd").then(
-      (r) => r.DragDropContext
-    );
-    return promise;
+    const promise = import("react-beautiful-dnd").then((r) => r.DragDropContext)
+    return promise
   },
   { ssr: false }
-);
+)
 const Droppable = dynamic(
   () => {
-    const a = import("react-beautiful-dnd").then((r) => r.Droppable);
-    return a;
+    const a = import("react-beautiful-dnd").then((r) => r.Droppable)
+    return a
   },
   { ssr: false }
-);
+)
 const Draggable = dynamic(
   () => {
-    const a = import("react-beautiful-dnd").then((r) => r.Draggable);
-    return a;
+    const a = import("react-beautiful-dnd").then((r) => r.Draggable)
+    return a
   },
   { ssr: false }
-);
+)
 
 export type ImageEditModalProps = {
-  image: NonNullable<OneImageQuery["image"]>;
-};
+  image: NonNullable<OneImageQuery["image"]>
+}
 
 type DraggablePersonProps = {
-  src: string;
-  face: FaceDataFragment;
-};
+  src: string
+  face: FaceDataFragment
+}
 const DraggableFace = React.forwardRef(
   ({ src, face, ...rest }: DraggablePersonProps, ref) => {
     const faceSlice = useImageSlice({
       src,
       height: maxPortraitHeight,
       face,
-    });
-    if (!faceSlice) return null;
+    })
+    if (!faceSlice) return null
     return (
       // @ts-ignore
       <div {...rest} ref={ref}>
@@ -73,16 +71,16 @@ const DraggableFace = React.forwardRef(
           ref={(r) => (faceSlice.ref.current = r)}
         />
       </div>
-    );
+    )
   }
-);
+)
 
 function ModalHeading({ children }) {
   return (
     <Heading mb={2} size="md" color="gray.300">
       {children}
     </Heading>
-  );
+  )
 }
 
 export function ImageEditModal(props: ImageEditModalProps) {
@@ -93,101 +91,97 @@ export function ImageEditModal(props: ImageEditModalProps) {
       person: { name: f.person.name },
       faces: f.faces,
     })
-  );
-  console.log(props.image.appearances);
-  console.log({ appearanceMap });
+  )
 
-  const unknownFacesMap = _.keyBy(props.image.unknownFaces, (f) => f.id);
+  const unknownFacesMap = _.keyBy(props.image.unknownFaces, (f) => f.id)
   // TODO: update this once users can create new faces on this screen
   const allFaces = useMemo(() => {
     const faces = _.flatMap(appearanceMap, (f) => f.faces).concat(
       props.image.unknownFaces
-    );
-    return _.keyBy(faces, (f) => f.id);
-  }, []);
+    )
+    return _.keyBy(faces, (f) => f.id)
+  }, [])
   const [appearances, setAppearances] = useState<{
     [id: number]: {
-      id: number;
-      person: { name: string };
-      faces: FaceDataFragment[];
-    };
-  }>(appearanceMap);
+      id: number
+      person: { name: string }
+      faces: FaceDataFragment[]
+    }
+  }>(appearanceMap)
   const [unknownFaces, setUnknownFaces] = useState<{
-    [id: number]: FaceDataFragment;
-  }>(unknownFacesMap);
-  const { mutateAsync: addAppearance } = useAddAppearanceMutation();
-  const { mutateAsync: removeAppearance } = useRemoveAppearanceMutation();
-  const { mutateAsync: linkFace } = useLinkFaceMutation();
-  const { mutateAsync: unlinkFace } = useUnlinkFaceMutation();
+    [id: number]: FaceDataFragment
+  }>(unknownFacesMap)
+  const { mutateAsync: addAppearance } = useAddAppearanceMutation()
+  const { mutateAsync: removeAppearance } = useRemoveAppearanceMutation()
+  const { mutateAsync: linkFace } = useLinkFaceMutation()
+  const { mutateAsync: unlinkFace } = useUnlinkFaceMutation()
   async function addAppearance_(personId: number) {
     const { appearance } = await addAppearance({
       imageId: props.image.id,
       personId,
-    });
-    setAppearances((prev) => ({ ...prev, [appearance.id]: appearance }));
+    })
+    setAppearances((prev) => ({ ...prev, [appearance.id]: appearance }))
   }
   async function removeAppearance_(appearanceId: number) {
-    await removeAppearance({ appearanceId });
+    await removeAppearance({ appearanceId })
     setAppearances((prev) => {
-      delete prev[appearanceId];
-      return prev;
-    });
+      delete prev[appearanceId]
+      return prev
+    })
   }
   async function linkFace_(faceId: number, appearanceId: number) {
-    const appearance = appearances[appearanceId];
-    const face = allFaces[faceId];
+    const appearance = appearances[appearanceId]
+    const face = allFaces[faceId]
     setAppearances((prev) => ({
       ...prev,
       [appearance.id]: {
         ...appearance,
         faces: appearance.faces.concat([face]),
       },
-    }));
-    await linkFace({ faceId, appearanceId });
+    }))
+    await linkFace({ faceId, appearanceId })
   }
   async function unlinkFace_(faceId: number, appearanceId: number) {
-    const appearance = appearances[appearanceId];
-    const faces = appearance.faces.filter((face) => face.id !== faceId);
+    const appearance = appearances[appearanceId]
+    const faces = appearance.faces.filter((face) => face.id !== faceId)
     setAppearances((prev) => ({
       ...prev,
       [appearance.id]: {
         ...appearance,
         faces,
       },
-    }));
-    await unlinkFace({ faceId, appearanceId });
+    }))
+    await unlinkFace({ faceId, appearanceId })
   }
   async function onDragEnd(result: DropResult) {
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId } = result
     if (!destination || destination?.droppableId === source.droppableId) {
-      return;
+      return
     }
-    console.log({ result });
-    const faceId = Number(draggableId);
+
+    const faceId = Number(draggableId)
     if (
       destination.droppableId === "unknown" &&
       source.droppableId !== "unknown"
     ) {
-      console.log("unlinking known face");
-      setUnknownFaces((prev) => ({ ...prev, [faceId]: allFaces[faceId] }));
-      await unlinkFace_(faceId, Number(source.droppableId));
+      console.log("unlinking known face")
+      setUnknownFaces((prev) => ({ ...prev, [faceId]: allFaces[faceId] }))
+      await unlinkFace_(faceId, Number(source.droppableId))
     } else if (
       source.droppableId === "unknown" &&
       destination.droppableId !== "unknown"
     ) {
-      console.log("linking unknown face");
+      console.log("linking unknown face")
       setUnknownFaces((prev) => {
-        delete prev[faceId];
-        return prev;
-      });
-      await linkFace_(faceId, Number(destination.droppableId));
+        delete prev[faceId]
+        return prev
+      })
+      await linkFace_(faceId, Number(destination.droppableId))
     } else {
-      console.log("unlinking and linking");
-      await unlinkFace_(faceId, Number(source.droppableId));
-      await linkFace_(faceId, Number(destination.droppableId));
+      console.log("unlinking and linking")
+      await unlinkFace_(faceId, Number(source.droppableId))
+      await linkFace_(faceId, Number(destination.droppableId))
     }
-    console.log(destination);
-    console.log(source);
   }
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -213,7 +207,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
                 >
                   {appearance.faces.map((face, i) => (
                     <Draggable
-                      draggableId={(console.log(face), face.id.toString())}
+                      draggableId={face.id.toString()}
                       key={face.id}
                       index={i}
                     >
@@ -277,5 +271,5 @@ export function ImageEditModal(props: ImageEditModalProps) {
         </Box>
       </Box>
     </DragDropContext>
-  );
+  )
 }

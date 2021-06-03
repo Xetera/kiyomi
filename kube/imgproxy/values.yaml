@@ -1,0 +1,7 @@
+quality: 90
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  path: /
+  host: img.mamamoo.solar

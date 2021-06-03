@@ -12,7 +12,7 @@ generates:
       - typescript
       - typescript-operations
       - typescript-graphql-request
-  ./labeler/src/__generated__/request.ts:
+  ./shared/request.ts:
     documents:
       - labeler/src/**/*.graphql
     plugins: *request_plugins
@@ -33,3 +33,6 @@ generates:
     config:
       fetcher:
         endpoint: "`${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`"
+        fetchParams:
+          headers:
+            Content-Type: application/json

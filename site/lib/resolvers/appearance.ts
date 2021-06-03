@@ -1,18 +1,11 @@
-import { objectType, intArg, mutationField, nonNull, booleanArg } from "nexus";
+import { objectType, intArg, mutationField, nonNull, booleanArg } from "nexus"
 
 export const Appearance = objectType({
   name: "Appearance",
   definition(t) {
-    t.model
-      .id()
-      .person()
-      .addedBy()
-      .faces()
-      .image()
-      .createdAt()
-      .updatedAt();
+    t.model.id().person().addedBy().faces().image().createdAt().updatedAt()
   },
-});
+})
 
 export const Mutation = mutationField((t) => {
   t.nonNull.int("unlinkFace", {
@@ -31,10 +24,10 @@ export const Mutation = mutationField((t) => {
         include: {
           appearance: true,
         },
-      });
-      return 1;
+      })
+      return 1
     },
-  });
+  })
   t.field("linkFace", {
     type: nonNull("Appearance"),
     description: "Attach an existing face to an apperance.",
@@ -51,13 +44,13 @@ export const Mutation = mutationField((t) => {
         include: {
           appearance: true,
         },
-      });
+      })
       if (!face.appearance) {
-        throw Error("No such appearance");
+        throw Error("No such appearance")
       }
-      return face.appearance;
+      return face.appearance
     },
-  });
+  })
   t.field("addAppearance", {
     type: nonNull("Appearance"),
     description: "Add an appearance relation on an image.",
@@ -67,7 +60,7 @@ export const Mutation = mutationField((t) => {
     },
     resolve(_, args, { prisma, user }) {
       if (!user) {
-        throw Error("User not logged in");
+        throw Error("User not logged in")
       }
       return prisma.appearance.create({
         data: {
@@ -75,9 +68,9 @@ export const Mutation = mutationField((t) => {
           personId: args.personId,
           addedById: user.id,
         },
-      });
+      })
     },
-  });
+  })
   t.field("removeAppearance", {
     type: nonNull("Appearance"),
     description: "Removes an appearance from an image",
@@ -86,13 +79,13 @@ export const Mutation = mutationField((t) => {
     },
     async resolve(_, args, { prisma, user }) {
       if (!user) {
-        throw Error("User not logged in");
+        throw Error("User not logged in")
       }
       const appearance = await prisma.appearance.delete({
         include: { faces: true },
         where: { id: args.appearanceId },
-      });
-      return appearance;
+      })
+      return appearance
     },
-  });
-});
+  })
+})

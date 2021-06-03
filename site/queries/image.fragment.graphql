@@ -21,6 +21,9 @@ fragment ImageData on Image {
 fragment GridImage on Image {
   id
   url
+  thumbnail {
+    small
+  }
   rawUrl
   aspectRatio
   uploadedBy {

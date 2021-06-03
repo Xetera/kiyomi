@@ -4,6 +4,7 @@ FROM node:14-alpine AS build
 
 ARG NEXT_PUBLIC_BASE_URL
 ARG NEXT_PUBLIC_BASE_URL_CDN
+ARG NEXT_PUBLIC_MEILISEARCH_URL
 
 WORKDIR /opt/app
 RUN apk update && apk add --virtual libressl-dev openssl

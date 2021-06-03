@@ -21,7 +21,6 @@ export const config = convict({
   },
   backendUrl: {
     doc: "The application environment.",
-    format: ["production", "development", "test"],
     default: "http://localhost:3000",
     env: "BACKEND_URL",
   },

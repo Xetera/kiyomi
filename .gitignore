@@ -1,6 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-.idea # dependencies
+*/**/.idea # dependencies
 **/node_modules
 /.pnp
 .pnp.js
@@ -37,7 +37,7 @@ ansible/.env
 site/test.sh
 site/dump.sql
 site/.next
-**/*.txt
+site/**/*.txt
 .vscode
 labeler/**/*.jpg
 labeler/**/*.png

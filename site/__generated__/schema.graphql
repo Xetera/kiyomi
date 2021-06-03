@@ -201,6 +201,104 @@ input FloatFilter {
   notIn: [Float!]
 }
 
+type Group {
+  aliases(cursor: GroupAliasWhereUniqueInput, skip: Int, take: Int): [GroupAlias!]!
+  avatar: Image
+  banner: Image
+  createdAt: DateTime!
+  id: Int!
+  members(cursor: GroupMemberWhereUniqueInput, skip: Int, take: Int): [GroupMember!]!
+  name: String!
+  updatedAt: DateTime!
+}
+
+type GroupAlias {
+  createdAt: DateTime!
+  id: Int!
+  name: String!
+  updatedAt: DateTime!
+}
+
+input GroupAliasListRelationFilter {
+  every: GroupAliasWhereInput
+  none: GroupAliasWhereInput
+  some: GroupAliasWhereInput
+}
+
+input GroupAliasWhereInput {
+  AND: [GroupAliasWhereInput!]
+  NOT: [GroupAliasWhereInput!]
+  OR: [GroupAliasWhereInput!]
+  createdAt: DateTimeFilter
+  group: GroupWhereInput
+  groupId: IntFilter
+  id: IntFilter
+  name: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input GroupAliasWhereUniqueInput {
+  id: Int
+}
+
+type GroupMember {
+  createdAt: DateTime!
+  endDate: DateTime
+  group: Group!
+  id: Int!
+  person: Person!
+  startDate: DateTime
+  updatedAt: DateTime!
+}
+
+input GroupMemberListRelationFilter {
+  every: GroupMemberWhereInput
+  none: GroupMemberWhereInput
+  some: GroupMemberWhereInput
+}
+
+input GroupMemberMemberCompoundUniqueInput {
+  groupId: Int!
+  personId: Int!
+}
+
+input GroupMemberWhereInput {
+  AND: [GroupMemberWhereInput!]
+  NOT: [GroupMemberWhereInput!]
+  OR: [GroupMemberWhereInput!]
+  createdAt: DateTimeFilter
+  endDate: DateTimeNullableFilter
+  group: GroupWhereInput
+  groupId: IntFilter
+  id: IntFilter
+  person: PersonWhereInput
+  personId: IntFilter
+  startDate: DateTimeNullableFilter
+  updatedAt: DateTimeFilter
+}
+
+input GroupMemberWhereUniqueInput {
+  id: Int
+  member: GroupMemberMemberCompoundUniqueInput
+}
+
+input GroupWhereInput {
+  AND: [GroupWhereInput!]
+  NOT: [GroupWhereInput!]
+  OR: [GroupWhereInput!]
+  aliases: GroupAliasListRelationFilter
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  ireneBotId: IntNullableFilter
+  members: GroupMemberListRelationFilter
+  name: StringFilter
+  updatedAt: DateTimeFilter
+}
+
 type Image {
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
 
@@ -208,6 +306,11 @@ type Image {
   aspectRatio: Float!
   bytes: Int!
   caption: String
+
+  """
+  A graph of connections people in this image share with others based on images they appear together in up to a depth of 4
+  """
+  connections(depth: Int! = 2): ImageConnections!
   createdAt: DateTime!
   faceScanDate: DateTime
 
@@ -226,6 +329,9 @@ type Image {
 
   """( ͡° ͜ʖ ͡°)"""
   isNsfw: Boolean!
+
+  """False if not logged in"""
+  liked: Boolean
 
   """The IANA media type of the image."""
   mimetype: MimeType!
@@ -252,6 +358,7 @@ type Image {
   """
   source: String
   tags(cursor: TagWhereUniqueInput, skip: Int, take: Int): [Tag!]!
+  thumbnail: Thumbnail!
   unknownFaces: [Face!]!
   uploadType: UploadType!
   uploadedBy: User
@@ -262,6 +369,42 @@ type Image {
 
   """Width of the image in pixels."""
   width: Int!
+}
+
+enum ImageConnectionEdge {
+  IMAGE_TO_PERSON
+  PERSON_TO_IMAGE
+}
+
+type ImageConnections {
+  edges: [ImageEdge!]!
+  images: [Image!]!
+  people: [Person!]!
+}
+
+type ImageEdge {
+  from: Int!
+  to: Int!
+  type: ImageConnectionEdge
+}
+
+input ImageLikeListRelationFilter {
+  every: ImageLikeWhereInput
+  none: ImageLikeWhereInput
+  some: ImageLikeWhereInput
+}
+
+input ImageLikeWhereInput {
+  AND: [ImageLikeWhereInput!]
+  NOT: [ImageLikeWhereInput!]
+  OR: [ImageLikeWhereInput!]
+  createdAt: DateTimeFilter
+  id: IntFilter
+  image: ImageWhereInput
+  imageId: IntFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntFilter
 }
 
 input ImageListRelationFilter {
@@ -275,6 +418,7 @@ input ImageOrderByInput {
   caption: SortOrder
   createdAt: SortOrder
   faceScanDate: SortOrder
+  faceScanRequestDate: SortOrder
   fileName: SortOrder
   hash: SortOrder
   height: SortOrder
@@ -299,10 +443,13 @@ input ImageWhereInput {
   NOT: [ImageWhereInput!]
   OR: [ImageWhereInput!]
   appearances: AppearanceListRelationFilter
+  avatarOf: GroupWhereInput
+  bannerOf: GroupWhereInput
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
   faceScanDate: DateTimeNullableFilter
+  faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
   fileName: StringNullableFilter
   hash: StringFilter
@@ -310,6 +457,7 @@ input ImageWhereInput {
   id: IntFilter
   ireneBotId: IntNullableFilter
   isNsfw: BoolFilter
+  likes: ImageLikeListRelationFilter
   mimetype: EnumMimeTypeFilter
   pHash: StringNullableFilter
   palette: IntNullableListFilter
@@ -381,6 +529,10 @@ type Mutation {
 
   """Removes an appearance from an image"""
   removeAppearance(appearanceId: Int!): Appearance!
+
+  """Queue an image to get scanned for faces"""
+  scanFaces(slug: String!): QueueInfo!
+  toggleLike(imageId: Int!): Image!
 
   """
   Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data
@@ -506,8 +658,11 @@ input NestedStringNullableFilter {
 
 type Person {
   aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
+  appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
   createdAt: DateTime!
+  faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
+  memberOf(cursor: GroupMemberWhereUniqueInput, skip: Int, take: Int): [GroupMember!]!
   name: String!
   preferredAlias: Alias
   updatedAt: DateTime!
@@ -524,24 +679,36 @@ input PersonWhereInput {
   description: StringNullableFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
+  memberOf: GroupMemberListRelationFilter
   name: StringFilter
   preferredAlias: AliasWhereInput
   preferredAliasId: IntNullableFilter
   updatedAt: DateTimeFilter
 }
 
+input PersonWhereUniqueInput {
+  id: Int
+  ireneBotId: Int
+}
+
 type Query {
   """Find a single image by its slug."""
   image(slug: String!): Image
+  imageConnections(depth: Int! = 2, slug: String!): ImageConnections
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
-  searchPerson(query: String!): [Person!]!
+  people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
+  person(where: PersonWhereUniqueInput!): Person
   user(id: Int): User
 }
 
 enum QueryMode {
   default
   insensitive
+}
+
+type QueueInfo {
+  queueSize: Int!
 }
 
 type Role {
@@ -648,6 +815,13 @@ input TagWhereUniqueInput {
   id: Int
 }
 
+"""Preview urls of an image"""
+type Thumbnail {
+  large: String!
+  medium: String!
+  small: String!
+}
+
 enum UploadType {
   TOKEN
   WEBSITE
@@ -673,6 +847,7 @@ input UserWhereInput {
   emailVerified: DateTimeNullableFilter
   id: IntFilter
   image: StringNullableFilter
+  imageLikes: ImageLikeListRelationFilter
   images: ImageListRelationFilter
   markedFaces: FaceListRelationFilter
   name: StringNullableFilter

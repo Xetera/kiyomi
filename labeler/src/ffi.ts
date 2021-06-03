@@ -1,13 +1,15 @@
 import child_process from "child_process";
 
-const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
+const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const timeoutAfter = (ms: number, reason: string) =>
   wait(ms).then(() => Promise.reject(new Error(reason)));
 
-
-type ChildStdoutOptions = 
-{ timeout?: number, timeoutError?: string, stdin?: Buffer }
+type ChildStdoutOptions = {
+  timeout?: number;
+  timeoutError?: string;
+  stdin?: Buffer;
+};
 
 function grabChildStdout(command: string, opts: ChildStdoutOptions) {
   const [binary, ...args] = command.split(" ");
@@ -15,13 +17,16 @@ function grabChildStdout(command: string, opts: ChildStdoutOptions) {
     stdio: "pipe",
   });
   return Promise.race<Promise<string>>([
-    timeoutAfter(opts.timeout ?? 4000, opts.timeoutError ?? "Process timed out while waiting for child stdout"),
+    timeoutAfter(
+      opts.timeout ?? 10_000,
+      opts.timeoutError ?? "Process timed out while waiting for child stdout"
+    ),
     new Promise((res, rej) => {
       if (opts.stdin) {
-      child.stdin!.write(opts.stdin);
+        child.stdin!.write(opts.stdin);
       }
       child.stdin.end();
-      child.stdout!.on("data", m => {
+      child.stdout!.on("data", (m) => {
         res(m.toString());
         child.kill();
       });
@@ -29,22 +34,20 @@ function grabChildStdout(command: string, opts: ChildStdoutOptions) {
       child.stderr!.on("error", rej);
       child.on("error", rej);
     }),
-  ])
+  ]);
 }
 
 export function phash(image: Buffer): Promise<string> {
-  return grabChildStdout("python ./phash.py", {
-    timeout: 2000,
+  return grabChildStdout("python3 ./phash.py", {
     timeoutError: "Hashing function timed out",
-    stdin: image
-  }) 
+    stdin: image,
+  });
 }
 
 export async function colorPalette(image: Buffer): Promise<number[]> {
-  const stdout = await grabChildStdout("python ./colors.py", {
-    timeout: 2000,
+  const stdout = await grabChildStdout("python3 ./colors.py", {
     timeoutError: "Color palette generation timed out",
-    stdin: image
-  }) 
+    stdin: image,
+  });
   return JSON.parse(stdout);
 }

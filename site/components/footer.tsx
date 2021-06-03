@@ -1,4 +1,4 @@
-import { RiDiscordFill, RiTwitterFill } from "react-icons/ri";
+import { RiDiscordFill, RiTwitterFill } from "react-icons/ri"
 
 function FooterSection({ section }) {
   return (
@@ -16,7 +16,7 @@ function FooterSection({ section }) {
         ))}
       </ul>
     </section>
-  );
+  )
 }
 
 export function Footer() {
@@ -54,5 +54,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

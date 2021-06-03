@@ -1,22 +1,21 @@
-import { getSession, Provider } from "next-auth/client";
+import { Provider } from "next-auth/client"
 // Import our CSS
-import "../styles/tailwind.css";
-import "../styles/globals.css";
-import "modern-normalize";
-import ReactTooltip from "react-tooltip";
-import { default as _default, alt, light } from "../colors";
-import NextHead from "next/head";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { Hydrate } from "react-query/hydration";
-import React from "react";
-import { AppProps } from "next/dist/next-server/lib/router/router";
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "@/client/theme";
+import "../styles/tailwind.css"
+import "../styles/globals.css"
+import ReactTooltip from "react-tooltip"
+import { default as _default, alt, light } from "../colors"
+import NextHead from "next/head"
+import { QueryClient, QueryClientProvider } from "react-query"
+import { Hydrate } from "react-query/hydration"
+import React from "react"
+import { AppProps } from "next/dist/next-server/lib/router/router"
+import { ChakraProvider, CSSReset } from "@chakra-ui/react"
+import theme from "@/client/theme"
 
-const CustomApp = ({ Component, pageProps }: AppProps) => {
-  const queryClientRef = React.useRef<QueryClient>();
+const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
+  const queryClientRef = React.useRef<QueryClient>()
   if (!queryClientRef.current) {
-    queryClientRef.current = new QueryClient();
+    queryClientRef.current = new QueryClient()
   }
 
   return (
@@ -31,6 +30,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
           </NextHead>
           <div className="min-h-screen flex flex-col">
             <ChakraProvider theme={theme}>
+              <CSSReset />
               <Component {...pageProps} />
             </ChakraProvider>
           </div>
@@ -44,6 +44,6 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
         </Provider>
       </Hydrate>
     </QueryClientProvider>
-  );
-};
-export default CustomApp;
+  )
+}
+export default CustomApp

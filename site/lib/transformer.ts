@@ -1,11 +1,3 @@
-import { Appearance, Face, Image } from "@prisma/client";
-import { pick, keyBy } from "lodash";
-import {
-  GetImage,
-  imageFindOptionsAppearanceSelection,
-  imageFindOptionsFaceSelection,
-} from "./data-fetching";
-
 export const publicImageFields = {
   userId: true,
   slug: true,
@@ -21,9 +13,9 @@ export const publicImageFields = {
   palette: true,
   createdAt: true,
   updatedAt: true,
-} as const;
+} as const
 
 type ExtraImageProperties = {
-  mimetype: string;
-  url: string;
-};
+  mimetype: string
+  url: string
+}

@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.2"
 
 volumes:
   # not important to get indexed immediately
@@ -7,6 +7,11 @@ volumes:
     external: true
 
 services:
+  redis:
+    image: redis
+    container_name: sp_redis
+    ports:
+      - 6300:6379
   search:
     image: getmeili/meilisearch
     container_name: sp_meilisearch
@@ -31,4 +36,4 @@ services:
       POSTGRES_DATABASE: simp
       POSTGRES_USER: postgres
     volumes:
-      - sp_pg
+      - sp_pg:/var/lib/postgresql/data

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 function Tag({ tag }: { tag: string }) {
   return (
     <a
@@ -7,7 +7,7 @@ function Tag({ tag }: { tag: string }) {
     >
       {tag}
     </a>
-  );
+  )
 }
 
 export function Tags({ tags }: { tags: string[] }) {
@@ -19,5 +19,5 @@ export function Tags({ tags }: { tags: string[] }) {
         </div>
       ))}
     </section>
-  );
+  )
 }

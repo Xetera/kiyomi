@@ -1,5 +1,5 @@
-import { handle } from "@/lib/middleware";
+import { handle } from "@/lib/middleware"
 
 export default handle((_req, res) => {
-  res.status(200).end();
-});
+  res.status(200).end()
+})

@@ -1,15 +1,15 @@
-import { useMeQuery, UserDataFragment } from "@/__generated__/graphql";
-import { useSession } from "next-auth/client";
-import Link from "next/link";
-import React, { PropsWithChildren } from "react";
-import BetterLink from "./nextjs/link";
+import { useMeQuery, UserDataFragment } from "@/__generated__/graphql"
+import { useSession } from "next-auth/client"
+import Link from "next/link"
+import React, { PropsWithChildren } from "react"
+import BetterLink from "./nextjs/link"
 
-type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>;
+type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
-  href: string;
-  as?: string;
-  hardLink?: boolean;
-};
+  href: string
+  as?: string
+  hardLink?: boolean
+}
 
 function NavLink({
   children,
@@ -20,9 +20,9 @@ function NavLink({
 }: PropsWithChildren<NavLinkProps>) {
   const aProps: AType = {
     ...rest,
-  };
+  }
   if (hardLink) {
-    aProps.href = href;
+    aProps.href = href
   }
   const data = (
     <a
@@ -32,22 +32,22 @@ function NavLink({
     >
       {children}
     </a>
-  );
+  )
 
-  if (hardLink) return data;
+  if (hardLink) return data
   return (
     <BetterLink href={href} as={as}>
       {data}
     </BetterLink>
-  );
+  )
 }
 
 export type NavbarProps = {
-  user?: UserDataFragment;
-};
+  user?: UserDataFragment
+}
 
 export function Navbar() {
-  const [session] = useSession();
+  const [session] = useSession()
 
   return (
     <nav
@@ -87,5 +87,5 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  )
 }

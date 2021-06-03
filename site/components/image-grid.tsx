@@ -1,10 +1,10 @@
-import { Box, Grid } from "@chakra-ui/react";
-import React from "react";
-import { ImageGridElement, ImageGridElementProps } from "./image-grid-element";
+import { Box, Grid } from "@chakra-ui/react"
+import React from "react"
+import { ImageGridElement, ImageGridElementProps } from "./image-grid-element"
 
 export type ImageGridProps = {
-  images: Array<ImageGridElementProps["image"] & { aspectRatio: number }>;
-};
+  images: Array<ImageGridElementProps["image"] & { aspectRatio: number }>
+}
 
 export default function ImageGrid({ images }: ImageGridProps) {
   return (
@@ -21,11 +21,11 @@ export default function ImageGrid({ images }: ImageGridProps) {
         <Box
           maxHeight="385px"
           key={image.id}
-          {...(image.aspectRatio > 1.5 ? { gridColumn: "auto / span 2" } : {})}
+          {...(image.aspectRatio > 1.4 ? { gridColumn: "auto / span 2" } : {})}
         >
           <ImageGridElement image={image} />
         </Box>
       ))}
     </Grid>
-  );
+  )
 }

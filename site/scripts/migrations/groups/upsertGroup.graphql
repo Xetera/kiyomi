@@ -1,0 +1,9 @@
+mutation upsertGroup(
+  $where: GroupWhereUniqueInput!
+  $create: GroupCreateInput!
+  $update: GroupUpdateInput!
+) {
+  upsertOneGroup(where: $where, create: $create, update: $update) {
+    id
+  }
+}

@@ -1,35 +1,65 @@
-import React from "react";
-import { RiHammerLine } from "react-icons/ri";
-import { Maybe, UserDataFragment } from "@/__generated__/graphql";
+import React from "react"
+import { RiHammerLine, RiShieldStarLine } from "react-icons/ri"
+import {
+  Maybe,
+  Role,
+  UserDataFragment,
+  User as UserData,
+} from "@/__generated__/graphql"
+import { Box, Text } from "@chakra-ui/layout"
+import { Flex, Image, Tag } from "@chakra-ui/react"
 
 export function User({
   user,
   bottom,
 }: {
-  user?: Maybe<UserDataFragment>;
-  bottom: React.ReactElement;
+  user?: Maybe<
+    Pick<UserData, "bot" | "name" | "avatar"> & {
+      roles: Array<Pick<Role, "name">>
+    }
+  >
+  bottom: React.ReactElement
 }) {
+  const imageDimensions = ["64px", "96px"]
+  const isAdmin = user?.roles.find((role) => role.name === "ADMINISTRATOR")
+  const isBot = Boolean(user?.bot)
   return (
     <div className="flex flex-row align-top">
-      <div style={{ maxHeight: "48px" }}>
+      <Box borderRadius="md" overflow="hidden" mr={4}>
         {user?.avatar && (
-          <img
+          <Image
             src={user.avatar}
-            width="48px"
-            height="48px"
-            className="rounded-full"
+            width={imageDimensions}
+            height={imageDimensions}
           />
         )}
-      </div>
-      <div className="ml-4">
-        <p className="font-semibold mr-2 flex items-center">
-          {user?.name ?? <i>Unknown User</i>}
-          <span data-tip="Staff member">
-            <RiHammerLine className="ml-2" />
-          </span>
-        </p>
+      </Box>
+      <Flex
+        alignItems="flex-start"
+        flexDirection="column"
+        justifyContent="center"
+      >
+        <Flex mb={1} alignItems="center">
+          <Text
+            fontSize={["md", "md", "lg", "xl"]}
+            mr={2}
+            fontWeight="semibold"
+          >
+            {user?.name ?? <i>Unknown User</i>}
+          </Text>
+          {isAdmin && (
+            <Box data-tip="Staff member" mr={2} display="flex">
+              <RiShieldStarLine height="100%" size={16} />
+            </Box>
+          )}
+          {isBot && (
+            <Tag mr={2} fontSize="sm">
+              Bot
+            </Tag>
+          )}
+        </Flex>
         {bottom}
-      </div>
+      </Flex>
     </div>
-  );
+  )
 }

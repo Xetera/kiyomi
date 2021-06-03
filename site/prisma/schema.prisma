@@ -53,22 +53,24 @@ model Alias {
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @default(now()) @updatedAt @map("updated_at")
 
-  @@map("aliases")
   @@unique([personId, name], name: "personAlias")
+  @@map("aliases")
 }
 
 model Person {
-  id               Int          @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   description      String?
   name             String
-  preferredAlias   Alias?       @relation("preferred_alias", fields: [preferredAliasId], references: [id])
-  preferredAliasId Int?         @map("preferred_alias_id")
+  preferredAlias   Alias?        @relation("preferred_alias", fields: [preferredAliasId], references: [id])
+  preferredAliasId Int?          @map("preferred_alias_id")
   aliases          Alias[]
-  appearsIn        Face[]       @relation("face_person")
-  createdAt        DateTime     @default(now()) @map("created_at")
-  updatedAt        DateTime     @default(now()) @updatedAt @map("updated_at")
-  ireneBotId       Int?         @unique @map("irene_bot_id")
+  appearsIn        Face[]        @relation("face_person")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at")
+  ireneBotId       Int?          @unique @map("irene_bot_id")
   appearances      Appearance[]
+  memberOf         GroupMember[]
+
   @@index([name], name: "person.name.index")
   @@map("persons")
 }
@@ -147,18 +149,19 @@ model Role {
 
 /// A user
 model User {
-  id            Int       @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
+  email         String?     @unique
+  emailVerified DateTime?   @map("email_verified")
   image         String?
-  token         String?   @unique
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+  token         String?     @unique
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
   images        Image[]
   cratedTags    Tag[]
   roles         Role[]
-  bot           Boolean   @default(false)
+  imageLikes    ImageLike[]
+  bot           Boolean     @default(false)
 
   taggedAppearances Appearance[]
   markedFaces       Face[]
@@ -179,35 +182,94 @@ model VerificationRequest {
 
 /// An image uploaded by a user or bot
 model Image {
-  slug         String       @unique
-  width        Int
-  height       Int
-  fileName     String?      @map("file_name")
-  uploadType   UploadType   @map("upload_type")
-  mimetype     MimeType
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @default(now()) @updatedAt @map("updated_at")
-  userId       Int?         @map("user_id")
-  id           Int          @id @default(autoincrement())
-  hash         String
-  pHash        String?      @map("p_hash")
-  public       Boolean      @default(false)
+  slug                String       @unique
+  width               Int
+  height              Int
+  fileName            String?      @map("file_name")
+  uploadType          UploadType   @map("upload_type")
+  mimetype            MimeType
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @default(now()) @updatedAt @map("updated_at")
+  userId              Int?         @map("user_id")
+  id                  Int          @id @default(autoincrement())
+  hash                String
+  pHash               String?      @map("p_hash")
+  public              Boolean      @default(false)
   // The decimal representation of the primary colors, sorted by appearance frequency
-  palette      Int[]
-  caption      String?
-  views        Int          @default(0)
-  isNsfw       Boolean      @default(false) @map("is_nsfw")
-  source       String?
-  bytes        Int          @default(0)
-  user         User?        @relation(fields: [userId], references: [id])
-  appearances  Appearance[] @relation("image_appearances")
-  faceScanDate DateTime?    @map("face_scan_date")
-  ireneBotId   Int?         @unique
-  tags         Tag[]
-  faces        Face[]
+  palette             Int[]
+  caption             String?
+  views               Int          @default(0)
+  isNsfw              Boolean      @default(false) @map("is_nsfw")
+  source              String?
+  bytes               Int          @default(0)
+  user                User?        @relation(fields: [userId], references: [id])
+  appearances         Appearance[] @relation("image_appearances")
+  faceScanDate        DateTime?    @map("face_scan_date")
+  faceScanRequestDate DateTime?    @map("face_scan_request_date")
+  ireneBotId          Int?         @unique
+  tags                Tag[]
+  faces               Face[]
+  likes               ImageLike[]
+  bannerOf            Group?       @relation("banner")
+  avatarOf            Group?       @relation("avatar")
 
   @@index([slug], name: "images.slug_index")
   @@map("images")
+}
+
+model ImageLike {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  imageId   Int      @map("image_id")
+  image     Image    @relation(fields: [imageId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([userId, imageId], name: "likedImage")
+  @@map("image_likes")
+}
+
+model GroupMember {
+  id        Int       @id @default(autoincrement())
+  person    Person    @relation(fields: [personId], references: [id])
+  personId  Int
+  group     Group     @relation(fields: [groupId], references: [id])
+  groupId   Int
+  startDate  DateTime?
+  endDate   DateTime?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([groupId, personId], name: "member")
+  @@map("group_members")
+}
+
+model GroupAlias {
+  id        Int      @id @default(autoincrement())
+  name      String
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   Int      @map("group_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("group_aliases")
+}
+
+model Group {
+  id         Int           @id @default(autoincrement())
+  name       String
+  aliases    GroupAlias[]
+  members    GroupMember[]
+  banner     Image?        @relation("banner", fields: [bannerId], references: [id])
+  bannerId   Int?          @map("banner_id")
+  avatar     Image?        @relation("avatar", fields: [avatarId], references: [id])
+  avatarId   Int?          @map("avatar_id")
+  ireneBotId Int?          @unique @map("irene_bot_id")
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map("groups")
 }
 
 enum UploadType {
