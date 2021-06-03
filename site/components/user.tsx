@@ -1,13 +1,13 @@
-import React from "react";
-import { RiHammerLine, RiShieldStarLine } from "react-icons/ri";
+import React from "react"
+import { RiHammerLine, RiShieldStarLine } from "react-icons/ri"
 import {
   Maybe,
   Role,
   UserDataFragment,
   User as UserData,
-} from "@/__generated__/graphql";
-import { Box, Text } from "@chakra-ui/layout";
-import { Flex, Image, Tag } from "@chakra-ui/react";
+} from "@/__generated__/graphql"
+import { Box, Text } from "@chakra-ui/layout"
+import { Flex, Image, Tag } from "@chakra-ui/react"
 
 export function User({
   user,
@@ -15,14 +15,14 @@ export function User({
 }: {
   user?: Maybe<
     Pick<UserData, "bot" | "name" | "avatar"> & {
-      roles: Array<Pick<Role, "name">>;
+      roles: Array<Pick<Role, "name">>
     }
-  >;
-  bottom: React.ReactElement;
+  >
+  bottom: React.ReactElement
 }) {
-  const imageDimensions = ["64px", "96px"];
-  const isAdmin = user?.roles.find((role) => role.name === "ADMINISTRATOR");
-  const isBot = Boolean(user?.bot);
+  const imageDimensions = ["64px", "96px"]
+  const isAdmin = user?.roles.find((role) => role.name === "ADMINISTRATOR")
+  const isBot = Boolean(user?.bot)
   return (
     <div className="flex flex-row align-top">
       <Box borderRadius="md" overflow="hidden" mr={4}>
@@ -61,5 +61,5 @@ export function User({
         {bottom}
       </Flex>
     </div>
-  );
+  )
 }

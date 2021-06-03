@@ -1,4 +1,11 @@
-import { objectType, queryField, intArg, mutationField, nonNull, extendType } from "nexus";
+import {
+  objectType,
+  queryField,
+  intArg,
+  mutationField,
+  nonNull,
+  extendType,
+} from "nexus"
 
 export const Face = objectType({
   name: "Face",
@@ -15,6 +22,6 @@ export const Face = objectType({
       .score()
       .createdAt()
       .source()
-      .updatedAt();
+      .updatedAt()
   },
-});
+})

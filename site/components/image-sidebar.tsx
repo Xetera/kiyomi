@@ -1,20 +1,20 @@
-import { humanFileSize } from "@/lib/shared";
-import React from "react";
-import { Palette } from "./palette-color";
-import { Tags } from "./tags";
-import { CascadeChildren } from "./animations/cascade-children";
+import { humanFileSize } from "@/lib/shared"
+import React from "react"
+import { Palette } from "./palette-color"
+import { Tags } from "./tags"
+import { CascadeChildren } from "./animations/cascade-children"
 import {
   RiHeartAddFill,
   RiHeartFill,
   RiQuestionLine,
   RiScan2Line,
   RiUser3Fill,
-} from "react-icons/ri";
-import { format } from "date-fns";
-import { User } from "./user";
-import { ImageContext } from "@/models/contexts";
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
+} from "react-icons/ri"
+import { format } from "date-fns"
+import { User } from "./user"
+import { ImageContext } from "@/models/contexts"
+import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout"
+import { Button } from "@chakra-ui/button"
 import {
   grid,
   Grid,
@@ -22,11 +22,11 @@ import {
   Tooltip,
   useToast,
   UseToastOptions,
-} from "@chakra-ui/react";
-import { useSession } from "next-auth/client";
-import { useToggleLikeMutation } from "@/__generated__/graphql";
-import useQueue from "./queue-button";
-import { useRouter } from "next/router";
+} from "@chakra-ui/react"
+import { useSession } from "next-auth/client"
+import { useToggleLikeMutation } from "@/__generated__/graphql"
+import useQueue from "./queue-button"
+import { useRouter } from "next/router"
 
 function SidebarSection({ title, children }) {
   return (
@@ -43,14 +43,14 @@ function SidebarSection({ title, children }) {
       </Heading>
       <Text size="sm">{children}</Text>
     </>
-  );
+  )
 }
 
 export type ImageSidebarProps = {
-  onEdit: () => void;
-};
+  onEdit: () => void
+}
 
-type TagProps = {};
+type TagProps = {}
 
 function Tag({ text, icon, onClick, disabled = false }) {
   const data = (
@@ -66,48 +66,48 @@ function Tag({ text, icon, onClick, disabled = false }) {
       <Box mr={2}>{icon}</Box>
       <Text fontWeight="600">{text}</Text>
     </Flex>
-  );
+  )
   if (disabled) {
-    return <Tooltip label="Already requested">{data}</Tooltip>;
+    return <Tooltip label="Already requested">{data}</Tooltip>
   }
-  return data;
+  return data
 }
 
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
-  const toast = useToast();
-  const image = React.useContext(ImageContext);
-  const router = useRouter();
-  const { data, mutate, isLoading } = useToggleLikeMutation();
-  const [session] = useSession();
+  const toast = useToast()
+  const image = React.useContext(ImageContext)
+  const router = useRouter()
+  const { data, mutate, isLoading } = useToggleLikeMutation()
+  const [session] = useSession()
   if (!image) {
-    return null;
+    return null
   }
   function toggleLike() {
     if (!image) {
-      return;
+      return
     }
     const toastProps: UseToastOptions = {
       variant: "solid",
       position: "bottom-right",
-    };
+    }
     if (liked) {
       toast({
         ...toastProps,
         status: "info",
         title: "You unliked this image",
-      });
+      })
     } else {
       toast({
         ...toastProps,
         status: "success",
         title: "You liked this image",
-      });
+      })
     }
-    mutate({ id: image.id });
+    mutate({ id: image.id })
   }
-  const liked = data?.toggleLike.liked ?? image.liked;
-  const uploadDate = new Date(image.createdAt);
-  const request = useQueue({ slug: router.query.slug as string });
+  const liked = data?.toggleLike.liked ?? image.liked
+  const uploadDate = new Date(image.createdAt)
+  const request = useQueue({ slug: router.query.slug as string })
   return (
     <Stack className="align-start text-sm rounded" maxWidth="600px" mx="auto">
       <CascadeChildren className="grid gap-4 text-sm">
@@ -207,5 +207,5 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         </Grid> */}
       </CascadeChildren>
     </Stack>
-  );
+  )
 }

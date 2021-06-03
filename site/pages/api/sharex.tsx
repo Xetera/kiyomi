@@ -17,5 +17,5 @@ export default (req, res) => {
     FileFormName: "file",
     URL: "https://simp.pics/image/$json:slug$",
     ThumbnailURL: "$json:url$",
-  });
-};
+  })
+}

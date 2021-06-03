@@ -1,13 +1,18 @@
-import { fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from "nexus";
-import { nexusPrisma } from "nexus-plugin-prisma";
-import path from "path";
-import * as types from "./resolvers";
+import { fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from "nexus"
+import { nexusPrisma } from "nexus-plugin-prisma"
+import path from "path"
+import * as types from "./resolvers"
 
 const publicTypes = Object.fromEntries(
   Object.entries(types).map(([key, value]) => {
-    return [key, Object.fromEntries(
-      Object.entries(value).filter(([name]) => !name.toLowerCase().startsWith("private"))
-    )]
+    return [
+      key,
+      Object.fromEntries(
+        Object.entries(value).filter(
+          ([name]) => !name.toLowerCase().startsWith("private")
+        )
+      ),
+    ]
   })
 )
 
@@ -37,7 +42,7 @@ export const schema = makeSchema({
   shouldExitAfterGenerateArtifacts:
     process.env.SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === "true",
   types: publicTypes,
-});
+})
 
 export const privateSchema = makeSchema({
   plugins: [
@@ -57,4 +62,4 @@ export const privateSchema = makeSchema({
   shouldExitAfterGenerateArtifacts:
     process.env.SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === "true",
   types,
-});
+})

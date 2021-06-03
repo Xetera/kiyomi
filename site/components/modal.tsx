@@ -1,6 +1,6 @@
-import React from "react";
-import ReactModal from "react-modal";
+import React from "react"
+import ReactModal from "react-modal"
 
 export function Modal() {
-  return <div>1</div>;
+  return <div>1</div>
 }

@@ -1,104 +1,104 @@
 import {
   ImageConnectionEdge,
   useConnectionGraphQuery,
-} from "@/__generated__/graphql";
-import { Flex } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import React from "react";
+} from "@/__generated__/graphql"
+import { Flex } from "@chakra-ui/react"
+import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
+import React from "react"
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
-});
+})
 
 export type GraphDisplayProps = {
-  slug: string;
-  width: number;
-  currentPersonIds?: number[];
-};
+  slug: string
+  width: number
+  currentPersonIds?: number[]
+}
 
 // preventing SWR revalidation from re-rendering the component with memo
 export const GraphDisplay = React.memo(
   ({ slug, width, currentPersonIds = [] }: GraphDisplayProps) => {
-    const router = useRouter();
-    const isLoneGraph = currentPersonIds.length === 0;
+    const router = useRouter()
+    const isLoneGraph = currentPersonIds.length === 0
     const { data: graph, refetch: fetchGraph } = useConnectionGraphQuery(
       {
         slug,
       },
       { enabled: false }
-    );
+    )
     React.useEffect(() => {
-      fetchGraph();
-    }, []);
+      fetchGraph()
+    }, [])
     function nodePaint(opts: any, ctx) {
-      const { id, x, y, name } = opts;
-      ctx.fillStyle = opts.color;
+      const { id, x, y, name } = opts
+      ctx.fillStyle = opts.color
       function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
-        var rot = (Math.PI / 2) * 3;
-        var x = cx;
-        var y = cy;
-        var step = Math.PI / spikes;
+        var rot = (Math.PI / 2) * 3
+        var x = cx
+        var y = cy
+        var step = Math.PI / spikes
 
-        ctx.beginPath();
-        ctx.moveTo(cx, cy - outerRadius);
+        ctx.beginPath()
+        ctx.moveTo(cx, cy - outerRadius)
         for (let i = 0; i < spikes; i++) {
-          x = cx + Math.cos(rot) * outerRadius;
-          y = cy + Math.sin(rot) * outerRadius;
-          ctx.lineTo(x, y);
-          rot += step;
+          x = cx + Math.cos(rot) * outerRadius
+          y = cy + Math.sin(rot) * outerRadius
+          ctx.lineTo(x, y)
+          rot += step
 
-          x = cx + Math.cos(rot) * innerRadius;
-          y = cy + Math.sin(rot) * innerRadius;
-          ctx.lineTo(x, y);
-          rot += step;
+          x = cx + Math.cos(rot) * innerRadius
+          y = cy + Math.sin(rot) * innerRadius
+          ctx.lineTo(x, y)
+          rot += step
         }
-        ctx.lineTo(cx, cy - outerRadius);
-        ctx.closePath();
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = opts.color;
-        ctx.stroke();
-        ctx.fill();
+        ctx.lineTo(cx, cy - outerRadius)
+        ctx.closePath()
+        ctx.lineWidth = 5
+        ctx.strokeStyle = opts.color
+        ctx.stroke()
+        ctx.fill()
       }
 
       if (name === "This image") {
         if (isLoneGraph) {
-          ctx.fillStyle = "#eeeeee";
-          ctx.font = "5px Inter";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("There's nobody in this image 😭", x, y + 20);
-          ctx.fillStyle = opts.color;
+          ctx.fillStyle = "#eeeeee"
+          ctx.font = "5px Inter"
+          ctx.textAlign = "center"
+          ctx.textBaseline = "middle"
+          ctx.fillText("There's nobody in this image 😭", x, y + 20)
+          ctx.fillStyle = opts.color
         } else {
-          ctx.fillStyle = "#eeeeee";
-          ctx.font = "5px Inter";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("This image", x, y + 10);
-          ctx.fillStyle = opts.color;
+          ctx.fillStyle = "#eeeeee"
+          ctx.font = "5px Inter"
+          ctx.textAlign = "center"
+          ctx.textBaseline = "middle"
+          ctx.fillText("This image", x, y + 10)
+          ctx.fillStyle = opts.color
         }
-        drawStar(opts.x, opts.y, 5, 2, 1);
+        drawStar(opts.x, opts.y, 5, 2, 1)
       } else if (name === "Another image") {
-        ctx.beginPath();
-        ctx.fillStyle = "#13131d";
-        ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
-        ctx.fill();
-        ctx.fillStyle = "#eeeeee";
-        ctx.font = "2px Inter";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("Image", x, y);
-        ctx.fillStyle = opts.color;
+        ctx.beginPath()
+        ctx.fillStyle = "#13131d"
+        ctx.arc(x, y, 5, 0, 2 * Math.PI, false)
+        ctx.fill()
+        ctx.fillStyle = "#eeeeee"
+        ctx.font = "2px Inter"
+        ctx.textAlign = "center"
+        ctx.textBaseline = "middle"
+        ctx.fillText("Image", x, y)
+        ctx.fillStyle = opts.color
       } else {
-        ctx.fillStyle = "#eeeeee";
-        ctx.font = "5px Inter";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(name, x, y);
+        ctx.fillStyle = "#eeeeee"
+        ctx.font = "5px Inter"
+        ctx.textAlign = "center"
+        ctx.textBaseline = "middle"
+        ctx.fillText(name, x, y)
       }
     }
     if (!graph) {
-      return null;
+      return null
     }
     return (
       <Flex
@@ -118,19 +118,19 @@ export const GraphDisplay = React.memo(
           linkColor={(r) => `#9898a0`}
           onNodeClick={(node) => {
             if ("imageSlug" in node) {
-              router.push(`/image/${(node as any).imageSlug}`);
+              router.push(`/image/${(node as any).imageSlug}`)
             }
           }}
           nodeAutoColorBy={(node: any) => {
             if ("imageSlug" in node && node.imageSlug !== slug) {
-              return "image";
+              return "image"
             } else if ("imageSlug" in node && node.imageSlug === slug) {
-              return "base";
+              return "base"
             }
             if ("personId" in node) {
-              return String(currentPersonIds.includes(node.personId));
+              return String(currentPersonIds.includes(node.personId))
             } else {
-              throw Error("Image did not have parsonId or id");
+              throw Error("Image did not have parsonId or id")
             }
           }}
           enableNodeDrag={true}
@@ -166,6 +166,6 @@ export const GraphDisplay = React.memo(
           }}
         />
       </Flex>
-    );
+    )
   }
-);
+)

@@ -2,9 +2,9 @@
 /// <reference types="next/types/global" />
 
 declare module NodeJS {
-  import amqplib from "amqplib";
+  import amqplib from "amqplib"
   interface Global {
-    prisma?: PrismaClient;
-    amqpPromise: Promise<amqplib.Connection>;
+    prisma?: PrismaClient
+    amqpPromise: Promise<amqplib.Connection>
   }
 }

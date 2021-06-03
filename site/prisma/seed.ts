@@ -1,13 +1,13 @@
-import { generateUserToken } from "@/lib/auth";
-import { PrismaClient } from "@prisma/client";
-import { run as aliases } from "@/scripts/migrations/aliases";
-const prisma = new PrismaClient();
+import { generateUserToken } from "@/lib/auth"
+import { PrismaClient } from "@prisma/client"
+import { run as aliases } from "@/scripts/migrations/aliases"
+const prisma = new PrismaClient()
 
-const url = "http://localhost:3000";
+const url = "http://localhost:3000"
 async function main() {
   const role = {
     name: "ADMINISTRATOR",
-  };
+  }
   const jiubot = await prisma.user.upsert({
     where: { email: "bot@kiyomi.io" },
     update: {
@@ -26,10 +26,10 @@ async function main() {
         create: role,
       },
     },
-  });
-  console.log(`Generated JiuBot with token ${jiubot.token}`);
-  await aliases(url);
-  const slug = "WJS3Kjac-wHnxzJX";
+  })
+  console.log(`Generated JiuBot with token ${jiubot.token}`)
+  await aliases(url)
+  const slug = "WJS3Kjac-wHnxzJX"
   await prisma.image.upsert({
     where: { slug },
     update: { userId: jiubot.id },
@@ -44,14 +44,14 @@ async function main() {
       slug,
       uploadType: "TOKEN",
     },
-  });
+  })
 }
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error(e)
+    process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect();
-  });
+    await prisma.$disconnect()
+  })

@@ -1,17 +1,16 @@
-import { PrismaClient } from ".prisma/client";
-import members from "./members.json";
-
-(async () => {
+import { PrismaClient } from ".prisma/client"
+import members from "./members.json"
+;(async () => {
   const client = new PrismaClient({
     datasources: {
       db: {
         url: process.env.POSTGRES_URL,
       },
     },
-  });
+  })
 
   for (const [id, mems] of Object.entries(members)) {
-    const nid = Number(id);
+    const nid = Number(id)
     for (const memberId of mems.members) {
       const [person, group] = await Promise.all([
         client.person.findUnique({
@@ -20,13 +19,13 @@ import members from "./members.json";
         client.group.findUnique({
           where: { ireneBotId: nid },
         }),
-      ]);
-      console.log({ person });
+      ])
+      console.log({ person })
       if (!person) {
-        throw Error(`Invalid person ${memberId}`);
+        throw Error(`Invalid person ${memberId}`)
       }
       if (!group) {
-        throw Error(`Invalid group ${nid}`);
+        throw Error(`Invalid group ${nid}`)
       }
       client.groupMember
         .upsert({
@@ -38,12 +37,12 @@ import members from "./members.json";
           },
         })
         .catch((err) => {
-          console.log({ [id]: mems });
-          console.log({ memberId });
-          console.log(err);
-          process.exit(1);
-        });
+          console.log({ [id]: mems })
+          console.log({ memberId })
+          console.log(err)
+          process.exit(1)
+        })
     }
   }
-  process.exit(0);
-})().catch(console.error);
+  process.exit(0)
+})().catch(console.error)

@@ -1,11 +1,11 @@
-import { Heading, Stack } from "@chakra-ui/layout";
-import { useBreakpoint, useBreakpointValue } from "@chakra-ui/media-query";
-import { Flex, Box, forwardRef } from "@chakra-ui/react";
-import React, { ComponentProps, PropsWithChildren } from "react";
+import { Heading, Stack } from "@chakra-ui/layout"
+import { useBreakpoint, useBreakpointValue } from "@chakra-ui/media-query"
+import { Flex, Box, forwardRef } from "@chakra-ui/react"
+import React, { ComponentProps, PropsWithChildren } from "react"
 
 export type ContextSidebarProps = {
-  items: React.ReactNode[];
-};
+  items: React.ReactNode[]
+}
 
 export const ContextSidebar: React.FC<ContextSidebarProps> = forwardRef(
   ({ items, ...rest }, ref) => {
@@ -19,13 +19,13 @@ export const ContextSidebar: React.FC<ContextSidebarProps> = forwardRef(
       >
         {items}
       </Stack>
-    );
+    )
   }
-);
+)
 
 export type SidebarItemProps = {
-  title: React.ReactChild | string;
-};
+  title: React.ReactChild | string
+}
 
 export function SidebarItem(opts: React.PropsWithChildren<SidebarItemProps>) {
   return (
@@ -35,12 +35,12 @@ export function SidebarItem(opts: React.PropsWithChildren<SidebarItemProps>) {
       </Heading>
       {opts.children}
     </>
-  );
+  )
 }
 
 export type WithSidebarProps = {
-  sidebar: React.ReactNode;
-};
+  sidebar: React.ReactNode
+}
 
 export function WithSidebar({
   sidebar,
@@ -59,5 +59,5 @@ export function WithSidebar({
       <Box display={["none", "block"]} width="2px" background="gray.900" />
       {children}
     </Flex>
-  );
+  )
 }

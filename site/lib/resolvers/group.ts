@@ -5,7 +5,7 @@ import {
   mutationField,
   nonNull,
   extendType,
-} from "nexus";
+} from "nexus"
 
 export const Group = objectType({
   name: "Group",
@@ -18,10 +18,10 @@ export const Group = objectType({
       .aliases()
       .members()
       .createdAt()
-      .updatedAt();
+      .updatedAt()
   },
-});
+})
 
 export const PrivateMutation = mutationField((t) => {
-  t.crud.upsertOneGroup();
-});
+  t.crud.upsertOneGroup()
+})

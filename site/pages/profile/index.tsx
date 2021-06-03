@@ -1,19 +1,19 @@
-import { Gallery } from "@/components/gallery";
-import { Navbar } from "@/components/navbar";
-import { User } from "@/components/user";
-import { getSession, useSession } from "next-auth/client";
-import React from "react";
-import useSWR from "swr";
-import { useMeQuery } from "@/__generated__/graphql";
-import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
-import { prefetchQuery } from "@/lib/client-helpers";
-import ImageGrid from "@/components/image-grid";
+import { Gallery } from "@/components/gallery"
+import { Navbar } from "@/components/navbar"
+import { User } from "@/components/user"
+import { getSession, useSession } from "next-auth/client"
+import React from "react"
+import useSWR from "swr"
+import { useMeQuery } from "@/__generated__/graphql"
+import { useRouter } from "next/router"
+import { GetServerSideProps } from "next"
+import { prefetchQuery } from "@/lib/client-helpers"
+import ImageGrid from "@/components/image-grid"
 
 function Image() {
-  const { data } = useMeQuery();
+  const { data } = useMeQuery()
   if (!data?.me) {
-    return <Navbar />;
+    return <Navbar />
   }
 
   return (
@@ -28,14 +28,14 @@ function Image() {
         <ImageGrid images={data.me.images} />
       </div>
     </div>
-  );
+  )
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const dehydratedState = await prefetchQuery("Me", {});
+  const dehydratedState = await prefetchQuery("Me", {})
   return {
     props: { dehydratedState },
-  };
-};
+  }
+}
 
-export default Image;
+export default Image

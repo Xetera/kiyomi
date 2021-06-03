@@ -126,13 +126,13 @@ async function processFaces(conn: amqp.Connection) {
   );
 }
 
-const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
+const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 async function connect(): Promise<amqp.Connection> {
   const RECONNECT_DELAY = 2000;
   try {
     const connection = await amqp.connect(config.get("amqpUrl"));
-    connection.on("error", err => {
+    connection.on("error", (err) => {
       if (err.message !== "Connection closing") {
         logger.error("[AMQP] conn error", err.message);
       }

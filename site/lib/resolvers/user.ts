@@ -1,4 +1,4 @@
-import { objectType, queryField, intArg } from "nexus";
+import { objectType, queryField, intArg } from "nexus"
 
 export const User = objectType({
   name: "User",
@@ -16,9 +16,9 @@ export const User = objectType({
         ordering: true,
         filtering: true,
         async resolve(root, { where, ...args }, ctx, info, resolver) {
-          const MAX_IMAGES_PAGE = 100;
+          const MAX_IMAGES_PAGE = 100
           // users can only query their own images
-          const canView = ctx.user ? ctx.user.id === root.id : false;
+          const canView = ctx.user ? ctx.user.id === root.id : false
           return resolver(
             root,
             {
@@ -31,11 +31,11 @@ export const User = objectType({
             },
             ctx,
             info
-          );
+          )
         },
-      });
+      })
   },
-});
+})
 
 export const Query = queryField((t) => {
   t.field("user", {
@@ -44,20 +44,20 @@ export const Query = queryField((t) => {
       id: intArg(),
     },
     resolve(_root, args, { prisma }) {
-      const { id } = args;
+      const { id } = args
       if (!id) {
-        return null;
+        return null
       }
-      return prisma.user.findUnique({ where: { id } });
+      return prisma.user.findUnique({ where: { id } })
     },
-  });
+  })
   t.field("me", {
     type: "User",
     resolve(_root, _args, { prisma, user }) {
       if (!user?.id) {
-        return null;
+        return null
       }
-      return prisma.user.findUnique({ where: { id: user.id } });
+      return prisma.user.findUnique({ where: { id: user.id } })
     },
-  });
-});
+  })
+})
