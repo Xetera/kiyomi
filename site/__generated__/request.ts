@@ -2651,7 +2651,9 @@ export type NullableStringFieldUpdateOperationsInput = {
 export type Person = {
   __typename?: 'Person';
   aliases: Array<Alias>;
+  appearances: Array<Appearance>;
   createdAt: Scalars['DateTime'];
+  faces: Array<Face>;
   id: Scalars['Int'];
   memberOf: Array<GroupMember>;
   name: Scalars['String'];
@@ -2662,6 +2664,20 @@ export type Person = {
 
 export type PersonAliasesArgs = {
   cursor?: Maybe<AliasWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
+export type PersonAppearancesArgs = {
+  cursor?: Maybe<AppearanceWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
+export type PersonFacesArgs = {
+  cursor?: Maybe<FaceWhereUniqueInput>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
 };
@@ -2968,7 +2984,7 @@ export type Query = {
   images: Array<Image>;
   me?: Maybe<User>;
   people: Array<Person>;
-  searchPerson: Array<Person>;
+  person?: Maybe<Person>;
   user?: Maybe<User>;
 };
 
@@ -3001,8 +3017,8 @@ export type QueryPeopleArgs = {
 };
 
 
-export type QuerySearchPersonArgs = {
-  query: Scalars['String'];
+export type QueryPersonArgs = {
+  where: PersonWhereUniqueInput;
 };
 
 
@@ -3801,19 +3817,6 @@ export type GridImageFragment = (
   )> }
 );
 
-export type SearchPersonQueryVariables = Exact<{
-  name: Scalars['String'];
-}>;
-
-
-export type SearchPersonQuery = (
-  { __typename?: 'Query' }
-  & { searchPerson: Array<(
-    { __typename?: 'Person' }
-    & Pick<Person, 'id' | 'name'>
-  )> }
-);
-
 export type AppearanceWithFacesFragment = (
   { __typename?: 'Appearance' }
   & Pick<Appearance, 'id'>
@@ -4102,14 +4105,6 @@ export const HomepageDocument = gql`
   }
 }
     ${GridImageFragmentDoc}`;
-export const SearchPersonDocument = gql`
-    query SearchPerson($name: String!) {
-  searchPerson(query: $name) {
-    id
-    name
-  }
-}
-    `;
 export const AddAppearanceDocument = gql`
     mutation AddAppearance($imageId: Int!, $personId: Int!) {
   appearance: addAppearance(imageId: $imageId, personId: $personId) {
@@ -4215,9 +4210,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Homepage(variables: HomepageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<HomepageQuery> {
       return withWrapper(() => client.request<HomepageQuery>(HomepageDocument, variables, requestHeaders));
-    },
-    SearchPerson(variables: SearchPersonQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchPersonQuery> {
-      return withWrapper(() => client.request<SearchPersonQuery>(SearchPersonDocument, variables, requestHeaders));
     },
     AddAppearance(variables: AddAppearanceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddAppearanceMutation> {
       return withWrapper(() => client.request<AddAppearanceMutation>(AddAppearanceDocument, variables, requestHeaders));

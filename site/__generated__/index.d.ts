@@ -457,6 +457,10 @@ export interface NexusGenInputs {
     preferredAliasId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
+  PersonWhereUniqueInput: { // input type
+    id?: number | null; // Int
+    ireneBotId?: number | null; // Int
+  }
   RoleListRelationFilter: { // input type
     every?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
     none?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
@@ -722,7 +726,9 @@ export interface NexusGenFieldTypes {
   }
   Person: { // field return type
     aliases: NexusGenRootTypes['Alias'][]; // [Alias!]!
+    appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    faces: NexusGenRootTypes['Face'][]; // [Face!]!
     id: number; // Int!
     memberOf: NexusGenRootTypes['GroupMember'][]; // [GroupMember!]!
     name: string; // String!
@@ -734,6 +740,8 @@ export interface NexusGenFieldTypes {
     imageConnections: NexusGenRootTypes['ImageConnections'] | null; // ImageConnections
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     me: NexusGenRootTypes['User'] | null; // User
+    people: NexusGenRootTypes['Person'][]; // [Person!]!
+    person: NexusGenRootTypes['Person'] | null; // Person
     user: NexusGenRootTypes['User'] | null; // User
   }
   QueueInfo: { // field return type
@@ -870,7 +878,9 @@ export interface NexusGenFieldTypeNames {
   }
   Person: { // field return type name
     aliases: 'Alias'
+    appearances: 'Appearance'
     createdAt: 'DateTime'
+    faces: 'Face'
     id: 'Int'
     memberOf: 'GroupMember'
     name: 'String'
@@ -882,6 +892,8 @@ export interface NexusGenFieldTypeNames {
     imageConnections: 'ImageConnections'
     images: 'Image'
     me: 'User'
+    people: 'Person'
+    person: 'Person'
     user: 'User'
   }
   QueueInfo: { // field return type name
@@ -976,6 +988,16 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
       take?: number | null; // Int
     }
+    appearances: { // args
+      cursor?: NexusGenInputs['AppearanceWhereUniqueInput'] | null; // AppearanceWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
+    faces: { // args
+      cursor?: NexusGenInputs['FaceWhereUniqueInput'] | null; // FaceWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
     memberOf: { // args
       cursor?: NexusGenInputs['GroupMemberWhereUniqueInput'] | null; // GroupMemberWhereUniqueInput
       skip?: number | null; // Int
@@ -996,6 +1018,15 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
       take?: number | null; // Int
       where?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    }
+    people: { // args
+      cursor?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+      where?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    }
+    person: { // args
+      where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
     }
     user: { // args
       id?: number | null; // Int

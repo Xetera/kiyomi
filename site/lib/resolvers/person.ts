@@ -1,11 +1,4 @@
-import {
-  objectType,
-  queryField,
-  nonNull,
-  stringArg,
-  list,
-  mutationField,
-} from "nexus";
+import { objectType, queryField, mutationField } from "nexus";
 
 export const Person = objectType({
   name: "Person",
@@ -15,15 +8,20 @@ export const Person = objectType({
       .name()
       .aliases()
       .preferredAlias()
+      .appearsIn({ alias: "faces" })
+      .appearances()
       .memberOf()
       .updatedAt()
       .createdAt();
   },
 });
 
-export const PrivateQuery = queryField((t) => {
+export const Query = queryField((t) => {
   t.crud.people({ pagination: true, filtering: true });
+  t.crud.person();
 });
+
+export const PrivateQuery = queryField((t) => {});
 
 export const PrivateMutation = mutationField((t) => {
   t.crud.createOnePerson();

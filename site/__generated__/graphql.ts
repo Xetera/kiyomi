@@ -2669,7 +2669,9 @@ export type NullableStringFieldUpdateOperationsInput = {
 export type Person = {
   __typename?: 'Person';
   aliases: Array<Alias>;
+  appearances: Array<Appearance>;
   createdAt: Scalars['DateTime'];
+  faces: Array<Face>;
   id: Scalars['Int'];
   memberOf: Array<GroupMember>;
   name: Scalars['String'];
@@ -2680,6 +2682,20 @@ export type Person = {
 
 export type PersonAliasesArgs = {
   cursor?: Maybe<AliasWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
+export type PersonAppearancesArgs = {
+  cursor?: Maybe<AppearanceWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
+export type PersonFacesArgs = {
+  cursor?: Maybe<FaceWhereUniqueInput>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
 };
@@ -2986,7 +3002,7 @@ export type Query = {
   images: Array<Image>;
   me?: Maybe<User>;
   people: Array<Person>;
-  searchPerson: Array<Person>;
+  person?: Maybe<Person>;
   user?: Maybe<User>;
 };
 
@@ -3019,8 +3035,8 @@ export type QueryPeopleArgs = {
 };
 
 
-export type QuerySearchPersonArgs = {
-  query: Scalars['String'];
+export type QueryPersonArgs = {
+  where: PersonWhereUniqueInput;
 };
 
 
@@ -3793,6 +3809,37 @@ export type OneImageQuery = (
   )> }
 );
 
+export type PersonPageQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type PersonPageQuery = (
+  { __typename?: 'Query' }
+  & { person?: Maybe<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'name'>
+    & { aliases: Array<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )>, preferredAlias?: Maybe<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )>, appearances: Array<(
+      { __typename?: 'Appearance' }
+      & Pick<Appearance, 'createdAt'>
+      & { image: (
+        { __typename?: 'Image' }
+        & { thumbnail: (
+          { __typename?: 'Thumbnail' }
+          & Pick<Thumbnail, 'medium'>
+        ) }
+        & ImageDataFragment
+      ) }
+    )> }
+  )> }
+);
+
 export type AppearanceDataFragment = (
   { __typename?: 'Appearance' }
   & Pick<Appearance, 'id'>
@@ -3868,19 +3915,6 @@ export type GridImageFragment = (
       { __typename?: 'Person' }
       & Pick<Person, 'name'>
     ) }
-  )> }
-);
-
-export type SearchPersonQueryVariables = Exact<{
-  name: Scalars['String'];
-}>;
-
-
-export type SearchPersonQuery = (
-  { __typename?: 'Query' }
-  & { searchPerson: Array<(
-    { __typename?: 'Person' }
-    & Pick<Person, 'id' | 'name'>
   )> }
 );
 
@@ -4162,6 +4196,40 @@ export const useOneImageQuery = <
       fetcher<OneImageQuery, OneImageQueryVariables>(OneImageDocument, variables),
       options
     );
+export const PersonPageDocument = `
+    query personPage($id: Int!) {
+  person(where: {id: $id}) {
+    name
+    aliases {
+      name
+    }
+    preferredAlias {
+      name
+    }
+    appearances {
+      image {
+        ...ImageData
+        thumbnail {
+          medium
+        }
+      }
+      createdAt
+    }
+  }
+}
+    ${ImageDataFragmentDoc}`;
+export const usePersonPageQuery = <
+      TData = PersonPageQuery,
+      TError = unknown
+    >(
+      variables: PersonPageQueryVariables, 
+      options?: UseQueryOptions<PersonPageQuery, TError, TData>
+    ) => 
+    useQuery<PersonPageQuery, TError, TData>(
+      ['personPage', variables],
+      fetcher<PersonPageQuery, PersonPageQueryVariables>(PersonPageDocument, variables),
+      options
+    );
 export const ConnectionGraphDocument = `
     query connectionGraph($slug: String!) {
   imageConnections(depth: 2, slug: $slug) {
@@ -4211,26 +4279,6 @@ export const useHomepageQuery = <
     useQuery<HomepageQuery, TError, TData>(
       ['Homepage', variables],
       fetcher<HomepageQuery, HomepageQueryVariables>(HomepageDocument, variables),
-      options
-    );
-export const SearchPersonDocument = `
-    query SearchPerson($name: String!) {
-  searchPerson(query: $name) {
-    id
-    name
-  }
-}
-    `;
-export const useSearchPersonQuery = <
-      TData = SearchPersonQuery,
-      TError = unknown
-    >(
-      variables: SearchPersonQueryVariables, 
-      options?: UseQueryOptions<SearchPersonQuery, TError, TData>
-    ) => 
-    useQuery<SearchPersonQuery, TError, TData>(
-      ['SearchPerson', variables],
-      fetcher<SearchPersonQuery, SearchPersonQueryVariables>(SearchPersonDocument, variables),
       options
     );
 export const AddAppearanceDocument = `

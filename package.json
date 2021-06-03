@@ -14,5 +14,8 @@
     "@graphql-codegen/typescript-react-query": "^1.2.4",
     "graphql": "^15.5.0",
     "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "zod": "^3.0.2"
   }
 }

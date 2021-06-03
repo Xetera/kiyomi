@@ -2555,7 +2555,9 @@ input NullableStringFieldUpdateOperationsInput {
 
 type Person {
   aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
+  appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
   createdAt: DateTime!
+  faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
   memberOf(cursor: GroupMemberWhereUniqueInput, skip: Int, take: Int): [GroupMember!]!
   name: String!
@@ -2857,6 +2859,7 @@ type Query {
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
   people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
+  person(where: PersonWhereUniqueInput!): Person
   user(id: Int): User
 }
 

@@ -658,7 +658,9 @@ input NestedStringNullableFilter {
 
 type Person {
   aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
+  appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
   createdAt: DateTime!
+  faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
   memberOf(cursor: GroupMemberWhereUniqueInput, skip: Int, take: Int): [GroupMember!]!
   name: String!
@@ -684,12 +686,19 @@ input PersonWhereInput {
   updatedAt: DateTimeFilter
 }
 
+input PersonWhereUniqueInput {
+  id: Int
+  ireneBotId: Int
+}
+
 type Query {
   """Find a single image by its slug."""
   image(slug: String!): Image
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
+  people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
+  person(where: PersonWhereUniqueInput!): Person
   user(id: Int): User
 }
 

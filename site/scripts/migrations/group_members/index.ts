@@ -13,12 +13,14 @@ import members from "./members.json";
   for (const [id, mems] of Object.entries(members)) {
     const nid = Number(id);
     for (const memberId of mems.members) {
-      const person = await client.person.findUnique({
-        where: { ireneBotId: memberId },
-      });
-      const group = await client.group.findUnique({
-        where: { ireneBotId: nid },
-      });
+      const [person, group] = await Promise.all([
+        client.person.findUnique({
+          where: { ireneBotId: memberId },
+        }),
+        client.group.findUnique({
+          where: { ireneBotId: nid },
+        }),
+      ]);
       console.log({ person });
       if (!person) {
         throw Error(`Invalid person ${memberId}`);
@@ -26,7 +28,7 @@ import members from "./members.json";
       if (!group) {
         throw Error(`Invalid group ${nid}`);
       }
-      await client.groupMember
+      client.groupMember
         .upsert({
           where: { member: { groupId: group.id, personId: person.id } },
           update: {},
