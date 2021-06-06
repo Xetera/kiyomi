@@ -188,6 +188,7 @@ export interface Query {
     me?: User
     people: Person[]
     person?: Person
+    personImages: Image[]
     user?: User
     __typename: 'Query'
 }
@@ -1061,6 +1062,7 @@ export interface QueryRequest{
     me?: UserRequest
     people?: [{cursor?: (PersonWhereUniqueInput | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (PersonWhereInput | null)},PersonRequest] | PersonRequest
     person?: [{where: PersonWhereUniqueInput},PersonRequest]
+    personImages?: [{amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]},ImageRequest]
     user?: [{id?: (Scalars['Int'] | null)},UserRequest] | UserRequest
     __typename?: boolean | number
     __scalar?: boolean | number
@@ -1758,6 +1760,7 @@ image: ((args: {slug: Scalars['String']}) => ImagePromiseChain & {get: <R extend
     me: (UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Promise<(FieldsSelection<User, R> | undefined)>}),
     people: ((args?: {cursor?: (PersonWhereUniqueInput | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (PersonWhereInput | null)}) => {get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Promise<FieldsSelection<Person, R>[]>})&({get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Promise<FieldsSelection<Person, R>[]>}),
     person: ((args: {where: PersonWhereUniqueInput}) => PersonPromiseChain & {get: <R extends PersonRequest>(request: R, defaultValue?: (FieldsSelection<Person, R> | undefined)) => Promise<(FieldsSelection<Person, R> | undefined)>}),
+    personImages: ((args: {amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]}) => {get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>[]) => Promise<FieldsSelection<Image, R>[]>}),
     user: ((args?: {id?: (Scalars['Int'] | null)}) => UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Promise<(FieldsSelection<User, R> | undefined)>})&(UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Promise<(FieldsSelection<User, R> | undefined)>})
 }
 
@@ -1772,6 +1775,7 @@ image: ((args: {slug: Scalars['String']}) => ImageObservableChain & {get: <R ext
     me: (UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Observable<(FieldsSelection<User, R> | undefined)>}),
     people: ((args?: {cursor?: (PersonWhereUniqueInput | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (PersonWhereInput | null)}) => {get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Observable<FieldsSelection<Person, R>[]>})&({get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Observable<FieldsSelection<Person, R>[]>}),
     person: ((args: {where: PersonWhereUniqueInput}) => PersonObservableChain & {get: <R extends PersonRequest>(request: R, defaultValue?: (FieldsSelection<Person, R> | undefined)) => Observable<(FieldsSelection<Person, R> | undefined)>}),
+    personImages: ((args: {amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]}) => {get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>[]) => Observable<FieldsSelection<Image, R>[]>}),
     user: ((args?: {id?: (Scalars['Int'] | null)}) => UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Observable<(FieldsSelection<User, R> | undefined)>})&(UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Observable<(FieldsSelection<User, R> | undefined)>})
 }
 

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { gameGroup, clientPeople, clientPerson } from "../game/src/messaging"
+import { clientGroup, clientPeople, clientPerson } from "../game/src/messaging"
 
 export const nuguPrompt = z.object({
   slug: z.string(),
@@ -16,34 +16,40 @@ export const playerS = z.object({
 
 export type ClientPlayer = z.infer<typeof playerS>
 
-export const seatS = z.object({
+export const clientSeat = z.object({
   // answere: boolean,
   // id of the users current answer
   answer: z.optional(z.number()),
   answered: z.boolean(),
+  points: z.number(),
   player: playerS,
 })
 
-export type ClientSeat = z.infer<typeof seatS>
+export type ClientSeat = z.infer<typeof clientSeat>
 
-export const roomS = z.object({
+export const clientRoom = z.object({
   id: z.string(),
   owner: z.string(),
-  groupPool: gameGroup,
-  seats: z.map(z.string(), seatS),
+  groupPool: z.array(clientGroup),
+  seats: z.record(clientSeat),
   secondsPerRound: z.number(),
 })
 
-export type ClientRoom = z.infer<typeof roomS>
+export type ClientRoom = z.infer<typeof clientRoom>
 
 export const Messages = {
   p: z.object({}),
-  create_room: z.object({ game: z.string().nonempty() }),
+  create_room: z.object({
+    game: z.string().nonempty(),
+    groupIds: z.array(z.number()),
+    timeLimit: z.number().min(3).max(30),
+    hints: z.boolean().default(true),
+  }),
   join_room: z.object({
     game: z.string().nonempty(),
     room: z.string().nonempty(),
   }),
-  leave_room: z.object({ room: z.string().nonempty() }),
+  leave_room: z.object({}),
   answer: z.object({ id: z.number().nonnegative() }),
   start_game: z.object({}),
   auth: z.object({ token: z.string() }),
@@ -52,6 +58,10 @@ export const Messages = {
 type PublicEventsKeys = "auth"
 
 export type IncomingMessageData = typeof Messages
+
+export type IncomingMessageArgs<T extends keyof IncomingMessageData> = z.infer<
+  IncomingMessageData[T]
+>
 
 type PublicEvents = Pick<IncomingMessageData, PublicEventsKeys>
 // The ping event is checked separately. This is a bit of a problem
@@ -97,10 +107,13 @@ export const outgoingMessageData = {
   // these must not be shown to the user
   // but should be logged on the client side
   technical_error: z.object({ message: z.string() }),
-  created_room: roomS,
-  joined_room: z.union([roomS, z.object({ error: z.string() })]),
-  connect: z.object({ seat: seatS }),
-  disconnect: z.object({ seat: seatS }),
+  created_room: z.object({ room: clientRoom }),
+  joined_room: z.union([
+    z.object({ room: clientRoom }),
+    z.object({ error: z.string() }),
+  ]),
+  connect: z.object({ seat: clientSeat }),
+  disconnect: z.object({ seat: clientSeat }),
   force_disconnected: z.object({ reason: z.string() }),
   starting: z.object({ secs: z.number() }),
   round_start: z.object({ person: nuguPrompt, secs: z.number() }),

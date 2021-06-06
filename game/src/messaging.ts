@@ -7,10 +7,8 @@ import {
   PublicIncomingMessageType,
 } from "~/shared/game"
 import { z } from "zod"
-import { Group, GroupMember, Person } from "../../shared/backend"
-import { backend } from "../../shared/sdk"
+import { Face, Group, GroupMember, Image, Person } from "../../shared/backend"
 import * as uWS from "uWebSockets.js"
-import { everything } from "@genql/runtime"
 
 export const clientPerson = z.object({
   id: z.number(),
@@ -21,7 +19,7 @@ export const clientPerson = z.object({
 
 export type ClientPerson = z.infer<typeof clientPerson>
 
-type GroupSubtype = Pick<Group, "name" | "id"> & {
+export type ServerGroup = Pick<Group, "name" | "id"> & {
   aliases: Array<{ name: string }>
 }
 
@@ -30,20 +28,27 @@ export type ServerPerson = Pick<Person, "name" | "id"> & {
     name: string
   }>
   preferredMembership?: {
-    group: GroupSubtype
+    group: ServerGroup
   }
   memberOf: Array<{
-    group: GroupSubtype
+    group: ServerGroup
   }>
 }
-export const gameGroup = z.object({
+
+export type GuessingPrompt = {
+  face: Pick<Face, "x" | "y" | "width" | "height">
+  image: Pick<Image, "id" | "slug" | "thumbnail">
+  answer: ServerPerson
+}
+
+export const clientGroup = z.object({
   id: z.number(),
   name: z.string(),
   aliases: z.array(z.string()),
   // group: z.optional(z.number()),
 })
 
-export type ClientGroup = z.infer<typeof gameGroup>
+export type ClientGroup = z.infer<typeof clientGroup>
 
 type UserId = string
 
@@ -65,8 +70,7 @@ export type Context = {
   ws: uWS.WebSocket
   player: Player
   reply: Sender
-  // artists: People
-  allartists: People
+  people: Map<string, ServerPerson>
 }
 
 export type CommandContext = {
@@ -91,7 +95,6 @@ type AnonArgs<T extends PublicIncomingMessageType> = PublicHandlerArgs<T> & {
   ws: uWS.WebSocket
   anon: Anon | Player
   reply: Sender
-  allartists: People[]
 }
 
 export type PublicMessageHandlers = {
@@ -119,9 +122,8 @@ export type Uuid = string
  */
 export type Seat = {
   player: Player
-  points: number
   answer?: number
-  answered: boolean
+  readonly answered: boolean
 }
 
 // For some reason using `Omit` here messes up the export type inference so we gotta be repetitive
@@ -138,6 +140,7 @@ type SplitBroadcastArgs<T extends keyof typeof outgoingMessageData> = {
 
 export type PastQuestion = {
   imageId: number
+  correctId: number
   answers: Map<UserId, Person>
 }
 
@@ -158,11 +161,12 @@ export type Room = {
   maxSeats: number
   maxRounds: number
   endingTimeout: ReturnType<typeof setTimeout>
-  correctAnswer: Person
+  correctAnswer: ServerPerson
   groupPool: Group[]
-  artistPool: ClientPerson[]
+  artistPool: ServerPerson[]
+  imagePool: GuessingPrompt[]
   choices: { [personId: string]: number }
-  answers: PastQuestion[]
+  history: PastQuestion[]
   broadcast<T extends OutgoingMessageType>(
     message: EmittedMessage<T>,
     except?: string

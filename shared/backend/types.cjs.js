@@ -7889,6 +7889,18 @@ module.exports = {
                     ]
                 }
             ],
+            "personImages": [
+                186,
+                {
+                    "amount": [
+                        1
+                    ],
+                    "personIds": [
+                        1,
+                        "[Int!]!"
+                    ]
+                }
+            ],
             "user": [
                 391,
                 {

@@ -1,5 +1,5 @@
 import { backend } from "~/shared/sdk"
-import { ServerPerson } from "./messaging"
+import { ServerImage, ServerPerson } from "./messaging"
 
 export async function fetchAllPeople(): Promise<Array<ServerPerson>> {
   const groupQuery = {
@@ -26,4 +26,19 @@ export async function fetchAllPeople(): Promise<Array<ServerPerson>> {
     ],
   })
   return r.people
+}
+
+export async function fetchAllImages(
+  personIds: number[]
+): Promise<ServerImage[]> {
+  const result = await backend.query({
+    personImages: [
+      { personIds },
+      {
+        id: true,
+        slug: true,
+      },
+    ],
+  })
+  return result.personImages
 }

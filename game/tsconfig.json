@@ -18,6 +18,7 @@
     // match output dir to input dir. e.g. dist/index instead of dist/src/index
     // "rootDir": "./src",
     // stricter type-checking for stronger correctness. Recommended by TS
+    "noImplicitAny": true,
     "strict": true,
     // linter checks for common issues
     "noImplicitReturns": true,

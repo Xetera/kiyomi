@@ -20,6 +20,8 @@ import {
   stateExempt,
   RevealedAnswer,
   outgoingMessageData,
+  IncomingMessageArgs,
+  IncomingMessageData,
 } from "~/shared/game"
 import {
   Anon,
@@ -42,7 +44,9 @@ import {
 import { keyBy } from "lodash"
 import dotenv from "dotenv"
 import { createPublishers } from "./events"
-import { Person } from "~/shared/backend"
+import { Group, Person } from "~/shared/backend"
+import { fetchAllImages, fetchAllPeople } from "./query"
+import { backend } from "~/shared/sdk"
 
 const idFactory = new Hashids("salt!")
 
@@ -73,10 +77,10 @@ function joinRoom(player: Player, room: Room): Seat {
     throw new ClientError("Room is full")
   }
 
-  const seat = {
-    ready: false,
-    answered: false,
-    points: 0,
+  const seat: Seat = {
+    get answered() {
+      return Boolean(seat.answer)
+    },
     player,
   }
 
@@ -95,16 +99,25 @@ function leaveRoom(player: Player, room: Room) {
 
 interface CreateRoomOptions {
   player: Player
-  artists: ClientPerson[]
+  groupsIds: number[]
   difficulty: Difficulty
 }
 
-function createRoom(
-  { player, artists, difficulty }: CreateRoomOptions,
+async function createRoom(
+  { player, groupIds, difficulty }: CreateRoomOptions,
   game: GameType
-): Room {
+): Promise<Room> {
   // TODO: making nugu rooms by default
   const id = idFactory.encode(server.incrementing++)
+  const people = await backend.query({
+    people: [
+      { where: { memberOf: { some: { groupId: { in: groupIds } } } } },
+      {
+        id: true,
+      },
+    ],
+  })
+  const imagePool = await fetchAllImages()
 
   const room = {
     id,
@@ -145,7 +158,6 @@ function createRoom(
   } as Room
   server.rooms[game].set(id, room)
   room.owner = joinRoom(player, room)
-  player.room = room
   return room
 }
 
@@ -190,11 +202,11 @@ function createSender(ws: uWS.WebSocket): Sender {
   }
 }
 
-function spliceNewartist(artists: ClientPerson[]): ClientPerson {
-  const random = Math.floor(Math.random() * artists.length)
+function spliceRandom<T>(elements: T[]): T {
+  const random = Math.floor(Math.random() * elements.length)
   // we might have to get this to exclude stuff
-  const reference = artists[random]
-  artists.splice(random, 1)
+  const reference = elements[random]
+  elements.splice(random, 1)
   return reference
 }
 
@@ -220,15 +232,13 @@ function startRound(ctx: CommandContext) {
   // resetting the previous round's answers back to nothing
   for (const seat of ctx.room.seats.values()) {
     seat.answer = undefined
-    seat.answered = false
   }
-  const person = spliceNewartist(ctx.room.artistPool)
+  const prompt = spliceRandom(ctx.room.imagePool)
   // const { time } = difficulties.easy
   ctx.room.roundStarted = true
-  ctx.room.correctAnswer = person
+  ctx.room.correctAnswer = prompt.answer
   ctx.room.broadcast({
     t: "round_start",
-    // image: ,
     person: {
       slug: person._image!.slug,
     },
@@ -334,7 +344,10 @@ function disconnectOwner(player: Player) {
   }
 
   room.seats.delete(player.id)
-  room.broadcast({ t: "disconnect", seat: serializeSeat(seat) }, player.id)
+  room.broadcast(
+    { t: "disconnect", seat: serializeSeat(seat, room) },
+    player.id
+  )
 }
 
 function commandCtx(ctx: Context): CommandContext {
@@ -350,19 +363,26 @@ function commandCtx(ctx: Context): CommandContext {
   return {
     room: ctx.player.room,
     seat: ctx.player.seat,
-    artists: ctx.artists,
+    people: ctx.people,
   }
 }
 
 export const privateMessageHandlers: PrivateMessageHandlers = {
-  create_room({ reply, player, allartists, args }) {
+  async create_room({ reply, player, args }) {
     // only nugu game for now
     if (args.game !== "nugu") {
       return reply({ t: "error", message: "No such game mode" })
     }
     // TODO: turn this into something that can be adjusted later (not during creation)
-    const room = createRoom(
-      { player, artists: allartists, difficulty: "easy" },
+    const room = await createRoom(
+      {
+        player,
+        groupsIds: args.groupIds,
+        difficulty: {
+          timePerRound: args.timeLimit,
+          pool: [] as Group[],
+        },
+      },
       args.game
     )
     reply({ t: "created_room", room: serializeRoom(room) })
@@ -395,12 +415,12 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
 
     const seat = joinRoom(player, room)
     reply({ t: "joined_room", room: serializeRoom(room) })
-    room.broadcast({ t: "connect", seat: serializeSeat(seat) }, player.id)
+    room.broadcast({ t: "connect", seat: serializeSeat(seat, room) }, player.id)
   },
   start_game(data) {
     const { ...ctx } = data
     const { player } = ctx
-    const { room, artists, seat } = commandCtx(data)
+    const { room, people, seat } = commandCtx(data)
 
     if (!player.seat) {
       throw new Error(
@@ -418,7 +438,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
 
     room.broadcast({ t: "starting", secs: DEFAULT_START_TIMEOUT })
     setTimeout(() => {
-      startRound({ room, artists, seat })
+      startRound({ room, people, seat })
     }, DEFAULT_START_TIMEOUT * 1000)
   },
   answer({ args, ...rest }) {
@@ -434,11 +454,10 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     }
 
     ctx.seat.answer = args.id
-    ctx.seat.answered = true
 
-    if (args.id == ctx.room.correctAnswer.id) {
-      ctx.seat.points++
-    }
+    // if (args.id == ctx.room.correctAnswer.id) {
+    //   ctx.seat.points++
+    // }
 
     const hasEveryoneAnswered = [...ctx.room.seats.values()].every((seat) =>
       Boolean(seat.answer)
@@ -453,15 +472,15 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     // not see the other user's answer
     ctx.room.broadcastSplit({
       pred: (seat) => Boolean(seat.answer),
-      yes: { t: "user_answer", user_id: player.id, choice: args.id },
-      no: { t: "user_answer", user_id: player.id },
+      yes: { t: "user_answer", userId: player.id, choice: args.id },
+      no: { t: "user_answer", userId: player.id },
       except: player.id,
     })
   },
 }
 
 const publicMessageHandlers: PublicMessageHandlers = {
-  async auth({ anon, reply, args, allartists }) {
+  async auth({ anon, reply, args }) {
     const ws = anon.sock
     if (players.has(anon.sock)) {
       reply({ t: "auth", success: false })
@@ -474,60 +493,43 @@ const publicMessageHandlers: PublicMessageHandlers = {
     }
     anons.delete(ws)
     const id = (jwt as any).user_id as string
-    const { user } = await sdk.findUser({ id })
+    const { user } = await backend.query({
+      user: [
+        { id: Number(id) },
+        { id: true, slug: true, avatar: true, name: true },
+      ],
+    })
     if (!user) {
       return
     }
-    const { avatar, username } = user
+    const { avatar, name } = user
     const player = createPlayer({
       id,
-      username,
-      image: avatar?.slug,
+      username: name ?? "Unknown Player",
+      image: avatar,
       sock: ws,
       token: args.token,
     })
     players.set(ws, player)
     reply({ t: "auth", success: true })
-    sendPeople(player, allartists)
     logger.info("Authed a user")
   },
 }
 
-function validateIncomingMessage(data: IncomingMessage) {
-  const requiredArgs = Object.keys(Messages[data.t])
-  for (const arg of requiredArgs) {
-    if (!(arg in data)) {
-      throw new ClientTechnicalError(
-        `${arg} is required for this event but was not supplied`
-      )
-    }
-  }
-}
-
-const sdk = getSdk(client)
 const port = 9002
 
 const publicEvents = new Set<keyof MessageHandlers>(["auth"])
-
-function artistsPrimaryGroupLikes(i: artist) {
-  return i.member_of[0].group.liked_by_aggregate.aggregate?.count ?? 0
-}
 
 async function main() {
   setInterval(() => {
     logger.info(`STATS: ${server.rooms.nugu.size} NUGU rooms`)
   }, 1000 * 60 * 10)
 
-  const artistData = (await sdk.artistsWithImages()).artists.filter(
-    (artist) => artist.member_of.length > 0
-  ) as artist[]
-
-  artistData.sort(
-    (a, b) => artistsPrimaryGroupLikes(b) - artistsPrimaryGroupLikes(a)
+  const people = await fetchAllPeople()
+  const mappedPeople = new Map(
+    Object.entries(keyBy(people, (person) => person.id))
   )
-  const keyedartistData = keyBy(artistData, (artist) => artist.id)
-  const artists = new Map<string, artist>(Object.entries(keyedartistData))
-  const artistChoices = artistData
+
   const app = uWS.App()
 
   const publish = createPublishers(app)
@@ -552,13 +554,12 @@ async function main() {
         const anon = anons.get(ws)
         const reply = createSender(ws)
         const sharedContext = {
-          // some weird stuff happening here it can't typecheck properly
-          args: rest as any,
+          args: rest,
           ws,
           reply,
-          artists,
-          allartists: artistChoices,
-        }
+          player,
+          people: mappedPeople,
+        } as Context
         if (t === "p") {
           return reply({ t: "p" })
         }
@@ -569,8 +570,10 @@ async function main() {
               "A player who isn't registered anywhere attempted to make a request"
             )
           }
+          const args = Messages.auth.parse(rest)
           return publicMessageHandlers.auth({
             ...sharedContext,
+            args,
             anon: target,
           })
         }
@@ -586,14 +589,14 @@ async function main() {
           )
         }
         const handler = privateMessageHandlers[t as PrivateIncomingMessageType]
-        const context: Context = {
-          ...sharedContext,
-          player,
-        }
+        // zod doesn't work here? :(
+        const args = Messages[t as PrivateIncomingMessageType].parse(rest)
         try {
-          validateIncomingMessage(data)
-          // @ts-ignore
-          await handler(context)
+          await handler({
+            ...sharedContext,
+            player,
+            args: args as any,
+          })
         } catch (err) {
           if (err instanceof ClientError) {
             return void send(ws, { t: "error", message: err.message })

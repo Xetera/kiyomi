@@ -1,5 +1,5 @@
 import { humanFileSize } from "../shared"
-import _ from "lodash"
+import _, { sample, sampleSize } from "lodash"
 import {
   objectType,
   queryField,
@@ -400,11 +400,26 @@ export const QueueInformation = objectType({
 
 export const PrivateQuery = queryField((t) => {
   t.field("personImages", {
-    type: list("Image"),
+    type: nonNull(list(nonNull("Image"))),
     args: {
-      personIds: list(intArg()),
+      personIds: nonNull(list(nonNull(intArg()))),
+      amount: intArg({ default: 100 }),
     },
-    resolve(_) {},
+    async resolve(_, args, { prisma }) {
+      const images = await prisma.image.findMany({
+        where: {
+          appearances: {
+            some: {
+              personId: {
+                in: args.personIds,
+              },
+            },
+          },
+        },
+      })
+      // TODO: weights based on idol popularity?
+      return sampleSize(images, args.amount)
+    },
   })
 })
 

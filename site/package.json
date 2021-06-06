@@ -6,7 +6,7 @@
     "dev": "next dev",
     "tf": "npm rebuild @tensorflow/tfjs-node build-addon-from-source",
     "generate": "prisma generate",
-    "codegen": "yarn generate && SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node -P tsconfig.generator.json --transpile-only lib/schema.ts",
+    "codegen": "SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node -P tsconfig.generator.json --transpile-only lib/schema.ts",
     "build": "next build",
     "start": "next start",
     "ts-node": "ts-node -r tsconfig-paths/register -P tsconfig.generator.json"
