@@ -1,13 +1,13 @@
-import { createPubsub } from './pubsub';
-import { TemplatedApp } from 'uWebSockets.js';
+import { createPubsub } from "./pubsub"
+import { TemplatedApp } from "uWebSockets.js"
 
-const pubsub = createPubsub();
+const pubsub = createPubsub()
 
 export function createPublishers(app: TemplatedApp) {
   return {
-    startGame: pubsub.listenFor('startGame', (data) => {
-      app.publish('');
-      console.log(data.game);
+    startGame: pubsub.listenFor("startGame", (data) => {
+      app.publish("")
+      console.log(data.game)
     }),
-  };
+  }
 }

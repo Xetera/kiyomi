@@ -14,6 +14,7 @@ import { Appearance, Person, Image, Prisma, MimeType } from "@prisma/client"
 import idgen from "nanoid"
 import { imageFindOptions, sdk } from "@/lib/data-fetching"
 import { amqpPromise, sendImageToFaceRecognition } from "@/lib/amqp"
+import { backend, FaceData, ImageData } from "../../../../shared/sdk"
 
 export const config = {
   api: {
@@ -168,7 +169,25 @@ export default handle(
 
         // we cannot use graphql so we have to pretend that the result is
         // a graphql response lmfao
-        const result = await sdk.getUploadResult({ slug: image.slug })
+
+        const result = await backend.query({
+          image: [
+            { slug: image.slug },
+            {
+              appearances: {
+                id: true,
+                person: {
+                  id: true,
+                  name: true,
+                },
+                faces: {
+                  ...FaceData,
+                },
+              },
+              ...ImageData,
+            },
+          ],
+        })
         sendImageToFaceRecognition(image.slug, {
           ireneBotIdolId: ireneBotIdolId ? Number(ireneBotIdolId) : undefined,
           ireneBotImageId: ireneBotImageId

@@ -24,6 +24,8 @@ const contextType = {
   export: "Context",
 }
 
+const outBase = path.join(process.cwd(), "..", "shared")
+
 export const schema = makeSchema({
   plugins: [
     nexusPrisma({
@@ -34,8 +36,8 @@ export const schema = makeSchema({
     queryComplexityPlugin(),
   ],
   outputs: {
-    schema: path.join(process.cwd(), "__generated__", "schema.graphql"),
-    typegen: path.join(process.cwd(), "__generated__", "index.d.ts"),
+    schema: path.join(outBase, "schema.graphql"),
+    typegen: path.join(outBase, "index.d.ts"),
   },
   sourceTypes,
   contextType,
@@ -54,8 +56,8 @@ export const privateSchema = makeSchema({
     queryComplexityPlugin(),
   ],
   outputs: {
-    schema: path.join(process.cwd(), "__generated__", "private.schema.graphql"),
-    typegen: path.join(process.cwd(), "__generated__", "private.index.d.ts"),
+    schema: path.join(outBase, "private.schema.graphql"),
+    typegen: path.join(outBase, "private.index.d.ts"),
   },
   sourceTypes,
   contextType,

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "tf": "npm rebuild @tensorflow/tfjs-node build-addon-from-source",
     "generate": "prisma generate",
-    "codegen": "SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node -P tsconfig.generator.json --transpile-only lib/schema.ts",
+    "codegen": "yarn generate && SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node -P tsconfig.generator.json --transpile-only lib/schema.ts",
     "build": "next build",
     "start": "next start",
     "ts-node": "ts-node -r tsconfig-paths/register -P tsconfig.generator.json"
@@ -18,7 +18,7 @@
     "@emotion/styled": "^11",
     "@jsmonday/imgproxy": "^0.1.0",
     "@mapbox/node-pre-gyp": "^1.0.2",
-    "@prisma/client": "2.21.0",
+    "@prisma/client": "2.23.0",
     "@trpc/react": "^3.5.1",
     "amqplib": "^0.7.1",
     "apollo-server-micro": "^2.21.1",
@@ -46,7 +46,7 @@
     "next-apollo": "^5.0.4",
     "next-auth": "^3.13.3",
     "nexus": "^1.0.0",
-    "nexus-plugin-prisma": "^0.34.1",
+    "nexus-plugin-prisma": "^0.35.0",
     "postcss": "^8.2.8",
     "react": "17.0.1",
     "react-beautiful-dnd": "^13.1.0",
@@ -82,9 +82,9 @@
     "@types/react-modal": "^3.10.6",
     "@types/sharp": "^0.27.3",
     "cross-env": "^7.0.3",
-    "prisma": "2.21.1",
+    "prisma": "2.23.0",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.2.3"
+    "typescript": "4.2.3"
   }
 }

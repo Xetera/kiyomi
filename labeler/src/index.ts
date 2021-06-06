@@ -1,19 +1,12 @@
 import "dotenv/config";
 import amqp from "amqplib";
-import { GraphQLClient } from "graphql-request";
 import { config, logger } from "./config";
-import { getSdk } from "./__generated__/request";
 import { canDetectFaces, checkWeights, detectFaces } from "./face-recognition";
 import axios from "axios";
 import { colorPalette, phash } from "./ffi";
+import { backend } from "../../shared/sdk";
 
 const authorization = config.get("userToken");
-
-const client = new GraphQLClient(`${config.get("backendUrl")}/api/internal`, {
-  headers: {
-    authorization: authorization,
-  },
-});
 
 console.log(`Created API client with token: ${authorization}`);
 
@@ -80,13 +73,24 @@ async function processFaces(conn: amqp.Connection) {
   channel.consume(
     faceRecognitionQueueName,
     consume(async (msg: { slug: string; ireneBotIdolId?: number }) => {
-      const sdk = getSdk(client);
       if (!msg.slug) {
         logger.debug(msg);
         return logger.warn(`Did not receive a slug with an incoming message`);
       }
-      const { image } = await sdk.getBackendImage({
-        slug: msg.slug,
+      const { slug } = msg;
+
+      const { image } = await backend.query({
+        image: [
+          { slug },
+          {
+            id: true,
+            width: true,
+            height: true,
+            rawUrl: true,
+            mimetype: true,
+            faceScanDate: true,
+          },
+        ],
       });
       if (!image) {
         return logger.warn(`${msg.slug} is not a valid image slug.`);
@@ -108,31 +112,38 @@ async function processFaces(conn: amqp.Connection) {
       ]);
       console.timeEnd(label);
 
-      await sdk.labelImage({
-        slug: msg.slug,
-        ireneBotId: msg.ireneBotIdolId,
-        pHash: hash,
-        palette,
-        faces: faces.map(({ detection, descriptor }) => ({
-          certainty: detection.score,
-          x: detection.box.x,
-          y: detection.box.y,
-          width: detection.box.width,
-          height: detection.box.height,
-          descriptor: Array.from(descriptor),
-        })),
+      const out = await backend.mutation({
+        labelImage: [
+          {
+            slug: msg.slug,
+            ireneBotId: msg.ireneBotIdolId,
+            pHash: hash,
+            palette,
+            faces: faces.map(({ detection, descriptor }) => ({
+              certainty: detection.score,
+              x: detection.box.x,
+              y: detection.box.y,
+              width: detection.box.width,
+              height: detection.box.height,
+              descriptor: Array.from(descriptor),
+            })),
+          },
+          {
+            id: true,
+          },
+        ],
       });
     })
   );
 }
 
-const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
+const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 async function connect(): Promise<amqp.Connection> {
   const RECONNECT_DELAY = 2000;
   try {
     const connection = await amqp.connect(config.get("amqpUrl"));
-    connection.on("error", (err) => {
+    connection.on("error", err => {
       if (err.message !== "Connection closing") {
         logger.error("[AMQP] conn error", err.message);
       }

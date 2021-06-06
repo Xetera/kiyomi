@@ -3,10 +3,13 @@
   "include": ["src", "types"],
   "compilerOptions": {
     "module": "esnext",
+    "target": "ES6",
     "lib": ["dom", "esnext"],
     "paths": {
       "~/shared/*": ["../shared/*"]
     },
+    "baseUrl": ".",
+    "downlevelIteration": true,
     "importHelpers": true,
     // output .d.ts declaration files for consumers
     "declaration": true,

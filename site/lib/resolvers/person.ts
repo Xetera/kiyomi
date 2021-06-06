@@ -11,6 +11,7 @@ export const Person = objectType({
       .appearsIn({ alias: "faces" })
       .appearances()
       .memberOf()
+      .preferredMembership()
       .updatedAt()
       .createdAt()
   },

@@ -1,11 +1,4 @@
-import {
-  objectType,
-  queryField,
-  intArg,
-  mutationField,
-  nonNull,
-  extendType,
-} from "nexus"
+import { objectType, queryField, mutationField } from "nexus"
 
 export const Group = objectType({
   name: "Group",
@@ -20,6 +13,11 @@ export const Group = objectType({
       .createdAt()
       .updatedAt()
   },
+})
+
+export const Query = queryField((t) => {
+  t.crud.group()
+  t.crud.groups({ pagination: true, filtering: true, ordering: true })
 })
 
 export const PrivateMutation = mutationField((t) => {

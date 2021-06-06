@@ -1,9 +1,0 @@
-query allPersons {
-  people {
-    id
-    name
-    aliases {
-      name
-    }
-  }
-}

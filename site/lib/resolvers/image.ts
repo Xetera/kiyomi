@@ -398,6 +398,16 @@ export const QueueInformation = objectType({
   },
 })
 
+export const PrivateQuery = queryField((t) => {
+  t.field("personImages", {
+    type: list("Image"),
+    args: {
+      personIds: list(intArg()),
+    },
+    resolve(_) {},
+  })
+})
+
 export const PrivateMutation = mutationField((t) => {
   t.field("labelImage", {
     type: "Image",

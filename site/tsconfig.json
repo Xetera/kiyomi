@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "pretty": true,
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "~/shared": ["../shared/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "colors.js"],
