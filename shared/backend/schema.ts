@@ -27,6 +27,12 @@ export interface Appearance {
     __typename: 'Appearance'
 }
 
+export interface AppearanceCount {
+    count: Scalars['Int']
+    group: Group
+    __typename: 'AppearanceCount'
+}
+
 export interface Face {
     addedBy?: User
     appearance?: Appearance
@@ -179,6 +185,7 @@ export interface Person {
 }
 
 export interface Query {
+    countAppearances: AppearanceCount[]
     group?: Group
     groups: Group[]
     /** Find a single image by its slug. */
@@ -305,6 +312,13 @@ export interface AppearanceRequest{
 }
 
 export interface AppearanceAppearanceCompoundUniqueInput {imageId: Scalars['Int'],personId: Scalars['Int']}
+
+export interface AppearanceCountRequest{
+    count?: boolean | number
+    group?: GroupRequest
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
 
 export interface AppearanceCreateManyAddedByInput {createdAt?: (Scalars['DateTime'] | null),id?: (Scalars['Int'] | null),imageId: Scalars['Int'],personId: Scalars['Int'],updatedAt?: (Scalars['DateTime'] | null)}
 
@@ -1053,6 +1067,7 @@ export interface PersonWhereInput {AND?: (PersonWhereInput[] | null),NOT?: (Pers
 export interface PersonWhereUniqueInput {id?: (Scalars['Int'] | null),ireneBotId?: (Scalars['Int'] | null)}
 
 export interface QueryRequest{
+    countAppearances?: [{groups: Scalars['Int'][]},AppearanceCountRequest]
     group?: [{where: GroupWhereUniqueInput},GroupRequest]
     groups?: [{cursor?: (GroupWhereUniqueInput | null),orderBy?: (GroupOrderByInput[] | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (GroupWhereInput | null)},GroupRequest] | GroupRequest
     /** Find a single image by its slug. */
@@ -1278,6 +1293,14 @@ export const isAppearance = (obj?: { __typename?: any } | null): obj is Appearan
 
 
 
+const AppearanceCount_possibleTypes = ['AppearanceCount']
+export const isAppearanceCount = (obj?: { __typename?: any } | null): obj is AppearanceCount => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isAppearanceCount"')
+  return AppearanceCount_possibleTypes.includes(obj.__typename)
+}
+
+
+
 const Face_possibleTypes = ['Face']
 export const isFace = (obj?: { __typename?: any } | null): obj is Face => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isFace"')
@@ -1429,6 +1452,16 @@ export interface AppearanceObservableChain{
     image: (ImageObservableChain & {get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>) => Observable<FieldsSelection<Image, R>>}),
     person: (PersonObservableChain & {get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>) => Observable<FieldsSelection<Person, R>>}),
     updatedAt: ({get: (request?: boolean|number, defaultValue?: Scalars['DateTime']) => Observable<Scalars['DateTime']>})
+}
+
+export interface AppearanceCountPromiseChain{
+    count: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Promise<Scalars['Int']>}),
+    group: (GroupPromiseChain & {get: <R extends GroupRequest>(request: R, defaultValue?: FieldsSelection<Group, R>) => Promise<FieldsSelection<Group, R>>})
+}
+
+export interface AppearanceCountObservableChain{
+    count: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Observable<Scalars['Int']>}),
+    group: (GroupObservableChain & {get: <R extends GroupRequest>(request: R, defaultValue?: FieldsSelection<Group, R>) => Observable<FieldsSelection<Group, R>>})
 }
 
 export interface FacePromiseChain{
@@ -1750,6 +1783,7 @@ export interface PersonObservableChain{
 }
 
 export interface QueryPromiseChain{
+    countAppearances: ((args: {groups: Scalars['Int'][]}) => {get: <R extends AppearanceCountRequest>(request: R, defaultValue?: FieldsSelection<AppearanceCount, R>[]) => Promise<FieldsSelection<AppearanceCount, R>[]>}),
     group: ((args: {where: GroupWhereUniqueInput}) => GroupPromiseChain & {get: <R extends GroupRequest>(request: R, defaultValue?: (FieldsSelection<Group, R> | undefined)) => Promise<(FieldsSelection<Group, R> | undefined)>}),
     groups: ((args?: {cursor?: (GroupWhereUniqueInput | null),orderBy?: (GroupOrderByInput[] | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (GroupWhereInput | null)}) => {get: <R extends GroupRequest>(request: R, defaultValue?: FieldsSelection<Group, R>[]) => Promise<FieldsSelection<Group, R>[]>})&({get: <R extends GroupRequest>(request: R, defaultValue?: FieldsSelection<Group, R>[]) => Promise<FieldsSelection<Group, R>[]>}),
     
@@ -1765,6 +1799,7 @@ image: ((args: {slug: Scalars['String']}) => ImagePromiseChain & {get: <R extend
 }
 
 export interface QueryObservableChain{
+    countAppearances: ((args: {groups: Scalars['Int'][]}) => {get: <R extends AppearanceCountRequest>(request: R, defaultValue?: FieldsSelection<AppearanceCount, R>[]) => Observable<FieldsSelection<AppearanceCount, R>[]>}),
     group: ((args: {where: GroupWhereUniqueInput}) => GroupObservableChain & {get: <R extends GroupRequest>(request: R, defaultValue?: (FieldsSelection<Group, R> | undefined)) => Observable<(FieldsSelection<Group, R> | undefined)>}),
     groups: ((args?: {cursor?: (GroupWhereUniqueInput | null),orderBy?: (GroupOrderByInput[] | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (GroupWhereInput | null)}) => {get: <R extends GroupRequest>(request: R, defaultValue?: FieldsSelection<Group, R>[]) => Observable<FieldsSelection<Group, R>[]>})&({get: <R extends GroupRequest>(request: R, defaultValue?: FieldsSelection<Group, R>[]) => Observable<FieldsSelection<Group, R>[]>}),
     

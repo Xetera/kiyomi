@@ -3119,6 +3119,10 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Alias: PrismaClient.Alias;
   Appearance: PrismaClient.Appearance;
+  AppearanceCount: { // root type
+    count: number; // Int!
+    group: NexusGenRootTypes['Group']; // Group!
+  }
   Face: PrismaClient.Face;
   Group: PrismaClient.Group;
   GroupAlias: PrismaClient.GroupAlias;
@@ -3175,6 +3179,10 @@ export interface NexusGenFieldTypes {
     image: NexusGenRootTypes['Image']; // Image!
     person: NexusGenRootTypes['Person']; // Person!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  AppearanceCount: { // field return type
+    count: number; // Int!
+    group: NexusGenRootTypes['Group']; // Group!
   }
   Face: { // field return type
     addedBy: NexusGenRootTypes['User'] | null; // User
@@ -3281,6 +3289,7 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: { // field return type
+    countAppearances: NexusGenRootTypes['AppearanceCount'][]; // [AppearanceCount!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
     image: NexusGenRootTypes['Image'] | null; // Image
@@ -3289,6 +3298,7 @@ export interface NexusGenFieldTypes {
     me: NexusGenRootTypes['User'] | null; // User
     people: NexusGenRootTypes['Person'][]; // [Person!]!
     person: NexusGenRootTypes['Person'] | null; // Person
+    personImages: NexusGenRootTypes['Image'][]; // [Image!]!
     user: NexusGenRootTypes['User'] | null; // User
   }
   QueueInfo: { // field return type
@@ -3334,6 +3344,10 @@ export interface NexusGenFieldTypeNames {
     image: 'Image'
     person: 'Person'
     updatedAt: 'DateTime'
+  }
+  AppearanceCount: { // field return type name
+    count: 'Int'
+    group: 'Group'
   }
   Face: { // field return type name
     addedBy: 'User'
@@ -3440,6 +3454,7 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
   }
   Query: { // field return type name
+    countAppearances: 'AppearanceCount'
     group: 'Group'
     groups: 'Group'
     image: 'Image'
@@ -3448,6 +3463,7 @@ export interface NexusGenFieldTypeNames {
     me: 'User'
     people: 'Person'
     person: 'Person'
+    personImages: 'Image'
     user: 'User'
   }
   QueueInfo: { // field return type name
@@ -3581,6 +3597,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    countAppearances: { // args
+      groups: number[]; // [Int!]!
+    }
     group: { // args
       where: NexusGenInputs['GroupWhereUniqueInput']; // GroupWhereUniqueInput!
     }
@@ -3613,6 +3632,10 @@ export interface NexusGenArgTypes {
     }
     person: { // args
       where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+    }
+    personImages: { // args
+      amount: number | null; // Int
+      personIds: number[]; // [Int!]!
     }
     user: { // args
       id?: number | null; // Int

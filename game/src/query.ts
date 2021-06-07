@@ -1,5 +1,26 @@
+import { GroupChoice } from "~/shared/game"
 import { backend } from "~/shared/sdk"
-import { ServerImage, ServerPerson } from "./messaging"
+import { GuessingPrompt, ServerPerson } from "./messaging"
+
+export async function getGroupAppearanceCounts(
+  groups: number[]
+): Promise<GroupChoice[]> {
+  const counts = await backend.query({
+    countAppearances: [
+      { groups },
+      {
+        count: true,
+        group: {
+          id: true,
+        },
+      },
+    ],
+  })
+  return counts.countAppearances.map((pr) => ({
+    groupId: pr.group.id,
+    count: pr.count,
+  }))
+}
 
 export async function fetchAllPeople(): Promise<Array<ServerPerson>> {
   const groupQuery = {
@@ -30,7 +51,7 @@ export async function fetchAllPeople(): Promise<Array<ServerPerson>> {
 
 export async function fetchAllImages(
   personIds: number[]
-): Promise<ServerImage[]> {
+): Promise<GuessingPrompt[]> {
   const result = await backend.query({
     personImages: [
       { personIds },

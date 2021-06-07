@@ -95,6 +95,12 @@ export type AppearanceAppearanceCompoundUniqueInput = {
   personId: Scalars['Int'];
 };
 
+export type AppearanceCount = {
+  __typename?: 'AppearanceCount';
+  count: Scalars['Int'];
+  group: Group;
+};
+
 export type AppearanceListRelationFilter = {
   every?: Maybe<AppearanceWhereInput>;
   none?: Maybe<AppearanceWhereInput>;
@@ -833,6 +839,7 @@ export type PersonWhereUniqueInput = {
 
 export type Query = {
   __typename?: 'Query';
+  countAppearances: Array<AppearanceCount>;
   group?: Maybe<Group>;
   groups: Array<Group>;
   /** Find a single image by its slug. */
@@ -843,6 +850,11 @@ export type Query = {
   people: Array<Person>;
   person?: Maybe<Person>;
   user?: Maybe<User>;
+};
+
+
+export type QueryCountAppearancesArgs = {
+  groups: Array<Scalars['Int']>;
 };
 
 

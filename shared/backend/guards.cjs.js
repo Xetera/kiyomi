@@ -15,6 +15,14 @@ module.exports.isAppearance = function(obj) {
 
 
 
+var AppearanceCount_possibleTypes = ['AppearanceCount']
+module.exports.isAppearanceCount = function(obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isAppearanceCount"')
+  return AppearanceCount_possibleTypes.includes(obj.__typename)
+}
+
+
+
 var Face_possibleTypes = ['Face']
 module.exports.isFace = function(obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isFace"')

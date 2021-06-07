@@ -37,6 +37,10 @@ export const clientRoom = z.object({
 
 export type ClientRoom = z.infer<typeof clientRoom>
 
+const pickGroup = z.object({
+  groupId: z.number(),
+})
+
 export const Messages = {
   p: z.object({}),
   create_room: z.object({
@@ -49,6 +53,7 @@ export const Messages = {
     game: z.string().nonempty(),
     room: z.string().nonempty(),
   }),
+  pickGroup,
   leave_room: z.object({}),
   answer: z.object({ id: z.number().nonnegative() }),
   start_game: z.object({}),
@@ -98,6 +103,13 @@ const userAnswerPayload = z.object({
   answers: z.array(revealedAnswer),
 })
 
+export const groupChoice = z.object({
+  groupId: z.number(),
+  count: z.number(),
+})
+
+export type GroupChoice = z.infer<typeof groupChoice>
+
 // OUTGOING MESSAGES
 type UserAnswerPayload = z.infer<typeof userAnswerPayload>
 
@@ -112,6 +124,7 @@ export const outgoingMessageData = {
     z.object({ room: clientRoom }),
     z.object({ error: z.string() }),
   ]),
+  pickGroup: z.object({ groups: z.array(groupChoice) }),
   connect: z.object({ seat: clientSeat }),
   disconnect: z.object({ seat: clientSeat }),
   force_disconnected: z.object({ reason: z.string() }),

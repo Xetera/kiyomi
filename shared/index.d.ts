@@ -600,6 +600,10 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Alias: PrismaClient.Alias;
   Appearance: PrismaClient.Appearance;
+  AppearanceCount: { // root type
+    count: number; // Int!
+    group: NexusGenRootTypes['Group']; // Group!
+  }
   Face: PrismaClient.Face;
   Group: PrismaClient.Group;
   GroupAlias: PrismaClient.GroupAlias;
@@ -656,6 +660,10 @@ export interface NexusGenFieldTypes {
     image: NexusGenRootTypes['Image']; // Image!
     person: NexusGenRootTypes['Person']; // Person!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  AppearanceCount: { // field return type
+    count: number; // Int!
+    group: NexusGenRootTypes['Group']; // Group!
   }
   Face: { // field return type
     addedBy: NexusGenRootTypes['User'] | null; // User
@@ -758,6 +766,7 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: { // field return type
+    countAppearances: NexusGenRootTypes['AppearanceCount'][]; // [AppearanceCount!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
     image: NexusGenRootTypes['Image'] | null; // Image
@@ -811,6 +820,10 @@ export interface NexusGenFieldTypeNames {
     image: 'Image'
     person: 'Person'
     updatedAt: 'DateTime'
+  }
+  AppearanceCount: { // field return type name
+    count: 'Int'
+    group: 'Group'
   }
   Face: { // field return type name
     addedBy: 'User'
@@ -913,6 +926,7 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
   }
   Query: { // field return type name
+    countAppearances: 'AppearanceCount'
     group: 'Group'
     groups: 'Group'
     image: 'Image'
@@ -1032,6 +1046,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    countAppearances: { // args
+      groups: number[]; // [Int!]!
+    }
     group: { // args
       where: NexusGenInputs['GroupWhereUniqueInput']; // GroupWhereUniqueInput!
     }

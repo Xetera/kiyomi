@@ -53,6 +53,11 @@ input AppearanceAppearanceCompoundUniqueInput {
   personId: Int!
 }
 
+type AppearanceCount {
+  count: Int!
+  group: Group!
+}
+
 input AppearanceListRelationFilter {
   every: AppearanceWhereInput
   none: AppearanceWhereInput
@@ -717,6 +722,7 @@ input PersonWhereUniqueInput {
 }
 
 type Query {
+  countAppearances(groups: [Int!]!): [AppearanceCount!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
 

@@ -1,8 +1,8 @@
 generator client {
-  provider      = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["nApi"]
   // required by alpine linux
-  binaryTargets = ["native", "linux-musl"]
+  binaryTargets   = ["native", "linux-musl"]
 }
 
 datasource db {
@@ -234,17 +234,17 @@ model ImageLike {
 }
 
 model GroupMember {
-  id        Int       @id @default(autoincrement())
-  person    Person    @relation(fields: [personId], references: [id])
-  personId  Int
-  group     Group     @relation(fields: [groupId], references: [id])
-  groupId   Int
-  startDate DateTime?
-  endDate   DateTime?
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  id                    Int       @id @default(autoincrement())
+  person                Person    @relation(fields: [personId], references: [id])
+  personId              Int       @map("person_id")
+  group                 Group     @relation(fields: [groupId], references: [id])
+  groupId               Int       @map("group_id")
+  startDate             DateTime? @map("start_date")
+  endDate               DateTime? @map("end_date")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at")
   // This needs to be here for some reason but it makes no sense
-  preferredMemberships_ Person[] @relation("preferred_membership")
+  preferredMemberships_ Person[]  @relation("preferred_membership")
 
   @@unique([groupId, personId], name: "member")
   @@map("group_members")

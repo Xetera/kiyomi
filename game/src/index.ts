@@ -45,7 +45,11 @@ import { keyBy } from "lodash"
 import dotenv from "dotenv"
 import { createPublishers } from "./events"
 import { Group, Person } from "~/shared/backend"
-import { fetchAllImages, fetchAllPeople } from "./query"
+import {
+  fetchAllImages,
+  fetchAllPeople,
+  getGroupAppearanceCounts,
+} from "./query"
 import { backend } from "~/shared/sdk"
 
 const idFactory = new Hashids("salt!")
@@ -99,7 +103,7 @@ function leaveRoom(player: Player, room: Room) {
 
 interface CreateRoomOptions {
   player: Player
-  groupsIds: number[]
+  groupIds: number[]
   difficulty: Difficulty
 }
 
@@ -237,17 +241,18 @@ function startRound(ctx: CommandContext) {
   // const { time } = difficulties.easy
   ctx.room.roundStarted = true
   ctx.room.correctAnswer = prompt.answer
+  const secs = ctx.room.difficulty.timePerRound
   ctx.room.broadcast({
     t: "round_start",
     person: {
       slug: person._image!.slug,
     },
     // TODO: make this dependent on the state of the game
-    secs: ctx.room.difficulty.timePerRound,
+    secs,
   })
   ctx.room.endingTimeout = setTimeout(() => {
     endRound(ctx)
-  }, time * 1000)
+  }, secs * 1000)
 }
 
 function endRound(ctx: CommandContext) {
@@ -386,6 +391,15 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       args.game
     )
     reply({ t: "created_room", room: serializeRoom(room) })
+  },
+  async pickGroup({ args, ...rest }) {
+    const ctx = commandCtx(rest)
+    const newGroups = ctx.room.groupPool.map((p) => p.id).concat([args.groupId])
+    ctx.room.groupChoice = await getGroupAppearanceCounts(newGroups)
+    ctx.room.broadcast({
+      t: "pickGroup",
+      groups: ctx.room.groupChoice,
+    })
   },
   leave_room({ player }) {
     // We are assuming that the client doesn't

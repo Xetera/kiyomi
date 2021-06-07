@@ -1,4 +1,5 @@
 import {
+  GroupChoice,
   IncomingMessageData,
   IncomingMessageType,
   outgoingMessageData,
@@ -162,6 +163,7 @@ export type Room = {
   maxRounds: number
   endingTimeout: ReturnType<typeof setTimeout>
   correctAnswer: ServerPerson
+  groupChoice: GroupChoice[]
   groupPool: Group[]
   artistPool: ServerPerson[]
   imagePool: GuessingPrompt[]
