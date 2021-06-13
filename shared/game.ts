@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { clientGroup, clientPeople, clientPerson } from "../game/src/messaging"
+import { clientPerson } from "../game/src/messaging"
 
 export const nuguPrompt = z.object({
   slug: z.string(),
@@ -30,22 +30,22 @@ export type ClientSeat = z.infer<typeof clientSeat>
 export const clientRoom = z.object({
   id: z.string(),
   owner: z.string(),
-  groupPool: z.array(clientGroup),
+  personPool: z.array(z.number()),
   seats: z.record(clientSeat),
   secondsPerRound: z.number(),
 })
 
 export type ClientRoom = z.infer<typeof clientRoom>
 
-const pickGroup = z.object({
-  groupId: z.number(),
+const pickPerson = z.object({
+  persons: z.array(z.number()),
 })
 
 export const Messages = {
   p: z.object({}),
   create_room: z.object({
     game: z.string().nonempty(),
-    groupIds: z.array(z.number()),
+    personIds: z.array(z.number()),
     timeLimit: z.number().min(3).max(30),
     hints: z.boolean().default(true),
   }),
@@ -53,7 +53,7 @@ export const Messages = {
     game: z.string().nonempty(),
     room: z.string().nonempty(),
   }),
-  pickGroup,
+  pickPerson: pickPerson,
   leave_room: z.object({}),
   answer: z.object({ id: z.number().nonnegative() }),
   start_game: z.object({}),
@@ -103,12 +103,12 @@ const userAnswerPayload = z.object({
   answers: z.array(revealedAnswer),
 })
 
-export const groupChoice = z.object({
-  groupId: z.number(),
-  count: z.number(),
+export const personChoice = z.object({
+  personId: z.number(),
+  // count: z.number(),
 })
 
-export type GroupChoice = z.infer<typeof groupChoice>
+export type PersonChoice = z.infer<typeof personChoice>
 
 // OUTGOING MESSAGES
 type UserAnswerPayload = z.infer<typeof userAnswerPayload>
@@ -124,12 +124,16 @@ export const outgoingMessageData = {
     z.object({ room: clientRoom }),
     z.object({ error: z.string() }),
   ]),
-  pickGroup: z.object({ groups: z.array(groupChoice) }),
+  roomUpdate: z.object({ room: clientRoom }),
   connect: z.object({ seat: clientSeat }),
   disconnect: z.object({ seat: clientSeat }),
   force_disconnected: z.object({ reason: z.string() }),
   starting: z.object({ secs: z.number() }),
-  round_start: z.object({ person: nuguPrompt, secs: z.number() }),
+  round_start: z.object({
+    person: nuguPrompt,
+    secs: z.number(),
+    scores: z.record(z.number()),
+  }),
   game_end: z.object({}),
   user_answer: z.union([
     z.object({ userId: z.string() }),
@@ -142,8 +146,6 @@ export const outgoingMessageData = {
   personList: z.object({ people: z.array(clientPerson) }),
   auth: z.object({ success: z.boolean() }),
 } as const
-
-// export type OutgoingMessageData = z.infer<typeof outgoingMessageData>
 
 export const stateExempt: (keyof typeof outgoingMessageData)[] = [
   "error",

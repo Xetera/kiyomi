@@ -79,6 +79,14 @@ module.exports.isImageEdge = function(obj) {
 
 
 
+var ImageMatch_possibleTypes = ['ImageMatch']
+module.exports.isImageMatch = function(obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isImageMatch"')
+  return ImageMatch_possibleTypes.includes(obj.__typename)
+}
+
+
+
 var Mutation_possibleTypes = ['Mutation']
 module.exports.isMutation = function(obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isMutation"')

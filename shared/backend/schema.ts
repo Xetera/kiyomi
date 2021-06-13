@@ -148,6 +148,13 @@ export interface ImageEdge {
     __typename: 'ImageEdge'
 }
 
+export interface ImageMatch {
+    face: Face
+    image: Image
+    person: Person
+    __typename: 'ImageMatch'
+}
+
 export type MimeType = 'AVIF' | 'GIF' | 'JPG' | 'MP4' | 'PNG' | 'SVG' | 'WEBM' | 'WEBP'
 
 export interface Mutation {
@@ -195,7 +202,7 @@ export interface Query {
     me?: User
     people: Person[]
     person?: Person
-    personImages: Image[]
+    personImages: ImageMatch[]
     user?: User
     __typename: 'Query'
 }
@@ -842,6 +849,14 @@ export interface ImageLikeWhereUniqueInput {id?: (Scalars['Int'] | null),likedIm
 
 export interface ImageListRelationFilter {every?: (ImageWhereInput | null),none?: (ImageWhereInput | null),some?: (ImageWhereInput | null)}
 
+export interface ImageMatchRequest{
+    face?: FaceRequest
+    image?: ImageRequest
+    person?: PersonRequest
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
 export interface ImageOrderByInput {bytes?: (SortOrder | null),caption?: (SortOrder | null),createdAt?: (SortOrder | null),faceScanDate?: (SortOrder | null),faceScanRequestDate?: (SortOrder | null),fileName?: (SortOrder | null),hash?: (SortOrder | null),height?: (SortOrder | null),id?: (SortOrder | null),ireneBotId?: (SortOrder | null),isNsfw?: (SortOrder | null),mimetype?: (SortOrder | null),pHash?: (SortOrder | null),palette?: (SortOrder | null),public?: (SortOrder | null),slug?: (SortOrder | null),source?: (SortOrder | null),updatedAt?: (SortOrder | null),uploadType?: (SortOrder | null),userId?: (SortOrder | null),views?: (SortOrder | null),width?: (SortOrder | null)}
 
 export interface ImageScalarWhereInput {AND?: (ImageScalarWhereInput[] | null),NOT?: (ImageScalarWhereInput[] | null),OR?: (ImageScalarWhereInput[] | null),bytes?: (IntFilter | null),caption?: (StringNullableFilter | null),createdAt?: (DateTimeFilter | null),faceScanDate?: (DateTimeNullableFilter | null),faceScanRequestDate?: (DateTimeNullableFilter | null),fileName?: (StringNullableFilter | null),hash?: (StringFilter | null),height?: (IntFilter | null),id?: (IntFilter | null),ireneBotId?: (IntNullableFilter | null),isNsfw?: (BoolFilter | null),mimetype?: (EnumMimeTypeFilter | null),pHash?: (StringNullableFilter | null),palette?: (IntNullableListFilter | null),public?: (BoolFilter | null),slug?: (StringFilter | null),source?: (StringNullableFilter | null),updatedAt?: (DateTimeFilter | null),uploadType?: (EnumUploadTypeFilter | null),userId?: (IntNullableFilter | null),views?: (IntFilter | null),width?: (IntFilter | null)}
@@ -1077,7 +1092,7 @@ export interface QueryRequest{
     me?: UserRequest
     people?: [{cursor?: (PersonWhereUniqueInput | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (PersonWhereInput | null)},PersonRequest] | PersonRequest
     person?: [{where: PersonWhereUniqueInput},PersonRequest]
-    personImages?: [{amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]},ImageRequest]
+    personImages?: [{amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]},ImageMatchRequest]
     user?: [{id?: (Scalars['Int'] | null)},UserRequest] | UserRequest
     __typename?: boolean | number
     __scalar?: boolean | number
@@ -1353,6 +1368,14 @@ const ImageEdge_possibleTypes = ['ImageEdge']
 export const isImageEdge = (obj?: { __typename?: any } | null): obj is ImageEdge => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isImageEdge"')
   return ImageEdge_possibleTypes.includes(obj.__typename)
+}
+
+
+
+const ImageMatch_possibleTypes = ['ImageMatch']
+export const isImageMatch = (obj?: { __typename?: any } | null): obj is ImageMatch => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isImageMatch"')
+  return ImageMatch_possibleTypes.includes(obj.__typename)
 }
 
 
@@ -1706,6 +1729,18 @@ export interface ImageEdgeObservableChain{
     type: ({get: (request?: boolean|number, defaultValue?: (ImageConnectionEdge | undefined)) => Observable<(ImageConnectionEdge | undefined)>})
 }
 
+export interface ImageMatchPromiseChain{
+    face: (FacePromiseChain & {get: <R extends FaceRequest>(request: R, defaultValue?: FieldsSelection<Face, R>) => Promise<FieldsSelection<Face, R>>}),
+    image: (ImagePromiseChain & {get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>) => Promise<FieldsSelection<Image, R>>}),
+    person: (PersonPromiseChain & {get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>) => Promise<FieldsSelection<Person, R>>})
+}
+
+export interface ImageMatchObservableChain{
+    face: (FaceObservableChain & {get: <R extends FaceRequest>(request: R, defaultValue?: FieldsSelection<Face, R>) => Observable<FieldsSelection<Face, R>>}),
+    image: (ImageObservableChain & {get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>) => Observable<FieldsSelection<Image, R>>}),
+    person: (PersonObservableChain & {get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>) => Observable<FieldsSelection<Person, R>>})
+}
+
 export interface MutationPromiseChain{
     
 /** Add an appearance relation on an image. */
@@ -1794,7 +1829,7 @@ image: ((args: {slug: Scalars['String']}) => ImagePromiseChain & {get: <R extend
     me: (UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Promise<(FieldsSelection<User, R> | undefined)>}),
     people: ((args?: {cursor?: (PersonWhereUniqueInput | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (PersonWhereInput | null)}) => {get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Promise<FieldsSelection<Person, R>[]>})&({get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Promise<FieldsSelection<Person, R>[]>}),
     person: ((args: {where: PersonWhereUniqueInput}) => PersonPromiseChain & {get: <R extends PersonRequest>(request: R, defaultValue?: (FieldsSelection<Person, R> | undefined)) => Promise<(FieldsSelection<Person, R> | undefined)>}),
-    personImages: ((args: {amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]}) => {get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>[]) => Promise<FieldsSelection<Image, R>[]>}),
+    personImages: ((args: {amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]}) => {get: <R extends ImageMatchRequest>(request: R, defaultValue?: FieldsSelection<ImageMatch, R>[]) => Promise<FieldsSelection<ImageMatch, R>[]>}),
     user: ((args?: {id?: (Scalars['Int'] | null)}) => UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Promise<(FieldsSelection<User, R> | undefined)>})&(UserPromiseChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Promise<(FieldsSelection<User, R> | undefined)>})
 }
 
@@ -1810,7 +1845,7 @@ image: ((args: {slug: Scalars['String']}) => ImageObservableChain & {get: <R ext
     me: (UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Observable<(FieldsSelection<User, R> | undefined)>}),
     people: ((args?: {cursor?: (PersonWhereUniqueInput | null),skip?: (Scalars['Int'] | null),take?: (Scalars['Int'] | null),where?: (PersonWhereInput | null)}) => {get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Observable<FieldsSelection<Person, R>[]>})&({get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Observable<FieldsSelection<Person, R>[]>}),
     person: ((args: {where: PersonWhereUniqueInput}) => PersonObservableChain & {get: <R extends PersonRequest>(request: R, defaultValue?: (FieldsSelection<Person, R> | undefined)) => Observable<(FieldsSelection<Person, R> | undefined)>}),
-    personImages: ((args: {amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]}) => {get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>[]) => Observable<FieldsSelection<Image, R>[]>}),
+    personImages: ((args: {amount?: (Scalars['Int'] | null),personIds: Scalars['Int'][]}) => {get: <R extends ImageMatchRequest>(request: R, defaultValue?: FieldsSelection<ImageMatch, R>[]) => Observable<FieldsSelection<ImageMatch, R>[]>}),
     user: ((args?: {id?: (Scalars['Int'] | null)}) => UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Observable<(FieldsSelection<User, R> | undefined)>})&(UserObservableChain & {get: <R extends UserRequest>(request: R, defaultValue?: (FieldsSelection<User, R> | undefined)) => Observable<(FieldsSelection<User, R> | undefined)>})
 }
 

@@ -1,14 +1,10 @@
 import * as uWS from "uWebSockets.js"
 // @ts-ignore
-import Hashids from "hashids/cjs"
+import Hashids from "hashids"
 import { logger } from "./config"
 import jsonwebtoken from "jsonwebtoken"
-import {
-  serializePerson,
-  serializePlayer,
-  serializeRoom,
-  serializeSeat,
-} from "./serialization"
+import ms from "ms"
+import { serializePerson, serializeRoom, serializeSeat } from "./serialization"
 import {
   ClientError,
   ClientTechnicalError,
@@ -20,9 +16,7 @@ import {
   stateExempt,
   RevealedAnswer,
   outgoingMessageData,
-  IncomingMessageArgs,
-  IncomingMessageData,
-} from "~/shared/game"
+} from "~shared/game"
 import {
   Anon,
   CommandContext,
@@ -31,7 +25,6 @@ import {
   Player,
   EmittedMessage,
   GameType,
-  ClientPerson,
   PrivateMessageHandlers,
   PublicMessageHandlers,
   Room,
@@ -40,22 +33,22 @@ import {
   Server,
   Difficulty,
   ServerPerson,
+  PastQuestion,
+  QuestionAnswer,
 } from "./messaging"
-import { keyBy } from "lodash"
-import dotenv from "dotenv"
-import { createPublishers } from "./events"
-import { Group, Person } from "~/shared/backend"
+import { shuffle } from "lodash"
+import type { Group } from "~shared/backend/schema"
 import {
   fetchAllImages,
   fetchAllPeople,
   getGroupAppearanceCounts,
 } from "./query"
-import { backend } from "~/shared/sdk"
+import { backend } from "~shared/sdk"
 
 const idFactory = new Hashids("salt!")
 
-const DEFAULT_START_TIMEOUT = 2
-const DEFAULT_ROUND_WAIT_TIME = 3
+const DEFAULT_START_TIMEOUT = 4
+const DEFAULT_ROUND_WAIT_TIME = 6
 
 const server: Server = {
   // ????????????
@@ -74,6 +67,13 @@ function clearFromOtherRooms(player: Player) {
   })
 }
 
+function answerCount(an: QuestionAnswer, room: Room) {
+  if (an.hintUsed) {
+    return 0.5
+  }
+  return room.correctAnswer === an.answer ? 1 : 0
+}
+
 function joinRoom(player: Player, room: Room): Seat {
   clearFromOtherRooms(player)
 
@@ -82,8 +82,18 @@ function joinRoom(player: Player, room: Room): Seat {
   }
 
   const seat: Seat = {
-    get answered() {
+    hintUsed: false,
+    get answered(): boolean {
       return Boolean(seat.answer)
+    },
+    get score(): number {
+      return room.history.slice(0, room.round).reduce(
+        (all, round) =>
+          // I'm sorry for this war crime I just comitted
+          all +
+          Number(round.answers.get(player.id)?.answer === round.correctId),
+        0
+      )
     },
     player,
   }
@@ -103,27 +113,26 @@ function leaveRoom(player: Player, room: Room) {
 
 interface CreateRoomOptions {
   player: Player
-  groupIds: number[]
+  personIds: number[]
   difficulty: Difficulty
 }
 
 async function createRoom(
-  { player, groupIds, difficulty }: CreateRoomOptions,
+  { player, difficulty, personIds }: CreateRoomOptions,
   game: GameType
 ): Promise<Room> {
   // TODO: making nugu rooms by default
   const id = idFactory.encode(server.incrementing++)
-  const people = await backend.query({
-    people: [
-      { where: { memberOf: { some: { groupId: { in: groupIds } } } } },
-      {
-        id: true,
-      },
+  const { images } = await backend.query({
+    images: [
+      { where: { appearances: { some: { personId: { in: personIds } } } } },
+      {},
     ],
   })
-  const imagePool = await fetchAllImages()
+  // TODO: this result is already shuffled?
+  const imagePool = shuffle(await fetchAllImages(personIds))
 
-  const room = {
+  const room: Omit<Room, "owner"> = {
     id,
     type: game,
     seats: new Map(),
@@ -131,9 +140,13 @@ async function createRoom(
     round: 1,
     difficulty,
     maxRounds: 20,
+    history: [] as PastQuestion[],
     choices: {},
-    // getting the first 20 relevant results
-    artistPool: artists,
+    imagePool,
+    personChoice: [],
+    endingTimeout: undefined,
+    correctAnswer: -1,
+    personPool: personIds,
     roundStarted: false,
     get started() {
       return this.round !== 1 || this.roundStarted
@@ -148,21 +161,19 @@ async function createRoom(
         send(seat.player.sock, message)
       })
     },
-    broadcastSplit({ pred, yes, no, except }) {
+    broadcastWith(t, f) {
       this.seats.forEach((seat) => {
-        if (except && seat.player.id === except) return
-        if (pred(seat)) {
-          send(seat.player.sock, yes)
-        } else {
-          send(seat.player.sock, no)
+        const out = f(seat)
+        if (!out) {
+          return
         }
+        send(seat.player.sock, { t, ...out })
       })
     },
-    // a little bit of type hackery here, we need the seat reference
-  } as Room
-  server.rooms[game].set(id, room)
-  room.owner = joinRoom(player, room)
-  return room
+  }
+  // a little bit of type hackery here, we need the seat reference
+  ;(room as Room).owner = joinRoom(player, room as Room)
+  return room as Room
 }
 
 function createPlayer(player: Player) {
@@ -218,7 +229,7 @@ function getRevealedAnswerPayload(
   ctx: CommandContext
 ): EmittedMessage<"answers_reveal"> {
   const answers = getRevealedAnswers(ctx)
-  const person = ctx.people.get(String(ctx.room.correctAnswer.id))
+  const person = ctx.people.get(String(ctx.room.correctAnswer))
   if (!person) {
     const error = `The correct answer in room ${ctx.room.id} was an artist that's not in the artist registry`
     logger.error(error)
@@ -232,23 +243,33 @@ function getRevealedAnswerPayload(
   }
 }
 
+function currentImage(ctx: CommandContext) {
+  return ctx.room.imagePool[ctx.room.round]
+}
+
 function startRound(ctx: CommandContext) {
   // resetting the previous round's answers back to nothing
   for (const seat of ctx.room.seats.values()) {
     seat.answer = undefined
   }
-  const prompt = spliceRandom(ctx.room.imagePool)
+  const prompt = currentImage(ctx)
   // const { time } = difficulties.easy
   ctx.room.roundStarted = true
-  ctx.room.correctAnswer = prompt.answer
+  ctx.room.correctAnswer = prompt.answer.id
   const secs = ctx.room.difficulty.timePerRound
   ctx.room.broadcast({
     t: "round_start",
     person: {
-      slug: person._image!.slug,
+      slug: ctx.room.imagePool[ctx.room.round].image.slug,
     },
     // TODO: make this dependent on the state of the game
     secs,
+    scores: Object.fromEntries(
+      Array.from(ctx.room.seats.values(), (seat) => [
+        seat.player.id,
+        seat.score,
+      ])
+    ),
   })
   ctx.room.endingTimeout = setTimeout(() => {
     endRound(ctx)
@@ -256,8 +277,28 @@ function startRound(ctx: CommandContext) {
 }
 
 function endRound(ctx: CommandContext) {
-  clearTimeout(ctx.room.endingTimeout)
+  if (ctx.room.endingTimeout) {
+    clearTimeout(ctx.room.endingTimeout)
+  }
   ctx.room.roundStarted = false
+  const round = ctx.room.imagePool[ctx.room.round]
+  if (!round) {
+    throw new Error(
+      `Room in ${ctx.room.round} exceeded the maximum number of images allowed`
+    )
+  }
+  ctx.room.history.push({
+    correctId: round.answer.id,
+    imageId: round.image.id,
+    answers: new Map(
+      [...ctx.room.seats.values()]
+        .filter((seat) => seat.answer)
+        .map((seat) => [
+          seat.player.id,
+          { answer: seat.answer as number, hintUsed: seat.hintUsed },
+        ])
+    ),
+  })
   // TODO: choose winners of round
   ctx.room.round++
   const payload = getRevealedAnswerPayload(ctx)
@@ -314,9 +355,6 @@ function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
     return {
       person: toRevealedPerson(person),
       users: users,
-      // .map((userId) => ctx.room.seats.get(userId)?.player)
-      // .filter((a) => a)
-      // .map((player) => player.id serializePlayer(player as Player)),
     }
   })
 }
@@ -373,7 +411,7 @@ function commandCtx(ctx: Context): CommandContext {
 }
 
 export const privateMessageHandlers: PrivateMessageHandlers = {
-  async create_room({ reply, player, args }) {
+  async create_room({ reply, player, args, people }) {
     // only nugu game for now
     if (args.game !== "nugu") {
       return reply({ t: "error", message: "No such game mode" })
@@ -382,7 +420,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     const room = await createRoom(
       {
         player,
-        groupsIds: args.groupIds,
+        personIds: args.personIds,
         difficulty: {
           timePerRound: args.timeLimit,
           pool: [] as Group[],
@@ -390,15 +428,16 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       },
       args.game
     )
+    server.rooms[args.game].set(room.id, room)
     reply({ t: "created_room", room: serializeRoom(room) })
   },
-  async pickGroup({ args, ...rest }) {
+  async pickPerson({ args, ...rest }) {
     const ctx = commandCtx(rest)
-    const newGroups = ctx.room.groupPool.map((p) => p.id).concat([args.groupId])
-    ctx.room.groupChoice = await getGroupAppearanceCounts(newGroups)
+    // const newGroups = ctx.room..map((p) => p.id).concat([args.groupId])
+    ctx.room.personChoice = await getGroupAppearanceCounts(args.persons)
     ctx.room.broadcast({
-      t: "pickGroup",
-      groups: ctx.room.groupChoice,
+      t: "roomUpdate",
+      room: serializeRoom(ctx.room),
     })
   },
   leave_room({ player }) {
@@ -415,9 +454,14 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
         error: `Room ${args.room} does not exist`,
       })
     }
-    const playerAlreadyInRoom = room.seats.has(player.id)
-    if (playerAlreadyInRoom) {
-      return reply({ t: "joined_room", error: "You're already in this room" })
+    const playerAlreadyInOneRoom = [
+      ...server.rooms.nugu.values(),
+    ].some((room) =>
+      [...room.seats.values()].some((seat) => seat.player.id === player.id)
+    )
+
+    if (playerAlreadyInOneRoom) {
+      return reply({ t: "joined_room", error: "You're already in a room" })
     }
 
     if (room.started) {
@@ -450,6 +494,12 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       throw new ClientError("Only owners of a room are allowed to start games")
     }
 
+    if (room.imagePool.length < room.maxRounds) {
+      throw new ClientError(
+        `You haven't selected enough people to play a game with ${room.maxRounds} rounds. Add more people into the pool.`
+      )
+    }
+
     room.broadcast({ t: "starting", secs: DEFAULT_START_TIMEOUT })
     setTimeout(() => {
       startRound({ room, people, seat })
@@ -468,6 +518,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     }
 
     ctx.seat.answer = args.id
+    // ctx.seat.player.
 
     // if (args.id == ctx.room.correctAnswer.id) {
     //   ctx.seat.points++
@@ -484,11 +535,13 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     reply(getRevealedAnswerPayload(ctx))
     // if the user sending packets has not answered yet they should
     // not see the other user's answer
-    ctx.room.broadcastSplit({
-      pred: (seat) => Boolean(seat.answer),
-      yes: { t: "user_answer", userId: player.id, choice: args.id },
-      no: { t: "user_answer", userId: player.id },
-      except: player.id,
+    ctx.room.broadcastWith("user_answer", (seat) => {
+      if (seat.player.id === player.id) {
+        return
+      }
+      return seat.answer
+        ? { userId: player.id, choice: args.id }
+        : { userId: player.id }
     })
   },
 }
@@ -534,19 +587,29 @@ const port = 9002
 
 const publicEvents = new Set<keyof MessageHandlers>(["auth"])
 
+let allPeople = new Map<string, ServerPerson>()
+
+console.log("running code")
 async function main() {
   setInterval(() => {
     logger.info(`STATS: ${server.rooms.nugu.size} NUGU rooms`)
   }, 1000 * 60 * 10)
 
-  const people = await fetchAllPeople()
-  const mappedPeople = new Map(
-    Object.entries(keyBy(people, (person) => person.id))
-  )
-
   const app = uWS.App()
-
-  const publish = createPublishers(app)
+  setInterval(async () => {
+    try {
+      logger.info("Refetching new people")
+      const people = await fetchAllPeople()
+      allPeople.clear()
+      for (const person of people) {
+        allPeople.set(String(person.id), person)
+      }
+      logger.info(`Fetched ${people.length} entries...`)
+    } catch (err) {
+      logger.error("Encountered an error while fetching new people")
+      logger.error(err)
+    }
+  }, ms("6h"))
 
   app
     .ws("/*", {
@@ -572,7 +635,7 @@ async function main() {
           ws,
           reply,
           player,
-          people: mappedPeople,
+          people: allPeople,
         } as Context
         if (t === "p") {
           return reply({ t: "p" })
@@ -644,7 +707,7 @@ async function main() {
           return
         }
 
-        const seat = serializeSeat(player.seat)
+        const seat = serializeSeat(player.seat, player.room)
         leaveRoom(player, player.room)
         if (player.room.owner === player.seat) {
           disconnectOwner(player)

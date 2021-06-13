@@ -1,14 +1,20 @@
 import {
-  GroupChoice,
   IncomingMessageData,
   IncomingMessageType,
   outgoingMessageData,
   OutgoingMessageType,
+  PersonChoice,
   PrivateIncomingMessageType,
   PublicIncomingMessageType,
-} from "~/shared/game"
+} from "~shared/game"
 import { z } from "zod"
-import { Face, Group, GroupMember, Image, Person } from "../../shared/backend"
+import type {
+  Face,
+  Group,
+  GroupMember,
+  Image,
+  Person,
+} from "../../shared/backend/schema"
 import * as uWS from "uWebSockets.js"
 
 export const clientPerson = z.object({
@@ -38,7 +44,12 @@ export type ServerPerson = Pick<Person, "name" | "id"> & {
 
 export type GuessingPrompt = {
   face: Pick<Face, "x" | "y" | "width" | "height">
-  image: Pick<Image, "id" | "slug" | "thumbnail">
+  image: Pick<Image, "id" | "slug"> & {
+    thumbnail: {
+      medium: string
+      small: string
+    }
+  }
   answer: ServerPerson
 }
 
@@ -124,7 +135,9 @@ export type Uuid = string
 export type Seat = {
   player: Player
   answer?: number
+  hintUsed: boolean
   readonly answered: boolean
+  readonly score: number
 }
 
 // For some reason using `Omit` here messes up the export type inference so we gotta be repetitive
@@ -132,17 +145,15 @@ export type EmittedMessage<T extends OutgoingMessageType> = {
   t: T
 } & z.infer<typeof outgoingMessageData[T]>
 
-type SplitBroadcastArgs<T extends keyof typeof outgoingMessageData> = {
-  pred: (seat: Seat) => boolean
-  yes: EmittedMessage<T>
-  no: EmittedMessage<T>
-  except?: string
+export type QuestionAnswer = {
+  answer: number
+  hintUsed: boolean
 }
 
 export type PastQuestion = {
   imageId: number
   correctId: number
-  answers: Map<UserId, Person>
+  answers: Map<UserId, QuestionAnswer>
 }
 
 export type Difficulty = {
@@ -161,11 +172,11 @@ export type Room = {
   roundStarted: boolean
   maxSeats: number
   maxRounds: number
-  endingTimeout: ReturnType<typeof setTimeout>
-  correctAnswer: ServerPerson
-  groupChoice: GroupChoice[]
-  groupPool: Group[]
-  artistPool: ServerPerson[]
+  endingTimeout?: ReturnType<typeof setTimeout>
+  correctAnswer: number
+  personChoice: PersonChoice[]
+  // groupPool: Group[]
+  personPool: number[]
   imagePool: GuessingPrompt[]
   choices: { [personId: string]: number }
   history: PastQuestion[]
@@ -173,8 +184,9 @@ export type Room = {
     message: EmittedMessage<T>,
     except?: string
   ): void
-  broadcastSplit<T extends OutgoingMessageType>(
-    opts: SplitBroadcastArgs<T>
+  broadcastWith<T extends OutgoingMessageType>(
+    t: T,
+    opts: (seat: Seat) => z.infer<typeof outgoingMessageData[T]> | undefined
   ): void
 }
 

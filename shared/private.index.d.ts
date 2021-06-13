@@ -3138,6 +3138,11 @@ export interface NexusGenObjects {
     to: number; // Int!
     type?: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
   }
+  ImageMatch: { // root type
+    face: NexusGenRootTypes['Face']; // Face!
+    image: NexusGenRootTypes['Image']; // Image!
+    person: NexusGenRootTypes['Person']; // Person!
+  }
   Mutation: {};
   Person: PrismaClient.Person;
   Query: {};
@@ -3264,6 +3269,11 @@ export interface NexusGenFieldTypes {
     to: number; // Int!
     type: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
   }
+  ImageMatch: { // field return type
+    face: NexusGenRootTypes['Face']; // Face!
+    image: NexusGenRootTypes['Image']; // Image!
+    person: NexusGenRootTypes['Person']; // Person!
+  }
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     createOnePerson: NexusGenRootTypes['Person']; // Person!
@@ -3298,7 +3308,7 @@ export interface NexusGenFieldTypes {
     me: NexusGenRootTypes['User'] | null; // User
     people: NexusGenRootTypes['Person'][]; // [Person!]!
     person: NexusGenRootTypes['Person'] | null; // Person
-    personImages: NexusGenRootTypes['Image'][]; // [Image!]!
+    personImages: NexusGenRootTypes['ImageMatch'][]; // [ImageMatch!]!
     user: NexusGenRootTypes['User'] | null; // User
   }
   QueueInfo: { // field return type
@@ -3429,6 +3439,11 @@ export interface NexusGenFieldTypeNames {
     to: 'Int'
     type: 'ImageConnectionEdge'
   }
+  ImageMatch: { // field return type name
+    face: 'Face'
+    image: 'Image'
+    person: 'Person'
+  }
   Mutation: { // field return type name
     addAppearance: 'Appearance'
     createOnePerson: 'Person'
@@ -3463,7 +3478,7 @@ export interface NexusGenFieldTypeNames {
     me: 'User'
     people: 'Person'
     person: 'Person'
-    personImages: 'Image'
+    personImages: 'ImageMatch'
     user: 'User'
   }
   QueueInfo: { // field return type name

@@ -1,4 +1,4 @@
 {
-    "discord.enabled": true,
+    "discord.enabled": false,
     "typescript.tsdk": "node_modules/typescript/lib"
 }

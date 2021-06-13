@@ -1,9 +1,4 @@
-import {
-  createClient,
-  FaceRequest,
-  ImageRequest,
-  QueryRequest,
-} from "./backend"
+import { createClient, FaceRequest, ImageRequest } from "./backend"
 
 export const backend = createClient({
   url: process.env.API_URL,

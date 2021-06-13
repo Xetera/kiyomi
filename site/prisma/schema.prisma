@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["nApi"]
+  // previewFeatures = ["napi"]
   // required by alpine linux
   binaryTargets   = ["native", "linux-musl"]
 }
@@ -209,7 +209,7 @@ model Image {
   appearances         Appearance[] @relation("image_appearances")
   faceScanDate        DateTime?    @map("face_scan_date")
   faceScanRequestDate DateTime?    @map("face_scan_request_date")
-  ireneBotId          Int?         @unique
+  ireneBotId          Int?         @map("irene_bot_id") @unique
   tags                Tag[]
   faces               Face[]
   likes               ImageLike[]

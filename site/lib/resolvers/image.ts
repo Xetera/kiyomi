@@ -1,5 +1,5 @@
 import { humanFileSize } from "../shared"
-import _, { sample, sampleSize } from "lodash"
+import _, { camelCase, sample, sampleSize } from "lodash"
 import {
   objectType,
   queryField,
@@ -398,27 +398,48 @@ export const QueueInformation = objectType({
   },
 })
 
+export const PrivateImageMatch = objectType({
+  name: "ImageMatch",
+  definition(t) {
+    t.nonNull.field("face", { type: "Face" })
+    t.nonNull.field("image", { type: "Image" })
+    t.nonNull.field("person", { type: "Person" })
+  },
+})
+
 export const PrivateQuery = queryField((t) => {
   t.field("personImages", {
-    type: nonNull(list(nonNull("Image"))),
+    type: nonNull(list(nonNull(PrivateImageMatch))),
     args: {
       personIds: nonNull(list(nonNull(intArg()))),
       amount: intArg({ default: 100 }),
     },
     async resolve(_, args, { prisma }) {
-      const images = await prisma.image.findMany({
-        where: {
-          appearances: {
-            some: {
-              personId: {
-                in: args.personIds,
-              },
-            },
-          },
-        },
-      })
+      type Response = { face: object; person: object; image: object }
+      const response = await prisma.$queryRaw(
+        `
+        select row_to_json(p.*) as person,
+        row_to_json(f.*) as face,
+        row_to_json(i.*) as image
+        from images i
+                inner join appearances a on i.id = a.image_id
+                inner join faces f on a.id = f.appearance_id
+                inner join persons p on p.id = a.person_id
+        where p.id = ANY($1);
+      `,
+        args.personIds
+      )
+
+      const replace = (r: object) =>
+        Object.fromEntries(
+          Object.entries(r).map(([key, value]) => [camelCase(key), value])
+        )
       // TODO: weights based on idol popularity?
-      return sampleSize(images, args.amount)
+      return sampleSize(response, args.amount).map((res: Response) => ({
+        face: replace(res.face),
+        image: replace(res.image),
+        person: replace(res.person),
+      }))
     },
   })
 })

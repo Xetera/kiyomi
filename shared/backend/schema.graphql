@@ -1967,6 +1967,12 @@ input ImageListRelationFilter {
   some: ImageWhereInput
 }
 
+type ImageMatch {
+  face: Face!
+  image: Image!
+  person: Person!
+}
+
 input ImageOrderByInput {
   bytes: SortOrder
   caption: SortOrder
@@ -3050,7 +3056,7 @@ type Query {
   me: User
   people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   person(where: PersonWhereUniqueInput!): Person
-  personImages(amount: Int = 100, personIds: [Int!]!): [Image!]!
+  personImages(amount: Int = 100, personIds: [Int!]!): [ImageMatch!]!
   user(id: Int): User
 }
 
