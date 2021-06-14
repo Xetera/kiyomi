@@ -1,10 +1,14 @@
 {
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
-  "include": ["src", "types", "../shared/game"],
+  "include": ["src", "types",
+    "../shared/*",
+    "../shared/backend/*"],
   "compilerOptions": {
-    "module": "esnext",
+    "allowJs": true,
+    "module": "commonjs",
     "target": "es6",
     "lib": ["dom", "esnext"],
+    "rootDirs": ["./src", "../shared"],
     "paths": {
       "~shared/*": ["./../shared/*"]
     },
@@ -35,6 +39,6 @@
     // error out if import and file system have a casing mismatch. Recommended by TS
     "forceConsistentCasingInFileNames": true,
     // `tsdx build` ignores this option, but it is commonly used when type-checking separately with `tsc`
-    "noEmit": true
+    // "noEmit": true
   },
 }

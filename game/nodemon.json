@@ -1,0 +1,11 @@
+{
+  "watch": ["src", "../shared"],
+  "ignore": ["src/**/*.test.ts"],
+  "ext": "ts,mjs,js,json,graphql",
+  "env": {
+    "API_URL": "http://localhost:3000/api/internal",
+    "API_AUTHORIZATION": "SIMP_123327eb205d16f2bd1f73ff32615e5b9fca7ac9520d2ff1f7ad57e9f93ce7bb"
+  },
+  "exec": "etsc && node ./dist/game/src/index.js",
+  "legacyWatch": true
+}

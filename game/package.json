@@ -16,7 +16,6 @@
     "build": "tsdx build",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
@@ -44,6 +43,7 @@
     "@babel/core": "^7.14.5",
     "@babel/preset-env": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
+    "@esbuild-plugins/tsconfig-paths": "^0.0.4",
     "@size-limit/preset-small-lib": "^4.11.0",
     "@types/convict": "^6.0.2",
     "@types/ioredis": "^4.26.4",

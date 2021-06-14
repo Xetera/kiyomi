@@ -6,7 +6,7 @@ import {
   PersonChoice,
   PrivateIncomingMessageType,
   PublicIncomingMessageType,
-} from "~shared/game"
+} from "../../shared/game"
 import { z } from "zod"
 import type {
   Face,
@@ -157,7 +157,7 @@ export type PastQuestion = {
 }
 
 export type Difficulty = {
-  pool: Group[]
+  personPool: number[]
   timePerRound: number
 }
 

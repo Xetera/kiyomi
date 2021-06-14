@@ -7,7 +7,7 @@ import {
   ClientGroup,
   ServerGroup,
 } from "./messaging"
-import { ClientPlayer, ClientRoom, ClientSeat } from "~shared/game"
+import { ClientPlayer, ClientRoom, ClientSeat } from "../../shared/game"
 import { keyBy } from "lodash"
 
 export function serializePlayer(player: Player): ClientPlayer {

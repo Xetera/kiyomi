@@ -44,10 +44,10 @@ const pickPerson = z.object({
 export const Messages = {
   p: z.object({}),
   create_room: z.object({
-    game: z.string().nonempty(),
+    game: z.string().nonempty().default("nugu"),
     personIds: z.array(z.number()),
-    timeLimit: z.number().min(3).max(30),
-    hints: z.boolean().default(true),
+    timeLimit: z.number().min(3).max(30).default(10).optional(),
+    hints: z.boolean().default(true).optional(),
   }),
   join_room: z.object({
     game: z.string().nonempty(),

@@ -3,8 +3,8 @@ import {
   getTokenSourceMapRange,
   isExpressionWithTypeArguments,
 } from "typescript"
-import { PersonChoice } from "~shared/game"
-import { backend } from "~shared/sdk"
+import { PersonChoice } from "../../shared/game"
+import { backend } from "../../shared/sdk"
 import { GuessingPrompt, ServerPerson } from "./messaging"
 
 export async function getGroupAppearanceCounts(

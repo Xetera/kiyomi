@@ -16,7 +16,7 @@ import {
   stateExempt,
   RevealedAnswer,
   outgoingMessageData,
-} from "~shared/game"
+} from "../../shared/game"
 import {
   Anon,
   CommandContext,
@@ -37,13 +37,13 @@ import {
   QuestionAnswer,
 } from "./messaging"
 import { shuffle } from "lodash"
-import type { Group } from "~shared/backend/schema"
+import type { Group } from "../../shared/backend/schema"
 import {
   fetchAllImages,
   fetchAllPeople,
   getGroupAppearanceCounts,
 } from "./query"
-import { backend } from "~shared/sdk"
+import { backend } from "../../shared/sdk"
 
 const idFactory = new Hashids("salt!")
 
@@ -423,9 +423,9 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
         personIds: args.personIds,
         difficulty: {
           timePerRound: args.timeLimit,
-          pool: [] as Group[],
+          personPool: args.personIds,
         },
-      },
+      } as CreateRoomOptions,
       args.game
     )
     server.rooms[args.game].set(room.id, room)
@@ -433,7 +433,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
   },
   async pickPerson({ args, ...rest }) {
     const ctx = commandCtx(rest)
-    // const newGroups = ctx.room..map((p) => p.id).concat([args.groupId])
+
     ctx.room.personChoice = await getGroupAppearanceCounts(args.persons)
     ctx.room.broadcast({
       t: "roomUpdate",
@@ -618,6 +618,7 @@ async function main() {
       idleTimeout: 100,
       maxBackpressure: 1024,
       open(ws) {
+        logger.info(`Got a new connection`)
         anons.set(ws, {
           sock: ws,
         })
@@ -655,7 +656,7 @@ async function main() {
           })
         }
         if (anon) {
-          throw reply({
+          return reply({
             t: "error",
             message: "You must be authorized to do that",
           })
@@ -665,9 +666,15 @@ async function main() {
             "Got an event from a player who is not registered"
           )
         }
+        let args: {};
         const handler = privateMessageHandlers[t as PrivateIncomingMessageType]
-        // zod doesn't work here? :(
-        const args = Messages[t as PrivateIncomingMessageType].parse(rest)
+        try {
+          // zod doesn't work here? :(
+          args = await Messages[t as PrivateIncomingMessageType].parseAsync(rest)
+        } catch (err) {
+          logger.error(err)
+          return send(ws, { t: "error", message: err})
+        }
         try {
           await handler({
             ...sharedContext,
@@ -676,10 +683,10 @@ async function main() {
           })
         } catch (err) {
           if (err instanceof ClientError) {
-            return void send(ws, { t: "error", message: err.message })
+            return send(ws, { t: "error", message: err.message })
           }
           if (err instanceof ClientTechnicalError) {
-            return void send(ws, {
+            return send(ws, {
               t: "technical_error",
               message: err.message,
             })
@@ -737,3 +744,8 @@ async function main() {
 }
 
 main()
+
+process.on("unhandledRejection", err => {
+  console.error(err)
+  process.exit(1)
+})
