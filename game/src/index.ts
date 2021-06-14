@@ -2,7 +2,7 @@ import * as uWS from "uWebSockets.js"
 // @ts-ignore
 import Hashids from "hashids"
 import { logger } from "./config"
-import jsonwebtoken from "jsonwebtoken"
+import jose from "jose"
 import ms from "ms"
 import { serializePerson, serializeRoom, serializeSeat } from "./serialization"
 import {
@@ -11,33 +11,32 @@ import {
   IncomingMessage,
   Messages,
   OutgoingMessage,
+  outgoingMessageData,
   OutgoingMessageType,
   PrivateIncomingMessageType,
-  stateExempt,
   RevealedAnswer,
-  outgoingMessageData,
+  stateExempt,
 } from "../../shared/game"
 import {
   Anon,
   CommandContext,
   Context,
-  MessageHandlers,
-  Player,
+  Difficulty,
   EmittedMessage,
   GameType,
+  MessageHandlers,
+  PastQuestion,
+  Player,
   PrivateMessageHandlers,
   PublicMessageHandlers,
+  QuestionAnswer,
   Room,
   Seat,
   Sender,
   Server,
-  Difficulty,
   ServerPerson,
-  PastQuestion,
-  QuestionAnswer,
 } from "./messaging"
 import { shuffle } from "lodash"
-import type { Group } from "../../shared/backend/schema"
 import {
   fetchAllImages,
   fetchAllPeople,
@@ -123,12 +122,6 @@ async function createRoom(
 ): Promise<Room> {
   // TODO: making nugu rooms by default
   const id = idFactory.encode(server.incrementing++)
-  const { images } = await backend.query({
-    images: [
-      { where: { appearances: { some: { personId: { in: personIds } } } } },
-      {},
-    ],
-  })
   // TODO: this result is already shuffled?
   const imagePool = shuffle(await fetchAllImages(personIds))
 
@@ -416,6 +409,10 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     if (args.game !== "nugu") {
       return reply({ t: "error", message: "No such game mode" })
     }
+    console.log({ args })
+    if (args.personIds?.length === 0) {
+      return reply({ t: "error", message: "Must select at least one person" })
+    }
     // TODO: turn this into something that can be adjusted later (not during creation)
     const room = await createRoom(
       {
@@ -423,7 +420,6 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
         personIds: args.personIds,
         difficulty: {
           timePerRound: args.timeLimit,
-          personPool: args.personIds,
         },
       } as CreateRoomOptions,
       args.game
@@ -518,11 +514,6 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     }
 
     ctx.seat.answer = args.id
-    // ctx.seat.player.
-
-    // if (args.id == ctx.room.correctAnswer.id) {
-    //   ctx.seat.points++
-    // }
 
     const hasEveryoneAnswered = [...ctx.room.seats.values()].every((seat) =>
       Boolean(seat.answer)
@@ -547,28 +538,33 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
 }
 
 const publicMessageHandlers: PublicMessageHandlers = {
+  // authorization happens only once upon connections in order to make
+  // sure that people don't disconnect in the middle of their games
   async auth({ anon, reply, args }) {
     const ws = anon.sock
+    if (!args.token) {
+      return reply({
+        t: "error",
+        message: "No token given, are you logged in?",
+      })
+    }
     if (players.has(anon.sock)) {
       reply({ t: "auth", success: false })
       throw new ClientTechnicalError("You are already authenticated")
     }
-    const jwt = jsonwebtoken.verify(args.token, process.env.JWT_SECRET!)
-    if (typeof jwt === "string") {
-      reply({ t: "auth", success: false })
-      throw new ClientTechnicalError("The token is a string...?")
-    }
-    anons.delete(ws)
-    const id = (jwt as any).user_id as string
+    const _signingKey = await jose.JWK.asKey(
+      JSON.parse(process.env.JWT_SIGNING_KEY!)
+    )
+
+    const jwt = await jose.JWT.verify(args.token, _signingKey)
+    const id = (jwt as any).sub as string
     const { user } = await backend.query({
-      user: [
-        { id: Number(id) },
-        { id: true, slug: true, avatar: true, name: true },
-      ],
+      user: [{ id: Number(id) }, { id: true, avatar: true, name: true }],
     })
     if (!user) {
-      return
+      return reply({ t: "error", message: "Invalid user" })
     }
+    anons.delete(ws)
     const { avatar, name } = user
     const player = createPlayer({
       id,
@@ -590,13 +586,13 @@ const publicEvents = new Set<keyof MessageHandlers>(["auth"])
 let allPeople = new Map<string, ServerPerson>()
 
 console.log("running code")
+
 async function main() {
   setInterval(() => {
     logger.info(`STATS: ${server.rooms.nugu.size} NUGU rooms`)
   }, 1000 * 60 * 10)
 
-  const app = uWS.App()
-  setInterval(async () => {
+  async function fetchNewPeople() {
     try {
       logger.info("Refetching new people")
       const people = await fetchAllPeople()
@@ -609,13 +605,20 @@ async function main() {
       logger.error("Encountered an error while fetching new people")
       logger.error(err)
     }
-  }, ms("6h"))
+  }
+
+  const app = uWS.App()
+
+  setInterval(fetchNewPeople, ms("6h"))
+
+  await fetchNewPeople()
 
   app
     .ws("/*", {
       compression: 0,
       maxPayloadLength: 16 * 1024 * 1024,
-      idleTimeout: 100,
+      // 10 minutes of idle timeout
+      idleTimeout: 60 * 10,
       maxBackpressure: 1024,
       open(ws) {
         logger.info(`Got a new connection`)
@@ -638,6 +641,7 @@ async function main() {
           player,
           people: allPeople,
         } as Context
+        // ping pong
         if (t === "p") {
           return reply({ t: "p" })
         }
@@ -649,11 +653,20 @@ async function main() {
             )
           }
           const args = Messages.auth.parse(rest)
-          return publicMessageHandlers.auth({
-            ...sharedContext,
-            args,
-            anon: target,
-          })
+          try {
+            return await publicMessageHandlers.auth({
+              ...sharedContext,
+              args,
+              anon: target,
+            })
+          } catch (err) {
+            logger.error(err)
+            if (process.env.NODE_ENV === "production") {
+              return reply({ t: "error", message: "Invalid token" })
+            } else {
+              return reply({ t: "error", message: err })
+            }
+          }
         }
         if (anon) {
           return reply({
@@ -666,14 +679,14 @@ async function main() {
             "Got an event from a player who is not registered"
           )
         }
-        let args: {};
+        let args: {}
         const handler = privateMessageHandlers[t as PrivateIncomingMessageType]
         try {
           // zod doesn't work here? :(
-          args = await Messages[t as PrivateIncomingMessageType].parseAsync(rest)
+          args = await Messages[t as keyof typeof Messages].parseAsync(rest)
         } catch (err) {
           logger.error(err)
-          return send(ws, { t: "error", message: err})
+          return send(ws, { t: "error", message: err })
         }
         try {
           await handler({
@@ -691,7 +704,7 @@ async function main() {
               message: err.message,
             })
           }
-          void send(ws, {
+          send(ws, {
             t: "error",
             message: "Something went wrong... try again later",
           })
@@ -745,7 +758,7 @@ async function main() {
 
 main()
 
-process.on("unhandledRejection", err => {
+process.on("unhandledRejection", (err) => {
   console.error(err)
   process.exit(1)
 })

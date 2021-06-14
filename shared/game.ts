@@ -50,7 +50,6 @@ export const Messages = {
     hints: z.boolean().default(true).optional(),
   }),
   join_room: z.object({
-    game: z.string().nonempty(),
     room: z.string().nonempty(),
   }),
   pickPerson: pickPerson,

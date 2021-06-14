@@ -101,6 +101,7 @@ export interface Image {
     /** Height of the image in pixels. */
     height: Scalars['Int']
     id: Scalars['Int']
+    ireneBotId?: Scalars['Int']
     /** ( ͡° ͜ʖ ͡°) */
     isNsfw: Scalars['Boolean']
     /** False if not logged in */
@@ -699,6 +700,7 @@ export interface ImageRequest{
     /** Height of the image in pixels. */
     height?: boolean | number
     id?: boolean | number
+    ireneBotId?: boolean | number
     /** ( ͡° ͜ʖ ͡°) */
     isNsfw?: boolean | number
     /** False if not logged in */
@@ -1598,6 +1600,7 @@ hash: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Pro
 /** Height of the image in pixels. */
 height: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Promise<Scalars['Int']>}),
     id: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Promise<Scalars['Int']>}),
+    ireneBotId: ({get: (request?: boolean|number, defaultValue?: (Scalars['Int'] | undefined)) => Promise<(Scalars['Int'] | undefined)>}),
     
 /** ( ͡° ͜ʖ ͡°) */
 isNsfw: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Promise<Scalars['Boolean']>}),
@@ -1664,6 +1667,7 @@ hash: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Obs
 /** Height of the image in pixels. */
 height: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Observable<Scalars['Int']>}),
     id: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Observable<Scalars['Int']>}),
+    ireneBotId: ({get: (request?: boolean|number, defaultValue?: (Scalars['Int'] | undefined)) => Observable<(Scalars['Int'] | undefined)>}),
     
 /** ( ͡° ͜ʖ ͡°) */
 isNsfw: ({get: (request?: boolean|number, defaultValue?: Scalars['Boolean']) => Observable<Scalars['Boolean']>}),

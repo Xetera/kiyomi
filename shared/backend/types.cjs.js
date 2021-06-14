@@ -3517,6 +3517,9 @@ module.exports = {
             "id": [
                 1
             ],
+            "ireneBotId": [
+                1
+            ],
             "isNsfw": [
                 5
             ],

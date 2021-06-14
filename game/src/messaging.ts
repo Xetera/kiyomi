@@ -157,7 +157,6 @@ export type PastQuestion = {
 }
 
 export type Difficulty = {
-  personPool: number[]
   timePerRound: number
 }
 

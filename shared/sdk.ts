@@ -7,7 +7,7 @@ if (!process.env.API_AUTHORIZATION && !process.env.NEXT_PUBLIC_BASE_URL) {
 export const backend = createClient({
   url: process.env.API_URL,
   headers: {
-    Authorization: `Bearer ${process.env.API_AUTHORIZATION}`,
+    Authorization: `${process.env.API_AUTHORIZATION}`,
   },
 })
 

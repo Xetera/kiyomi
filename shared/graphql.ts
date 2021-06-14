@@ -400,6 +400,7 @@ export type Image = {
   /** Height of the image in pixels. */
   height: Scalars['Int'];
   id: Scalars['Int'];
+  ireneBotId?: Maybe<Scalars['Int']>;
   /** ( ͡° ͜ʖ ͡°) */
   isNsfw: Scalars['Boolean'];
   /** False if not logged in */

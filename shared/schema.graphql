@@ -347,6 +347,7 @@ type Image {
   """Height of the image in pixels."""
   height: Int!
   id: Int!
+  ireneBotId: Int
 
   """( ͡° ͜ʖ ͡°)"""
   isNsfw: Boolean!

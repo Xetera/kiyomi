@@ -17,6 +17,7 @@ import { Image as ImageType } from "@prisma/client"
 import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
+import {getToken} from "next-auth/jwt";
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
@@ -84,6 +85,7 @@ export const Image = objectType({
       .bytes()
       .appearances()
       .faceScanDate()
+      .ireneBotId()
       .createdAt()
       .createdAt()
     t.field("thumbnail", {
@@ -245,7 +247,7 @@ export const Query = queryField((t) => {
     args: {
       slug: nonNull(stringArg()),
     },
-    async resolve(_root, args, { prisma }) {
+    async resolve(_root, args, { prisma, user }) {
       const { slug } = args
       return await prisma.image.findUnique({
         where: { slug },
