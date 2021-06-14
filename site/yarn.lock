@@ -6350,10 +6350,10 @@ react-perfect-scrollbar@^1.5.8:
     perfect-scrollbar "^1.5.0"
     prop-types "^15.6.1"
 
-react-query@^3.12.1:
-  version "3.13.3"
-  resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.13.3.tgz#da4d9ec65f9dc74c58496956f2fcbf29e49a5e73"
-  integrity sha512-LQpkjBdwFtGhePx14g08ZswZvE1AMZPdrhfwZtxj50esmGVlSvzRxc7hkN0zMUFBqCHk5zVTR3BW7IPYK46/sQ==
+react-query@^3.17.0:
+  version "3.17.0"
+  resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.17.0.tgz#461c0a030044760cd874c7ea8aa9d55c2dceb15d"
+  integrity sha512-/qUNb6ESCz75Z/bR5p/ztp5ipRj8IQSiIpHK3AkCLTT4IqZsceAoD+9B+wbitA0LkxsR3snGrpgKUc9MMYQ/Ow==
   dependencies:
     "@babel/runtime" "^7.5.5"
     broadcast-channel "^3.4.1"

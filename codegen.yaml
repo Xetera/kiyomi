@@ -2,7 +2,7 @@
 overwrite: true
 schema: ./shared/schema.graphql
 generates:
-  ./shared/graphql.ts:
+  ./site/lib/__generated__/graphql.ts:
     documents:
       - site/pages/**/*.graphql
       - site/components/**/*.graphql

@@ -58,7 +58,7 @@
     "react-masonry-component": "^6.2.1",
     "react-modal": "^3.12.1",
     "react-perfect-scrollbar": "^1.5.8",
-    "react-query": "^3.12.1",
+    "react-query": "^3.17.0",
     "react-tooltip": "^4.2.11",
     "react-use": "^15.3.4",
     "sass": "^1.30.0",

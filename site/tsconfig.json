@@ -22,6 +22,6 @@
       "~/shared": ["../shared/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "colors.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "colors.js", "../shared", "../shared/backend"],
   "exclude": ["node_modules"]
 }
