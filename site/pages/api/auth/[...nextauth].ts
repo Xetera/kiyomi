@@ -1,24 +1,24 @@
-import NextAuth, {NextAuthOptions} from "next-auth"
-import {User as DatabaseUser} from "@prisma/client"
+import NextAuth, { NextAuthOptions } from "next-auth"
+import { User as DatabaseUser } from "@prisma/client"
 import Providers from "next-auth/providers"
 import Adapters from "next-auth/adapters"
-import {prisma} from "@/lib/db"
-import {NextApiRequest, NextApiResponse} from "next"
-import {generateUserToken} from "@/lib/auth"
-import {Role} from "@/lib/permissions"
+import { prisma } from "@/lib/db"
+import { NextApiRequest, NextApiResponse } from "next"
+import { generateUserToken } from "@/lib/auth"
+import { Role } from "@/lib/permissions"
 import jwt from "jsonwebtoken"
-import {add, getUnixTime} from "date-fns";
-import {JWT} from "next-auth/jwt";
+import { add, getUnixTime } from "date-fns"
+import { JWT } from "next-auth/jwt"
 
 if (!process.env.JWT_SECRET) {
   throw new Error("Missing JWT_SECRET")
 }
 
 type Token = {
-  name: string;
-  sub: string,
-  email: string;
-  picture: string;
+  name: string
+  sub: string
+  email: string
+  picture: string
 }
 
 const options: NextAuthOptions = {
@@ -53,7 +53,7 @@ const options: NextAuthOptions = {
     encryption: false,
     signingKey: process.env.JWT_SIGNING_KEY,
     verificationOptions: {
-      algorithms: ["HS256"]
+      algorithms: ["HS256"],
     },
     // encode: async (params) => {
     //   if (!params?.token) throw Error('no paramas')
@@ -80,14 +80,13 @@ const options: NextAuthOptions = {
   },
   // database: process.env.DATABASE_URL,
   callbacks: {
-    session: (session, user: DatabaseUser) => {
+    session: (session, user: JWT) => {
+      const userId = Number(user.sub)
       // @ts-ignore
-      session.user.id = user.id
-      // @ts-ignore
-      session.user.createdAt = user.createdAt
+      session.user.id = userId
       return Promise.resolve({
         ...session,
-        id: user.id,
+        id: userId,
       })
     },
   },
@@ -99,7 +98,7 @@ const options: NextAuthOptions = {
       console.log(`User signed up ${user.name}`)
       const token = generateUserToken()
       const _updatedUser = await prisma.user.update({
-        where: {id: user.id},
+        where: { id: user.id },
         data: {
           token,
           roles: {
@@ -112,7 +111,7 @@ const options: NextAuthOptions = {
       console.log(`Created new token for user ${user.name}`)
     },
   },
-  debug: true
+  debug: true,
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

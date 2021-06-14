@@ -17,7 +17,7 @@ import { Image as ImageType } from "@prisma/client"
 import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
-import {getToken} from "next-auth/jwt";
+import { getToken } from "next-auth/jwt"
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
