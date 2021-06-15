@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client"
-import { PromiseReturnType } from "./shared"
 import { publicImageFields } from "./transformer"
 import { getSdk } from "@/__generated__/request"
 import { GraphQLClient } from "graphql-request"

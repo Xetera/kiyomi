@@ -13,8 +13,14 @@ module.exports = withBundleAnalyzer({
   images: {
     domains: ["localhost", "my.simp.pics", "cdn.discordapp.com"],
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve.extensions = [".mjs", ".js", ".jsx", ".tsx", ".ts", ".json"]
+
+    // if (!isServer) {
+    config.resolve.fallback = {
+      bufferutil: false,
+      "utf-8-validate": false,
+    }
     return config
   },
 })

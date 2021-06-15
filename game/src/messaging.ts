@@ -1,4 +1,5 @@
 import {
+  clientPerson,
   IncomingMessageData,
   IncomingMessageType,
   outgoingMessageData,
@@ -8,23 +9,8 @@ import {
   PublicIncomingMessageType,
 } from "../../shared/game"
 import { z } from "zod"
-import type {
-  Face,
-  Group,
-  GroupMember,
-  Image,
-  Person,
-} from "../../shared/backend/schema"
+import type { Face, Group, Image, Person } from "../../shared/backend/schema"
 import * as uWS from "uWebSockets.js"
-
-export const clientPerson = z.object({
-  id: z.number(),
-  name: z.string(),
-  aliases: z.array(z.string()),
-  group: z.optional(z.number()),
-})
-
-export type ClientPerson = z.infer<typeof clientPerson>
 
 export type ServerGroup = Pick<Group, "name" | "id"> & {
   aliases: Array<{ name: string }>

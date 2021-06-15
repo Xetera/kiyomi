@@ -4,7 +4,6 @@ import { Palette } from "./palette-color"
 import { Tags } from "./tags"
 import { CascadeChildren } from "./animations/cascade-children"
 import {
-  RiHeartAddFill,
   RiHeartFill,
   RiQuestionLine,
   RiScan2Line,
@@ -14,15 +13,7 @@ import { format } from "date-fns"
 import { User } from "./user"
 import { ImageContext } from "@/models/contexts"
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout"
-import { Button } from "@chakra-ui/button"
-import {
-  grid,
-  Grid,
-  Spinner,
-  Tooltip,
-  useToast,
-  UseToastOptions,
-} from "@chakra-ui/react"
+import { Grid, Tooltip, useToast, UseToastOptions } from "@chakra-ui/react"
 import { useSession } from "next-auth/client"
 import { useToggleLikeMutation } from "@/__generated__/graphql"
 import useQueue from "./queue-button"

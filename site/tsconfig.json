@@ -19,7 +19,7 @@
     "pretty": true,
     "paths": {
       "@/*": ["*"],
-      "~/shared": ["../shared/*"],
+      "~shared": ["../shared/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "colors.js", "../shared", "../shared/backend"],

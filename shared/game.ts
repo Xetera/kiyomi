@@ -1,5 +1,12 @@
 import { z } from "zod"
-import { clientPerson } from "../game/src/messaging"
+export const clientPerson = z.object({
+  id: z.number(),
+  name: z.string(),
+  aliases: z.array(z.string()),
+  group: z.optional(z.number()),
+})
+
+export type ClientPerson = z.infer<typeof clientPerson>
 
 export const nuguPrompt = z.object({
   slug: z.string(),
