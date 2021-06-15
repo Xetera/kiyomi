@@ -33,7 +33,7 @@ jobs:
         run: |2
 
           export $(echo "${{secrets.ENV_LABELER}}" | xargs)
-          sudo docker build labeler -t index.docker.io/xetera/simp-pics-labeler:$(git rev-parse --short HEAD)
+          sudo docker build -f labeler/Dockerfile -t index.docker.io/xetera/simp-pics-labeler:$(git rev-parse --short HEAD) .
           sudo docker push index.docker.io/xetera/simp-pics-labeler:$(git rev-parse --short HEAD)
       - name: Deploy on Porter
         id: deploy_porter
