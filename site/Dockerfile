@@ -23,8 +23,6 @@ RUN yarn generate
 COPY site/ ./
 COPY shared/ /opt/app/shared
 
-RUN ls -lsa /opt/app
-
 RUN yarn codegen
 
 RUN yarn build
@@ -46,6 +44,7 @@ WORKDIR /opt/app
 COPY site/package.json site/yarn.lock ./
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
 COPY --from=build /opt/app/site/node_modules node_modules
+COPY --from=build /opt/app/site/next.config.js next.config.js
 COPY --from=build /opt/app/site/.next .next
 COPY --from=build /opt/app/site/public public
 

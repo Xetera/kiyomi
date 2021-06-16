@@ -13,7 +13,7 @@
   "scripts": {
     "start": "tsdx watch",
     "dev": "etsc",
-    "build": "tsdx build",
+    "build": "etsc",
     "test": "tsdx test",
     "lint": "tsdx lint",
     "size": "size-limit",
