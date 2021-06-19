@@ -3,6 +3,7 @@ import { useSession } from "next-auth/client"
 import Link from "next/link"
 import React, { PropsWithChildren } from "react"
 import BetterLink from "./nextjs/link"
+import { Box } from "@chakra-ui/layout"
 
 type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
@@ -50,8 +51,10 @@ export function Navbar() {
   const [session] = useSession()
 
   return (
-    <nav
-      className="bg-theme items-center mx-auto border-b-2 border-theme-subtle w-full"
+    <Box
+      as="nav"
+      background="bgSecondary"
+      className="items-center mx-auto border-b-2 border-theme-subtle w-full"
       style={{
         borderBottomWidth: "1px",
       }}
@@ -60,12 +63,8 @@ export function Navbar() {
         <div>
           <ul className="grid gap-12 grid-flow-col max-w-6xl ">
             <NavLink href={"/"}>Home</NavLink>
-            <NavLink hardLink href="/api/sharex" target="_blank">
-              Sharex
-            </NavLink>
-            <NavLink hardLink href="/api/graphql">
-              API
-            </NavLink>
+            <NavLink href="/games">Games</NavLink>
+            <NavLink href="/api/graphql">API</NavLink>
           </ul>
         </div>
         <div>
@@ -86,6 +85,6 @@ export function Navbar() {
           </ul>
         </div>
       </div>
-    </nav>
+    </Box>
   )
 }

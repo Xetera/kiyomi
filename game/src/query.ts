@@ -1,31 +1,62 @@
-import { toUpper } from "lodash"
 import {
-  getTokenSourceMapRange,
-  isExpressionWithTypeArguments,
-} from "typescript"
-import { PersonChoice } from "../../shared/game"
+  buildAugmentedResults,
+  ClientSearchGroup,
+  ClientSearchPerson,
+  MeiliResult,
+  PersonChoice,
+  PersonPool,
+} from "../../shared/game"
 import { backend } from "../../shared/sdk"
 import { GuessingPrompt, ServerPerson } from "./messaging"
+import LRU from "lru-cache"
+
+const url = (type: string) =>
+  new URL(`/indexes/${type}/search`, process.env.MEILISEARCH_URL).href
+
+const cache = new LRU<string, PersonPool>({ maxAge: 1000 * 60 * 60, max: 200 })
+
+export async function fromPersonIds(
+  ids: number[]
+): Promise<Record<string, PersonPool>> {
+  const key = ids.join()
+  let out
+  if (ids.length > 0 && (out = cache.get(key))) {
+    return out
+  }
+  let people: MeiliResult<ClientSearchPerson> | undefined
+  if (ids.length > 0) {
+    people = await fetch(url("idols"), {
+      method: "POST",
+      body: JSON.stringify({
+        limit: 5000,
+        filters: ids.map((id) => `id = ${id}`).join(" OR "),
+      }),
+    }).then((r) => r.json())
+  }
+
+  let groups: MeiliResult<ClientSearchGroup> | undefined
+  if (people) {
+    groups = await fetch(url("groups"), {
+      method: "POST",
+      body: JSON.stringify({
+        limit: 5000,
+        filters: people.hits
+          .flatMap((hit) => hit.groups.map((g) => `id = ${g}`))
+          .join(" OR "),
+      }),
+    }).then((r) => r.json())
+  }
+
+  out = buildAugmentedResults(groups?.hits ?? [], people?.hits ?? [])
+  cache.set(key, out)
+
+  return out
+}
 
 export async function getGroupAppearanceCounts(
   people: number[]
-): Promise<PersonChoice[]> {
-  // const counts = await backend.query({
-  //   countAppearances: [
-  //     { groups },
-  //     {
-  //       count: true,
-  //       group: {
-  //         id: true,
-  //       },
-  //     },
-  //   ],
-  // })
-  return people.map((personId) => ({ personId }))
-  // return counts.countAppearances.map((pr) => ({
-  //   groupId: pr.group.id,
-  //   count: pr.count,
-  // }))
+): Promise<number[]> {
+  return people
 }
 
 export async function fetchAllPeople(): Promise<Array<ServerPerson>> {

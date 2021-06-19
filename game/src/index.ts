@@ -4,8 +4,14 @@ import Hashids from "hashids"
 import { logger } from "./config"
 import jose from "jose"
 import ms from "ms"
-import { serializePerson, serializeRoom, serializeSeat } from "./serialization"
+import cookie from "cookie"
 import {
+  serializeRoom,
+  serializeRoomPreview,
+  serializeSeat,
+} from "./serialization"
+import {
+  AUTH_COOKIE_NAME,
   ClientError,
   ClientTechnicalError,
   IncomingMessage,
@@ -31,6 +37,7 @@ import {
   PublicMessageHandlers,
   QuestionAnswer,
   Room,
+  Rooms,
   Seat,
   Sender,
   Server,
@@ -43,6 +50,8 @@ import {
   getGroupAppearanceCounts,
 } from "./query"
 import { backend } from "../../shared/sdk"
+import { z } from "zod"
+import { TemplatedApp } from "uWebSockets.js"
 
 const idFactory = new Hashids("salt!")
 
@@ -54,11 +63,26 @@ const server: Server = {
   incrementing: 0,
   rooms: {
     nugu: new Map<string, Room>(),
+    spotify: new Map<string, Room>(),
   },
 }
 
 const players = new WeakMap<uWS.WebSocket, Player>()
 const anons = new WeakMap<uWS.WebSocket, Anon>()
+
+function addToRoomJoinOrder(room: Room, seat: Seat) {
+  const hasJoinedPrior = room.joinOrder.some(
+    (existing) => existing.player.id === seat.player.id
+  )
+  if (hasJoinedPrior) {
+    // we wanna move the player to the front of the join order if they reconnected
+    room.joinOrder = room.joinOrder.filter(
+      (existing) => existing.player.id !== seat.player.id
+    )
+  }
+  room.joinOrder.push(seat)
+  console.log({ joinOrder: room.joinOrder })
+}
 
 function clearFromOtherRooms(player: Player) {
   server.rooms.nugu.forEach((otherRoom) => {
@@ -73,7 +97,15 @@ function answerCount(an: QuestionAnswer, room: Room) {
   return room.correctAnswer === an.answer ? 1 : 0
 }
 
-function joinRoom(player: Player, room: Room): Seat {
+type JoinRoomOptions = {
+  isOwner: boolean
+}
+
+function joinRoom(
+  player: Player,
+  room: Room,
+  { isOwner }: JoinRoomOptions
+): Seat {
   clearFromOtherRooms(player)
 
   if (room.seats.size >= room.maxSeats) {
@@ -81,6 +113,7 @@ function joinRoom(player: Player, room: Room): Seat {
   }
 
   const seat: Seat = {
+    owner: isOwner,
     hintUsed: false,
     get answered(): boolean {
       return Boolean(seat.answer)
@@ -98,16 +131,37 @@ function joinRoom(player: Player, room: Room): Seat {
   }
 
   room.seats.set(player.id, seat)
+  addToRoomJoinOrder(room, seat)
 
   player.room = room
   player.seat = seat
+  subscribe(player.sock, `room/${room.id}`)
   return seat
 }
 
 function leaveRoom(player: Player, room: Room) {
-  clearFromOtherRooms(player)
-  // might be doubling here idk
-  room.seats.delete(player.id)
+  // clearFromOtherRooms(player)
+  // unsubscribe(player.sock, `room/${room.id}`)
+  // const isTheSolePlayer = room.seats.size === 1
+  // if (isTheSolePlayer) {
+  //   nukeRoom(room, player.sock)
+  // }
+  // // might be doubling here idk
+  // room.seats.delete(player.id)
+}
+
+function subscribe(ws: uWS.WebSocket, topic: string) {
+  if (ws.isClosed) {
+    return
+  }
+  ws.subscribe(topic)
+}
+
+function unsubscribe(ws: uWS.WebSocket, topic: string) {
+  if (ws.isClosed) {
+    return
+  }
+  ws.unsubscribe(topic)
 }
 
 interface CreateRoomOptions {
@@ -116,11 +170,13 @@ interface CreateRoomOptions {
   difficulty: Difficulty
 }
 
+const generateRoomName = (player: Player) => `${player.username}'s Room`
+
 async function createRoom(
   { player, difficulty, personIds }: CreateRoomOptions,
   game: GameType
 ): Promise<Room> {
-  // TODO: making nugu rooms by default
+  // TODO: making nugu room by default
   const id = idFactory.encode(server.incrementing++)
   // TODO: this result is already shuffled?
   const imagePool = shuffle(await fetchAllImages(personIds))
@@ -129,33 +185,25 @@ async function createRoom(
     id,
     type: game,
     seats: new Map(),
+    joinOrder: [],
     // might change in the future? should be plenty for now though
     round: 1,
+    name: generateRoomName(player),
     difficulty,
     maxRounds: 20,
     history: [] as PastQuestion[],
     choices: {},
     imagePool,
-    personChoice: [],
     endingTimeout: undefined,
     correctAnswer: -1,
     personPool: personIds,
     roundStarted: false,
     get started() {
-      return this.round !== 1 || this.roundStarted
+      return room.round !== 1 || room.roundStarted
     },
     maxSeats: 50,
-    broadcast<T extends OutgoingMessageType>(
-      message: EmittedMessage<T>,
-      except?: string
-    ) {
-      this.seats.forEach((seat) => {
-        if (except && seat.player.id === except) return
-        send(seat.player.sock, message)
-      })
-    },
     broadcastWith(t, f) {
-      this.seats.forEach((seat) => {
+      room.seats.forEach((seat) => {
         const out = f(seat)
         if (!out) {
           return
@@ -165,7 +213,8 @@ async function createRoom(
     },
   }
   // a little bit of type hackery here, we need the seat reference
-  ;(room as Room).owner = joinRoom(player, room as Room)
+  const roomOwner = joinRoom(player, room as Room, { isOwner: true })
+  ;(room as Room).owner = roomOwner
   return room as Room
 }
 
@@ -179,23 +228,31 @@ function createPlayer(player: Player) {
 function isPlayer(anon: Anon): anon is Player {
   return "id" in anon
 }
+function publish<T extends keyof typeof outgoingMessageData>(
+  ws: uWS.WebSocket | uWS.TemplatedApp,
+  topic: string,
+  o: EmittedMessage<T>
+) {
+  if ("isClosed" in ws && ws.isClosed) {
+    return
+  }
+  ws.publish(topic, JSON.stringify(o))
+}
 
 function send<T extends keyof typeof outgoingMessageData>(
   ws: uWS.WebSocket,
   o: EmittedMessage<T>
 ) {
+  if (ws.isClosed) {
+    return
+  }
   const player: Anon | Player | undefined = players.get(ws) || anons.get(ws)
   if (!player) {
-    throw Error("Tried to emit to a player who doesn't exist")
+    console.warn("Tried to emit to a player who doesn't exist")
+    return
   }
 
-  const out: OutgoingMessage = o
-
-  if (player.room && !stateExempt.includes(o.t)) {
-    out.state = serializeRoom(player.room)
-  }
-
-  const payload = JSON.stringify(out)
+  const payload = JSON.stringify(o)
   logger.debug(
     `Sending payload of length ${payload.length} to [${
       isPlayer(player) ? player.id : "Anon"
@@ -208,14 +265,6 @@ function createSender(ws: uWS.WebSocket): Sender {
   return function <T extends OutgoingMessageType>(o: EmittedMessage<T>) {
     return send(ws, o)
   }
-}
-
-function spliceRandom<T>(elements: T[]): T {
-  const random = Math.floor(Math.random() * elements.length)
-  // we might have to get this to exclude stuff
-  const reference = elements[random]
-  elements.splice(random, 1)
-  return reference
 }
 
 function getRevealedAnswerPayload(
@@ -246,14 +295,18 @@ function startRound(ctx: CommandContext) {
     seat.answer = undefined
   }
   const prompt = currentImage(ctx)
+  if (!prompt) {
+    throw new Error("End of the prompt?")
+  }
+
   // const { time } = difficulties.easy
   ctx.room.roundStarted = true
   ctx.room.correctAnswer = prompt.answer.id
   const secs = ctx.room.difficulty.timePerRound
-  ctx.room.broadcast({
+  publish(ctx.app, `room/${ctx.room.id}`, {
     t: "round_start",
     person: {
-      slug: ctx.room.imagePool[ctx.room.round].image.slug,
+      slug: prompt.image.slug,
     },
     // TODO: make this dependent on the state of the game
     secs,
@@ -264,6 +317,10 @@ function startRound(ctx: CommandContext) {
       ])
     ),
   })
+  // we don't want to send users unnecessary events during games
+  for (const seat of ctx.room.seats.values()) {
+    unsubscribe(seat.player.sock, "rooms")
+  }
   ctx.room.endingTimeout = setTimeout(() => {
     endRound(ctx)
   }, secs * 1000)
@@ -295,7 +352,7 @@ function endRound(ctx: CommandContext) {
   // TODO: choose winners of round
   ctx.room.round++
   const payload = getRevealedAnswerPayload(ctx)
-  ctx.room.broadcast(payload)
+  publish(ctx.app, `room/${ctx.room.id}`, payload)
   if (ctx.room.round >= ctx.room.maxRounds) {
     return finishGame(ctx)
   }
@@ -305,9 +362,13 @@ function endRound(ctx: CommandContext) {
 }
 
 function finishGame(ctx: CommandContext) {
-  ctx.room.broadcast({
-    t: "game_end",
-  })
+  // ctx.room.broadcast({
+  //   t: "game_end",
+  // })
+
+  for (const seat of ctx.room.seats.values()) {
+    subscribe(seat.player.sock, "rooms")
+  }
 }
 
 function toRevealedPerson(artist: ServerPerson): number {
@@ -330,7 +391,7 @@ function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
       }
       const userId = Number(seat.player.id)
       if (all[chosenartist.id]) {
-        all[chosenartist.id].push(userId)
+        all[chosenartist.id]?.push(userId)
       } else {
         all[chosenartist.id] = [userId]
       }
@@ -352,38 +413,73 @@ function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
   })
 }
 
-function sendPeople(player: Player, people: ServerPerson[]) {
-  const serialized = people.map(serializePerson)
-  send(player.sock, {
-    t: "personList",
-    people: serialized,
-  })
+function nukeRoom(room: Room) {
+  room.seats.clear()
+  server.rooms[room.type].delete(room.id)
 }
 
-function disconnectOwner(player: Player) {
+async function disconnectPlayer(
+  player: Player,
+  relevantSocket: uWS.TemplatedApp | uWS.WebSocket
+) {
   const { seat, room } = player
   if (!room || !seat) {
     throw new ClientError("You're not in a room")
   }
 
-  if (seat === room.owner) {
-    room.broadcast(
-      {
-        t: "force_disconnected",
-        reason: "Owner left the room",
-      },
-      player.id
+  if (seat.player.id === room.owner.player.id) {
+    console.log("Transferring ownership")
+    const transferEligible = room.joinOrder.filter((seat) =>
+      room.seats.has(seat.player.id)
     )
-    room.seats.clear()
-    server.rooms[room.type].delete(room.id)
-    return
+    const currentOwnerPosition = transferEligible.findIndex(
+      (otherSeat) => otherSeat.player.id === seat.player.id
+    )
+    if (currentOwnerPosition === -1) {
+      console.log("Owner is not in join order, impossible state. Exiting game")
+      nukeRoom(room)
+      publish(relevantSocket, `room/${room.id}`, {
+        t: "force_disconnected",
+        reason:
+          "Unrecoverable server side error, disconnecting from game. SORRY!",
+      })
+      return
+    }
+    console.log(room.joinOrder)
+    let newOwner =
+      transferEligible[(currentOwnerPosition + 1) % transferEligible.length]
+
+    if (!newOwner) {
+      console.error(room)
+      console.error(
+        `Tried to reassign a new owner when room should've been shut down instead`
+      )
+      return
+    }
+    room.owner = newOwner
+    newOwner.owner = true
+    room.name = generateRoomName(newOwner.player)
+    publish(relevantSocket, `room/${room.id}`, {
+      t: "new_leader",
+      seat: serializeSeat(newOwner, room),
+    })
   }
 
-  room.seats.delete(player.id)
-  room.broadcast(
-    { t: "disconnect", seat: serializeSeat(seat, room) },
-    player.id
-  )
+  clearFromOtherRooms(player)
+  publish(relevantSocket, `room/${room.id}`, {
+    t: "disconnect",
+    seat: serializeSeat(seat, room),
+  })
+  publish(relevantSocket, `room/${room.id}`, {
+    t: "room_update",
+    room: await serializeRoom(room),
+  })
+  publish(relevantSocket, `room/${room.id}`, {
+    t: "users_update",
+    seats: Array.from(room.seats.values()).map((seat) =>
+      serializeSeat(seat, room)
+    ),
+  })
 }
 
 function commandCtx(ctx: Context): CommandContext {
@@ -397,52 +493,130 @@ function commandCtx(ctx: Context): CommandContext {
     throw new ClientError("You must be in a room to do this")
   }
   return {
+    app: ctx.app,
     room: ctx.player.room,
     seat: ctx.player.seat,
     people: ctx.people,
   }
 }
 
+function withRoomEdit(f: (cmd: CommandContext) => Promise<void> | void) {
+  return async (ctx: Context) => {
+    const { reply } = ctx
+    const cmd = commandCtx(ctx)
+    if (cmd.room.owner.player.id !== ctx.player.id) {
+      return reply({
+        t: "error",
+        message: "You must be a room owner to change room pool.",
+      })
+    }
+    await f(cmd)
+
+    publish(ctx.ws, `room/${cmd.room.id}`, {
+      t: "room_update",
+      room: await serializeRoom(cmd.room),
+    })
+  }
+}
+
 export const privateMessageHandlers: PrivateMessageHandlers = {
-  async create_room({ reply, player, args, people }) {
+  async rooms({ ws }) {
+    // we might have previously unsubscribed from games
+    subscribe(ws, "rooms")
+    send(ws, { t: "rooms", rooms: activeRooms() })
+  },
+  async create_room({ reply, player, args, ws }) {
     // only nugu game for now
-    if (args.game !== "nugu") {
+    if (args.type !== "nugu") {
+      // ok to send sock here
       return reply({ t: "error", message: "No such game mode" })
     }
-    console.log({ args })
-    if (args.personIds?.length === 0) {
-      return reply({ t: "error", message: "Must select at least one person" })
-    }
+    // if (args.personIds?.length === 0) {
+    //   return reply({ t: "error", message: "Must select at least one person" })
+    // }
     // TODO: turn this into something that can be adjusted later (not during creation)
     const room = await createRoom(
       {
         player,
-        personIds: args.personIds,
+        personIds: [],
         difficulty: {
-          timePerRound: args.timeLimit,
+          hints: "pointCost",
+          timePerRound: 10,
         },
       } as CreateRoomOptions,
-      args.game
+      args.type
     )
-    server.rooms[args.game].set(room.id, room)
-    reply({ t: "created_room", room: serializeRoom(room) })
+    server.rooms[args.type].set(room.id, room)
+    reply({ t: "created_room", room: await serializeRoom(room) }),
+      publish(ws, "rooms", { t: "rooms", rooms: activeRooms() })
   },
-  async pickPerson({ args, ...rest }) {
+  async pick_hints(ctx) {
+    const { args } = ctx
+    return withRoomEdit((cmd) => {
+      cmd.room.difficulty.hints = args.hints
+    })(ctx)
+  },
+  async pick_time(ctx) {
+    const { args } = ctx
+    return withRoomEdit((cmd) => {
+      cmd.room.difficulty.timePerRound = args.seconds
+    })(ctx)
+  },
+  async toggle_people(ctx) {
+    const { args } = ctx
+    return withRoomEdit(async (cmd) => {
+      const { room } = cmd
+      const { personPool } = room
+      const selectedPeople = new Set(personPool)
+      // TODO: set?
+      const hasAllPeople = args.people.every((person) =>
+        selectedPeople.has(person)
+      )
+      if (hasAllPeople) {
+        room.personPool = room.personPool.filter(
+          (f) => !args.people.includes(f)
+        )
+      } else {
+        room.personPool = room.personPool.concat(args.people)
+      }
+    })(ctx)
+  },
+  async edit_room({ args, ...rest }) {
+    const { ws } = rest
     const ctx = commandCtx(rest)
 
-    ctx.room.personChoice = await getGroupAppearanceCounts(args.persons)
-    ctx.room.broadcast({
-      t: "roomUpdate",
-      room: serializeRoom(ctx.room),
+    if (ctx.seat.player.id !== ctx.room.owner.player.id) {
+      return rest.reply({
+        t: "error",
+        message: "You are not the owner of this room and cannot edit it.",
+      })
+    }
+    ctx.room.personPool = await getGroupAppearanceCounts(args.personIds)
+    publish(ws, "rooms", { t: "rooms", rooms: activeRooms() })
+    publish(ws, `room/${ctx.room.id}`, {
+      t: "room_update",
+      room: await serializeRoom(ctx.room),
     })
+    // ctx.room.broadcast({
+    //   t: "room_update",
+    //   room: serializeRoom(ctx.room),
+    // })
   },
-  leave_room({ player }) {
+  async leave_room({ ...rest }) {
+    const { player } = rest
+    const { app, room } = commandCtx(rest)
     // We are assuming that the client doesn't
     // need confirmation to know that they left
     // the room
-    return disconnectOwner(player)
+    await disconnectPlayer(player, app) // ok to send sock here
+    publish(app, `room/${room.id}`, {
+      t: "users_update",
+      seats: Array.from(room.seats.values()).map((seat) =>
+        serializeSeat(seat, room)
+      ),
+    })
   },
-  join_room({ player, reply, args }) {
+  async join_room({ player, reply, args, ws }) {
     const room = server.rooms.nugu.get(args.room)
     if (!room) {
       return reply({
@@ -452,12 +626,19 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     }
     const playerAlreadyInOneRoom = [
       ...server.rooms.nugu.values(),
-    ].some((room) =>
+    ].find((room) =>
       [...room.seats.values()].some((seat) => seat.player.id === player.id)
     )
 
     if (playerAlreadyInOneRoom) {
-      return reply({ t: "joined_room", error: "You're already in a room" })
+      reply({ t: "joined_room", room: await serializeRoom(room) })
+      return
+      // return reply({
+      //   t: "joined_room",
+      //   error: `You're already in ${
+      //     playerAlreadyInOneRoom.id === room.id ? "this" : "a"
+      //   } room`,
+      // })
     }
 
     if (room.started) {
@@ -467,14 +648,20 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       })
     }
 
-    const seat = joinRoom(player, room)
-    reply({ t: "joined_room", room: serializeRoom(room) })
-    room.broadcast({ t: "connect", seat: serializeSeat(seat, room) }, player.id)
+    joinRoom(player, room, { isOwner: false })
+    reply({ t: "joined_room", room: await serializeRoom(room) })
+    publish(ws, "rooms", { t: "rooms", rooms: activeRooms() })
+    publish(ws, `room/${room.id}`, {
+      t: "users_update",
+      seats: Array.from(room.seats.values()).map((seat) =>
+        serializeSeat(seat, room)
+      ),
+    })
   },
   start_game(data) {
-    const { ...ctx } = data
-    const { player } = ctx
-    const { room, people, seat } = commandCtx(data)
+    const { player } = data
+    const ctx = commandCtx(data)
+    const { room, people, seat } = ctx
 
     if (!player.seat) {
       throw new Error(
@@ -496,9 +683,12 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       )
     }
 
-    room.broadcast({ t: "starting", secs: DEFAULT_START_TIMEOUT })
+    publish(data.ws, `room/${room.id}`, {
+      t: "starting",
+      secs: DEFAULT_START_TIMEOUT,
+    })
     setTimeout(() => {
-      startRound({ room, people, seat })
+      startRound(ctx)
     }, DEFAULT_START_TIMEOUT * 1000)
   },
   answer({ args, ...rest }) {
@@ -537,9 +727,50 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
   },
 }
 
+function activeRooms(gameType: keyof Rooms = "nugu") {
+  const rooms = Array.from(server.rooms[gameType].values())
+
+  return rooms.map((room) => serializeRoomPreview(room, gameType))
+}
+
+// the token variable is needed because for testing we have to
+// call the auth function manually
+async function authorize(ws: uWS.WebSocket, explicitToken?: string) {
+  const token = explicitToken || ws.token
+  const _signingKey = await jose.JWK.asKey(
+    JSON.parse(process.env.JWT_SIGNING_KEY!)
+  )
+  if (!token) {
+    return
+  }
+
+  const jwt = await jose.JWT.verify(token, _signingKey)
+  const id = (jwt as any).sub as string
+  const { user } = await backend.query({
+    user: [{ id: Number(id) }, { id: true, avatar: true, name: true }],
+  })
+  if (!user) {
+    throw new ClientError("Invalid User")
+    // return reply({ t: "error", message: "Invalid user" })
+  }
+  const { avatar, name } = user
+  const player = createPlayer({
+    id: Number(id),
+    username: name ?? "Unknown Player",
+    image: avatar,
+    sock: ws,
+    token,
+  })
+  anons.delete(ws)
+  players.set(ws, player)
+  return jwt
+}
+
 const publicMessageHandlers: PublicMessageHandlers = {
   // authorization happens only once upon connections in order to make
   // sure that people don't disconnect in the middle of their games
+  // The auth event shouldn't be used in production. It's a way of doing
+  // authentication in websocketking.com since it doesn't support auth headers
   async auth({ anon, reply, args }) {
     const ws = anon.sock
     if (!args.token) {
@@ -552,36 +783,19 @@ const publicMessageHandlers: PublicMessageHandlers = {
       reply({ t: "auth", success: false })
       throw new ClientTechnicalError("You are already authenticated")
     }
-    const _signingKey = await jose.JWK.asKey(
-      JSON.parse(process.env.JWT_SIGNING_KEY!)
-    )
-
-    const jwt = await jose.JWT.verify(args.token, _signingKey)
-    const id = (jwt as any).sub as string
-    const { user } = await backend.query({
-      user: [{ id: Number(id) }, { id: true, avatar: true, name: true }],
-    })
-    if (!user) {
-      return reply({ t: "error", message: "Invalid user" })
+    try {
+      await authorize(ws, args.token)
+      reply({ t: "auth", success: true })
+      logger.info("Authed a user")
+    } catch (err) {
+      reply({ t: "auth", success: false })
     }
-    anons.delete(ws)
-    const { avatar, name } = user
-    const player = createPlayer({
-      id,
-      username: name ?? "Unknown Player",
-      image: avatar,
-      sock: ws,
-      token: args.token,
-    })
-    players.set(ws, player)
-    reply({ t: "auth", success: true })
-    logger.info("Authed a user")
   },
 }
 
 const port = 9002
 
-const publicEvents = new Set<keyof MessageHandlers>(["auth"])
+const publicEvents = new Set<keyof MessageHandlers>(["auth", "rooms"])
 
 let allPeople = new Map<string, ServerPerson>()
 
@@ -616,26 +830,65 @@ async function main() {
   app
     .ws("/*", {
       compression: 0,
+      // 16mb
       maxPayloadLength: 16 * 1024 * 1024,
       // 10 minutes of idle timeout
       idleTimeout: 60 * 10,
       maxBackpressure: 1024,
-      open(ws) {
-        logger.info(`Got a new connection`)
-        anons.set(ws, {
-          sock: ws,
-        })
+      upgrade(res, req, context) {
+        const cookieHeader = req.getHeader("cookie")
+        let token
+        if (cookieHeader) {
+          const cookies = cookie.parse(cookieHeader)
+          token = cookies[AUTH_COOKIE_NAME]
+        }
+        // https://github.com/uNetworking/uWebSockets.js/discussions/112#discussioncomment-177625
+        res.upgrade(
+          { token },
+          req.getHeader("sec-websocket-key"),
+          req.getHeader("sec-websocket-protocol"),
+          req.getHeader("sec-websocket-extensions"),
+          context
+        )
+      },
+      async open(ws) {
+        ws.isClosed = false
+        if (ws.token) {
+          logger.info(`Got a new connection with an embedded token`)
+          await authorize(ws, ws.token)
+        } else {
+          logger.info(`Got an anonymous connection`)
+          anons.set(ws, {
+            sock: ws,
+          })
+        }
+        subscribe(ws, "rooms")
+        // sending a fresh list of room without waiting for a first emit
+        send(ws, { t: "rooms", rooms: activeRooms() })
       },
       message: async (ws, message) => {
         const data: IncomingMessage = JSON.parse(
           Buffer.from(message).toString()
         )
         const { t, ...rest } = data
+        if (!(t in Messages)) {
+          send(ws, { t: "error", message: "Invalid event type" })
+          return
+        }
+        let args: z.infer<typeof Messages[typeof t]>
+        try {
+          // zod doesn't work here? :(
+          args = await Messages[t as keyof typeof Messages].parseAsync(rest)
+        } catch (err) {
+          logger.error(err)
+          return send(ws, { t: "error", message: err })
+        }
         const player = players.get(ws)
         const anon = anons.get(ws)
         const reply = createSender(ws)
         const sharedContext = {
-          args: rest,
+          args,
+          app,
           ws,
           reply,
           player,
@@ -679,15 +932,7 @@ async function main() {
             "Got an event from a player who is not registered"
           )
         }
-        let args: {}
         const handler = privateMessageHandlers[t as PrivateIncomingMessageType]
-        try {
-          // zod doesn't work here? :(
-          args = await Messages[t as keyof typeof Messages].parseAsync(rest)
-        } catch (err) {
-          logger.error(err)
-          return send(ws, { t: "error", message: err })
-        }
         try {
           await handler({
             ...sharedContext,
@@ -711,28 +956,39 @@ async function main() {
           logger.error(err)
         }
       },
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       drain: (ws) => {
         // TODO: ?
       },
       close: (ws) => {
+        ws.isClosed = true
         const player = players.get(ws)
         if (!player) {
-          return logger.error(
-            "A player was already removed before disconnecting"
-          )
+          const wasAnon = anons.delete(ws)
+          if (!wasAnon) {
+            logger.error(
+              "A connected socket was already removed before disconnecting"
+            )
+          }
+          return
         }
 
         if (!player.room || !player.seat) {
           return
         }
 
+        player.room.joinOrder = player.room.joinOrder.filter(
+          (o) => o.player.id !== player.id
+        )
+
         const seat = serializeSeat(player.seat, player.room)
-        leaveRoom(player, player.room)
+        // we can't use `ws` for emitting because it's disconnected
+        publish(app, `room/${player.room.id}`, { t: "disconnect", seat })
+        disconnectPlayer(player, app)
+        publish(app, "rooms", { t: "rooms", rooms: activeRooms() })
+
         if (player.room.owner === player.seat) {
-          disconnectOwner(player)
         }
-        player.room.broadcast({ t: "disconnect", seat })
+
         anons.delete(ws)
         players.delete(ws)
       },
@@ -741,11 +997,7 @@ async function main() {
       res.writeHeader("Access-Control-Allow-Origin", "*").end()
     })
     .any("/*", (res) => {
-      res
-        .writeStatus("302")
-        .writeHeader("Location", "https://dev.kiyomi.io/group/79/(G)I-DLE")
-        .writeHeader("Access-Control-Allow-Origin", "*")
-        .end()
+      res.end("Sorry dawg but you're not a websocket")
     })
     .listen(port, (token) => {
       if (token) {

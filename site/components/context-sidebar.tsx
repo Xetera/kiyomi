@@ -10,13 +10,7 @@ export type ContextSidebarProps = {
 export const ContextSidebar: React.FC<ContextSidebarProps> = forwardRef(
   ({ items, ...rest }, ref) => {
     return (
-      <Stack
-        height="100%"
-        spacing={[2, 2, 4]}
-        {...rest}
-        p={[2, 4, 6, 8]}
-        ref={ref}
-      >
+      <Stack height="100%" spacing={[2, 2, 4]} {...rest} ref={ref}>
         {items}
       </Stack>
     )
@@ -27,36 +21,42 @@ export type SidebarItemProps = {
   title: React.ReactChild | string
 }
 
-export function SidebarItem(opts: React.PropsWithChildren<SidebarItemProps>) {
+export const SidebarItem = forwardRef<SidebarItemProps, "div">((opts, ref) => {
+  const { title, ...rest } = opts
   return (
-    <>
-      <Heading size="sm" fontWeight="500">
-        {opts.title}
-      </Heading>
+    <Flex flexDirection="column" ref={ref} {...rest}>
+      <Flex background="bgPrimary" py={[2, 3]} px={[3, 4, 5]}>
+        <Heading size="sm" fontWeight="500">
+          {opts.title}
+        </Heading>
+      </Flex>
       {opts.children}
-    </>
+    </Flex>
   )
-}
+})
 
 export type WithSidebarProps = {
   sidebar: React.ReactNode
+  sidebarWidth?: string[]
 }
 
 export function WithSidebar({
   sidebar,
+  sidebarWidth = ["0", "170px", "250px", "350px"],
   children,
 }: PropsWithChildren<WithSidebarProps>) {
   return (
-    <Flex>
+    <Flex flex={1}>
       {sidebar && (
         <Flex
           display={["none", "block"]}
-          minWidth={["0", "170px", "250px", "350px"]}
+          minWidth={sidebarWidth}
+          background="bgSecondary"
         >
           {sidebar}
         </Flex>
       )}
-      <Box display={["none", "block"]} width="2px" background="gray.900" />
+      <Box display={["none", "block"]} width="1px" background="borderSubtle" />
       {children}
     </Flex>
   )

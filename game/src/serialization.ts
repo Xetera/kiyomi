@@ -5,18 +5,37 @@ import {
   ServerPerson,
   ClientGroup,
   ServerGroup,
+  Rooms,
 } from "./messaging"
 import {
   ClientPlayer,
   ClientRoom,
   ClientSeat,
   ClientPerson,
-} from "~shared/game"
+  ClientRoomPreview,
+} from "../../shared/game"
 import { keyBy } from "lodash"
+import { fromPersonIds } from "./query"
 
 export function serializePlayer(player: Player): ClientPlayer {
   const { username, id, image } = player
   return { username, id, imageUrl: image }
+}
+
+export function serializeRoomPreview(
+  room: Room,
+  gameType: keyof Rooms
+): ClientRoomPreview {
+  return {
+    slug: room.id,
+    name: room.name,
+    maxPlayers: room.maxSeats,
+    players: Array.from(room.seats.values(), (seat) =>
+      serializePlayer(seat.player)
+    ),
+    selectedPeople: room.personPool.length,
+    type: gameType,
+  }
 }
 
 export function serializeGroup(group: ServerGroup): ClientGroup {
@@ -30,6 +49,7 @@ export function serializeGroup(group: ServerGroup): ClientGroup {
 export function serializeSeat(seat: Seat, room: Room): ClientSeat {
   return {
     answer: seat.answer,
+    owner: seat.owner,
     answered: seat.answered,
     points: room.history.filter((history) => {
       return history.answers.get(seat.player.id)?.answer === history.correctId
@@ -38,11 +58,17 @@ export function serializeSeat(seat: Seat, room: Room): ClientSeat {
   }
 }
 
-export function serializeRoom(room: Room): ClientRoom {
+export async function serializeRoom(room: Room): Promise<ClientRoom> {
+  console.time(`Room-${room.id}`)
+  const selections = await fromPersonIds(room.personPool)
+  console.timeEnd(`Room-${room.id}`)
   return {
-    id: room.id,
+    slug: room.id,
+    type: room.type,
+    name: room.name,
     owner: room.owner.player.id,
-    personPool: room.personPool,
+    hints: room.difficulty.hints,
+    selections,
     secondsPerRound: room.difficulty.timePerRound,
     seats: keyBy(
       Array.from(room.seats.values(), (seat) => serializeSeat(seat, room)),

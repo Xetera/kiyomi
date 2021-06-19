@@ -1,7 +1,9 @@
-import cls from "classnames"
+import { Box } from "@chakra-ui/layout"
+import { forwardRef } from "@chakra-ui/react"
 
-export default function Hr(props: React.HTMLProps<HTMLHRElement>) {
+const Hr = forwardRef((props, ref) => {
   const { className, ...rest } = props
-  const c = cls("border-theme-subtle", "border-dashed", className)
-  return <hr className={c} {...rest} />
-}
+  return <Box as="hr" borderColor="borderSubtle" ref={ref} {...rest} />
+})
+
+export default Hr

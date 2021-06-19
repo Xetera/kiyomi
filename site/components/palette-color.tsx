@@ -57,7 +57,7 @@ export function Palette({
       as="section"
       {...rest}
       border="1px solid"
-      borderColor="gray.900"
+      borderColor="borderSubtle"
       borderRadius="sm"
       overflow="hidden"
     >

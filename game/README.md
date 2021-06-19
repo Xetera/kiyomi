@@ -40,7 +40,7 @@ This is the folder structure we set up for you:
 
 ```txt
 /src
-  index.tsx       # EDIT THIS
+  [room].tsx       # EDIT THIS
 /test
   blah.test.tsx   # EDIT THIS
 .gitignore

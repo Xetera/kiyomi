@@ -55,28 +55,6 @@ const options: NextAuthOptions = {
     verificationOptions: {
       algorithms: ["HS256"],
     },
-    // encode: async (params) => {
-    //   if (!params?.token) throw Error('no paramas')
-    //   console.log({ params })
-    //   const {secret, maxAge} = params
-    //   const token = params.token as Token
-    //   console.log({ token })
-    //   const jwtClaims: JWT = {
-    //     sub: token.sub,
-    //     name: token.name,
-    //     email: token.email,
-    //     picture: token.picture,
-    //     iat: getUnixTime(new Date()),
-    //     exp: getUnixTime(add(new Date(), { seconds: maxAge })),
-    //   };
-    //   const encodedToken = jwt.sign(jwtClaims, secret);
-    //   console.log({ encodedToken })
-    //   return encodedToken;
-    // }
-    // async decode(params) {
-    //   if (!params?.token) throw Error("invalid token")
-    //   return jwt.verify(params?.token!, params.secret)
-    // }
   },
   // database: process.env.DATABASE_URL,
   callbacks: {

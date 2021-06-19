@@ -249,6 +249,14 @@ export const Query = queryField((t) => {
     },
     async resolve(_root, args, { prisma, user }) {
       const { slug } = args
+      // const randomImage = prisma.image.findUnique({
+      //   where: { slug },
+      //   include: {
+      //     likes: true
+      //     app
+      //
+      //   }
+      // })
       return await prisma.image.findUnique({
         where: { slug },
       })

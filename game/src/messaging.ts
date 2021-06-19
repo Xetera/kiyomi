@@ -1,5 +1,6 @@
 import {
   clientPerson,
+  Hints,
   IncomingMessageData,
   IncomingMessageType,
   outgoingMessageData,
@@ -48,7 +49,7 @@ export const clientGroup = z.object({
 
 export type ClientGroup = z.infer<typeof clientGroup>
 
-type UserId = string
+type UserId = number
 
 export type Anon = {
   sock: uWS.WebSocket
@@ -57,7 +58,7 @@ export type Anon = {
 }
 
 export type Player = Anon & {
-  id: Uuid
+  id: number
   token: string
   username: string
   image?: string
@@ -65,6 +66,7 @@ export type Player = Anon & {
 }
 
 export type Context = {
+  app: uWS.TemplatedApp
   ws: uWS.WebSocket
   player: Player
   reply: Sender
@@ -72,6 +74,7 @@ export type Context = {
 }
 
 export type CommandContext = {
+  app: uWS.TemplatedApp
   room: Room
   people: People
   seat: Seat
@@ -120,6 +123,7 @@ export type Uuid = string
  */
 export type Seat = {
   player: Player
+  owner: boolean
   answer?: number
   hintUsed: boolean
   readonly answered: boolean
@@ -144,13 +148,16 @@ export type PastQuestion = {
 
 export type Difficulty = {
   timePerRound: number
+  hints: Hints
 }
 
 export type Room = {
   id: string
-  seats: Map<Uuid, Seat>
+  name: string
+  seats: Map<number, Seat>
   owner: Seat
   type: GameType
+  joinOrder: Seat[]
   round: number
   difficulty: Difficulty
   started: boolean
@@ -159,16 +166,12 @@ export type Room = {
   maxRounds: number
   endingTimeout?: ReturnType<typeof setTimeout>
   correctAnswer: number
-  personChoice: PersonChoice[]
+  // personChoice: number[]
   // groupPool: Group[]
   personPool: number[]
   imagePool: GuessingPrompt[]
   choices: { [personId: string]: number }
   history: PastQuestion[]
-  broadcast<T extends OutgoingMessageType>(
-    message: EmittedMessage<T>,
-    except?: string
-  ): void
   broadcastWith<T extends OutgoingMessageType>(
     t: T,
     opts: (seat: Seat) => z.infer<typeof outgoingMessageData[T]> | undefined
@@ -177,6 +180,7 @@ export type Room = {
 
 export type Rooms = {
   nugu: Map<string, Room>
+  spotify: Map<string, Room>
 }
 
 export type Server = {

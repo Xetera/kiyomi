@@ -1,4 +1,4 @@
-import colors from "tailwindcss/colors"
+// import colors from "tailwindcss/colors"
 import { extendTheme } from "@chakra-ui/react"
 import { createBreakpoints } from "@chakra-ui/theme-tools"
 
@@ -34,11 +34,44 @@ const theme = extendTheme({
   },
   breakpoints,
   colors: {
-    ...colors,
+    // ...colors,
+    bgPrimary: "#0D0F17",
+    bgSecondary: "#0F111C",
+    bgTertiary: "#161927",
+    borderSubtle: "#191C28",
     brand: {
-      900: "#1a365d",
-      800: "#153e75",
-      700: "#2a69ac",
+      900: "#0D0F17",
+      800: "#11121D",
+      700: "#161927",
+      600: "#1D2130",
+      500: "#292F45",
+      400: "#434D74",
+      300: "#6978AE",
+      200: "#95A4D6",
+      100: "#C1CDF5",
+    },
+  },
+  components: {
+    Checkbox: {
+      baseStyle: {
+        border: "1px solid blue",
+      },
+    },
+    Input: {
+      baseStyle: {
+        borderColor: "borderSubtle",
+      },
+    },
+  },
+  styles: {
+    global: {
+      "*, *::before, ::after": {
+        borderColor: "borderSubtle",
+      },
+      body: {
+        borderColor: "borderSubtle",
+        bg: "bgPrimary",
+      },
     },
   },
   textStyles: {
@@ -58,7 +91,7 @@ const theme = extendTheme({
   },
   layerStyles: {
     base: {
-      bg: "gray.50",
+      bg: "bgPrimary",
       border: "2px solid",
       borderColor: "gray.500",
     },

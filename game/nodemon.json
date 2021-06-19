@@ -5,8 +5,9 @@
   "env": {
     "API_URL": "http://localhost:3000/api/internal",
     "API_AUTHORIZATION": "SIMP_123327eb205d16f2bd1f73ff32615e5b9fca7ac9520d2ff1f7ad57e9f93ce7bb",
-    "JWT_SIGNING_KEY": "{\"kty\":\"oct\",\"kid\":\"8AMzRXyPMZ-eVwKq4QzIPNAkagYsEHnkLMWP2jO2PAA\",\"alg\":\"HS256\",\"k\":\"_ktXEqwmqimZaGMure2OYxA2wkegXVUlFF_ov6azi9A\"}"
+    "JWT_SIGNING_KEY": "{\"kty\":\"oct\",\"kid\":\"8AMzRXyPMZ-eVwKq4QzIPNAkagYsEHnkLMWP2jO2PAA\",\"alg\":\"HS256\",\"k\":\"_ktXEqwmqimZaGMure2OYxA2wkegXVUlFF_ov6azi9A\"}",
+    "MEILISEARCH_URL": "https://search.mamamoo.solar"
   },
-  "exec": "etsc && node ./dist/game/src/index.js",
+  "exec": "etsc && node --trace-uncaught ./dist/game/src/index.js",
   "legacyWatch": true
 }
