@@ -4,26 +4,26 @@ import {
   WithSidebar,
 } from "@/components/context-sidebar"
 import { Navbar } from "@/components/navbar"
-import { useSelector } from "react-redux"
-import { RootState } from "@/models/store"
 import { useRouter } from "next/router"
 import React from "react"
 import { GameServerContext } from "@/models/contexts"
 import { Image } from "@chakra-ui/react"
 import { Flex, Text } from "@chakra-ui/layout"
-import GameSetup from "@/components/game-setup"
+import GameSetup from "@/components/game/game-setup"
+import GameCountdown from "@/components/game/game-countdown"
+import { useLeaveRoomOnUnMount } from "@/hooks/game"
+import GameScreen from "@/components/game/game-screen"
+import { useState } from "@/hooks/useState"
 
 export default function GameRoom() {
   const { send } = React.useContext(GameServerContext)
   const router = useRouter()
-  const room = useSelector((root: RootState) => root.game.room)
+  const seats = useState((root) => root.game.room?.seats)
+  const started = useState((root) => root.game.room?.started)
+  const starting = useState((root) => root.game.countingDown)
+  useLeaveRoomOnUnMount()
   React.useEffect(() => {
     // // we're already connected to a room
-    if (room) {
-      // console.warn("Already connected to a room, not attempting to join")
-      return
-    }
-    console.log(router.query)
     if (!router.query.room) {
       console.warn("No room id found in router?")
       return
@@ -38,7 +38,7 @@ export default function GameRoom() {
           <ContextSidebar
             items={[
               <SidebarItem title="Players" key="players">
-                {Object.values(room?.seats ?? {}).map((seat) => (
+                {seats?.map((seat) => (
                   <Flex
                     alignItems="center"
                     px={[3, 4, 5]}
@@ -67,7 +67,9 @@ export default function GameRoom() {
           />
         }
       >
-        <GameSetup />
+        {!started && <GameSetup />}
+        {starting && !started && <GameCountdown seconds={4} />}
+        {started && <GameScreen />}
       </WithSidebar>
     </>
   )

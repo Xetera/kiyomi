@@ -51,7 +51,7 @@ export function WithSidebar({
         <Flex
           display={["none", "block"]}
           minWidth={sidebarWidth}
-          background="bgSecondary"
+          background="bgPrimary"
         >
           {sidebar}
         </Flex>

@@ -53,7 +53,7 @@ export function Navbar() {
   return (
     <Box
       as="nav"
-      background="bgSecondary"
+      background="bgPrimary"
       className="items-center mx-auto border-b-2 border-theme-subtle w-full"
       style={{
         borderBottomWidth: "1px",

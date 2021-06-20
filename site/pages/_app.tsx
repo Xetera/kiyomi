@@ -13,7 +13,7 @@ import { AppProps } from "next/dist/next-server/lib/router/router"
 import { ChakraProvider, CSSReset } from "@chakra-ui/react"
 import theme from "@/client/theme"
 import { store } from "@/models/store"
-import GameServerGateway from "@/components/game-server-gateway"
+import GameServerGateway from "@/components/game/game-server-gateway"
 import { Flex } from "@chakra-ui/layout"
 
 const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {

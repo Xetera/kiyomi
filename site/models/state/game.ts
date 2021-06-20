@@ -5,6 +5,7 @@ import {
   ClientPerson,
   ClientRoom,
   ClientRoomPreview,
+  ClientRound,
   ClientSearchGroup,
   ClientSearchPerson,
   ClientSeat,
@@ -12,20 +13,37 @@ import {
   OutgoingMessage,
   PartialSearchResult,
   PersonPool,
+  UserAnswerPayload,
 } from "../../../shared/game"
 import Router from "next/router"
 import { createStandaloneToast } from "@chakra-ui/react"
 import { debounce, keyBy } from "lodash"
+import { store } from "@/models/store"
+
+const defaultOptions = { position: "bottom-right" } as const
+
+const emitInfo = createStandaloneToast({
+  colorMode: "dark",
+  defaultOptions: { ...defaultOptions, status: "info" },
+})
 
 const emitError = createStandaloneToast({
   colorMode: "dark",
-  defaultOptions: { position: "bottom-right", status: "error" },
+  defaultOptions: { ...defaultOptions, status: "error" },
 })
 
 export type GameState = {
   connected: boolean
+  startDate?: number
+  countingDown?: boolean
+  personSearchHints: ClientSearchPerson[]
+  answers?: UserAnswerPayload
   groups: ClientSearchGroup[]
-  groupSearch: string
+  lobbySearchQuery: string
+  searchingGroup: boolean
+  loadingImageCount: boolean
+  round?: ClientRound
+  waitingForNextRound: boolean
   searchResult: Record<number, PartialSearchResult>
   // people: Record<number | string, ClientSearchPerson>
   // some events require waiting for a response after connection
@@ -57,13 +75,17 @@ export const gameModel = createModel<RootModel>()({
   name: "game",
   state: {
     waitedForInitialEvents: false,
+    waitingForNextRound: false,
+    loadingImageCount: false,
     auditLog: [],
+    personSearchHints: [],
     connected: false,
     selectedPeople: [],
-    groupSearch: "",
+    lobbySearchQuery: "",
     searchResult: [],
     currentSelection: {},
     groups: [],
+    searchingGroup: false,
     rooms: [],
     groupSearchResults: [],
   } as GameState,
@@ -89,11 +111,19 @@ export const gameModel = createModel<RootModel>()({
       state.auditLog.push(`${seat.player.username} disconnected`)
       return state
     },
+    setImageCount(state, count: number, coordination: number) {
+      state.loadingImageCount = false
+      if (state.room) {
+        state.room.coordination = coordination
+        state.room.imagePoolSize = count
+      }
+      return state
+    },
     updateUsers(state, seats: ClientSeat[]) {
       if (!state.room) {
         return state
       }
-      state.room.seats = keyBy(seats, (seat) => seat.player.id)
+      state.room.seats = seats
       return state
     },
     updateSearchData(state, groups: ClientSearchGroup[]) {
@@ -108,8 +138,15 @@ export const gameModel = createModel<RootModel>()({
       state.searchResult = buildSearchResult(groups, members)
       return state
     },
+    setSearchState(state, searching: boolean) {
+      state.searchingGroup = searching
+      return state
+    },
     setSearch(state, search: string) {
-      state.groupSearch = search
+      state.lobbySearchQuery = search
+      if (search === "") {
+        state.searchResult = []
+      }
       return state
     },
     clearRoom(state) {
@@ -117,7 +154,41 @@ export const gameModel = createModel<RootModel>()({
       return state
     },
     updateRoom(state, room: ClientRoom) {
+      if (
+        state.room &&
+        Object.keys(room.selections) !== Object.keys(state.room.selections) &&
+        room.coordination !== state.room.coordination
+      ) {
+        // We received a new selection of idols, waiting for image count
+        state.loadingImageCount = true
+      }
       state.room = room
+      return state
+    },
+    startCountdown(state) {
+      state.countingDown = true
+      return state
+    },
+    endCountdown(state) {
+      state.countingDown = false
+      return state
+    },
+    startGame(state) {
+      if (state.room) {
+        state.room.started = true
+      } else {
+        console.warn(`Tried to start a game without being in a room?`)
+      }
+      return state
+    },
+    setRound(state, clientRound: ClientRound) {
+      state.waitingForNextRound = false
+      state.round = clientRound
+      return state
+    },
+    answerReveal(state, payload: UserAnswerPayload) {
+      state.waitingForNextRound = true
+      state.answers = payload
       return state
     },
   },
@@ -151,63 +222,68 @@ export const gameModel = createModel<RootModel>()({
       yield { groups: groups.hits, people: idols.hits }
     }
     const runSearch = debounce(async (query: string) => {
+      dispatch.game.setSearchState(true)
       for await (const { groups, people } of stepSearch(query)) {
         dispatch.game.updateSearchResult(groups, people)
       }
+      dispatch.game.setSearchState(false)
     }, 200)
 
     return {
-      async search(query: string, state) {
+      async search(query: string) {
         dispatch.game.setSearch(query)
         runSearch(query)
       },
-      message(message: OutgoingMessage, state) {
+      message(message: OutgoingMessage) {
         console.log("Websocket message", message)
         if (message.t === "error") {
           emitError({
             description: message.message,
           })
-        }
-        if (message.t === "rooms") {
+        } else if (message.t === "rooms") {
           dispatch.game.roomEvent(message.rooms)
-        }
-        if (message.t === "room_update") {
+        } else if (message.t === "room_update") {
           dispatch.game.updateRoom(message.room)
-        }
-        if (message.t === "created_room") {
+        } else if (message.t === "created_room") {
           dispatch.game.updateRoom(message.room)
           Router.push(`/games/room/${message.room.slug}`)
-        }
-        if (message.t === "users_update") {
+        } else if (message.t === "users_update") {
           dispatch.game.updateUsers(message.seats)
-        }
-        if (message.t === "disconnect") {
+        } else if (message.t === "disconnect") {
           dispatch.game.disconnect(message.seat)
-        }
-        // if (message.t === "")
-        if (message.t === "joined_room") {
+        } else if (message.t === "image_counts") {
+          dispatch.game.setImageCount(message.count, message.coordinationId)
+        } else if (message.t == "starting") {
+          dispatch.game.startCountdown()
+        } else if (message.t === "started") {
+          dispatch.game.startGame()
+        } else if (message.t === "round_start") {
+          if (message.round.number === 0) {
+            dispatch.game.endCountdown()
+          }
+          dispatch.game.setRound(message.round)
+        } else if (message.t === "answers_reveal") {
+          dispatch.game.answerReveal(message)
+        } else if (message.t === "joined_room") {
           if ("room" in message) {
             dispatch.game.updateRoom(message.room)
           } else if ("error" in message) {
             emitError({
               description: message.error,
             })
-            Router.push("/games")
+            console.log(Router.basePath)
+            if (Router.basePath !== "/games") {
+              Router.push("/games")
+            }
           }
         }
       },
       async refreshSearchData() {
         const [groups] = (await Promise.all([
-          // fetch(
-          //   `${process.env.NEXT_PUBLIC_MEILISEARCH_URL}/indexes/idols/documents?limit=5000`
-          // ).then((r) => r.json()),
           fetch(
             `${process.env.NEXT_PUBLIC_MEILISEARCH_URL}/indexes/groups/documents?limit=5000`
           ).then((r) => r.json()),
-        ])) as [
-          // ClientSearchPerson[],
-          ClientSearchPerson[]
-        ]
+        ])) as [ClientSearchPerson[]]
         dispatch.game.updateSearchData(groups)
       },
       connectionChange(connected: boolean, state) {

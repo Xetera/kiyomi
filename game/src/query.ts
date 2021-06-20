@@ -13,13 +13,16 @@ import LRU from "lru-cache"
 const url = (type: string) =>
   new URL(`/indexes/${type}/search`, process.env.MEILISEARCH_URL).href
 
-const cache = new LRU<string, PersonPool>({ maxAge: 1000 * 60 * 60, max: 200 })
+const cache = new LRU<string, Record<string, PersonPool>>({
+  maxAge: 1000 * 60 * 60,
+  max: 200,
+})
 
 export async function fromPersonIds(
   ids: number[]
 ): Promise<Record<string, PersonPool>> {
   const key = ids.join()
-  let out
+  let out: Record<string, PersonPool> | undefined
   if (ids.length > 0 && (out = cache.get(key))) {
     return out
   }

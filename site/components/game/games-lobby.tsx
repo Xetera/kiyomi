@@ -2,12 +2,13 @@ import { useSelector, useDispatch } from "react-redux"
 import type { Dispatch, RootState } from "@/models/store"
 import { Flex, Heading, Text } from "@chakra-ui/layout"
 import { Navbar } from "@/components/navbar"
-import Games from "@/pages/games"
-import GameLobbyRow, { GameLobbyRowSkeleton } from "@/components/game-lobby-row"
+import GameLobbyRow, {
+  GameLobbyRowSkeleton,
+} from "@/components/game/game-lobby-row"
 import { Button, VStack } from "@chakra-ui/react"
 import { GameServerContext } from "@/models/contexts"
 import React from "react"
-import { store } from "@/models/store"
+import partition from "lodash/partition"
 
 export default function GamesLobby() {
   const { send } = React.useContext(GameServerContext)
@@ -17,8 +18,10 @@ export default function GamesLobby() {
     (state: RootState) => state.game.waitedForInitialEvents
   )
 
+  const [playing, lobby] = partition(rooms, (room) => room.started)
+
   React.useEffect(() => {
-    store.dispatch.game.clearRoom()
+    send({ t: "rooms" })
   }, [])
 
   function createRoom() {
@@ -47,7 +50,10 @@ export default function GamesLobby() {
                 </Text>
               </Flex>
             )}
-            {rooms.map((room) => (
+            {lobby.map((room) => (
+              <GameLobbyRow room={room} key={room.slug} />
+            ))}
+            {playing.map((room) => (
               <GameLobbyRow room={room} key={room.slug} />
             ))}
           </VStack>

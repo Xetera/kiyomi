@@ -22,14 +22,10 @@ export type GameServerContextData = {
 }
 
 export const GameServerContext = React.createContext<GameServerContextData>({
-  socket: undefined,
   send(f) {
-    if (!this.socket) {
-      console.warn(
-        "A send event was emitted to the socket without initializing the connection"
-      )
-      return
-    }
+    console.warn(
+      "A send event was emitted to the socket without initializing the connection"
+    )
     // this.socket.sned
   },
 })

@@ -1,4 +1,4 @@
-import { ClientRoomPreview } from "../../shared/game"
+import { ClientRoomPreview } from "../../../shared/game"
 import { Box, Flex, Grid, Heading, Text } from "@chakra-ui/layout"
 import { useMemo } from "react"
 import {
@@ -19,8 +19,8 @@ interface GameLobbyRowParams {
 }
 
 const baseProps = {
-  py: 3,
-  px: 4,
+  py: 4,
+  px: 5,
 }
 
 const MAX_AVATAR_DISPLAY = 4
@@ -90,9 +90,16 @@ export default function GameLobbyRow({ room }: GameLobbyRowParams) {
           </Flex>
         </Grid>
         <NextLink href={`/games/room/${room.slug}`}>
-          <Button width="min-content" {...textProps} size="sm">
+          <Button
+            width="min-content"
+            {...textProps}
+            size="sm"
+            isDisabled={room.started}
+          >
             <Text fontSize="sm">
-              {room.slug === currentRoomSlug ? "Go to room" : "Join room"}
+              {room.started && "Ongoing game"}
+              {!room.started &&
+                (room.slug === currentRoomSlug ? "Go to room" : "Join room")}
             </Text>
           </Button>
         </NextLink>

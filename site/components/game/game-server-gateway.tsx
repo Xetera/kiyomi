@@ -1,8 +1,8 @@
 import { GameServerContext, GameServerContextData } from "@/models/contexts"
 import useWebSocket from "react-use-websocket"
-import React, { PropsWithChildren } from "react"
+import React, { PropsWithChildren, useCallback, useMemo } from "react"
 import { store } from "@/models/store"
-import { OutgoingMessage } from "../../shared/game"
+import { OutgoingMessage } from "../../../shared/game"
 import { useInterval } from "@chakra-ui/react"
 import useToast from "@/hooks/useToast"
 
@@ -13,7 +13,7 @@ export default function GameServerGateway({
 }: PropsWithChildren<GameServerGatewayProps>) {
   const info = useToast("info")
   const warning = useToast("warning")
-  const ws = useWebSocket(process.env.NEXT_PUBLIC_GAME_URL!, {
+  const { sendMessage } = useWebSocket(process.env.NEXT_PUBLIC_GAME_URL!, {
     onOpen() {
       info({
         description: "Connected to game servers",
@@ -45,15 +45,18 @@ export default function GameServerGateway({
   React.useEffect(() => {
     store.dispatch.game.refreshSearchData()
   }, [])
-  const data: GameServerContextData = {
-    socket: ws,
-    send(f) {
-      console.log(`[Sending message]`, f)
-      ws.sendMessage(JSON.stringify(f))
-    },
-  }
+  const data: GameServerContextData = useMemo(
+    () => ({
+      send(f) {
+        console.log(`[Sending message]`, f)
+        sendMessage(JSON.stringify(f))
+      },
+    }),
+    []
+  )
+  const f = useCallback(() => data.send({ t: "p" }), [])
   // Server expects periodic pings
-  useInterval(() => data.send({ t: "p" }), 60 * 1000)
+  useInterval(f, 60 * 1000)
   return (
     <GameServerContext.Provider value={data}>
       {children}

@@ -16,6 +16,7 @@ import {
 } from "../../shared/game"
 import { keyBy } from "lodash"
 import { fromPersonIds } from "./query"
+import { DEFAULT_START_TIMEOUT } from "./index"
 
 export function serializePlayer(player: Player): ClientPlayer {
   const { username, id, image } = player
@@ -29,6 +30,7 @@ export function serializeRoomPreview(
   return {
     slug: room.id,
     name: room.name,
+    started: room.started,
     maxPlayers: room.maxSeats,
     players: Array.from(room.seats.values(), (seat) =>
       serializePlayer(seat.player)
@@ -59,21 +61,23 @@ export function serializeSeat(seat: Seat, room: Room): ClientSeat {
 }
 
 export async function serializeRoom(room: Room): Promise<ClientRoom> {
-  console.time(`Room-${room.id}`)
+  console.time(`room-serialization-${room.id}`)
   const selections = await fromPersonIds(room.personPool)
-  console.timeEnd(`Room-${room.id}`)
+  console.timeEnd(`room-serialization-${room.id}`)
   return {
     slug: room.id,
     type: room.type,
+    started: room.started,
     name: room.name,
-    owner: room.owner.player.id,
+    countdownLength: DEFAULT_START_TIMEOUT,
+    coordination: room.coordination,
+    owner: room.owner ? serializePlayer(room.owner.player) : undefined,
     hints: room.difficulty.hints,
+    imagePoolSize: room.imagePool.length,
+    maxRoundCount: room.maxRounds,
     selections,
     secondsPerRound: room.difficulty.timePerRound,
-    seats: keyBy(
-      Array.from(room.seats.values(), (seat) => serializeSeat(seat, room)),
-      (seat) => seat.player.id
-    ),
+    seats: Array.from(room.seats.values(), (seat) => serializeSeat(seat, room)),
   }
 }
 

@@ -8,6 +8,6 @@
     "JWT_SIGNING_KEY": "{\"kty\":\"oct\",\"kid\":\"8AMzRXyPMZ-eVwKq4QzIPNAkagYsEHnkLMWP2jO2PAA\",\"alg\":\"HS256\",\"k\":\"_ktXEqwmqimZaGMure2OYxA2wkegXVUlFF_ov6azi9A\"}",
     "MEILISEARCH_URL": "https://search.mamamoo.solar"
   },
-  "exec": "etsc && node --trace-uncaught ./dist/game/src/index.js",
+  "exec": "etsc && node --trace-uncaught --enable-source-maps ./dist/game/src/index.js",
   "legacyWatch": true
 }

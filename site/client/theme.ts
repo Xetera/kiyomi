@@ -36,9 +36,9 @@ const theme = extendTheme({
   colors: {
     // ...colors,
     bgPrimary: "#0D0F17",
-    bgSecondary: "#0F111C",
+    bgSecondary: "#11131d",
     bgTertiary: "#161927",
-    borderSubtle: "#191C28",
+    borderSubtle: "#131621",
     brand: {
       900: "#0D0F17",
       800: "#11121D",
@@ -55,6 +55,11 @@ const theme = extendTheme({
     Checkbox: {
       baseStyle: {
         border: "1px solid blue",
+      },
+    },
+    NumberIncrementStepper: {
+      baseStyle: {
+        borderInlineStartColor: "borderSubtle",
       },
     },
     Input: {

@@ -94,7 +94,6 @@ export type PublicHandlerArgs<T extends PublicIncomingMessageType> = {
 
 type AnonArgs<T extends PublicIncomingMessageType> = PublicHandlerArgs<T> & {
   ws: uWS.WebSocket
-  anon: Anon | Player
   reply: Sender
 }
 
@@ -154,8 +153,10 @@ export type Difficulty = {
 export type Room = {
   id: string
   name: string
+  // used for synchronizing asynchronous events that are related to each other
+  coordination?: number
   seats: Map<number, Seat>
-  owner: Seat
+  owner?: Seat
   type: GameType
   joinOrder: Seat[]
   round: number
@@ -164,6 +165,7 @@ export type Room = {
   roundStarted: boolean
   maxSeats: number
   maxRounds: number
+  deleteTimer?: number
   endingTimeout?: ReturnType<typeof setTimeout>
   correctAnswer: number
   // personChoice: number[]

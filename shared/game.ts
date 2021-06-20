@@ -9,11 +9,22 @@ export const clientPerson = z.object({
 
 export type ClientPerson = z.infer<typeof clientPerson>
 
-export const nuguPrompt = z.object({
-  slug: z.string(),
+export const clientFace = z.object({
+  x: z.number(),
+  y: z.number(),
+  width: z.number(),
+  height: z.number(),
 })
 
-export type NuguPrompt = z.infer<typeof nuguPrompt>
+export const clientRound = z.object({
+  face: clientFace,
+  imageUrl: z.string(),
+  number: z.number(),
+  secs: z.number(),
+  scores: z.record(z.number()),
+})
+
+export type ClientRound = z.infer<typeof clientRound>
 
 export const clientPlayer = z.object({
   id: z.number(),
@@ -32,6 +43,7 @@ export const clientRoomPreview = z.object({
   type: gameType,
   players: z.array(clientPlayer),
   maxPlayers: z.number(),
+  started: z.boolean(),
   selectedPeople: z.number(),
 })
 
@@ -92,11 +104,16 @@ export const clientRoom = z.object({
   slug: z.string(),
   type: gameType,
   name: z.string(),
-  owner: z.number(),
+  started: z.boolean(),
+  coordination: z.number().optional(),
+  owner: clientPlayer.optional(),
   selections: z.record(personPool),
-  seats: z.record(clientSeat),
+  seats: z.array(clientSeat),
+  countdownLength: z.number(),
   hints,
   secondsPerRound: z.number(),
+  imagePoolSize: z.number(),
+  maxRoundCount: z.number().default(5),
 })
 
 export type ClientRoom = z.infer<typeof clientRoom>
@@ -121,6 +138,9 @@ export const Messages = {
   }),
   pick_time: z.object({
     seconds: z.number(),
+  }),
+  pick_round_count: z.object({
+    count: z.number(),
   }),
   pick_hints: z.object({ hints }),
   edit_room: z.object({
@@ -177,6 +197,7 @@ export type RevealedAnswer = z.infer<typeof revealedAnswer>
 const userAnswerPayload = z.object({
   correctAnswer: z.number(),
   answers: z.array(revealedAnswer),
+  nextRoundWait: z.number(),
 })
 
 export const personChoice = z.object({
@@ -187,7 +208,7 @@ export const personChoice = z.object({
 export type PersonChoice = z.infer<typeof personChoice>
 
 // OUTGOING MESSAGES
-type UserAnswerPayload = z.infer<typeof userAnswerPayload>
+export type UserAnswerPayload = z.infer<typeof userAnswerPayload>
 
 export const outgoingMessageData = {
   p: z.object({}),
@@ -200,18 +221,21 @@ export const outgoingMessageData = {
     z.object({ room: clientRoom }),
     z.object({ error: z.string() }),
   ]),
-  room_update: z.object({ room: clientRoom }),
+  image_counts: z.object({ count: z.number(), coordinationId: z.number() }),
+  room_update: z.object({
+    room: clientRoom,
+    coordinationId: z.number().optional(),
+  }),
   rooms: z.object({ rooms: z.array(clientRoomPreview) }),
   users_update: z.object({ seats: z.array(clientSeat) }),
   connect: z.object({ seat: clientSeat }),
   disconnect: z.object({ seat: clientSeat }),
   force_disconnected: z.object({ reason: z.string() }),
   starting: z.object({ secs: z.number() }),
+  started: z.object({}),
   new_leader: z.object({ seat: clientSeat }),
   round_start: z.object({
-    person: nuguPrompt,
-    secs: z.number(),
-    scores: z.record(z.number()),
+    round: clientRound,
   }),
   game_end: z.object({}),
   user_answer: z.union([
@@ -220,9 +244,7 @@ export const outgoingMessageData = {
   ]),
   // fired when a user answers and gets the results revealed to them,
   answers_reveal: userAnswerPayload,
-  // fired when everyone
   round_end: userAnswerPayload,
-  // person_list: z.object({ people: z.array(clientPerson) }),
   auth: z.object({ success: z.boolean() }),
 } as const
 
