@@ -36,7 +36,8 @@ export type GameState = {
   connected: boolean
   startDate?: number
   countingDown?: boolean
-  personSearchHints: ClientSearchPerson[]
+  personHintResults: ClientSearchPerson[]
+  personHintSearching: boolean
   answers?: UserAnswerPayload
   groups: ClientSearchGroup[]
   lobbySearchQuery: string
@@ -76,9 +77,10 @@ export const gameModel = createModel<RootModel>()({
   state: {
     waitedForInitialEvents: false,
     waitingForNextRound: false,
+    personHintSearching: false,
     loadingImageCount: false,
     auditLog: [],
-    personSearchHints: [],
+    personHintResults: [],
     connected: false,
     selectedPeople: [],
     lobbySearchQuery: "",
@@ -191,6 +193,14 @@ export const gameModel = createModel<RootModel>()({
       state.answers = payload
       return state
     },
+    setSearchingPerson(state, searching: boolean) {
+      state.personHintSearching = searching
+      return state
+    },
+    setGameSearchHints(state, results: ClientSearchPerson[]) {
+      state.personHintResults = results
+      return state
+    },
   },
   effects(dispatch) {
     const url = (type: string) =>
@@ -199,7 +209,7 @@ export const gameModel = createModel<RootModel>()({
         process.env.NEXT_PUBLIC_MEILISEARCH_URL
       ).href
     async function* stepSearch(query: string) {
-      if (query === "") {
+      if (!query) {
         return
       }
       const groups: MeiliResult<ClientSearchPerson> = await fetch(
@@ -277,6 +287,21 @@ export const gameModel = createModel<RootModel>()({
             }
           }
         }
+      },
+      async searchIdol(q: string) {
+        dispatch.game.setSearchingPerson(true)
+        const people: MeiliResult<ClientSearchPerson> = await fetch(
+          url("idols"),
+          {
+            method: "POST",
+            body: JSON.stringify({
+              limit: 8,
+              q,
+            }),
+          }
+        ).then((r) => r.json())
+        dispatch.game.setSearchingPerson(false)
+        dispatch.game.setGameSearchHints(people.hits)
       },
       async refreshSearchData() {
         const [groups] = (await Promise.all([

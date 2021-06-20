@@ -6,7 +6,6 @@ import {
   Spinner,
 } from "@chakra-ui/react"
 import { useDebounce } from "react-use"
-import { store } from "@/models/store"
 import { Flex } from "@chakra-ui/layout"
 import { RiCloseCircleLine, RiSearch2Line } from "react-icons/ri"
 import { Input } from "@chakra-ui/input"
@@ -15,38 +14,56 @@ import React from "react"
 type SearchProps = {
   search: string
   searching: boolean
-  setSearch: (val: string) => void
+  setSearchString: (val: string) => void
+  onSearch: (val: string) => void
+  hasClearButton?: boolean
+  onEnter?: () => void
+  debounceTime?: number
   placeholder: string
 }
 
 export const Search = forwardRef<SearchProps, "div">((props, ref) => {
-  const { search, searching, setSearch, placeholder } = props
+  const {
+    search,
+    searching,
+    hasClearButton = false,
+    debounceTime = 400,
+    setSearchString,
+    placeholder,
+    onEnter,
+    onSearch,
+    ...rest
+  } = props
 
-  useDebounce(searchGroup, 400, [search])
-  async function searchGroup() {
-    store.dispatch.game.search(search)
-  }
+  useDebounce(() => onSearch(search), debounceTime, [search])
 
   return (
-    <Flex {...props} ref={ref}>
+    <Flex {...rest} ref={ref}>
       <InputGroup>
         <InputLeftAddon background="bgPrimary">
           {searching ? <Spinner size="sm" /> : <RiSearch2Line />}
         </InputLeftAddon>
         <Input
-          // disabled={props.disabled}
           borderColor="borderSubtle"
           value={search}
           placeholder={placeholder}
-          onChange={(e) => setSearch(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              onEnter?.()
+            }
+          }}
+          onChange={(e) => {
+            console.log(e.target.value)
+            setSearchString(e.target.value)
+          }}
           width="100%"
         />
-        {search && (
+        {search && hasClearButton && (
           <InputRightAddon
             background="bgPrimary"
             cursor="pointer"
             color="gray.400"
-            onClick={() => setSearch("")}
+            onClick={() => setSearchString("")}
           >
             <RiCloseCircleLine color="inherit" />
           </InputRightAddon>

@@ -4,16 +4,13 @@ import { RootState, store } from "@/models/store"
 import {
   Checkbox,
   forwardRef,
-  InputGroup,
-  InputLeftAddon,
   SkeletonText,
   Spinner,
   Image,
   Box,
-  InputRightAddon,
 } from "@chakra-ui/react"
 import { GameServerContext } from "@/models/contexts"
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 import { PartialSearchResult } from "../../../shared/game"
 import { Search } from "@/components/searchbar"
 import { useState } from "@/hooks/useState"
@@ -23,13 +20,19 @@ interface GamePersonPickerParams {
 }
 const PersonSearch = forwardRef((props, ref) => {
   const search = useState((root) => root.game.lobbySearchQuery)
+  const onSearch = useCallback((val: string) => {
+    console.log({ val })
+    store.dispatch.game.search(val)
+  }, [])
   const searching = useState((root) => root.game.searchingGroup)
   return (
     <Search
       placeholder="Search for a group"
       search={search}
       searching={searching}
-      setSearch={(e) => store.dispatch.game.setSearch(e)}
+      onSearch={onSearch}
+      debounceTime={200}
+      setSearchString={(e) => store.dispatch.game.setSearch(e)}
       {...props}
       ref={ref}
     />
@@ -139,8 +142,6 @@ const GroupCluster = React.memo(
     )
   }
 )
-
-export function GamePersonPickerSidebar() {}
 
 export default function GamePersonPicker({ disabled }: GamePersonPickerParams) {
   const { send } = React.useContext(GameServerContext)

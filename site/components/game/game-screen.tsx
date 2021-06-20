@@ -1,11 +1,13 @@
-import { Flex, Text } from "@chakra-ui/layout"
+import { Flex, Grid, Heading, Text } from "@chakra-ui/layout"
 import { useState } from "@/hooks/useState"
-import { forwardRef, Image } from "@chakra-ui/react"
+import { forwardRef, Image, VStack } from "@chakra-ui/react"
 import { motion } from "framer-motion"
 import { useCountdown } from "@/hooks/game"
 import pick from "lodash/pick"
 import { Search } from "@/components/searchbar"
 import React from "react"
+import { store } from "@/models/store"
+import { GameServerContext } from "@/models/contexts"
 
 const MotionFlex = motion(Flex)
 
@@ -19,18 +21,68 @@ function NextRoundCountdown({ seconds: _sec }: { seconds: number }) {
 }
 
 const GameSearch = forwardRef((props, ref) => {
+  const { send } = React.useContext(GameServerContext)
+  const searching = useState((r) => r.game.personHintSearching)
+
   const [search, setSearch] = React.useState("")
-  const [searching, setSearching] = React.useState(false)
-  function a() {}
-  return <Search search={search} setSearch={setSearch} searching={searching} />
+  function onEnter() {
+    send({ t: "answer", id: store.getState().game.personHintResults[0].id })
+  }
+  function onSearch(q: string) {
+    store.dispatch.game.searchIdol(q)
+  }
+  return (
+    <Search
+      search={search}
+      setSearchString={setSearch}
+      searching={searching}
+      onSearch={onSearch}
+      onEnter={onEnter}
+      debounceTime={150}
+      placeholder="Who's the highlighted person?"
+      hasClearButton={false}
+    />
+  )
+})
+
+const SearchResults = forwardRef((props, ref) => {
+  const results = useState((r) => r.game.personHintResults)
+  return (
+    <Grid
+      {...props}
+      ref={ref}
+      alignItems="flex-start"
+      gap={4}
+      gridAutoFlow="row"
+    >
+      {results.map((result) => (
+        <Flex key={result.id} alignItems="center">
+          <Image
+            src="https://placewaifu.com/image/30/30"
+            width="30px"
+            height="30px"
+            mr={2}
+          />
+          <Flex flexFlow="column">
+            <Heading fontSize="sm">{result.name}</Heading>
+            <Flex flexFlow="row wrap" as="span" lineHeight="1.4">
+              {result.aliases.map((e) => (
+                <Text fontSize="sm" color="gray.500" mr={2}>
+                  {e}
+                </Text>
+              ))}
+            </Flex>
+          </Flex>
+        </Flex>
+      ))}
+    </Grid>
+  )
 })
 
 export default function GameScreen() {
-  const { waitingForNextRound } = useState((r) =>
-    pick(r.game, ["waitingForNextRound"])
+  const { waitingForNextRound, round, answers } = useState((r) =>
+    pick(r.game, ["waitingForNextRound", "round", "answers"])
   )
-  const round = useState((r) => r.game.round)
-  const answers = useState((r) => r.game.answers)
 
   if (!round) {
     return null
@@ -43,25 +95,9 @@ export default function GameScreen() {
       flexFlow="column"
     >
       <Flex
-        minHeight="30px"
-        width="100%"
-        justifyContent="center"
-        alignItems="center"
-        position="fixed"
-        top={0}
-        background="bgPrimary"
-        zIndex={2}
-        borderBottomWidth="1px"
-        borderColor="borderSubtle"
-        fontSize="sm"
-      >
-        {answers && waitingForNextRound && (
-          <NextRoundCountdown seconds={answers.nextRoundWait} />
-        )}
-      </Flex>
-      <Flex
         flexFlow="column"
-        height={["min-content", null, null, "600px"]}
+        height={["min-content", null, null, "auto"]}
+        minHeight={["300px", null, "500px", "550px"]}
         // flex={1}
         p={[3, null, 4, null, 6]}
         justifyContent="center"
@@ -80,7 +116,29 @@ export default function GameScreen() {
           animate={{ width: "100%" }}
         />
       </Flex>
-      {/*{answers && answers.}*/}
+      <Flex
+        minHeight="30px"
+        width="100%"
+        justifyContent="center"
+        alignItems="center"
+        position="static"
+        top={0}
+        background="bgPrimary"
+        zIndex={2}
+        borderBottomWidth="1px"
+        borderColor="borderSubtle"
+        fontSize="sm"
+      >
+        {answers && waitingForNextRound && (
+          <NextRoundCountdown seconds={answers.nextRoundWait} />
+        )}
+      </Flex>
+      <Flex height="100%" width="100%">
+        <Flex position="relative">
+          <GameSearch />
+          <SearchResults position="absolute" top="100%" />
+        </Flex>
+      </Flex>
     </Flex>
   )
 }
