@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { useCountdown } from "@/hooks/game"
 import pick from "lodash/pick"
 import { Search } from "@/components/searchbar"
-import React from "react"
+import React, { SyntheticEvent } from "react"
 import { store } from "@/models/store"
 import { GameServerContext } from "@/models/contexts"
 
@@ -41,12 +41,21 @@ const GameSearch = forwardRef((props, ref) => {
       debounceTime={150}
       placeholder="Who's the highlighted person?"
       hasClearButton={false}
+      {...props}
+      ref={ref}
     />
   )
 })
 
 const SearchResults = forwardRef((props, ref) => {
+  const { send } = React.useContext(GameServerContext)
   const results = useState((r) => r.game.personHintResults)
+  function submit(event: KeyboardEvent<HTMLDivElement>, id: number) {
+    if (event.key !== "Enter") {
+      return
+    }
+    send({ t: "answer", id })
+  }
   return (
     <Grid
       {...props}
@@ -56,18 +65,24 @@ const SearchResults = forwardRef((props, ref) => {
       gridAutoFlow="row"
     >
       {results.map((result) => (
-        <Flex key={result.id} alignItems="center">
+        <Flex
+          key={result.id}
+          alignItems="center"
+          tabindex={0}
+          onKeyDown={(e) => submit(e, result.id)}
+        >
           <Image
             src="https://placewaifu.com/image/30/30"
-            width="30px"
-            height="30px"
+            width="35px"
+            height="35px"
+            borderRadius="md"
             mr={2}
           />
           <Flex flexFlow="column">
-            <Heading fontSize="sm">{result.name}</Heading>
+            <Heading fontSize="md">{result.name}</Heading>
             <Flex flexFlow="row wrap" as="span" lineHeight="1.4">
               {result.aliases.map((e) => (
-                <Text fontSize="sm" color="gray.500" mr={2}>
+                <Text fontSize="md" color="gray.500" mr={2}>
                   {e}
                 </Text>
               ))}
@@ -133,9 +148,15 @@ export default function GameScreen() {
           <NextRoundCountdown seconds={answers.nextRoundWait} />
         )}
       </Flex>
-      <Flex height="100%" width="100%">
-        <Flex position="relative">
-          <GameSearch />
+      <Flex
+        height="100%"
+        width="100%"
+        justifyContent="center"
+        p={6}
+        maxWidth="600px"
+      >
+        <Flex position="relative" height="min-content" flex={1}>
+          <GameSearch mb={4} flex={1} />
           <SearchResults position="absolute" top="100%" />
         </Flex>
       </Flex>

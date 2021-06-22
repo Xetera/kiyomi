@@ -289,6 +289,10 @@ export const gameModel = createModel<RootModel>()({
         }
       },
       async searchIdol(q: string) {
+        if (!q) {
+          dispatch.game.setGameSearchHints([])
+          return
+        }
         dispatch.game.setSearchingPerson(true)
         const people: MeiliResult<ClientSearchPerson> = await fetch(
           url("idols"),
