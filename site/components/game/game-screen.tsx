@@ -1,13 +1,14 @@
 import { Flex, Grid, Heading, Text } from "@chakra-ui/layout"
 import { useState } from "@/hooks/useState"
-import { forwardRef, Image, VStack } from "@chakra-ui/react"
+import { forwardRef, Image, Kbd, Progress } from "@chakra-ui/react"
 import { motion } from "framer-motion"
 import { useCountdown } from "@/hooks/game"
 import pick from "lodash/pick"
 import { Search } from "@/components/searchbar"
-import React, { SyntheticEvent } from "react"
+import React from "react"
 import { store } from "@/models/store"
 import { GameServerContext } from "@/models/contexts"
+import { useTween } from "react-use"
 
 const MotionFlex = motion(Flex)
 
@@ -23,27 +24,42 @@ function NextRoundCountdown({ seconds: _sec }: { seconds: number }) {
 const GameSearch = forwardRef((props, ref) => {
   const { send } = React.useContext(GameServerContext)
   const searching = useState((r) => r.game.personHintSearching)
+  const hints = useState((r) => r.game.room?.hints)
 
   const [search, setSearch] = React.useState("")
   function onEnter() {
-    send({ t: "answer", id: store.getState().game.personHintResults[0].id })
+    // we don't need reactivity so this is a faster way of doing things
+    const [firstPerson] = store.getState().game.personHintResults
+    if (!firstPerson) {
+      console.warn("No person hints to choose from")
+      return
+    }
+    send({ t: "answer", id: firstPerson.id })
   }
   function onSearch(q: string) {
     store.dispatch.game.searchIdol(q)
   }
   return (
-    <Search
-      search={search}
-      setSearchString={setSearch}
-      searching={searching}
-      onSearch={onSearch}
-      onEnter={onEnter}
-      debounceTime={150}
-      placeholder="Who's the highlighted person?"
-      hasClearButton={false}
-      {...props}
-      ref={ref}
-    />
+    <Flex {...props} ref={ref} flexFlow="column">
+      <Search
+        search={search}
+        setSearchString={setSearch}
+        searching={searching}
+        onSearch={onSearch}
+        onEnter={onEnter}
+        debounceTime={150}
+        placeholder="Who's the highlighted person?"
+        mb={3}
+        hasClearButton={false}
+      />
+      <Text color="gray.500" fontSize="xs">
+        {hints !== "disabled" && (
+          <>
+            <Kbd>Ctrl</Kbd> + <Kbd>Space</Kbd> to request a hint
+          </>
+        )}
+      </Text>
+    </Flex>
   )
 })
 
@@ -94,6 +110,15 @@ const SearchResults = forwardRef((props, ref) => {
   )
 })
 
+function GameFill() {
+  const { round } = useState((r) => pick(r.game, ["round"]))
+  const value = useTween("linear", round.secs * 1000)
+  console.log({ value, num: round.number })
+  return (
+    <Progress value={value} min={0} max={1} width="100%" key={round.number} />
+  )
+}
+
 export default function GameScreen() {
   const { waitingForNextRound, round, answers } = useState((r) =>
     pick(r.game, ["waitingForNextRound", "round", "answers"])
@@ -112,7 +137,7 @@ export default function GameScreen() {
       <Flex
         flexFlow="column"
         height={["min-content", null, null, "auto"]}
-        minHeight={["300px", null, "500px", "550px"]}
+        // minHeight={["300px", null, "500px", "550px"]}
         // flex={1}
         p={[3, null, 4, null, 6]}
         justifyContent="center"
@@ -121,15 +146,7 @@ export default function GameScreen() {
         <Image src={round.imageUrl} borderRadius={["sm", null, null, "md"]} />
       </Flex>
       <Flex justifyContent="flex-start" height="2px" width="100%">
-        <MotionFlex
-          key={round.number}
-          height="2px"
-          justifyContent="flex-start"
-          transition={{ duration: round.secs, type: "tween", ease: "linear" }}
-          background="blue.100"
-          initial={{ width: "0%" }}
-          animate={{ width: "100%" }}
-        />
+        <GameFill />
       </Flex>
       <Flex
         minHeight="30px"
