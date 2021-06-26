@@ -1,4 +1,4 @@
-import { Flex, Grid, Heading, Text } from "@chakra-ui/layout"
+import { Flex, Grid, Heading, Stack, Text } from "@chakra-ui/layout"
 import { useSelector } from "react-redux"
 import { RootState, store } from "@/models/store"
 import {
@@ -8,6 +8,8 @@ import {
   Spinner,
   Image,
   Box,
+  Skeleton,
+  SkeletonCircle,
 } from "@chakra-ui/react"
 import { GameServerContext } from "@/models/contexts"
 import React, { useCallback, useMemo } from "react"
@@ -85,57 +87,64 @@ const GroupCluster = React.memo(
           </Flex>
         </Flex>
         <Box>
-          <SkeletonText
-            isLoaded={Boolean(members)}
-            noOfLines={6}
-            skeletonHeight={4}
-          >
-            {members
-              // .filter((person) => (person.groups ?? []).includes(group.id))
-              ?.map((person) => {
-                const checked = selectedPeople.includes(person.id) ?? false
-                return (
-                  <Flex
-                    as="label"
-                    alignItems="center"
-                    background={checked ? "bgSecondary" : "inherit"}
-                    htmlFor={`person-check-${person.id}`}
-                    px={3}
-                    py={2}
-                    width="100%"
-                  >
-                    <Checkbox
-                      id={`person-check-${person.id}`}
-                      // size="sm"
-                      mr={3}
-                      onChange={() => checkMembers?.([person.id])}
-                      isDisabled={disabled}
-                      isChecked={checked}
-                    />
-                    <Image
-                      src="https://placewaifu.com/image/31/31"
-                      background="bgSecondary"
-                      height="30px"
-                      width="30px"
-                      borderRadius="md"
-                      mr={3}
-                    />
-                    <Flex flexFlow="column">
-                      <Flex fontSize="sm" color="gray.300">
-                        {person.name}
-                      </Flex>
-                      <Flex color="gray.500" fontSize="xs" flexWrap="wrap">
-                        {person.aliases.map((alias) => (
-                          <Text key={alias} mr={1} whiteSpace="nowrap">
-                            {alias}
-                          </Text>
-                        ))}
-                      </Flex>
+          {!members?.length && (
+            <Stack isLoaded={Boolean(members)} py={1} px={10}>
+              {[...Array(5)].map(() => (
+                <Flex height="50px" alignItems="center">
+                  <Skeleton height="30px" width="30px" borderRadius="md" />
+                  <Flex flexFlow="column" ml={3} flex={1}>
+                    <SkeletonText noOfLines={1} mb={2} width="40%" />
+                    <SkeletonText width="100%" noOfLines={1} />
+                  </Flex>
+                </Flex>
+              ))}
+            </Stack>
+          )}
+          {members
+            // .filter((person) => (person.groups ?? []).includes(group.id))
+            ?.map((person) => {
+              const checked = selectedPeople.includes(person.id) ?? false
+              return (
+                <Flex
+                  as="label"
+                  alignItems="center"
+                  background={checked ? "bgSecondary" : "inherit"}
+                  htmlFor={`person-check-${person.id}`}
+                  px={3}
+                  py={2}
+                  width="100%"
+                >
+                  <Checkbox
+                    id={`person-check-${person.id}`}
+                    // size="sm"
+                    mr={3}
+                    onChange={() => checkMembers?.([person.id])}
+                    isDisabled={disabled}
+                    isChecked={checked}
+                  />
+                  <Image
+                    src="https://placewaifu.com/image/31/31"
+                    background="bgSecondary"
+                    height="30px"
+                    width="30px"
+                    borderRadius="md"
+                    mr={3}
+                  />
+                  <Flex flexFlow="column">
+                    <Flex fontSize="sm" color="gray.300">
+                      {person.name}
+                    </Flex>
+                    <Flex color="gray.500" fontSize="xs" flexWrap="wrap">
+                      {person.aliases.map((alias) => (
+                        <Text key={alias} mr={1} whiteSpace="nowrap">
+                          {alias}
+                        </Text>
+                      ))}
                     </Flex>
                   </Flex>
-                )
-              })}
-          </SkeletonText>
+                </Flex>
+              )
+            })}
         </Box>
         {!members && <Spinner />}
       </Flex>

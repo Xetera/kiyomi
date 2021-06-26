@@ -8,9 +8,8 @@ import { useRouter } from "next/router"
 export default function Person() {
   const router = useRouter()
   const personId = Number(router.query.personId as string)
-  console.log({ client: personId })
   const { data, isLoading } = usePersonPageQuery({ id: personId })
-  console.log({ data, isLoading })
+
   return (
     <Stack>
       <Navbar />
@@ -25,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     throw Error("No person")
   }
   const id = Number(personId)
-  console.log({ server: id })
+
   const dehydratedState = await prefetchQuery("PersonPage", { id })
   return {
     props: { dehydratedState },
