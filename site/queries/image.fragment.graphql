@@ -21,6 +21,12 @@ fragment ImageData on Image {
 fragment GridImage on Image {
   id
   url
+  height
+  width
+  focus {
+    x
+    y
+  }
   thumbnail {
     small
   }

@@ -1,5 +1,10 @@
 import { useImageSliceCanvas } from "@/hooks/useImageSlice"
-import { Face, Image, Person, FaceDataFragment } from "@/__generated__/graphql"
+import {
+  Face,
+  Image,
+  Person,
+  FaceDataFragment,
+} from "@/lib/__generated__/graphql"
 import { Flex, Text } from "@chakra-ui/layout"
 import { Box, Grid, Spinner, useBreakpointValue } from "@chakra-ui/react"
 import React from "react"

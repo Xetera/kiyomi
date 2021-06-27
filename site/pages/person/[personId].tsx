@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/navbar"
 import { prefetchQuery } from "@/lib/client-helpers"
-import { usePersonPageQuery } from "@/__generated__/graphql"
+import { usePersonPageQuery } from "@/lib/__generated__/graphql"
 import { Stack } from "@chakra-ui/layout"
 import { GetServerSideProps } from "next"
 import { useRouter } from "next/router"

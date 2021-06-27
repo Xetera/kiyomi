@@ -395,6 +395,8 @@ export type Image = {
   fileName?: Maybe<Scalars['String']>;
   /** Human readable file size. Use `bytes` for a number representation. */
   fileSize: Scalars['String'];
+  /** The center of focus for the image */
+  focus: ImageCoordinate;
   /** SHA256 checksum of the image. */
   hash: Scalars['String'];
   /** Height of the image in pixels. */
@@ -460,6 +462,13 @@ export type ImageConnections = {
   edges: Array<ImageEdge>;
   images: Array<Image>;
   people: Array<Person>;
+};
+
+/** A coordinate representing a position on an image */
+export type ImageCoordinate = {
+  __typename?: 'ImageCoordinate';
+  x: Scalars['Int'];
+  y: Scalars['Int'];
 };
 
 export type ImageEdge = {
@@ -1230,8 +1239,11 @@ export type ImageDataFragment = (
 
 export type GridImageFragment = (
   { __typename?: 'Image' }
-  & Pick<Image, 'id' | 'url' | 'rawUrl' | 'aspectRatio' | 'createdAt'>
-  & { thumbnail: (
+  & Pick<Image, 'id' | 'url' | 'height' | 'width' | 'rawUrl' | 'aspectRatio' | 'createdAt'>
+  & { focus: (
+    { __typename?: 'ImageCoordinate' }
+    & Pick<ImageCoordinate, 'x' | 'y'>
+  ), thumbnail: (
     { __typename?: 'Thumbnail' }
     & Pick<Thumbnail, 'small'>
   ), uploadedBy?: Maybe<(
@@ -1411,6 +1423,12 @@ export const GridImageFragmentDoc = `
     fragment GridImage on Image {
   id
   url
+  height
+  width
+  focus {
+    x
+    y
+  }
   thumbnail {
     small
   }

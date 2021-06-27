@@ -1131,6 +1131,26 @@
   resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.1.1.tgz"
   integrity sha512-XO6INPbZCxdprl+9qa/AAbFFOMzzwqYxpjPgLICrMD6C2FCw6qfJOPcBk6JqqPLSaZ/Qx87qn4rpPmPMwaAK6w==
 
+"@turf/centroid@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@turf/centroid/-/centroid-6.4.0.tgz#4624a07c0b7eca9f0c2b4eb8e45bc6f88306626a"
+  integrity sha512-p78MVeJ3InVZzkBP4rpoWTUspsRqsW6a/fGuigfjizHz+YqTRXyG7HDkqoR8IwLwpQC83Nlw5kyacgMlgEbN+Q==
+  dependencies:
+    "@turf/helpers" "^6.4.0"
+    "@turf/meta" "^6.4.0"
+
+"@turf/helpers@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-6.4.0.tgz#e263d960ab1caed3bfe86a7f2f4b2096dbbf0635"
+  integrity sha512-7vVpWZwHP0Qn8DDSlM++nhs3/6zfPt+GODjvLVZ+sWIG4S3vOtUUOfO5eIjRzxsUHHqhgiIL0QA17u79uLM+mQ==
+
+"@turf/meta@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-6.4.0.tgz#6f6ff110199063c8eee3ee036ede2c1e52d12a04"
+  integrity sha512-fMra6vMskwz1knn0/tb22ppOeE8CCmpvOvTIxLdV1WYWAoC4bJ4WdXKvZRsJKpHOX5iFehx4DT8aaGdROA4Y3Q==
+  dependencies:
+    "@turf/helpers" "^6.4.0"
+
 "@tweenjs/tween.js@^18.6.4":
   version "18.6.4"
   resolved "https://registry.yarnpkg.com/@tweenjs/tween.js/-/tween.js-18.6.4.tgz#40a3d0a93647124872dec8e0fd1bd5926695b6ca"

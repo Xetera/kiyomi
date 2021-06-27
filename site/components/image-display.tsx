@@ -9,7 +9,7 @@ import {
   AppearanceDataFragment,
   FaceDataFragment,
   ImageDataFragment,
-} from "@/__generated__/graphql"
+} from "@/lib/__generated__/graphql"
 import Hr from "./hr"
 import { Box, Button, Flex } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/layout"

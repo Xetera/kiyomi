@@ -17,7 +17,8 @@ import { Image as ImageType } from "@prisma/client"
 import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
-import { getToken } from "next-auth/jwt"
+import centroid from "@turf/centroid"
+import { points } from "@turf/helpers"
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
@@ -26,6 +27,15 @@ export const Thumbnail = objectType({
     t.nonNull.string("large")
     t.nonNull.string("medium")
     t.nonNull.string("small")
+  },
+})
+
+export const ImageCoordinate = objectType({
+  name: "ImageCoordinate",
+  description: "A coordinate representing a position on an image",
+  definition(t) {
+    t.nonNull.int("x")
+    t.nonNull.int("y")
   },
 })
 
@@ -144,6 +154,36 @@ export const Image = objectType({
             },
           })
           .then(Boolean)
+      },
+    })
+    t.field("focus", {
+      type: nonNull(ImageCoordinate),
+      description: "The center of focus for the image",
+      async resolve(image, _, { prisma }) {
+        const faces = await prisma.face.findMany({
+          where: { imageId: image.id },
+        })
+        if (faces.length === 0) {
+          return {
+            x: Math.floor(image.width / 2),
+            y: Math.floor(image.height / 2),
+          }
+        }
+        try {
+          const coordinates = points(
+            faces.map((f) => [
+              Math.floor(f.x + f.width / 2),
+              Math.floor(f.y + f.height / 2),
+            ])
+          )
+          const polygon = centroid(coordinates)
+          const [x, y] = polygon.geometry.coordinates
+          return { x: Math.floor(x), y: Math.floor(y) }
+        } catch (err) {
+          console.log(err)
+          console.log(faces)
+          throw err
+        }
       },
     })
     t.field("unknownFaces", {

@@ -2,7 +2,7 @@ import React from "react"
 import Link from "next/link"
 import Masonry from "react-masonry-component"
 import { useBoolean, useWindowSize } from "react-use"
-import { ImageDataFragment } from "@/__generated__/graphql"
+import { ImageDataFragment } from "@/lib/__generated__/graphql"
 import dynamic from "next/dynamic"
 
 const THUMBNAIL_WIDTH = 300

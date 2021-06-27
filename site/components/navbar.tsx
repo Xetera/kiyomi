@@ -1,4 +1,4 @@
-import { useMeQuery, UserDataFragment } from "@/__generated__/graphql"
+import { useMeQuery, UserDataFragment } from "@/lib/__generated__/graphql"
 import { useSession } from "next-auth/client"
 import Link from "next/link"
 import React, { PropsWithChildren } from "react"

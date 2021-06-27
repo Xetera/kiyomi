@@ -1,4 +1,4 @@
-import { FaceDataFragment, Maybe } from "@/__generated__/graphql"
+import { FaceDataFragment, Maybe } from "@/lib/__generated__/graphql"
 import React from "react"
 
 type UseImageSliceOptions = {

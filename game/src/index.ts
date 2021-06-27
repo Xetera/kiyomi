@@ -53,6 +53,7 @@ import { backend } from "../../shared/sdk"
 import { z } from "zod"
 import { TemplatedApp } from "uWebSockets.js"
 import { randomInt, randomUUID } from "crypto"
+import { Topic, topics } from "./pubsub"
 
 const idFactory = new Hashids("salt!")
 
@@ -139,18 +140,18 @@ function joinRoom(
 
   player.room = room
   player.seat = seat
-  subscribe(player.sock, `room/${room.id}`)
+  subscribe(player.sock, topics.room(room.id))
   return seat
 }
 
-function subscribe(ws: uWS.WebSocket, topic: string) {
+function subscribe(ws: uWS.WebSocket, topic: Topic) {
   if (ws.isClosed) {
     return
   }
   ws.subscribe(topic)
 }
 
-function unsubscribe(ws: uWS.WebSocket, topic: string) {
+function unsubscribe(ws: uWS.WebSocket, topic: Topic) {
   if (ws.isClosed) {
     return
   }
@@ -289,7 +290,7 @@ function startRound(ctx: CommandContext) {
   ctx.room.roundStarted = true
   ctx.room.correctAnswer = prompt.answer.id
   const secs = ctx.room.difficulty.timePerRound
-  publish(ctx.app, `room/${ctx.room.id}`, {
+  publish(ctx.app, topics.room(ctx.room.id), {
     t: "round_start",
     round: {
       number: ctx.room.round,
@@ -307,7 +308,7 @@ function startRound(ctx: CommandContext) {
   })
   // we don't want to send users unnecessary events during games
   for (const seat of ctx.room.seats.values()) {
-    unsubscribe(seat.player.sock, "rooms")
+    unsubscribe(seat.player.sock, topics.rooms())
   }
   ctx.room.endingTimeout = setTimeout(() => {
     endRound(ctx)
@@ -340,9 +341,13 @@ function endRound(ctx: CommandContext) {
   // TODO: choose winners of round
   ctx.room.round++
   const payload = getRevealedAnswerPayload(ctx)
-  publish(ctx.app, `room/${ctx.room.id}`, payload)
+  publish(ctx.app, topics.room(ctx.room.id), payload)
   if (ctx.room.round >= ctx.room.maxRounds) {
     return finishGame(ctx)
+  }
+
+  for (const seat of ctx.room.seats.values()) {
+    unsubscribe(seat.player.sock, topics.answers(ctx.room.id))
   }
   setTimeout(() => {
     startRound(ctx)
@@ -355,7 +360,7 @@ function finishGame(ctx: CommandContext) {
   // })
 
   for (const seat of ctx.room.seats.values()) {
-    subscribe(seat.player.sock, "rooms")
+    subscribe(seat.player.sock, topics.rooms())
   }
 }
 
@@ -526,7 +531,7 @@ async function emitImagePool(room: Room, app: uWS.TemplatedApp) {
 export const privateMessageHandlers: PrivateMessageHandlers = {
   async rooms({ ws, reply }) {
     // we might have previously unsubscribed from games
-    subscribe(ws, "rooms")
+    subscribe(ws, topics.rooms())
     reply({ t: "rooms", rooms: activeRooms() })
   },
   async create_room({ reply, player, args, ws }) {
@@ -755,6 +760,8 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       return endRound(ctx)
     }
 
+    subscribe(rest.ws, topics.answers(ctx.room.id))
+
     reply(getRevealedAnswerPayload(ctx))
     // if the user sending packets has not answered yet they should
     // not see the other user's answer
@@ -901,7 +908,7 @@ async function main() {
           //   sock: ws,
           // })
         }
-        subscribe(ws, "rooms")
+        subscribe(ws, topics.rooms())
         // sending a fresh list of room without waiting for a first emit
         send(ws, { t: "rooms", rooms: activeRooms() })
       },

@@ -7,7 +7,11 @@ import {
   RiDeleteBinLine,
 } from "react-icons/ri"
 import PerfectScrollbar from "react-perfect-scrollbar"
-import { FaceDataFragment, Maybe, OneImageQuery } from "@/__generated__/graphql"
+import {
+  FaceDataFragment,
+  Maybe,
+  OneImageQuery,
+} from "@/lib/__generated__/graphql"
 import useImageSlice from "@/hooks/useImageSlice"
 
 function ActionButton({ icon, className }) {

@@ -7,7 +7,7 @@ import {
   useLinkFaceMutation,
   useRemoveAppearanceMutation,
   useUnlinkFaceMutation,
-} from "@/__generated__/graphql"
+} from "@/lib/__generated__/graphql"
 import React, { useMemo, useRef, useState } from "react"
 import { maxPortraitHeight, PersonPortrait } from "./person-preview"
 import dynamic from "next/dynamic"

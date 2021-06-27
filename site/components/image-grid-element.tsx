@@ -1,13 +1,19 @@
-import { Image as ImageData, Person, Thumbnail } from "@/__generated__/graphql"
+import {
+  Image as ImageData,
+  Person,
+  Thumbnail,
+} from "@/lib/__generated__/graphql"
 import Link from "next/link"
 import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react"
 import React, { useState } from "react"
 import format from "date-fns/format"
 import { AnimatePresence, motion } from "framer-motion"
-import { AppearanceDataFragment } from "@/__generated__/request"
 
 export type ImageGridElementProps = {
-  image: Pick<ImageData, "createdAt" | "id" | "url"> & {
+  image: Pick<
+    ImageData,
+    "createdAt" | "id" | "url" | "focus" | "width" | "height"
+  > & {
     thumbnail: Pick<Thumbnail, "small">
     appearances: Array<{
       person: Pick<Person, "name">
@@ -21,6 +27,13 @@ export function ImageGridElement(props: ImageGridElementProps) {
   const [hovering, setHovering] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const { image } = props
+  const { x, y } = image.focus
+  const toPercentage = (position: number, max: number) =>
+    `${Math.floor((position / max) * 100)}%`
+  const objectPosition = `${toPercentage(x, image.width)} ${toPercentage(
+    y,
+    image.height
+  )}`
 
   return (
     <Link href={image.url} key={image.id} passHref>
@@ -38,7 +51,7 @@ export function ImageGridElement(props: ImageGridElementProps) {
       >
         <Skeleton isLoaded={loaded} height="100%">
           <Image
-            objectPosition="center"
+            objectPosition={objectPosition}
             objectFit="cover"
             width="100%"
             height="100%"

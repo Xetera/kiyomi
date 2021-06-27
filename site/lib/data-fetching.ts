@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client"
 import { publicImageFields } from "./transformer"
-import { getSdk } from "@/__generated__/request"
 import { GraphQLClient } from "graphql-request"
 import {
   GetServerSideProps,
@@ -12,8 +11,6 @@ import { getSession } from "next-auth/client"
 export const client = new GraphQLClient(
   `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`
 )
-
-export const sdk = getSdk(client)
 
 export const imageFindOptionsFaceSelection = {
   id: true,

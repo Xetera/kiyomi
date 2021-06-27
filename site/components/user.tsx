@@ -5,7 +5,7 @@ import {
   Role,
   UserDataFragment,
   User as UserData,
-} from "@/__generated__/graphql"
+} from "@/lib/__generated__/graphql"
 import { Box, Text } from "@chakra-ui/layout"
 import { Flex, Image, Tag } from "@chakra-ui/react"
 

@@ -15,7 +15,7 @@ import { ImageContext } from "@/models/contexts"
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout"
 import { Grid, Tooltip, useToast, UseToastOptions } from "@chakra-ui/react"
 import { useSession } from "next-auth/client"
-import { useToggleLikeMutation } from "@/__generated__/graphql"
+import { useToggleLikeMutation } from "@/lib/__generated__/graphql"
 import useQueue from "./queue-button"
 import { useRouter } from "next/router"
 

@@ -96,6 +96,8 @@ export interface Image {
     fileName?: Scalars['String']
     /** Human readable file size. Use `bytes` for a number representation. */
     fileSize: Scalars['String']
+    /** The center of focus for the image */
+    focus: ImageCoordinate
     /** SHA256 checksum of the image. */
     hash: Scalars['String']
     /** Height of the image in pixels. */
@@ -140,6 +142,14 @@ export interface ImageConnections {
     images: Image[]
     people: Person[]
     __typename: 'ImageConnections'
+}
+
+
+/** A coordinate representing a position on an image */
+export interface ImageCoordinate {
+    x: Scalars['Int']
+    y: Scalars['Int']
+    __typename: 'ImageCoordinate'
 }
 
 export interface ImageEdge {
@@ -695,6 +705,8 @@ export interface ImageRequest{
     fileName?: boolean | number
     /** Human readable file size. Use `bytes` for a number representation. */
     fileSize?: boolean | number
+    /** The center of focus for the image */
+    focus?: ImageCoordinateRequest
     /** SHA256 checksum of the image. */
     hash?: boolean | number
     /** Height of the image in pixels. */
@@ -737,6 +749,15 @@ export interface ImageConnectionsRequest{
     edges?: ImageEdgeRequest
     images?: ImageRequest
     people?: PersonRequest
+    __typename?: boolean | number
+    __scalar?: boolean | number
+}
+
+
+/** A coordinate representing a position on an image */
+export interface ImageCoordinateRequest{
+    x?: boolean | number
+    y?: boolean | number
     __typename?: boolean | number
     __scalar?: boolean | number
 }
@@ -1366,6 +1387,14 @@ export const isImageConnections = (obj?: { __typename?: any } | null): obj is Im
 
 
 
+const ImageCoordinate_possibleTypes = ['ImageCoordinate']
+export const isImageCoordinate = (obj?: { __typename?: any } | null): obj is ImageCoordinate => {
+  if (!obj?.__typename) throw new Error('__typename is missing in "isImageCoordinate"')
+  return ImageCoordinate_possibleTypes.includes(obj.__typename)
+}
+
+
+
 const ImageEdge_possibleTypes = ['ImageEdge']
 export const isImageEdge = (obj?: { __typename?: any } | null): obj is ImageEdge => {
   if (!obj?.__typename) throw new Error('__typename is missing in "isImageEdge"')
@@ -1594,6 +1623,9 @@ fileName: ({get: (request?: boolean|number, defaultValue?: (Scalars['String'] | 
 /** Human readable file size. Use `bytes` for a number representation. */
 fileSize: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     
+/** The center of focus for the image */
+focus: (ImageCoordinatePromiseChain & {get: <R extends ImageCoordinateRequest>(request: R, defaultValue?: FieldsSelection<ImageCoordinate, R>) => Promise<FieldsSelection<ImageCoordinate, R>>}),
+    
 /** SHA256 checksum of the image. */
 hash: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Promise<Scalars['String']>}),
     
@@ -1661,6 +1693,9 @@ fileName: ({get: (request?: boolean|number, defaultValue?: (Scalars['String'] | 
 /** Human readable file size. Use `bytes` for a number representation. */
 fileSize: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     
+/** The center of focus for the image */
+focus: (ImageCoordinateObservableChain & {get: <R extends ImageCoordinateRequest>(request: R, defaultValue?: FieldsSelection<ImageCoordinate, R>) => Observable<FieldsSelection<ImageCoordinate, R>>}),
+    
 /** SHA256 checksum of the image. */
 hash: ({get: (request?: boolean|number, defaultValue?: Scalars['String']) => Observable<Scalars['String']>}),
     
@@ -1719,6 +1754,20 @@ export interface ImageConnectionsObservableChain{
     edges: ({get: <R extends ImageEdgeRequest>(request: R, defaultValue?: FieldsSelection<ImageEdge, R>[]) => Observable<FieldsSelection<ImageEdge, R>[]>}),
     images: ({get: <R extends ImageRequest>(request: R, defaultValue?: FieldsSelection<Image, R>[]) => Observable<FieldsSelection<Image, R>[]>}),
     people: ({get: <R extends PersonRequest>(request: R, defaultValue?: FieldsSelection<Person, R>[]) => Observable<FieldsSelection<Person, R>[]>})
+}
+
+
+/** A coordinate representing a position on an image */
+export interface ImageCoordinatePromiseChain{
+    x: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Promise<Scalars['Int']>}),
+    y: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Promise<Scalars['Int']>})
+}
+
+
+/** A coordinate representing a position on an image */
+export interface ImageCoordinateObservableChain{
+    x: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Observable<Scalars['Int']>}),
+    y: ({get: (request?: boolean|number, defaultValue?: Scalars['Int']) => Observable<Scalars['Int']>})
 }
 
 export interface ImageEdgePromiseChain{

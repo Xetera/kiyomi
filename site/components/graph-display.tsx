@@ -1,7 +1,7 @@
 import {
   ImageConnectionEdge,
   useConnectionGraphQuery,
-} from "@/__generated__/graphql"
+} from "@/lib/__generated__/graphql"
 import { Flex } from "@chakra-ui/react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"

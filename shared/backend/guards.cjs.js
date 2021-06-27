@@ -71,6 +71,14 @@ module.exports.isImageConnections = function(obj) {
 
 
 
+var ImageCoordinate_possibleTypes = ['ImageCoordinate']
+module.exports.isImageCoordinate = function(obj) {
+  if (!obj || !obj.__typename) throw new Error('__typename is missing in "isImageCoordinate"')
+  return ImageCoordinate_possibleTypes.includes(obj.__typename)
+}
+
+
+
 var ImageEdge_possibleTypes = ['ImageEdge']
 module.exports.isImageEdge = function(obj) {
   if (!obj || !obj.__typename) throw new Error('__typename is missing in "isImageEdge"')

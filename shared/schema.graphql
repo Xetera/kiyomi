@@ -341,6 +341,9 @@ type Image {
   """Human readable file size. Use `bytes` for a number representation."""
   fileSize: String!
 
+  """The center of focus for the image"""
+  focus: ImageCoordinate!
+
   """SHA256 checksum of the image."""
   hash: String!
 
@@ -402,6 +405,12 @@ type ImageConnections {
   edges: [ImageEdge!]!
   images: [Image!]!
   people: [Person!]!
+}
+
+"""A coordinate representing a position on an image"""
+type ImageCoordinate {
+  x: Int!
+  y: Int!
 }
 
 type ImageEdge {

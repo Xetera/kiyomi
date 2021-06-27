@@ -3133,6 +3133,10 @@ export interface NexusGenObjects {
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     people: NexusGenRootTypes['Person'][]; // [Person!]!
   }
+  ImageCoordinate: { // root type
+    x: number; // Int!
+    y: number; // Int!
+  }
   ImageEdge: { // root type
     from: number; // Int!
     to: number; // Int!
@@ -3238,6 +3242,7 @@ export interface NexusGenFieldTypes {
     faceScanDate: NexusGenScalars['DateTime'] | null; // DateTime
     fileName: string | null; // String
     fileSize: string; // String!
+    focus: NexusGenRootTypes['ImageCoordinate']; // ImageCoordinate!
     hash: string; // String!
     height: number; // Int!
     id: number; // Int!
@@ -3264,6 +3269,10 @@ export interface NexusGenFieldTypes {
     edges: NexusGenRootTypes['ImageEdge'][]; // [ImageEdge!]!
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     people: NexusGenRootTypes['Person'][]; // [Person!]!
+  }
+  ImageCoordinate: { // field return type
+    x: number; // Int!
+    y: number; // Int!
   }
   ImageEdge: { // field return type
     from: number; // Int!
@@ -3409,6 +3418,7 @@ export interface NexusGenFieldTypeNames {
     faceScanDate: 'DateTime'
     fileName: 'String'
     fileSize: 'String'
+    focus: 'ImageCoordinate'
     hash: 'String'
     height: 'Int'
     id: 'Int'
@@ -3435,6 +3445,10 @@ export interface NexusGenFieldTypeNames {
     edges: 'ImageEdge'
     images: 'Image'
     people: 'Person'
+  }
+  ImageCoordinate: { // field return type name
+    x: 'Int'
+    y: 'Int'
   }
   ImageEdge: { // field return type name
     from: 'Int'

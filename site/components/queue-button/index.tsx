@@ -1,4 +1,4 @@
-import { useAddToQueueMutation } from "@/__generated__/graphql"
+import { useAddToQueueMutation } from "@/lib/__generated__/graphql"
 import { Button, useToast } from "@chakra-ui/react"
 
 type QueueButtonProps = {
