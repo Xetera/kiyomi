@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
+    "noImplicitAny": false,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -18,10 +23,24 @@
     "baseUrl": ".",
     "pretty": true,
     "paths": {
-      "@/*": ["*"],
-      "~shared": ["../shared/*"],
+      "@/*": [
+        "*"
+      ],
+      "~shared": [
+        "../shared/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "colors.js", "../shared", "../shared/backend"],
-  "exclude": ["node_modules"]
+  "include": [
+    "typings",
+    "**/*.ts",
+    "**/*.tsx",
+    "colors.js",
+    "../shared",
+    "../shared/backend"
+  ],
+  "exclude": [
+    "node_modules",
+    "scripts"
+  ],
 }

@@ -19,23 +19,7 @@ import { RiSearchLine } from "react-icons/ri"
 import { wrapRequest } from "@/lib/data-fetching"
 import ImageGrid from "@/components/image-grid"
 
-function getKey(index: number, prevData: any) {
-  if (!index) {
-    return `/api/image`
-  }
-  return `/api/image?cursor=${prevData.cursor}`
-}
-
-function Tab({ active, children }) {
-  return (
-    <span className={`${active ? "text-blueGray-300" : "text-blueGray-500"}`}>
-      {children}
-    </span>
-  )
-}
-
 export default function Home() {
-  console.log("rendering home")
   const pageRef = React.useRef(null)
   const [activeTab, setActiveTab] = React.useState(0)
   const [fetching, setFetching] = React.useState(false)

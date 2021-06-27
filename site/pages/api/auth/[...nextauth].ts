@@ -1,13 +1,10 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
-import { User as DatabaseUser } from "@prisma/client"
 import Providers from "next-auth/providers"
 import Adapters from "next-auth/adapters"
 import { prisma } from "@/lib/db"
 import { NextApiRequest, NextApiResponse } from "next"
 import { generateUserToken } from "@/lib/auth"
 import { Role } from "@/lib/permissions"
-import jwt from "jsonwebtoken"
-import { add, getUnixTime } from "date-fns"
 import { JWT } from "next-auth/jwt"
 
 if (!process.env.JWT_SECRET) {
@@ -69,7 +66,7 @@ const options: NextAuthOptions = {
     },
   },
   events: {
-    async createUser(user: DatabaseUser) {
+    async createUser(user) {
       // TODO: this fires 2 save requests per sign up
       // should just add a token while creating the user but
       // idk how lol

@@ -1,4 +1,4 @@
-import { OneImageQuery } from "@/__generated__/graphql"
+import { OneImageQuery } from "@/lib/__generated__/graphql"
 import React from "react"
 import { WebSocketHook } from "react-use-websocket/dist/lib/types"
 import {

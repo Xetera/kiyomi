@@ -57,7 +57,7 @@ export const Query = queryField((t) => {
       })
       return result.map((res) => {
         return {
-          group: groups.find((g) => g.id === res.id),
+          group: groups.find((g) => g.id === res.id)!,
           count: res.count,
         }
       })

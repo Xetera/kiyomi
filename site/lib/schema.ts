@@ -19,12 +19,12 @@ const publicTypes = Object.fromEntries(
 const sourceTypes = {
   modules: [{ module: ".prisma/client", alias: "PrismaClient" }],
 }
+const outBase = path.join(process.cwd(), "..", "shared")
+
 const contextType = {
-  module: path.resolve(process.cwd(), "lib/context-type.ts"),
+  module: path.resolve(outBase, "context-type.ts"),
   export: "Context",
 }
-
-const outBase = path.join(process.cwd(), "..", "shared")
 
 export const schema = makeSchema({
   plugins: [

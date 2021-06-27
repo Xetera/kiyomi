@@ -25,7 +25,7 @@ RUN yarn typecheck
 RUN yarn build
 RUN yarn tf
 
-FROM nikolaik/python-nodejs:python3.8-nodejs14-slim
+FROM nikolaik/python-nodejs:python3.8-nodejs14-slim as release
 RUN apt update && apt-get install -y --no-install-recommends libssl-dev build-essential && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/app/labeler

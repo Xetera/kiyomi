@@ -1,4 +1,3 @@
-import { Image } from ".prisma/client"
 import amqplib from "amqplib"
 
 const amqpConnectionUrl = process.env.AMQP_URL ?? "amqp://localhost:3333"

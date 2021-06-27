@@ -12,7 +12,6 @@ import mimeType from "mime-types"
 import sizeOf from "image-size"
 import { Appearance, Person, Image, Prisma, MimeType } from "@prisma/client"
 import idgen from "nanoid"
-import { imageFindOptions, sdk } from "@/lib/data-fetching"
 import { amqpPromise, sendImageToFaceRecognition } from "@/lib/amqp"
 import { backend, FaceData, ImageData } from "../../../../shared/sdk"
 

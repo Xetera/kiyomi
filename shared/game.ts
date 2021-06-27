@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { clientGroup } from "../game/src/messaging"
 export const clientPerson = z.object({
   id: z.number(),
   name: z.string(),

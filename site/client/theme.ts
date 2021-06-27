@@ -39,6 +39,7 @@ const theme = extendTheme({
     bgSecondary: "#11131d",
     bgTertiary: "#161927",
     borderSubtle: "#131621",
+    borderLight: "#272e34",
     brand: {
       900: "#0D0F17",
       800: "#11121D",
@@ -52,11 +53,7 @@ const theme = extendTheme({
     },
   },
   components: {
-    Checkbox: {
-      baseStyle: {
-        border: "1px solid blue",
-      },
-    },
+    Checkbox: {},
     NumberIncrementStepper: {
       baseStyle: {
         borderInlineStartColor: "borderSubtle",
@@ -71,10 +68,10 @@ const theme = extendTheme({
   styles: {
     global: {
       "*, *::before, ::after": {
-        borderColor: "borderSubtle",
+        borderColor: "borderLight",
       },
       body: {
-        borderColor: "borderSubtle",
+        borderColor: "borderLight",
         bg: "bgPrimary",
       },
     },

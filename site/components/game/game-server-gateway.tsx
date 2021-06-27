@@ -5,19 +5,23 @@ import { store } from "@/models/store"
 import { OutgoingMessage } from "../../../shared/game"
 import { useInterval } from "@chakra-ui/react"
 import useToast from "@/hooks/useToast"
+import { useRouter } from "next/router"
 
 export type GameServerGatewayProps = {}
 
 export default function GameServerGateway({
   children,
 }: PropsWithChildren<GameServerGatewayProps>) {
+  const router = useRouter()
   const info = useToast("info")
   const warning = useToast("warning")
   const { sendMessage } = useWebSocket(process.env.NEXT_PUBLIC_GAME_URL!, {
     onOpen() {
-      info({
-        description: "Connected to game servers",
-      })
+      if (router.basePath.startsWith("/game")) {
+        info({
+          description: "Connected to game servers",
+        })
+      }
       store.dispatch.game.connectionChange(true)
     },
     async onMessage(m) {
@@ -25,13 +29,15 @@ export default function GameServerGateway({
       await store.dispatch.game.message(incoming)
     },
     onClose(e) {
-      console.log(`Disconnected from game server`, e)
       store.dispatch.game.connectionChange(false)
+      console.log(`Disconnected from game server`, e)
     },
     onReconnectStop(attempts) {
-      warning({
-        description: `Failed to reconnect to game servers after ${attempts} attempts. Try refreshing the page later.`,
-      })
+      if (router.basePath.startsWith("/game")) {
+        warning({
+          description: `Failed to reconnect to game servers after ${attempts} attempts. Try refreshing the page later.`,
+        })
+      }
     },
     shouldReconnect(_e) {
       warning({

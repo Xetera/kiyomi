@@ -325,24 +325,14 @@ export const Mutation = mutationField((t) => {
     args: {
       slug: nonNull(stringArg()),
     },
-    async authorize(_, args, { prisma, user }) {
-      if (!user) {
-        return false
-      }
-      return true
-      // allowing any logged in user for now
-
-      // const role = await prisma.role.findUnique({
-      //   where: {
-      //     userRole: {
-      //       userId: user.id,
-      //       name: Role.Administrator,
-      //     },
-      //   },
-      // });
-
-      // return Boolean(role);
-    },
+    authorize() {},
+    // async authorize(_, args, { prisma, user }) {
+    //   if (!user) {
+    //     return false
+    //   }
+    //   // allowing any logged in user for now
+    //   return true
+    // },
     async resolve(_root, { slug }, { prisma, amqp }) {
       const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler"
       if (!amqp) {
@@ -485,7 +475,7 @@ export const PrivateQuery = queryField((t) => {
           Object.entries(r).map(([key, value]) => [camelCase(key), value])
         )
       // TODO: weights based on idol popularity?
-      return sampleSize(response, args.amount).map((res: Response) => ({
+      return sampleSize<Response>(response, args.amount).map((res) => ({
         face: replace(res.face),
         image: replace(res.image),
         person: replace(res.person),
@@ -615,7 +605,7 @@ export const PrivateMutation = mutationField((t) => {
         })
       const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, added_by_id, appearance_id, source) VALUES`
       const templatedString = faces
-        .map(({ x, y, height, width, descriptor, certainty }) => {
+        .map(({ x, y, height, width, descriptor, certainty }: any) => {
           const cube = descriptor.join(",")
           const userId = user.id
           const linkedPerson = existingAppearance?.id ?? "NULL"
