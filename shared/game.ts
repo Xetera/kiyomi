@@ -149,6 +149,7 @@ export const Messages = {
   join_room: z.object({
     room: z.string().nonempty(),
   }),
+  hint: z.object({}),
   // pick_person: pickPerson,
   rooms: z.object({}),
   leave_room: z.object({}),
@@ -225,6 +226,11 @@ export const outgoingMessageData = {
   room_update: z.object({
     room: clientRoom,
     coordinationId: z.number().optional(),
+  }),
+  hint: z.object({
+    // null when the person being guessed has no preferred group
+    groupName: z.string().optional(),
+    aliases: z.array(z.string()).optional(),
   }),
   rooms: z.object({ rooms: z.array(clientRoomPreview) }),
   users_update: z.object({ seats: z.array(clientSeat) }),

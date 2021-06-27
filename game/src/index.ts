@@ -270,16 +270,17 @@ function getRevealedAnswerPayload(
   }
 }
 
-function currentImage(ctx: CommandContext) {
+function currentQuestion(ctx: CommandContext) {
   return ctx.room.imagePool[ctx.room.round]
 }
 
 function startRound(ctx: CommandContext) {
   // resetting the previous round's answers back to nothing
   for (const seat of ctx.room.seats.values()) {
+    seat.hintUsed = false
     seat.answer = undefined
   }
-  const prompt = currentImage(ctx)
+  const prompt = currentQuestion(ctx)
   if (!prompt) {
     throw new Error("End of the prompt?")
   }
@@ -344,7 +345,6 @@ function endRound(ctx: CommandContext) {
     return finishGame(ctx)
   }
   setTimeout(() => {
-    // publish(ctx.app, `room/${ctx.room.id}`, { t: "sta"})
     startRound(ctx)
   }, DEFAULT_ROUND_WAIT_TIME * 1000)
 }
@@ -689,6 +689,50 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       startRound(ctx)
     }, DEFAULT_START_TIMEOUT * 1000)
   },
+  hint({ args, ...rest }) {
+    const { reply, player } = rest
+    const ctx = commandCtx(rest)
+    if (!player.room || !player.seat) {
+      throw new ClientError("You must be in a room")
+    }
+    const { room } = player
+    if (!room.started) {
+      throw new ClientError("You cannot use a hint before the game starts")
+    }
+    if (room.difficulty.hints === "disabled") {
+      throw new ClientError("Hints are disabled for this room")
+    }
+
+    if (room.difficulty.hints === "limited") {
+      const previousHints = room.history.filter(
+        (question) => question.answers.get(player.id)?.hintUsed
+      )
+      // TODO: make this dynamic?
+      if (previousHints.length >= 2) {
+        throw new ClientError("You've used all your hints")
+      }
+    }
+    player.seat.hintUsed = true
+    const question = currentQuestion(ctx)
+    if (!question) {
+      throw new ClientError(
+        "Your room doesn't have an image assigned? This shouldn't be happening"
+      )
+    }
+
+    // not every group has an explicit preferred membership
+    const firstMembership =
+      question.answer.preferredMembership ?? question.answer.memberOf[0]
+    if (!firstMembership) {
+      // no groups for the person being guessed. Shouldn't happen but it could in the future
+      return reply({ t: "hint" })
+    }
+    reply({
+      t: "hint",
+      groupName: firstMembership.group.name,
+      aliases: firstMembership.group.aliases.map((e) => e.name),
+    })
+  },
   answer({ args, ...rest }) {
     const { player, reply } = rest
     const ctx = commandCtx(rest)
@@ -749,7 +793,6 @@ async function authorize(ws: uWS.WebSocket, explicitToken?: string) {
   })
   if (!user) {
     throw new ClientError("Invalid User")
-    // return reply({ t: "error", message: "Invalid user" })
   }
   const { avatar, name } = user
   const player = createPlayer({

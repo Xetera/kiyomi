@@ -66,7 +66,7 @@ const GameSearch = forwardRef((props, ref) => {
 const SearchResults = forwardRef((props, ref) => {
   const { send } = React.useContext(GameServerContext)
   const results = useState((r) => r.game.personHintResults)
-  function submit(event: KeyboardEvent<HTMLDivElement>, id: number) {
+  function submit(event: React.KeyboardEvent<HTMLDivElement>, id: number) {
     if (event.key !== "Enter") {
       return
     }
@@ -112,8 +112,11 @@ const SearchResults = forwardRef((props, ref) => {
 
 function GameFill() {
   const { round } = useState((r) => pick(r.game, ["round"]))
+  if (!round) {
+    return null
+  }
   const value = useTween("linear", round.secs * 1000)
-  console.log({ value, num: round.number })
+
   return (
     <Progress value={value} min={0} max={1} width="100%" key={round.number} />
   )
