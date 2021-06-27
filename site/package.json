@@ -55,7 +55,7 @@
     "next-auth": "^3.13.3",
     "nexus": "^1.0.0",
     "nexus-plugin-prisma": "^0.35.0",
-    "postcss": "^8.2.8",
+    "postcss": "^8.2.10",
     "react": "17.0.1",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "17.0.1",
