@@ -4,7 +4,7 @@
  */
 
 import * as PrismaClient from ".prisma/client"
-import { Context } from "./context-type"
+import { Context } from "./../site/lib/context-type"
 import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 import { QueryComplexity } from "nexus/dist/plugins/queryComplexityPlugin"
 

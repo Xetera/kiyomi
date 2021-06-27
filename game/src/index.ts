@@ -1,5 +1,4 @@
 import * as uWS from "uWebSockets.js"
-// @ts-ignore
 import Hashids from "hashids"
 import { logger } from "./config"
 import jose from "jose"

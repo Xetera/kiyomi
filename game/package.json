@@ -17,6 +17,7 @@
     "test": "tsdx test",
     "lint": "tsdx lint",
     "size": "size-limit",
+    "typecheck": "tsc --noEmit",
     "analyze": "size-limit --why"
   },
   "peerDependencies": {},
@@ -75,6 +76,7 @@
     "cross-env": "^7.0.3",
     "fastify": "^3.15.1",
     "fastify-cors": "^6.0.1",
+    "graphql": "^15.5.1",
     "hashids": "^2.2.8",
     "ioredis": "^4.27.3",
     "jose": "^1.27.2",

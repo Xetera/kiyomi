@@ -3,7 +3,7 @@ import { getUserFromToken } from "@/lib/auth"
 import { getSession } from "next-auth/client"
 import { amqpPromise } from "@/lib/amqp"
 import { NextApiRequest, NextApiResponse } from "next"
-import { Context } from "../../shared/context-type"
+import { Context } from "./context-type"
 
 type ContextInput = {
   req: NextApiRequest

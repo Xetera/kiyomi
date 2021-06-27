@@ -22,7 +22,7 @@ const sourceTypes = {
 const outBase = path.join(process.cwd(), "..", "shared")
 
 const contextType = {
-  module: path.resolve(outBase, "context-type.ts"),
+  module: path.resolve(process.cwd(), "lib/context-type.ts"),
   export: "Context",
 }
 
