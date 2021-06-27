@@ -1,70 +1,70 @@
-import React, { useRef } from "react";
-import ImageDisplay from "@/components/image-display";
-import ImageSidebar from "@/components/image-sidebar";
-import { FaceContext, ImageContext } from "@/models/contexts";
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
-import NextHead from "next/head";
-import { RiSpyLine } from "react-icons/ri";
-import ReactModal from "react-modal";
-import { useRouter } from "next/router";
-import { useOneImageQuery } from "@/__generated__/graphql";
-import { ImageEditModal } from "@/components/image-edit-modal";
-import { prefetchQuery } from "@/lib/client-helpers";
-import { prisma } from "@/lib/db";
-import { wrapRequest } from "@/lib/data-fetching";
-import { Flex, Heading, Text } from "@chakra-ui/layout";
+import React, { useRef } from "react"
+import ImageDisplay from "@/components/image-display"
+import ImageSidebar from "@/components/image-sidebar"
+import { FaceContext, ImageContext } from "@/models/contexts"
+import { Footer } from "@/components/footer"
+import { Navbar } from "@/components/navbar"
+import NextHead from "next/head"
+import { RiSpyLine } from "react-icons/ri"
+import ReactModal from "react-modal"
+import { useRouter } from "next/router"
+import { useOneImageQuery } from "@/lib/__generated__/graphql"
+import { ImageEditModal } from "@/components/image-edit-modal"
+import { prefetchQuery } from "@/lib/client-helpers"
+import { prisma } from "@/lib/db"
+import { wrapRequest } from "@/lib/data-fetching"
+import { Flex, Heading, Text } from "@chakra-ui/layout"
 import {
   ContextSidebar,
   SidebarItem,
   WithSidebar,
-} from "@/components/context-sidebar";
-import { Box } from "@chakra-ui/react";
-import { FaceAppearance } from "@/components/face-appearance";
-import { GraphDisplay } from "@/components/graph-display";
+} from "@/components/context-sidebar"
+import { Box } from "@chakra-ui/react"
+import { FaceAppearance } from "@/components/face-appearance"
+import { GraphDisplay } from "@/components/graph-display"
 
 const Image = () => {
-  const [isEditOpen, setEditOpen] = React.useState(false);
-  const router = useRouter();
-  const slug = router.query.slug as string;
-  const [face, setFace] = React.useState("");
+  const [isEditOpen, setEditOpen] = React.useState(false)
+  const router = useRouter()
+  const slug = router.query.slug as string
+  const [face, setFace] = React.useState("")
   // best approximation for width
-  const [containerWidth, setContainerWidth] = React.useState(600);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { data, isFetching, refetch } = useOneImageQuery({ slug });
+  const [containerWidth, setContainerWidth] = React.useState(600)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { data, isFetching, refetch } = useOneImageQuery({ slug })
 
   function closeModal() {
-    refetch();
-    setEditOpen(false);
+    refetch()
+    setEditOpen(false)
   }
 
   React.useEffect(() => {
-    const { classList } = document.querySelector("body")!;
+    const { classList } = document.querySelector("body")!
     if (isEditOpen) {
-      classList.add("overflow-hidden");
+      classList.add("overflow-hidden")
     } else {
-      classList.remove("overflow-hidden");
+      classList.remove("overflow-hidden")
     }
-  }, [isEditOpen]);
+  }, [isEditOpen])
 
   React.useEffect(() => {
-    const dimensions = containerRef.current?.getBoundingClientRect();
+    const dimensions = containerRef.current?.getBoundingClientRect()
     if (dimensions) {
-      setContainerWidth(dimensions.width);
+      setContainerWidth(dimensions.width)
     }
-  }, []);
+  }, [])
   const personIds = React.useMemo(
     () => data?.image?.appearances.map((r) => r.person.id) ?? [],
     [data]
-  );
+  )
 
   if (!data) {
-    return null;
+    return null
   }
 
-  const { image } = data;
+  const { image } = data
   if (!image) {
-    return null;
+    return null
   }
 
   return (
@@ -165,11 +165,11 @@ const Image = () => {
         </ReactModal>
       </ImageContext.Provider>
     </FaceContext.Provider>
-  );
-};
+  )
+}
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
-  const slug = ctx.params!.slug as string;
+  const slug = ctx.params!.slug as string
   prisma.image
     .update({
       where: { slug },
@@ -179,14 +179,14 @@ export const getServerSideProps = wrapRequest(async (ctx) => {
         },
       },
     })
-    .catch(console.error);
-  const dehydratedState = await prefetchQuery("OneImage", { slug });
+    .catch(console.error)
+  const dehydratedState = await prefetchQuery("OneImage", { slug })
   return {
     props: {
       slug,
       dehydratedState,
     },
-  };
-});
+  }
+})
 
-export default Image;
+export default Image

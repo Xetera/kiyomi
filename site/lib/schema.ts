@@ -1,19 +1,26 @@
-import { fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from "nexus";
-import { nexusPrisma } from "nexus-plugin-prisma";
-import path from "path";
-import * as types from "./resolvers";
+import { fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from "nexus"
+import { nexusPrisma } from "nexus-plugin-prisma"
+import path from "path"
+import * as types from "./resolvers"
 
 const publicTypes = Object.fromEntries(
   Object.entries(types).map(([key, value]) => {
-    return [key, Object.fromEntries(
-      Object.entries(value).filter(([name]) => !name.toLowerCase().startsWith("private"))
-    )]
+    return [
+      key,
+      Object.fromEntries(
+        Object.entries(value).filter(
+          ([name]) => !name.toLowerCase().startsWith("private")
+        )
+      ),
+    ]
   })
 )
 
 const sourceTypes = {
   modules: [{ module: ".prisma/client", alias: "PrismaClient" }],
 }
+const outBase = path.join(process.cwd(), "..", "shared")
+
 const contextType = {
   module: path.resolve(process.cwd(), "lib/context-type.ts"),
   export: "Context",
@@ -29,15 +36,15 @@ export const schema = makeSchema({
     queryComplexityPlugin(),
   ],
   outputs: {
-    schema: path.join(process.cwd(), "__generated__", "schema.graphql"),
-    typegen: path.join(process.cwd(), "__generated__", "index.d.ts"),
+    schema: path.join(outBase, "schema.graphql"),
+    typegen: path.join(outBase, "index.d.ts"),
   },
   sourceTypes,
   contextType,
   shouldExitAfterGenerateArtifacts:
     process.env.SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === "true",
   types: publicTypes,
-});
+})
 
 export const privateSchema = makeSchema({
   plugins: [
@@ -49,12 +56,12 @@ export const privateSchema = makeSchema({
     queryComplexityPlugin(),
   ],
   outputs: {
-    schema: path.join(process.cwd(), "__generated__", "private.schema.graphql"),
-    typegen: path.join(process.cwd(), "__generated__", "private.index.d.ts"),
+    schema: path.join(outBase, "private.schema.graphql"),
+    typegen: path.join(outBase, "private.index.d.ts"),
   },
   sourceTypes,
   contextType,
   shouldExitAfterGenerateArtifacts:
     process.env.SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === "true",
   types,
-});
+})

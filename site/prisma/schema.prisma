@@ -1,7 +1,8 @@
 generator client {
-  provider      = "prisma-client-js"
+  provider        = "prisma-client-js"
+  // previewFeatures = ["napi"]
   // required by alpine linux
-  binaryTargets = ["native", "linux-musl"]
+  binaryTargets   = ["native", "linux-musl"]
 }
 
 datasource db {
@@ -58,18 +59,20 @@ model Alias {
 }
 
 model Person {
-  id               Int           @id @default(autoincrement())
-  description      String?
-  name             String
-  preferredAlias   Alias?        @relation("preferred_alias", fields: [preferredAliasId], references: [id])
-  preferredAliasId Int?          @map("preferred_alias_id")
-  aliases          Alias[]
-  appearsIn        Face[]        @relation("face_person")
-  createdAt        DateTime      @default(now()) @map("created_at")
-  updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at")
-  ireneBotId       Int?          @unique @map("irene_bot_id")
-  appearances      Appearance[]
-  memberOf         GroupMember[]
+  id                    Int           @id @default(autoincrement())
+  description           String?
+  name                  String
+  preferredAlias        Alias?        @relation("preferred_alias", fields: [preferredAliasId], references: [id])
+  preferredAliasId      Int?          @map("preferred_alias_id")
+  aliases               Alias[]
+  appearsIn             Face[]        @relation("face_person")
+  createdAt             DateTime      @default(now()) @map("created_at")
+  updatedAt             DateTime      @default(now()) @updatedAt @map("updated_at")
+  ireneBotId            Int?          @unique @map("irene_bot_id")
+  appearances           Appearance[]
+  memberOf              GroupMember[]
+  preferredMembershipId Int?          @map("preferred_membership_id")
+  preferredMembership   GroupMember?  @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
 
   @@index([name], name: "person.name.index")
   @@map("persons")
@@ -206,7 +209,7 @@ model Image {
   appearances         Appearance[] @relation("image_appearances")
   faceScanDate        DateTime?    @map("face_scan_date")
   faceScanRequestDate DateTime?    @map("face_scan_request_date")
-  ireneBotId          Int?         @unique
+  ireneBotId          Int?         @map("irene_bot_id") @unique
   tags                Tag[]
   faces               Face[]
   likes               ImageLike[]
@@ -231,15 +234,17 @@ model ImageLike {
 }
 
 model GroupMember {
-  id        Int       @id @default(autoincrement())
-  person    Person    @relation(fields: [personId], references: [id])
-  personId  Int
-  group     Group     @relation(fields: [groupId], references: [id])
-  groupId   Int
-  startDate  DateTime?
-  endDate   DateTime?
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  id                    Int       @id @default(autoincrement())
+  person                Person    @relation(fields: [personId], references: [id])
+  personId              Int       @map("person_id")
+  group                 Group     @relation(fields: [groupId], references: [id])
+  groupId               Int       @map("group_id")
+  startDate             DateTime? @map("start_date")
+  endDate               DateTime? @map("end_date")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at")
+  // This needs to be here for some reason but it makes no sense
+  preferredMemberships_ Person[]  @relation("preferred_membership")
 
   @@unique([groupId, personId], name: "member")
   @@map("group_members")

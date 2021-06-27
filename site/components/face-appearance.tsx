@@ -1,18 +1,23 @@
-import { useImageSliceCanvas } from "@/hooks/useImageSlice";
-import { Face, Image, Person, FaceDataFragment } from "@/__generated__/graphql";
-import { Flex, Text } from "@chakra-ui/layout";
-import { Box, Grid, Spinner, useBreakpointValue } from "@chakra-ui/react";
-import React from "react";
+import { useImageSliceCanvas } from "@/hooks/useImageSlice"
+import {
+  Face,
+  Image,
+  Person,
+  FaceDataFragment,
+} from "@/lib/__generated__/graphql"
+import { Flex, Text } from "@chakra-ui/layout"
+import { Box, Grid, Spinner, useBreakpointValue } from "@chakra-ui/react"
+import React from "react"
 
 export type FaceAppearance = {
   // image on the side
-  face?: FaceDataFragment;
-  person?: Pick<Person, "name">;
-  image: Pick<Image, "rawUrl">;
-};
+  face?: FaceDataFragment
+  person?: Pick<Person, "name">
+  image: Pick<Image, "rawUrl">
+}
 
 export function FaceAppearance({ face, person, image }: FaceAppearance) {
-  const height = useBreakpointValue([90, 90, 90, 120]);
+  const height = useBreakpointValue([90, 90, 90, 120])
   const canvas = useImageSliceCanvas({
     src: image.rawUrl,
     height: height ?? 90,
@@ -20,7 +25,7 @@ export function FaceAppearance({ face, person, image }: FaceAppearance) {
     style: {
       objectFit: "cover",
     },
-  });
+  })
   return (
     <Grid
       gridAutoFlow="column"
@@ -46,5 +51,5 @@ export function FaceAppearance({ face, person, image }: FaceAppearance) {
         </Text>
       </Flex>
     </Grid>
-  );
+  )
 }

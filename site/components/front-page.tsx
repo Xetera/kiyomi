@@ -1,5 +1,5 @@
-import React from "react";
-import { MyDropzone } from "./upload";
+import React from "react"
+import { MyDropzone } from "./upload"
 
 export function FrontPage() {
   return (
@@ -22,5 +22,5 @@ export function FrontPage() {
         <MyDropzone />
       </div>
     </header>
-  );
+  )
 }

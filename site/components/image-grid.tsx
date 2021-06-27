@@ -1,10 +1,10 @@
-import { Box, Grid } from "@chakra-ui/react";
-import React from "react";
-import { ImageGridElement, ImageGridElementProps } from "./image-grid-element";
+import { Box, Grid } from "@chakra-ui/react"
+import React from "react"
+import { ImageGridElement, ImageGridElementProps } from "./image-grid-element"
 
 export type ImageGridProps = {
-  images: Array<ImageGridElementProps["image"] & { aspectRatio: number }>;
-};
+  images: Array<ImageGridElementProps["image"] & { aspectRatio: number }>
+}
 
 export default function ImageGrid({ images }: ImageGridProps) {
   return (
@@ -27,5 +27,5 @@ export default function ImageGrid({ images }: ImageGridProps) {
         </Box>
       ))}
     </Grid>
-  );
+  )
 }

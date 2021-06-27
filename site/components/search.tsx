@@ -1,4 +1,4 @@
-import useOnClickOutside from "@/hooks/useOnClickOutside";
+import useOnClickOutside from "@/hooks/useOnClickOutside"
 import {
   Box,
   Button,
@@ -11,37 +11,37 @@ import {
   InputRightElement,
   Spinner,
   Text,
-} from "@chakra-ui/react";
-import { capitalize, flatMap } from "lodash";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
-import { useDebounce } from "react-use";
+} from "@chakra-ui/react"
+import { capitalize, flatMap } from "lodash"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useQuery } from "react-query"
+import { useDebounce } from "react-use"
 
 function intersperse<T>(arr: T[], inter: T) {
-  return flatMap(arr, (a, i) => (i ? [inter, a] : [a]));
+  return flatMap(arr, (a, i) => (i ? [inter, a] : [a]))
 }
 
 export type PersonSearchbarProps = {
-  onSelect: (id: number) => void;
-  onChange?: (value: string) => void;
-};
+  onSelect: (id: number) => void
+  onChange?: (value: string) => void
+}
 
 type SearchResults = {
   hits: Array<{
-    id: number;
-    name: string;
-    aliases: string[];
-  }>;
-};
+    id: number
+    name: string
+    aliases: string[]
+  }>
+}
 
 export function PersonSearchbar(props: PersonSearchbarProps) {
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>("")
   // Create a ref that we add to the element for which we want to detect outside clicks
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
   // State for our modal
-  const [isModalForceClosed, setModalForceClosed] = useState(false);
+  const [isModalForceClosed, setModalForceClosed] = useState(false)
   // Call hook passing in the ref and a function to call on outside click
-  useOnClickOutside(ref, () => setModalForceClosed(true));
+  useOnClickOutside(ref, () => setModalForceClosed(true))
   const { data, refetch, isLoading } = useQuery<SearchResults>(
     "idols",
     (a) =>
@@ -49,27 +49,27 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
         `${process.env.NEXT_PUBLIC_MEILISEARCH_URL}/indexes/idols/search?q=${name}&limit=6`
       ).then((r) => r.json()),
     { enabled: false }
-  );
-  console.log(data);
+  )
+  console.log(data)
   useDebounce(
     () => {
       if (name !== "") {
-        refetch();
+        refetch()
       }
     },
     400,
     [name]
-  );
+  )
 
   function onType(value: string) {
-    setName(value);
-    setModalForceClosed(false);
-    props?.onChange?.(value);
+    setName(value)
+    setModalForceClosed(false)
+    props?.onChange?.(value)
   }
 
   function select(id: number) {
-    props.onSelect(id);
-    setName("");
+    props.onSelect(id)
+    setName("")
   }
 
   return (
@@ -172,5 +172,5 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
           ))}
       </Grid>
     </Grid>
-  );
+  )
 }

@@ -1,13 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from "react"
+import { motion } from "framer-motion"
 
 export function CascadeChildren({
   children,
   className,
   style,
 }: React.PropsWithChildren<{
-  className?: string;
-  style?: React.CSSProperties;
+  className?: string
+  style?: React.CSSProperties
 }>) {
   return (
     <motion.section
@@ -41,5 +41,5 @@ export function CascadeChildren({
           )
       )}
     </motion.section>
-  );
+  )
 }

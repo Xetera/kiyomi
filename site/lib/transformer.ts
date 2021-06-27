@@ -13,9 +13,9 @@ export const publicImageFields = {
   palette: true,
   createdAt: true,
   updatedAt: true,
-} as const;
+} as const
 
 type ExtraImageProperties = {
-  mimetype: string;
-  url: string;
-};
+  mimetype: string
+  url: string
+}

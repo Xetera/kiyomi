@@ -1,8 +1,8 @@
-import members from "../../members.json";
-import allAliases from "./aliases.json";
-import { PrismaClient } from "@prisma/client";
+import members from "../../members.json"
+import allAliases from "./aliases.json"
+import { PrismaClient } from "@prisma/client"
 
-const memberIds = allAliases.filter((f) => !f.isgroup);
+const memberIds = allAliases.filter((f) => !f.isgroup)
 export async function run(url: string) {
   const client = new PrismaClient({
     datasources: {
@@ -10,21 +10,21 @@ export async function run(url: string) {
         url: process.env.POSTGRES_URL,
       },
     },
-  });
+  })
 
   for (const [id, member] of Object.entries(members)) {
-    const memberId = Number(id);
+    const memberId = Number(id)
     const aliases = memberIds
       .filter((f) => f.objectid === memberId)
-      .map((f) => f.alias);
+      .map((f) => f.alias)
     if (member.stage_name) {
-      aliases.push(member.stage_name);
+      aliases.push(member.stage_name)
     }
     const aliasesOp = {
       create: aliases.map((alias) => ({
         name: alias,
       })),
-    };
+    }
     client.person
       .upsert({
         where: {
@@ -39,9 +39,9 @@ export async function run(url: string) {
           name: { set: member.full_name },
         },
       })
-      .then(console.log, console.error);
+      .then(console.log, console.error)
   }
-  console.log("finished!");
+  console.log("finished!")
 }
 
-run("http://localhost:3000");
+run("http://localhost:3000")

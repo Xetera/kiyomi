@@ -1,4 +1,4 @@
-import { Role as RoleTable } from "@prisma/client";
+import { Role as RoleTable } from "@prisma/client"
 export enum Role {
   User = "USER",
   Editor = "EDITOR",
@@ -6,9 +6,7 @@ export enum Role {
 }
 
 export function hasRole(roles: RoleTable[], roleCheck: Role) {
-  return roles.some((role) => role.name === roleCheck);
+  return roles.some((role) => role.name === roleCheck)
 }
 
-export function canViewPrivateImages() {
-
-}
+export function canViewPrivateImages() {}

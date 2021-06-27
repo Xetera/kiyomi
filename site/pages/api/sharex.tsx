@@ -1,4 +1,6 @@
-export default (req, res) => {
+import { NextApiRequest, NextApiResponse } from "next"
+
+export default (req: NextApiRequest, res: NextApiResponse) => {
   res.json({
     Version: "13.1.0",
     DestinationType: "ImageUploader",
@@ -17,5 +19,5 @@ export default (req, res) => {
     FileFormName: "file",
     URL: "https://simp.pics/image/$json:slug$",
     ThumbnailURL: "$json:url$",
-  });
-};
+  })
+}

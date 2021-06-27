@@ -1,33 +1,31 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { FaceContext } from "@/models/contexts";
+import React from "react"
+import { motion } from "framer-motion"
+import { FaceContext } from "@/models/contexts"
 import {
   RiLightbulbFlashLine,
   RiEdit2Line,
   RiDeleteBinLine,
-} from "react-icons/ri";
-import PerfectScrollbar from "react-perfect-scrollbar";
+} from "react-icons/ri"
+import PerfectScrollbar from "react-perfect-scrollbar"
 import {
   FaceDataFragment,
   Maybe,
   OneImageQuery,
-} from "@/__generated__/graphql";
-import useImageSlice from "@/hooks/useImageSlice";
+} from "@/lib/__generated__/graphql"
+import useImageSlice from "@/hooks/useImageSlice"
 
 function ActionButton({ icon, className }) {
-  return <div className={`p-1 ${className} flex items-start`}>{icon}</div>;
+  return <div className={`p-1 ${className} flex items-start`}>{icon}</div>
 }
 
 type PortraitProps = React.HTMLProps<HTMLDivElement> & {
-  src: string;
-  appearance?: Maybe<
-    NonNullable<OneImageQuery["image"]>["appearances"][number]
-  >;
-  face?: Maybe<FaceDataFragment>;
-  prediction?: any; // PredictionResponse[0]["matches"][0];
-};
+  src: string
+  appearance?: Maybe<NonNullable<OneImageQuery["image"]>["appearances"][number]>
+  face?: Maybe<FaceDataFragment>
+  prediction?: any // PredictionResponse[0]["matches"][0];
+}
 
-export const maxPortraitHeight = 140;
+export const maxPortraitHeight = 140
 
 export function PersonPortrait({
   src,
@@ -40,20 +38,20 @@ export function PersonPortrait({
     src,
     height: maxPortraitHeight,
     face,
-  });
-  const { setFace } = React.useContext(FaceContext);
-  const height = maxPortraitHeight;
-  const maxWidth = 100;
-  const scale = face ? height / face.height : 1;
+  })
+  const { setFace } = React.useContext(FaceContext)
+  const height = maxPortraitHeight
+  const maxWidth = 100
+  const scale = face ? height / face.height : 1
   const predictionScore = prediction?.predictionScore
     ? `${prediction.predictionScore.toFixed(2)}%`
-    : "None";
+    : "None"
 
   const motionId = appearance
     ? `appearance:${appearance.id}`
     : face
     ? `face:${face.id}`
-    : "";
+    : ""
   return (
     <motion.div
       className={`rounded overflow-hidden whitespace-nowrap flex flex-row text-xs ${className} cursor-pointer border-theme-subtle`}
@@ -129,5 +127,5 @@ export function PersonPortrait({
         </div>
       </div>
     </motion.div>
-  );
+  )
 }

@@ -1,15 +1,16 @@
-import { useMeQuery, UserDataFragment } from "@/__generated__/graphql";
-import { useSession } from "next-auth/client";
-import Link from "next/link";
-import React, { PropsWithChildren } from "react";
-import BetterLink from "./nextjs/link";
+import { useMeQuery, UserDataFragment } from "@/lib/__generated__/graphql"
+import { useSession } from "next-auth/client"
+import Link from "next/link"
+import React, { PropsWithChildren } from "react"
+import BetterLink from "./nextjs/link"
+import { Box } from "@chakra-ui/layout"
 
-type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>;
+type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
-  href: string;
-  as?: string;
-  hardLink?: boolean;
-};
+  href: string
+  as?: string
+  hardLink?: boolean
+}
 
 function NavLink({
   children,
@@ -20,9 +21,9 @@ function NavLink({
 }: PropsWithChildren<NavLinkProps>) {
   const aProps: AType = {
     ...rest,
-  };
+  }
   if (hardLink) {
-    aProps.href = href;
+    aProps.href = href
   }
   const data = (
     <a
@@ -32,26 +33,28 @@ function NavLink({
     >
       {children}
     </a>
-  );
+  )
 
-  if (hardLink) return data;
+  if (hardLink) return data
   return (
     <BetterLink href={href} as={as}>
       {data}
     </BetterLink>
-  );
+  )
 }
 
 export type NavbarProps = {
-  user?: UserDataFragment;
-};
+  user?: UserDataFragment
+}
 
 export function Navbar() {
-  const [session] = useSession();
+  const [session] = useSession()
 
   return (
-    <nav
-      className="bg-theme items-center mx-auto border-b-2 border-theme-subtle w-full"
+    <Box
+      as="nav"
+      background="bgPrimary"
+      className="items-center mx-auto border-b-2 border-theme-subtle w-full"
       style={{
         borderBottomWidth: "1px",
       }}
@@ -60,12 +63,8 @@ export function Navbar() {
         <div>
           <ul className="grid gap-12 grid-flow-col max-w-6xl ">
             <NavLink href={"/"}>Home</NavLink>
-            <NavLink hardLink href="/api/sharex" target="_blank">
-              Sharex
-            </NavLink>
-            <NavLink hardLink href="/api/graphql">
-              API
-            </NavLink>
+            <NavLink href="/games">Games</NavLink>
+            <NavLink href="/api/graphql">API</NavLink>
           </ul>
         </div>
         <div>
@@ -86,6 +85,6 @@ export function Navbar() {
           </ul>
         </div>
       </div>
-    </nav>
-  );
+    </Box>
+  )
 }

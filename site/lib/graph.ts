@@ -1,5 +1,5 @@
-import { PrismaClient, Image } from ".prisma/client";
-import { uniqBy } from "lodash";
+import { PrismaClient, Image } from ".prisma/client"
+import { uniqBy } from "lodash"
 
 export async function imageConnections(
   base: Image,
@@ -12,7 +12,7 @@ export async function imageConnections(
     depth = 0
   ) {
     if (depth > maxDepth) {
-      return [];
+      return []
     }
     const appearances = await prisma.appearance.findMany({
       where: {
@@ -22,12 +22,12 @@ export async function imageConnections(
       include: {
         image: true,
       },
-    });
+    })
     const next = await queryImageConnections(
       appearances.map((app) => app.imageId),
       appearances.map((app) => app.personId),
       depth + 1
-    );
+    )
     return [
       {
         people: [],
@@ -42,7 +42,7 @@ export async function imageConnections(
         })),
       },
       ...next,
-    ];
+    ]
   }
   async function queryImageConnections(
     imageIds: number[],
@@ -50,7 +50,7 @@ export async function imageConnections(
     depth = 0
   ) {
     if (depth > maxDepth) {
-      return [];
+      return []
     }
     const appearances = await prisma.appearance.findMany({
       where: {
@@ -60,13 +60,13 @@ export async function imageConnections(
       include: {
         person: true,
       },
-    });
+    })
 
     const next = await queryPersonConnections(
       appearances.map((app) => app.personId),
       appearances.map((app) => app.imageId),
       depth + 1
-    );
+    )
     return [
       {
         people: uniqBy(
@@ -81,9 +81,9 @@ export async function imageConnections(
         })),
       },
       ...next,
-    ];
+    ]
   }
-  let appearances = await queryImageConnections([base.id]);
+  let appearances = await queryImageConnections([base.id])
 
   return appearances.reduce(
     (all, level) => {
@@ -91,16 +91,16 @@ export async function imageConnections(
         level.images.filter((im) =>
           all.images.every((other) => other.id !== im.id)
         )
-      );
+      )
       all.people = all.people.concat(
         level.people.filter((pe) =>
           all.people.every((other) => other.id !== pe.id)
         )
-      );
+      )
       // duplicate edges are already removed
-      all.edges = all.edges.concat(level.edges);
-      return all;
+      all.edges = all.edges.concat(level.edges)
+      return all
     },
     { images: [base], people: [], edges: [] }
-  );
+  )
 }

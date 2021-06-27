@@ -1,12 +1,12 @@
-import React from "react";
-import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/client";
-import { Navbar } from "@/components/navbar";
-import { useScroll } from "react-use";
-import { useHomepageQuery } from "@/__generated__/graphql";
-import { prefetchQuery } from "@/lib/client-helpers";
-import { Grid, Heading } from "@chakra-ui/layout";
-import { ImageGridElement } from "@/components/image-grid-element";
+import React from "react"
+import { GetServerSideProps } from "next"
+import { getSession } from "next-auth/client"
+import { Navbar } from "@/components/navbar"
+import { useScroll } from "react-use"
+import { useHomepageQuery } from "@/lib/__generated__/graphql"
+import { prefetchQuery } from "@/lib/client-helpers"
+import { Grid, Heading } from "@chakra-ui/layout"
+import { ImageGridElement } from "@/components/image-grid-element"
 import {
   Box,
   Image,
@@ -14,33 +14,17 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-} from "@chakra-ui/react";
-import { RiSearchLine } from "react-icons/ri";
-import { wrapRequest } from "@/lib/data-fetching";
-import ImageGrid from "@/components/image-grid";
-
-function getKey(index: number, prevData: any) {
-  if (!index) {
-    return `/api/image`;
-  }
-  return `/api/image?cursor=${prevData.cursor}`;
-}
-
-function Tab({ active, children }) {
-  return (
-    <span className={`${active ? "text-blueGray-300" : "text-blueGray-500"}`}>
-      {children}
-    </span>
-  );
-}
+} from "@chakra-ui/react"
+import { RiSearchLine } from "react-icons/ri"
+import { wrapRequest } from "@/lib/data-fetching"
+import ImageGrid from "@/components/image-grid"
 
 export default function Home() {
-  console.log("rendering home");
-  const pageRef = React.useRef(null);
-  const [activeTab, setActiveTab] = React.useState(0);
-  const [fetching, setFetching] = React.useState(false);
-  const { y } = useScroll(pageRef);
-  const { data } = useHomepageQuery({ take: 100, skip: 0 });
+  const pageRef = React.useRef(null)
+  const [activeTab, setActiveTab] = React.useState(0)
+  const [fetching, setFetching] = React.useState(false)
+  const { y } = useScroll(pageRef)
+  const { data } = useHomepageQuery({ take: 100, skip: 0 })
   return (
     <>
       <Navbar />
@@ -114,18 +98,18 @@ export default function Home() {
         </Box>
       </Box>
     </>
-  );
+  )
 }
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
   const dehydratedState = await prefetchQuery("Homepage", {
     take: 100,
     skip: 0,
-  });
+  })
   return {
     props: {
       session: await getSession(ctx),
       dehydratedState,
     },
-  };
-});
+  }
+})

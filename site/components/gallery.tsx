@@ -1,18 +1,18 @@
-import React from "react";
-import Link from "next/link";
-import Masonry from "react-masonry-component";
-import { useBoolean, useWindowSize } from "react-use";
-import { ImageDataFragment } from "@/__generated__/graphql";
-import dynamic from "next/dynamic";
+import React from "react"
+import Link from "next/link"
+import Masonry from "react-masonry-component"
+import { useBoolean, useWindowSize } from "react-use"
+import { ImageDataFragment } from "@/lib/__generated__/graphql"
+import dynamic from "next/dynamic"
 
-const THUMBNAIL_WIDTH = 300;
+const THUMBNAIL_WIDTH = 300
 
-const NextImage = dynamic(() => import("next/image"), { ssr: false });
+const NextImage = dynamic(() => import("next/image"), { ssr: false })
 
 function LoadingImage({ image }) {
-  const [loaded, setLoaded] = useBoolean(false);
-  const { width } = useWindowSize();
-  const imageWidth = width < 1000 ? width : THUMBNAIL_WIDTH;
+  const [loaded, setLoaded] = useBoolean(false)
+  const { width } = useWindowSize()
+  const imageWidth = width < 1000 ? width : THUMBNAIL_WIDTH
   return (
     <Link href={`/image/${image.slug}`} key={image.slug}>
       <a>
@@ -30,7 +30,7 @@ function LoadingImage({ image }) {
         )} */}
       </a>
     </Link>
-  );
+  )
 }
 
 export function Gallery({ images }: { images: ImageDataFragment[] }) {
@@ -46,5 +46,5 @@ export function Gallery({ images }: { images: ImageDataFragment[] }) {
         <LoadingImage image={image} key={image.slug} />
       ))}
     </Masonry>
-  );
+  )
 }

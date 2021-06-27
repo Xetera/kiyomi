@@ -4,15 +4,26 @@
   "scripts": {
     "codegen": "cd site && yarn codegen",
     "typegen": "graphql-codegen",
-    "gen": "yarn codegen && yarn typegen"
+    "genql": "genql --schema ./shared/private.schema.graphql --output ./shared/backend",
+    "gen": "yarn codegen && yarn genql && yarn typegen"
   },
   "devDependencies": {
+    "@genql/cli": "^2.6.0",
     "@graphql-codegen/add": "^2.0.2",
     "@graphql-codegen/cli": "^1.21.3",
     "@graphql-codegen/typescript-graphql-request": "^3.1.0",
     "@graphql-codegen/typescript-operations": "^1.17.15",
     "@graphql-codegen/typescript-react-query": "^1.2.4",
+    "@types/lodash": "^4.14.170",
+    "eslint-config-prettier": "^8.3.0",
     "graphql": "^15.5.0",
     "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "@genql/runtime": "^2.6.0",
+    "graphql-zeus": "^3.0.0-19",
+    "remove": "^0.1.5",
+    "typescript": "4.3",
+    "zod": "^3.0.2"
   }
 }

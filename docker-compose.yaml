@@ -7,6 +7,11 @@ volumes:
     external: true
 
 services:
+  redis:
+    image: redis
+    container_name: sp_redis
+    ports:
+      - 6300:6379
   search:
     image: getmeili/meilisearch
     container_name: sp_meilisearch

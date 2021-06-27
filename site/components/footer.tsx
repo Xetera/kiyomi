@@ -1,6 +1,14 @@
-import { RiDiscordFill, RiTwitterFill } from "react-icons/ri";
+import { RiDiscordFill, RiTwitterFill } from "react-icons/ri"
 
-function FooterSection({ section }) {
+type Section = {
+  title: string
+  links: Array<{
+    href: string
+    name: string
+  }>
+}
+
+function FooterSection({ section }: { section: Section }) {
   return (
     <section key={section.title}>
       <h1 className="text-base font-semibold mb-3 text-gray-300">
@@ -16,7 +24,7 @@ function FooterSection({ section }) {
         ))}
       </ul>
     </section>
-  );
+  )
 }
 
 export function Footer() {
@@ -54,5 +62,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

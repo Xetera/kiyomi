@@ -1,18 +1,17 @@
-import { rgbToHsl } from "@/lib/shared";
-import { Box, Grid, Text } from "@chakra-ui/layout";
-import { Flex } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { HTMLAttributes } from "react";
+import { Box, Grid, Text } from "@chakra-ui/layout"
+import { Flex } from "@chakra-ui/react"
+import { AnimatePresence, motion } from "framer-motion"
+import React, { HTMLAttributes } from "react"
 
 function decimalToHex(num: number) {
-  return `#${num.toString(16)}`;
+  return `#${num.toString(16)}`
 }
 
-const MotionText = motion(Text);
+const MotionText = motion(Text)
 
 export function PaletteColor({ color }: { color: number }) {
-  const colorHex = color.toString(16);
-  const [hovering, setHovering] = React.useState(false);
+  const colorHex = color.toString(16)
+  const [hovering, setHovering] = React.useState(false)
   return (
     <Flex
       width="100%"
@@ -44,7 +43,7 @@ export function PaletteColor({ color }: { color: number }) {
         )}
       </AnimatePresence>
     </Flex>
-  );
+  )
 }
 
 export function Palette({
@@ -58,7 +57,7 @@ export function Palette({
       as="section"
       {...rest}
       border="1px solid"
-      borderColor="gray.900"
+      borderColor="borderSubtle"
       borderRadius="sm"
       overflow="hidden"
     >
@@ -66,5 +65,5 @@ export function Palette({
         <PaletteColor color={color} key={color} />
       ))}
     </Grid>
-  );
+  )
 }

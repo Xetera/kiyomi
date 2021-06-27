@@ -7,19 +7,22 @@ ARG NEXT_PUBLIC_BASE_URL_CDN
 ARG NEXT_PUBLIC_MEILISEARCH_URL
 
 WORKDIR /opt/app
-RUN apk update && apk add --virtual libressl-dev openssl
-
 COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
-COPY tsconfig.generator.json tsconfig.generator.json
-COPY tsconfig.json tsconfig.json
-COPY prisma prisma
+
+WORKDIR /opt/app/site
+RUN apk update && apk add --virtual libressl-dev openssl
+
+COPY site/package.json site/yarn.lock ./
+RUN yarn --frozen-lockfile
+COPY site/tsconfig.generator.json site/tsconfig.generator.json
+COPY site/tsconfig.json tsconfig.json
+COPY site/prisma prisma
 RUN yarn generate
 
-COPY . .
-# COPY lib/shared.ts lib/shared.ts
-# COPY lib/context.ts lib/context.ts
-# COPY lib/types lib/types
+COPY site/ ./
+COPY shared/ /opt/app/shared
+
 RUN yarn codegen
 
 RUN yarn build
@@ -38,11 +41,12 @@ WORKDIR /opt/app
 ENV NODE_ENV=production
 WORKDIR /opt/app
 
-COPY package.json yarn.lock ./
+COPY site/package.json site/yarn.lock ./
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
-COPY --from=build /opt/app/node_modules node_modules
-COPY --from=build /opt/app/.next .next
-COPY --from=build /opt/app/public public
+COPY --from=build /opt/app/site/node_modules node_modules
+COPY --from=build /opt/app/site/next.config.js next.config.js
+COPY --from=build /opt/app/site/.next .next
+COPY --from=build /opt/app/site/public public
 
 EXPOSE 3000
 
