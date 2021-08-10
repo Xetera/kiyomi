@@ -30,7 +30,7 @@ const theme = extendTheme({
   },
   config: {
     initialColorMode: "dark",
-    useSystemColorMode: true,
+    useSystemColorMode: false,
   },
   breakpoints,
   colors: {
