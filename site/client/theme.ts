@@ -3,16 +3,16 @@ import { extendTheme } from "@chakra-ui/react"
 import { createBreakpoints } from "@chakra-ui/theme-tools"
 
 const fontFamily = `
-    "Inter",
-    system-ui,
-		-apple-system,
-		'Segoe UI',
-		Roboto,
-		Helvetica,
-		Arial,
-		sans-serif,
-		'Apple Color Emoji',
-		'Segoe UI Emoji'
+  "Inter",
+  system-ui,
+  -apple-system,
+  'Segoe UI',
+  Roboto,
+  Helvetica,
+  Arial,
+  sans-serif,
+  'Apple Color Emoji',
+  'Segoe UI Emoji'
 `
 
 const breakpoints = createBreakpoints({
