@@ -28,7 +28,7 @@ function Image() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const dehydratedState = await prefetchQuery("Me", {})
+  const dehydratedState = await prefetchQuery("MeDocument", {})
   return {
     props: { dehydratedState },
   }
