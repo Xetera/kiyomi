@@ -102,7 +102,7 @@ export default function Home() {
 }
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
-  const dehydratedState = await prefetchQuery("Homepage", {
+  const dehydratedState = await prefetchQuery("HomepageDocument", {
     take: 100,
     skip: 0,
   })

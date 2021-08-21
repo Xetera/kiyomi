@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   const id = Number(personId)
 
-  const dehydratedState = await prefetchQuery("PersonPage", { id })
+  const dehydratedState = await prefetchQuery("PersonPageDocument", { id })
   return {
     props: { dehydratedState },
   }

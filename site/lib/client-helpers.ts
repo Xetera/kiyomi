@@ -2,8 +2,11 @@ import * as g from "@/lib/__generated__/graphql"
 import { QueryClient } from "react-query"
 import { dehydrate } from "react-query/hydration"
 
-export async function prefetchQuery(key: string, variables: any) {
-  const document = g[(key + "Document") as keyof typeof g] as string
+export async function prefetchQuery(
+  key: Extract<keyof typeof g, `${string}Document`>,
+  variables: Record<string, unknown>
+) {
+  const document = g[key]
   const client = new QueryClient()
 
   await client.prefetchQuery(
