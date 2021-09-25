@@ -68,7 +68,7 @@
     "@tensorflow/tfjs-node": "3.3.0",
     "@vladmandic/face-api": "1.1.12",
     "amqplib": "^0.7.1",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "canvas": "2.7.0",
     "convict": "^6.0.1",
     "dotenv": "^8.2.0",
