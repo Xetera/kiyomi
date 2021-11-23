@@ -7,9 +7,6 @@ module.exports = withBundleAnalyzer({
   experimental: {
     externalDir: true,
   },
-  future: {
-    webpack5: true,
-  },
   images: {
     domains: ["localhost", "my.simp.pics", "cdn.discordapp.com"],
   },

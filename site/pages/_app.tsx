@@ -35,10 +35,10 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
                 />
               </NextHead>
               <Flex minHeight="100vh" flexFlow="column">
-                <GameServerGateway>
+                {/* <GameServerGateway> */}
                   <CSSReset />
                   <Component {...pageProps} />
-                </GameServerGateway>
+                {/* </GameServerGateway> */}
               </Flex>
               <ReactTooltip
                 uuid="mytt"

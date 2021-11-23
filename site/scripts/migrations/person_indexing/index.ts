@@ -32,7 +32,7 @@ const prod = process.env.NODE_ENV === "production"
     `
     SELECT persons.id, persons.name, json_agg(gm.*) as groups, json_agg(a.*) as aliases
 FROM persons
-         inner join group_members gm on gm."personId" = persons.id
+         inner join group_members gm on gm.person_id = persons.id
          inner join aliases a on persons.id = a.person_id
 -- where persons.id = 4
 group by persons.id, persons.name`

@@ -30,10 +30,10 @@ services:
       context: postgres
       dockerfile: Dockerfile
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       POSTGRES_PASSWORD: test
-      POSTGRES_DATABASE: simp
+      POSTGRES_DATABASE: simp_pics
       POSTGRES_USER: postgres
     volumes:
       - sp_pg:/var/lib/postgresql/data
