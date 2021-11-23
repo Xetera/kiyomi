@@ -22,7 +22,7 @@ export default function useQueue({ slug }: QueueButtonProps) {
         status: "error",
         position: "bottom-right",
         title: "Something went wrong",
-        description: err.message,
+        description: err instanceof Error ? err.message : "Unknown error",
       })
     }
   }

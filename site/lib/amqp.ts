@@ -2,7 +2,7 @@ import amqplib from "amqplib"
 
 const amqpConnectionUrl = process.env.AMQP_URL ?? "amqp://localhost:3333"
 
-export let amqpPromise: Promise<amqplib.Connection>
+export let amqpPromise: ReturnType<typeof amqplib.connect>
 
 if (process.env.NODE_ENV === "production") {
   amqpPromise = amqplib.connect(amqpConnectionUrl)

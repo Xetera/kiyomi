@@ -6,14 +6,13 @@ import "../styles/globals.css"
 import ReactTooltip from "react-tooltip"
 import { default as _default, alt, light } from "@/colors"
 import NextHead from "next/head"
+import type { AppProps } from "next/app"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { Hydrate } from "react-query/hydration"
 import React from "react"
-import { AppProps } from "next/dist/next-server/lib/router/router"
 import { ChakraProvider, CSSReset } from "@chakra-ui/react"
 import theme from "@/client/theme"
 import { store } from "@/models/store"
-import GameServerGateway from "@/components/game/game-server-gateway"
 import { Flex } from "@chakra-ui/layout"
 
 const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
@@ -36,8 +35,8 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
               </NextHead>
               <Flex minHeight="100vh" flexFlow="column">
                 {/* <GameServerGateway> */}
-                  <CSSReset />
-                  <Component {...pageProps} />
+                <CSSReset />
+                <Component {...pageProps} />
                 {/* </GameServerGateway> */}
               </Flex>
               <ReactTooltip
