@@ -98,10 +98,10 @@ export default function Home() {
                 color="gray.300"
                 fontWeight="normal"
               >
-                An image database that understands people.
+                An image database for Kpop stuff
               </Heading>
             </Box>
-            <InputGroup size="lg" shadow="2xl">
+            {/* <InputGroup size="lg" shadow="2xl">
               <InputLeftElement
                 pointerEvents="none"
                 children={<RiSearchLine />}
@@ -112,7 +112,7 @@ export default function Home() {
                 background="trueGray.900"
                 borderColor="rgb(2, 3, 4)"
               />
-            </InputGroup>
+            </InputGroup> */}
           </Box>
         </Flex>
       </Box>
