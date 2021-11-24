@@ -325,14 +325,13 @@ export const Mutation = mutationField((t) => {
     args: {
       slug: nonNull(stringArg()),
     },
-    authorize() {},
-    // async authorize(_, args, { prisma, user }) {
-    //   if (!user) {
-    //     return false
-    //   }
-    //   // allowing any logged in user for now
-    //   return true
-    // },
+    async authorize(_, args, { prisma, user }) {
+      if (!user) {
+        return false
+      }
+      // allowing any logged in user for now
+      return true
+    },
     async resolve(_root, { slug }, { prisma, amqp }) {
       const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler"
       if (!amqp) {

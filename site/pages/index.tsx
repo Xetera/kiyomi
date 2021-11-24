@@ -3,10 +3,15 @@ import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/client"
 import { Navbar } from "@/components/navbar"
 import { useScroll } from "react-use"
-import { useHomepageQuery } from "@/lib/__generated__/graphql"
+import {
+  fetcher,
+  HomepageDocument,
+  HomepageQuery,
+  useHomepageQuery,
+} from "@/lib/__generated__/graphql"
 import { prefetchQuery } from "@/lib/client-helpers"
 import { Grid, Heading } from "@chakra-ui/layout"
-import { ImageGridElement } from "@/components/image-grid-element"
+import { Waypoint } from "react-waypoint"
 import {
   Box,
   Image,
@@ -18,13 +23,39 @@ import {
 import { RiSearchLine } from "react-icons/ri"
 import { wrapRequest } from "@/lib/data-fetching"
 import ImageGrid from "@/components/image-grid"
+import { useInfiniteQuery } from "react-query"
 
 export default function Home() {
   const pageRef = React.useRef(null)
   const [activeTab, setActiveTab] = React.useState(0)
-  const [fetching, setFetching] = React.useState(false)
+  const [skipCount, setSkipCount] = React.useState(0)
   const { y } = useScroll(pageRef)
-  const { data } = useHomepageQuery({ take: 100, skip: 0 })
+  const { data, isFetching, fetchNextPage } = useInfiniteQuery<HomepageQuery>(
+    "homepage",
+    ({ pageParam = 0 }) => {
+      return fetcher<HomepageQuery, unknown>(HomepageDocument, {
+        take: 100,
+        skip: pageParam,
+      })()
+    },
+    {
+      getNextPageParam(last, all) {
+        const skip = all.length * 100
+        return skip
+      },
+    }
+  )
+  console.log({ data })
+  // const { data: a, isFetching } = useHomepageQuery({
+  //   take: 100,
+  //   skip: skipCount,
+  // })
+  async function loadMore() {
+    if (isFetching) {
+      return
+    }
+    fetchNextPage()
+  }
   return (
     <>
       <Navbar />
@@ -94,8 +125,13 @@ export default function Home() {
           px={5}
           maxWidth="7xl"
         >
-          {data && <ImageGrid images={data.images} />}
+          {data && (
+            <ImageGrid images={data.pages.flatMap((data) => data.images)} />
+          )}
         </Box>
+      </Box>
+      <Box height="800px">
+        <Waypoint onEnter={loadMore} topOffset="-1500px" debug />
       </Box>
     </>
   )

@@ -150,26 +150,20 @@ export default function ImageDisplay() {
     ))
   }
 
-  const {
-    width: parentWidth,
-    height: parentHeight,
-  } = parentRef.current?.getBoundingClientRect() ?? { width: 700, height: 800 }
-
   const MAX_WIDTH = 1200
   const imageMaxHeight = !expanded
-    ? "70vh"
+    ? "80vh"
     : image!.height! <= 800
     ? image!.height
     : "100%"
 
   return (
-    <div
-      className="flex flex-1 flex-col xl:min-w-image lg:min-w-sm"
-      style={{
-        maxWidth: MAX_WIDTH,
-        flexBasis: MAX_WIDTH,
-        // width: "100%", // Math.max(MIN_WIDTH, Math.min(image.width, MAX_WIDTH)),
-      }}
+    <Flex
+      flex={1}
+      flexDir="column"
+      minW={{ lg: "sm", xl: "800px" }}
+      maxWidth={MAX_WIDTH}
+      flexBasis={MAX_WIDTH}
     >
       <div
         className="relative rounded"
@@ -281,6 +275,6 @@ export default function ImageDisplay() {
           </CascadeChildren>
         </section>
       )} */}
-    </div>
+    </Flex>
   )
 }

@@ -2932,6 +2932,11 @@ console-control-strings@^1.0.0, console-control-strings@^1.1.0, console-control-
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz"
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
+"consolidated-events@^1.1.0 || ^2.0.0":
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/consolidated-events/-/consolidated-events-2.0.2.tgz#da8d8f8c2b232831413d9e190dc11669c79f4a91"
+  integrity sha512-2/uRVMdRypf5z/TW/ncD/66l75P5hH2vM/GR8Jf8HLc2xnfJtmina6F6du8+v4Z2vTrMo7jC+W1tmEEuuELgkQ==
+
 constants-browserify@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/constants-browserify/-/constants-browserify-1.0.0.tgz"
@@ -6418,7 +6423,7 @@ process@0.11.10, process@^0.11.10:
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz"
   integrity sha1-czIwDoQBYb2j5podHZGn1LwW8YI=
 
-prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7, prop-types@^15.7.2:
+prop-types@^15.0.0, prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -6645,7 +6650,7 @@ react-icons@^4.3.1:
   resolved "https://registry.npmjs.org/react-icons/-/react-icons-4.3.1.tgz#2fa92aebbbc71f43d2db2ed1aed07361124e91ca"
   integrity sha512-cB10MXLTs3gVuXimblAdI71jrJx8njrJZmNMEMC+sQu5B/BIOmlsAjskdqpn81y8UBVEGuHODd7/ci5DvoSzTQ==
 
-react-is@17.0.2:
+react-is@17.0.2, react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
@@ -6801,6 +6806,16 @@ react-use@^17.3.1:
     throttle-debounce "^3.0.1"
     ts-easing "^0.2.0"
     tslib "^2.1.0"
+
+react-waypoint@^10.1.0:
+  version "10.1.0"
+  resolved "https://registry.npmjs.org/react-waypoint/-/react-waypoint-10.1.0.tgz#6ab522a61bd52946260e4a78b3182759a97b40ec"
+  integrity sha512-wiVF0lTslVm27xHbnvUUADUrcDjrQxAp9lEYGExvcoEBScYbXu3Kt++pLrfj6CqOeeRAL4HcX8aANVLSn6bK0Q==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    consolidated-events "^1.1.0 || ^2.0.0"
+    prop-types "^15.0.0"
+    react-is "^17.0.1"
 
 react@17.0.2:
   version "17.0.2"

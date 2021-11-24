@@ -102,21 +102,22 @@ const Image = () => {
         >
           <Flex direction="row" flex={1}>
             <Box flex={1}>
-              <Flex></Flex>
-              <div className="text-gray-400 rounded text-sm lg:text-base mx-auto">
-                <Flex
-                  fontWeight="semibold"
-                  alignItems="center"
-                  justifyContent="center"
-                  mx="auto"
-                  className="max-w-7xl py-3 px-4"
-                >
-                  <RiSpyLine className="mr-2" />
-                  <Text textAlign="center">
-                    This image is unlisted and can only be viewed with a link.
-                  </Text>
-                </Flex>
-              </div>
+              {!image.public && (
+                <div className="text-gray-400 rounded text-sm lg:text-base mx-auto">
+                  <Flex
+                    fontWeight="semibold"
+                    alignItems="center"
+                    justifyContent="center"
+                    mx="auto"
+                    className="max-w-7xl py-3 px-4"
+                  >
+                    <RiSpyLine className="mr-2" />
+                    <Text textAlign="center">
+                      This image is unlisted and can only be viewed with a link.
+                    </Text>
+                  </Flex>
+                </div>
+              )}
               <div className="w-full relative overflow-hidden">
                 <div className="justify-center mx-auto max-w-7xl px-4 lg:mb-12 mb-4">
                   <article
