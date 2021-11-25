@@ -1,8 +1,8 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider      = "prisma-client-js"
   // previewFeatures = ["napi"]
   // required by alpine linux
-  binaryTargets   = ["native", "linux-musl"]
+  binaryTargets = ["native", "linux-musl"]
 }
 
 datasource db {
@@ -63,7 +63,7 @@ model Person {
   description           String?
   name                  String
   preferredAlias        Alias?        @relation("preferred_alias", fields: [preferredAliasId], references: [id])
-  preferredAliasId      Int?          @map("preferred_alias_id")
+  preferredAliasId      Int?          @unique @map("preferred_alias_id")
   aliases               Alias[]
   appearsIn             Face[]        @relation("face_person")
   createdAt             DateTime      @default(now()) @map("created_at")
@@ -73,6 +73,8 @@ model Person {
   memberOf              GroupMember[]
   preferredMembershipId Int?          @map("preferred_membership_id")
   preferredMembership   GroupMember?  @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
+  bannerId              Int?          @map("banner_id")
+  banner                Image?        @relation(fields: [bannerId], references: [id])
 
   @@index([name], name: "person.name.index")
   @@map("persons")
@@ -185,36 +187,38 @@ model VerificationRequest {
 
 /// An image uploaded by a user or bot
 model Image {
-  slug                String       @unique
+  slug                String               @unique
   width               Int
   height              Int
-  fileName            String?      @map("file_name")
-  uploadType          UploadType   @map("upload_type")
+  fileName            String?              @map("file_name")
+  uploadType          UploadType           @map("upload_type")
   mimetype            MimeType
-  createdAt           DateTime     @default(now()) @map("created_at")
-  updatedAt           DateTime     @default(now()) @updatedAt @map("updated_at")
-  userId              Int?         @map("user_id")
-  id                  Int          @id @default(autoincrement())
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @default(now()) @updatedAt @map("updated_at")
+  userId              Int?                 @map("user_id")
+  id                  Int                  @id @default(autoincrement())
   hash                String
-  pHash               String?      @map("p_hash")
-  public              Boolean      @default(false)
+  pHash               String?              @map("p_hash")
+  pHash2              Unsupported("cube")? @map("p_hash_2")
+  public              Boolean              @default(false)
   // The decimal representation of the primary colors, sorted by appearance frequency
   palette             Int[]
   caption             String?
-  views               Int          @default(0)
-  isNsfw              Boolean      @default(false) @map("is_nsfw")
+  views               Int                  @default(0)
+  isNsfw              Boolean              @default(false) @map("is_nsfw")
   source              String?
-  bytes               Int          @default(0)
-  user                User?        @relation(fields: [userId], references: [id])
-  appearances         Appearance[] @relation("image_appearances")
-  faceScanDate        DateTime?    @map("face_scan_date")
-  faceScanRequestDate DateTime?    @map("face_scan_request_date")
-  ireneBotId          Int?         @map("irene_bot_id") @unique
+  bytes               Int                  @default(0)
+  user                User?                @relation(fields: [userId], references: [id])
+  appearances         Appearance[]         @relation("image_appearances")
+  faceScanDate        DateTime?            @map("face_scan_date")
+  faceScanRequestDate DateTime?            @map("face_scan_request_date")
+  ireneBotId          Int?                 @unique @map("irene_bot_id")
   tags                Tag[]
   faces               Face[]
   likes               ImageLike[]
-  bannerOf            Group?       @relation("banner")
-  avatarOf            Group?       @relation("avatar")
+  bannerOf            Group?               @relation("banner")
+  avatarOf            Group?               @relation("avatar")
+  people              Person[]
 
   @@index([slug], name: "images.slug_index")
   @@map("images")
@@ -267,9 +271,9 @@ model Group {
   aliases    GroupAlias[]
   members    GroupMember[]
   banner     Image?        @relation("banner", fields: [bannerId], references: [id])
-  bannerId   Int?          @map("banner_id")
+  bannerId   Int?          @unique @map("banner_id")
   avatar     Image?        @relation("avatar", fields: [avatarId], references: [id])
-  avatarId   Int?          @map("avatar_id")
+  avatarId   Int?          @unique @map("avatar_id")
   ireneBotId Int?          @unique @map("irene_bot_id")
   createdAt  DateTime      @default(now()) @map("created_at")
   updatedAt  DateTime      @default(now()) @updatedAt @map("updated_at")

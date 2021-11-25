@@ -1,6 +1,9 @@
 import amqplib from "amqplib"
+import { createClient } from "celery-node";
 
 const amqpConnectionUrl = process.env.AMQP_URL ?? "amqp://localhost:3333"
+
+export const celeryClient = createClient(amqpConnectionUrl, amqpConnectionUrl);
 
 export let amqpPromise: ReturnType<typeof amqplib.connect>
 

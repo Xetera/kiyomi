@@ -35,7 +35,7 @@ const theme = extendTheme({
   breakpoints,
   colors: {
     // ...colors,
-    bgPrimary: "#0D0F17",
+    bgPrimary: "hsla(222, 20%, 7%, 1)",
     bgSecondary: "#11131d",
     bgTertiary: "#161927",
     borderSubtle: "#131621",

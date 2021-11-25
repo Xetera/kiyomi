@@ -301,6 +301,10 @@ input AppearanceListRelationFilter {
   some: AppearanceWhereInput
 }
 
+input AppearanceOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input AppearanceScalarWhereInput {
   AND: [AppearanceScalarWhereInput!]
   NOT: [AppearanceScalarWhereInput!]
@@ -603,6 +607,10 @@ input FaceListRelationFilter {
   some: FaceWhereInput
 }
 
+input FaceOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input FaceScalarWhereInput {
   AND: [FaceScalarWhereInput!]
   NOT: [FaceScalarWhereInput!]
@@ -874,6 +882,10 @@ input GroupAliasListRelationFilter {
   some: GroupAliasWhereInput
 }
 
+input GroupAliasOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input GroupAliasScalarWhereInput {
   AND: [GroupAliasScalarWhereInput!]
   NOT: [GroupAliasScalarWhereInput!]
@@ -1128,6 +1140,10 @@ input GroupMemberMemberCompoundUniqueInput {
   personId: Int!
 }
 
+input GroupMemberOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input GroupMemberScalarWhereInput {
   AND: [GroupMemberScalarWhereInput!]
   NOT: [GroupMemberScalarWhereInput!]
@@ -1271,12 +1287,16 @@ input GroupMemberWhereUniqueInput {
   member: GroupMemberMemberCompoundUniqueInput
 }
 
-input GroupOrderByInput {
+input GroupOrderByWithRelationInput {
+  aliases: GroupAliasOrderByRelationAggregateInput
+  avatar: ImageOrderByWithRelationInput
   avatarId: SortOrder
+  banner: ImageOrderByWithRelationInput
   bannerId: SortOrder
   createdAt: SortOrder
   id: SortOrder
   ireneBotId: SortOrder
+  members: GroupMemberOrderByRelationAggregateInput
   name: SortOrder
   updatedAt: SortOrder
 }
@@ -1383,8 +1403,18 @@ input GroupWhereInput {
 }
 
 input GroupWhereUniqueInput {
+  avatarId: Int
+  bannerId: Int
   id: Int
   ireneBotId: Int
+}
+
+type Homepage {
+  trending: [[HomepageTrendingPerson!]!]!
+}
+
+type HomepageTrendingPerson {
+  person: Person!
 }
 
 type Image {
@@ -1427,11 +1457,6 @@ type Image {
 
   """The IANA media type of the image."""
   mimetype: MimeType!
-
-  """
-  Block hash of the image, useful for doing reverse search using hamming distance.
-  """
-  pHash: String
 
   """Dominant colors in the image in decimal format, sorted by frequency."""
   palette: [Int!]!
@@ -1869,6 +1894,10 @@ input ImageLikeListRelationFilter {
   some: ImageLikeWhereInput
 }
 
+input ImageLikeOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input ImageLikeScalarWhereInput {
   AND: [ImageLikeScalarWhereInput!]
   NOT: [ImageLikeScalarWhereInput!]
@@ -1987,26 +2016,37 @@ type ImageMatch {
   person: Person!
 }
 
-input ImageOrderByInput {
+input ImageOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input ImageOrderByWithRelationInput {
+  appearances: AppearanceOrderByRelationAggregateInput
+  avatarOf: GroupOrderByWithRelationInput
+  bannerOf: GroupOrderByWithRelationInput
   bytes: SortOrder
   caption: SortOrder
   createdAt: SortOrder
   faceScanDate: SortOrder
   faceScanRequestDate: SortOrder
+  faces: FaceOrderByRelationAggregateInput
   fileName: SortOrder
   hash: SortOrder
   height: SortOrder
   id: SortOrder
   ireneBotId: SortOrder
   isNsfw: SortOrder
+  likes: ImageLikeOrderByRelationAggregateInput
   mimetype: SortOrder
   pHash: SortOrder
   palette: SortOrder
   public: SortOrder
   slug: SortOrder
   source: SortOrder
+  tags: TagOrderByRelationAggregateInput
   updatedAt: SortOrder
   uploadType: SortOrder
+  user: UserOrderByWithRelationInput
   userId: SortOrder
   views: SortOrder
   width: SortOrder
@@ -3056,17 +3096,19 @@ input PersonWhereInput {
 input PersonWhereUniqueInput {
   id: Int
   ireneBotId: Int
+  preferredAliasId: Int
 }
 
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   group(where: GroupWhereUniqueInput!): Group
-  groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
+  groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByWithRelationInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
+  homepage: [Person]
 
   """Find a single image by its slug."""
   image(slug: String!): Image
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
-  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
   people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   person(where: PersonWhereUniqueInput!): Person
@@ -3122,6 +3164,10 @@ input RoleListRelationFilter {
   every: RoleWhereInput
   none: RoleWhereInput
   some: RoleWhereInput
+}
+
+input RoleOrderByRelationAggregateInput {
+  _count: SortOrder
 }
 
 input RoleScalarWhereInput {
@@ -3319,6 +3365,10 @@ input TagListRelationFilter {
   some: TagWhereInput
 }
 
+input TagOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input TagScalarWhereInput {
   AND: [TagScalarWhereInput!]
   NOT: [TagScalarWhereInput!]
@@ -3454,7 +3504,7 @@ type User {
   avatar: String
   bot: Boolean!
   id: Int!
-  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
   roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
 }
@@ -3586,6 +3636,24 @@ input UserCreateWithoutTaggedAppearancesInput {
   roles: RoleCreateNestedManyWithoutUserInput
   token: String
   updatedAt: DateTime
+}
+
+input UserOrderByWithRelationInput {
+  bot: SortOrder
+  cratedTags: TagOrderByRelationAggregateInput
+  createdAt: SortOrder
+  email: SortOrder
+  emailVerified: SortOrder
+  id: SortOrder
+  image: SortOrder
+  imageLikes: ImageLikeOrderByRelationAggregateInput
+  images: ImageOrderByRelationAggregateInput
+  markedFaces: FaceOrderByRelationAggregateInput
+  name: SortOrder
+  roles: RoleOrderByRelationAggregateInput
+  taggedAppearances: AppearanceOrderByRelationAggregateInput
+  token: SortOrder
+  updatedAt: SortOrder
 }
 
 input UserUpdateOneRequiredWithoutImageLikesInput {

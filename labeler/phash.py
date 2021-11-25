@@ -10,7 +10,7 @@ if len(buffer) == 0:
 
 image = Image.open(io.BytesIO(buffer))
 
-out = phash(image, hash_size=32)
+out = phash(image, hash_size=16)
 
 print(out, flush=True, end='')
 sys.stdout.flush()

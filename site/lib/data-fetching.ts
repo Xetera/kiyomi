@@ -80,11 +80,11 @@ export function wrapRequest<T>(
     const { req, res, ...rest } = ctx
 
     const session = await getSession(ctx)
-    if (req.url?.startsWith("/_next")) {
-      return {
-        props: { session },
-      }
-    }
+    // if (req.url?.startsWith("/_next")) {
+    //   return {
+    //     props: { session },
+    //   }
+    // }
     const data: GetServerSidePropsResult<any> = await f({ req, res, ...rest })
     if (!("props" in data)) {
       // @ts-ignore

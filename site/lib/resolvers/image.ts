@@ -13,12 +13,14 @@ import {
 } from "nexus"
 import { hasRole, Role } from "../permissions"
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client"
-import { Image as ImageType } from "@prisma/client"
 import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
 import centroid from "@turf/centroid"
 import { points } from "@turf/helpers"
+import { hashStringToCube } from "../services/peceptual-hash"
+import { imageUrl, rawUrl } from "../services/image"
+import { homepageQuery } from "../db-queries"
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
@@ -42,10 +44,6 @@ export const ImageCoordinate = objectType({
 export const Image = objectType({
   name: "Image",
   definition(t) {
-    function rawUrl(image: ImageType) {
-      const baseCdnUrl = process.env.NEXT_PUBLIC_BASE_URL_CDN
-      return `${baseCdnUrl}/${image.slug}.${image.mimetype.toLowerCase()}`
-    }
     t.model
       .id()
       .width({
@@ -60,10 +58,6 @@ export const Image = objectType({
       })
       .fileName({
         description: "The name the image file was uploaded with.",
-      })
-      .pHash({
-        description:
-          "Block hash of the image, useful for doing reverse search using hamming distance.",
       })
       .palette({
         description:
@@ -124,7 +118,7 @@ export const Image = objectType({
     t.nonNull.string("url", {
       description: "Link to the image on the site",
       resolve(p) {
-        return `${process.env.NEXT_PUBLIC_BASE_URL}/image/${p.slug}`
+        return imageUrl(p)
       },
     })
     t.nonNull.string("rawUrl", {
@@ -178,6 +172,12 @@ export const Image = objectType({
           )
           const polygon = centroid(coordinates)
           const [x, y] = polygon.geometry.coordinates
+          if (!x || !y) {
+            return {
+              x: Math.floor(image.width / 2),
+              y: Math.floor(image.height / 2),
+            }
+          }
           return { x: Math.floor(x), y: Math.floor(y) }
         } catch (err) {
           console.log(err)
@@ -246,6 +246,24 @@ export const ImageEdge = objectType({
   },
 })
 
+const HomepageTrendingPerson = objectType({
+  name: "HomepageTrendingPerson",
+  definition(t) {
+    t.nonNull.field("person", {
+      type: "Person",
+    })
+  },
+})
+
+export const Homepage = objectType({
+  name: "Homepage",
+  definition(t) {
+    t.nonNull.list.field("trending", {
+      type: nonNull(list(nonNull(HomepageTrendingPerson))),
+    })
+  },
+})
+
 export const ImageConnections = objectType({
   name: "ImageConnections",
   definition(t) {
@@ -281,6 +299,7 @@ export const Query = queryField((t) => {
       )
     },
   })
+  // not t.crud.image because we don't want images to be searchable by ID
   t.field("image", {
     type: "Image",
     description: "Find a single image by its slug.",
@@ -314,6 +333,23 @@ export const Query = queryField((t) => {
         throw Error("Invalid image slug")
       }
       return imageConnections(base, maxDepth, prisma)
+    },
+  })
+  t.field("homepage", {
+    type: list("Person"),
+    args: {},
+    async resolve(t, _, { prisma }) {
+      const result = await homepageQuery()
+      const people = await prisma.person.findMany({
+        where: {
+          id: {
+            in: result.map((res) => res.id),
+          },
+        },
+      })
+      return result.map((person) => {
+        return people.find((p) => p.id === person.id)
+      })
     },
   })
 })
@@ -595,13 +631,24 @@ export const PrivateMutation = mutationField((t) => {
           },
           data: {
             faceScanDate: new Date(),
-            pHash: pHash,
             palette,
           },
         })
         .catch((err) => {
           console.error(err)
         })
+
+      // I know this is a very strange way to do this but prisma doesn't let us
+      // update CUBE values any other way
+      const pHashArray = hashStringToCube(pHash)
+      prisma.$queryRaw`${Prisma.raw(`
+        UPDATE images SET p_hash_2 = CUBE(ARRAY[${pHashArray.join(
+          ","
+        )}]) WHERE slug = '${slug}'
+      `)}`.catch((err) => {
+        console.error(err)
+      })
+
       const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, added_by_id, appearance_id, source) VALUES`
       const templatedString = faces
         .map(({ x, y, height, width, descriptor, certainty }: any) => {

@@ -12,6 +12,7 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
     "noEmit": true,
     "strictNullChecks": true,
     "esModuleInterop": true,
