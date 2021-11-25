@@ -376,8 +376,20 @@ export type GroupWhereInput = {
 };
 
 export type GroupWhereUniqueInput = {
+  avatarId?: Maybe<Scalars['Int']>;
+  bannerId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   ireneBotId?: Maybe<Scalars['Int']>;
+};
+
+export type Homepage = {
+  __typename?: 'Homepage';
+  trending: Array<Array<HomepageTrendingPerson>>;
+};
+
+export type HomepageTrendingPerson = {
+  __typename?: 'HomepageTrendingPerson';
+  person: Person;
 };
 
 export type Image = {
@@ -409,8 +421,6 @@ export type Image = {
   liked?: Maybe<Scalars['Boolean']>;
   /** The IANA media type of the image. */
   mimetype: MimeType;
-  /** Block hash of the image, useful for doing reverse search using hamming distance. */
-  pHash?: Maybe<Scalars['String']>;
   /** Dominant colors in the image in decimal format, sorted by frequency. */
   palette: Array<Scalars['Int']>;
   /** The visibility status of the image. */
@@ -533,8 +543,6 @@ export type ImageWhereInput = {
   NOT?: Maybe<Array<ImageWhereInput>>;
   OR?: Maybe<Array<ImageWhereInput>>;
   appearances?: Maybe<AppearanceListRelationFilter>;
-  avatarOf?: Maybe<GroupWhereInput>;
-  bannerOf?: Maybe<GroupWhereInput>;
   bytes?: Maybe<IntFilter>;
   caption?: Maybe<StringNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
@@ -542,6 +550,8 @@ export type ImageWhereInput = {
   faceScanRequestDate?: Maybe<DateTimeNullableFilter>;
   faces?: Maybe<FaceListRelationFilter>;
   fileName?: Maybe<StringNullableFilter>;
+  groupAvatarOf?: Maybe<GroupWhereInput>;
+  groupBannerOf?: Maybe<GroupWhereInput>;
   hash?: Maybe<StringFilter>;
   height?: Maybe<IntFilter>;
   id?: Maybe<IntFilter>;
@@ -551,6 +561,8 @@ export type ImageWhereInput = {
   mimetype?: Maybe<EnumMimeTypeFilter>;
   pHash?: Maybe<StringNullableFilter>;
   palette?: Maybe<IntNullableListFilter>;
+  personAvatarOf?: Maybe<PersonWhereInput>;
+  personBannerOf?: Maybe<PersonWhereInput>;
   public?: Maybe<BoolFilter>;
   slug?: Maybe<StringFilter>;
   source?: Maybe<StringNullableFilter>;
@@ -558,6 +570,8 @@ export type ImageWhereInput = {
   updatedAt?: Maybe<DateTimeFilter>;
   uploadType?: Maybe<EnumUploadTypeFilter>;
   user?: Maybe<UserWhereInput>;
+  userAvatarOf?: Maybe<UserWhereInput>;
+  userBannerOf?: Maybe<UserWhereInput>;
   userId?: Maybe<IntNullableFilter>;
   views?: Maybe<IntFilter>;
   width?: Maybe<IntFilter>;
@@ -778,6 +792,8 @@ export type Person = {
   __typename?: 'Person';
   aliases: Array<Alias>;
   appearances: Array<Appearance>;
+  avatar?: Maybe<Image>;
+  banner?: Maybe<Image>;
   createdAt: Scalars['DateTime'];
   faces: Array<Face>;
   id: Scalars['Int'];
@@ -829,6 +845,10 @@ export type PersonWhereInput = {
   aliases?: Maybe<AliasListRelationFilter>;
   appearances?: Maybe<AppearanceListRelationFilter>;
   appearsIn?: Maybe<FaceListRelationFilter>;
+  avatar?: Maybe<ImageWhereInput>;
+  avatarId?: Maybe<IntNullableFilter>;
+  banner?: Maybe<ImageWhereInput>;
+  bannerId?: Maybe<IntNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   description?: Maybe<StringNullableFilter>;
   id?: Maybe<IntFilter>;
@@ -845,6 +865,7 @@ export type PersonWhereInput = {
 export type PersonWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  preferredAliasId?: Maybe<Scalars['Int']>;
 };
 
 export type Query = {
@@ -852,6 +873,7 @@ export type Query = {
   countAppearances: Array<AppearanceCount>;
   group?: Maybe<Group>;
   groups: Array<Group>;
+  homepage: Array<Person>;
   /** Find a single image by its slug. */
   image?: Maybe<Image>;
   imageConnections?: Maybe<ImageConnections>;
@@ -1078,6 +1100,10 @@ export type UserWhereInput = {
   AND?: Maybe<Array<UserWhereInput>>;
   NOT?: Maybe<Array<UserWhereInput>>;
   OR?: Maybe<Array<UserWhereInput>>;
+  avatar?: Maybe<ImageWhereInput>;
+  avatarId?: Maybe<IntNullableFilter>;
+  banner?: Maybe<ImageWhereInput>;
+  bannerId?: Maybe<IntNullableFilter>;
   bot?: Maybe<BoolFilter>;
   cratedTags?: Maybe<TagListRelationFilter>;
   createdAt?: Maybe<DateTimeFilter>;
@@ -1117,7 +1143,7 @@ export type OneImageQuery = (
   { __typename?: 'Query' }
   & { image?: Maybe<(
     { __typename?: 'Image' }
-    & Pick<Image, 'liked' | 'faceScanDate'>
+    & Pick<Image, 'liked' | 'faceScanDate' | 'public'>
     & { unknownFaces: Array<(
       { __typename?: 'Face' }
       & { appearance?: Maybe<(
@@ -1214,17 +1240,50 @@ export type FaceDataFragment = (
   & Pick<Face, 'id' | 'x' | 'y' | 'width' | 'height' | 'score'>
 );
 
-export type HomepageQueryVariables = Exact<{
+export type HomepagePersonQueryVariables = Exact<{
   take: Scalars['Int'];
   skip: Scalars['Int'];
+  id: Scalars['Int'];
 }>;
 
 
-export type HomepageQuery = (
+export type HomepagePersonQuery = (
   { __typename?: 'Query' }
   & { images: Array<(
     { __typename?: 'Image' }
     & GridImageFragment
+  )> }
+);
+
+export type HomepageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HomepageQuery = (
+  { __typename?: 'Query' }
+  & { homepage: Array<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'id' | 'name'>
+    & { preferredMembership?: Maybe<(
+      { __typename?: 'GroupMember' }
+      & { group: (
+        { __typename?: 'Group' }
+        & Pick<Group, 'name'>
+      ) }
+    )>, avatar?: Maybe<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'url' | 'createdAt'>
+      & { thumbnail: (
+        { __typename?: 'Thumbnail' }
+        & Pick<Thumbnail, 'small'>
+      ) }
+    )>, banner?: Maybe<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'url' | 'rawUrl' | 'width' | 'height'>
+      & { focus: (
+        { __typename?: 'ImageCoordinate' }
+        & Pick<ImageCoordinate, 'x' | 'y'>
+      ) }
+    )> }
   )> }
 );
 
@@ -1524,6 +1583,7 @@ export const OneImageDocument = `
     }
     ...ImageData
     faceScanDate
+    public
   }
 }
     ${FaceDataFragmentDoc}
@@ -1609,18 +1669,65 @@ export const useConnectionGraphQuery = <
       fetcher<ConnectionGraphQuery, ConnectionGraphQueryVariables>(ConnectionGraphDocument, variables),
       options
     );
-export const HomepageDocument = `
-    query Homepage($take: Int!, $skip: Int!) {
-  images(orderBy: {createdAt: desc}, take: $take, skip: $skip) {
+export const HomepagePersonDocument = `
+    query HomepagePerson($take: Int!, $skip: Int!, $id: Int!) {
+  images(
+    where: {appearances: {some: {person: {id: {equals: $id}}}}}
+    take: $take
+    skip: $skip
+    orderBy: {createdAt: desc}
+  ) {
     ...GridImage
   }
 }
     ${GridImageFragmentDoc}`;
+export const useHomepagePersonQuery = <
+      TData = HomepagePersonQuery,
+      TError = unknown
+    >(
+      variables: HomepagePersonQueryVariables, 
+      options?: UseQueryOptions<HomepagePersonQuery, TError, TData>
+    ) => 
+    useQuery<HomepagePersonQuery, TError, TData>(
+      ['HomepagePerson', variables],
+      fetcher<HomepagePersonQuery, HomepagePersonQueryVariables>(HomepagePersonDocument, variables),
+      options
+    );
+export const HomepageDocument = `
+    query Homepage {
+  homepage {
+    id
+    name
+    preferredMembership {
+      group {
+        name
+      }
+    }
+    avatar {
+      url
+      createdAt
+      thumbnail {
+        small
+      }
+    }
+    banner {
+      url
+      rawUrl
+      width
+      height
+      focus {
+        x
+        y
+      }
+    }
+  }
+}
+    `;
 export const useHomepageQuery = <
       TData = HomepageQuery,
       TError = unknown
     >(
-      variables: HomepageQueryVariables, 
+      variables?: HomepageQueryVariables, 
       options?: UseQueryOptions<HomepageQuery, TError, TData>
     ) => 
     useQuery<HomepageQuery, TError, TData>(

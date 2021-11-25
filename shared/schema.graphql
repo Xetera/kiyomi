@@ -64,10 +64,6 @@ input AppearanceListRelationFilter {
   some: AppearanceWhereInput
 }
 
-input AppearanceOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
 input AppearanceWhereInput {
   AND: [AppearanceWhereInput!]
   NOT: [AppearanceWhereInput!]
@@ -167,10 +163,6 @@ input FaceListRelationFilter {
   some: FaceWhereInput
 }
 
-input FaceOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
 enum FaceSource {
   Manual
   Scan
@@ -238,10 +230,6 @@ input GroupAliasListRelationFilter {
   some: GroupAliasWhereInput
 }
 
-input GroupAliasOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
 input GroupAliasWhereInput {
   AND: [GroupAliasWhereInput!]
   NOT: [GroupAliasWhereInput!]
@@ -279,10 +267,6 @@ input GroupMemberMemberCompoundUniqueInput {
   personId: Int!
 }
 
-input GroupMemberOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
 input GroupMemberWhereInput {
   AND: [GroupMemberWhereInput!]
   NOT: [GroupMemberWhereInput!]
@@ -304,16 +288,12 @@ input GroupMemberWhereUniqueInput {
   member: GroupMemberMemberCompoundUniqueInput
 }
 
-input GroupOrderByWithRelationInput {
-  aliases: GroupAliasOrderByRelationAggregateInput
-  avatar: ImageOrderByWithRelationInput
+input GroupOrderByInput {
   avatarId: SortOrder
-  banner: ImageOrderByWithRelationInput
   bannerId: SortOrder
   createdAt: SortOrder
   id: SortOrder
   ireneBotId: SortOrder
-  members: GroupMemberOrderByRelationAggregateInput
   name: SortOrder
   updatedAt: SortOrder
 }
@@ -450,10 +430,6 @@ input ImageLikeListRelationFilter {
   some: ImageLikeWhereInput
 }
 
-input ImageLikeOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
 input ImageLikeWhereInput {
   AND: [ImageLikeWhereInput!]
   NOT: [ImageLikeWhereInput!]
@@ -473,37 +449,26 @@ input ImageListRelationFilter {
   some: ImageWhereInput
 }
 
-input ImageOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
-input ImageOrderByWithRelationInput {
-  appearances: AppearanceOrderByRelationAggregateInput
-  avatarOf: GroupOrderByWithRelationInput
-  bannerOf: GroupOrderByWithRelationInput
+input ImageOrderByInput {
   bytes: SortOrder
   caption: SortOrder
   createdAt: SortOrder
   faceScanDate: SortOrder
   faceScanRequestDate: SortOrder
-  faces: FaceOrderByRelationAggregateInput
   fileName: SortOrder
   hash: SortOrder
   height: SortOrder
   id: SortOrder
   ireneBotId: SortOrder
   isNsfw: SortOrder
-  likes: ImageLikeOrderByRelationAggregateInput
   mimetype: SortOrder
   pHash: SortOrder
   palette: SortOrder
   public: SortOrder
   slug: SortOrder
   source: SortOrder
-  tags: TagOrderByRelationAggregateInput
   updatedAt: SortOrder
   uploadType: SortOrder
-  user: UserOrderByWithRelationInput
   userId: SortOrder
   views: SortOrder
   width: SortOrder
@@ -514,8 +479,6 @@ input ImageWhereInput {
   NOT: [ImageWhereInput!]
   OR: [ImageWhereInput!]
   appearances: AppearanceListRelationFilter
-  avatarOf: GroupWhereInput
-  bannerOf: GroupWhereInput
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
@@ -523,6 +486,8 @@ input ImageWhereInput {
   faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
   fileName: StringNullableFilter
+  groupAvatarOf: GroupWhereInput
+  groupBannerOf: GroupWhereInput
   hash: StringFilter
   height: IntFilter
   id: IntFilter
@@ -532,6 +497,8 @@ input ImageWhereInput {
   mimetype: EnumMimeTypeFilter
   pHash: StringNullableFilter
   palette: IntNullableListFilter
+  personAvatarOf: PersonWhereInput
+  personBannerOf: PersonWhereInput
   public: BoolFilter
   slug: StringFilter
   source: StringNullableFilter
@@ -539,6 +506,8 @@ input ImageWhereInput {
   updatedAt: DateTimeFilter
   uploadType: EnumUploadTypeFilter
   user: UserWhereInput
+  userAvatarOf: UserWhereInput
+  userBannerOf: UserWhereInput
   userId: IntNullableFilter
   views: IntFilter
   width: IntFilter
@@ -730,6 +699,8 @@ input NestedStringNullableFilter {
 type Person {
   aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
+  avatar: Image
+  banner: Image
   createdAt: DateTime!
   faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
@@ -753,6 +724,10 @@ input PersonWhereInput {
   aliases: AliasListRelationFilter
   appearances: AppearanceListRelationFilter
   appearsIn: FaceListRelationFilter
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   id: IntFilter
@@ -775,13 +750,13 @@ input PersonWhereUniqueInput {
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   group(where: GroupWhereUniqueInput!): Group
-  groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByWithRelationInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
-  homepage: [Person]
+  groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
+  homepage: [Person!]!
 
   """Find a single image by its slug."""
   image(slug: String!): Image
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
-  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
   people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   person(where: PersonWhereUniqueInput!): Person
@@ -806,10 +781,6 @@ input RoleListRelationFilter {
   every: RoleWhereInput
   none: RoleWhereInput
   some: RoleWhereInput
-}
-
-input RoleOrderByRelationAggregateInput {
-  _count: SortOrder
 }
 
 input RoleUserRoleCompoundUniqueInput {
@@ -882,10 +853,6 @@ input TagListRelationFilter {
   some: TagWhereInput
 }
 
-input TagOrderByRelationAggregateInput {
-  _count: SortOrder
-}
-
 enum TagSource {
   USER
 }
@@ -925,33 +892,19 @@ type User {
   avatar: String
   bot: Boolean!
   id: Int!
-  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
   roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
-}
-
-input UserOrderByWithRelationInput {
-  bot: SortOrder
-  cratedTags: TagOrderByRelationAggregateInput
-  createdAt: SortOrder
-  email: SortOrder
-  emailVerified: SortOrder
-  id: SortOrder
-  image: SortOrder
-  imageLikes: ImageLikeOrderByRelationAggregateInput
-  images: ImageOrderByRelationAggregateInput
-  markedFaces: FaceOrderByRelationAggregateInput
-  name: SortOrder
-  roles: RoleOrderByRelationAggregateInput
-  taggedAppearances: AppearanceOrderByRelationAggregateInput
-  token: SortOrder
-  updatedAt: SortOrder
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
   bot: BoolFilter
   cratedTags: TagListRelationFilter
   createdAt: DateTimeFilter

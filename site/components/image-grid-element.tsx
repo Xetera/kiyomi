@@ -8,10 +8,11 @@ import { AnimatePresence, motion } from "framer-motion"
 export type FocusableImage = Pick<ImageData, "focus" | "width" | "height">
 
 export type ImageGridElementProps = {
+  forceSmall?: boolean;
   image: Pick<ImageData,
     "createdAt" | "id" | "url"> & FocusableImage & {
     thumbnail: Pick<Thumbnail, "small">
-    appearances: Array<{
+    appearances?: Array<{
       person: Pick<Person, "name">
     }>
   }
@@ -23,8 +24,8 @@ const toPercentage = (position: number, max: number) =>
   `${Math.floor((position / max) * 100)}%`
 
 export const focusToObjectPosition = (image: FocusableImage) => {
-  return `${toPercentage(image.focus.x, image.width)} ${toPercentage(
-    image.focus.y,
+  return `${toPercentage(image.focus ? image.focus.x : image.width / 2, image.width)} ${toPercentage(
+    image.focus ? image.focus.y : image.height / 2,
     image.height,
   )}`
 }
@@ -33,7 +34,7 @@ export function ImageGridElement(props: ImageGridElementProps) {
   const [hovering, setHovering] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const { image } = props
-  const objectPosition = focusToObjectPosition(image)
+  const objectPosition = image ? focusToObjectPosition(image) : ""
 
   return (
     <Link href={image.url} key={image.id} passHref>
@@ -84,14 +85,14 @@ export function ImageGridElement(props: ImageGridElementProps) {
               flexDirection="row"
               alignItems="flex-end"
             >
-              <Text
+              {image.appearances?.[0] && <Text
                 fontSize="xs"
                 color="white"
                 zIndex="1000000"
                 opacity="var(--gradient)"
               >
                 {image.appearances[0]?.person.name ?? "Unknown"}
-              </Text>
+              </Text>}
               <Text
                 as="time"
                 dateTime={image.createdAt}

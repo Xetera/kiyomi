@@ -253,7 +253,7 @@ CREATE UNIQUE INDEX "persons.irene_bot_id_unique" ON "persons"("irene_bot_id");
 CREATE INDEX "person.name.index" ON "persons"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "persons_preferred_alias_id_unique" ON "persons"("preferred_alias_id");
+CREATE UNIQUE INDEX "persons.preferred_alias_id_unique" ON "persons"("preferred_alias_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "appearance" ON "appearances"("person_id", "image_id");
@@ -304,10 +304,10 @@ CREATE UNIQUE INDEX "member" ON "group_members"("group_id", "person_id");
 CREATE UNIQUE INDEX "groups.irene_bot_id_unique" ON "groups"("irene_bot_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "groups_banner_id_unique" ON "groups"("banner_id");
+CREATE UNIQUE INDEX "groups.banner_id_unique" ON "groups"("banner_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "groups_avatar_id_unique" ON "groups"("avatar_id");
+CREATE UNIQUE INDEX "groups.avatar_id_unique" ON "groups"("avatar_id");
 
 -- AddForeignKey
 ALTER TABLE "tags" ADD FOREIGN KEY ("added_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

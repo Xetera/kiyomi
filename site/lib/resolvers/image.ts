@@ -336,8 +336,7 @@ export const Query = queryField((t) => {
     },
   })
   t.field("homepage", {
-    type: list("Person"),
-    args: {},
+    type: nonNull(list(nonNull("Person"))),
     async resolve(t, _, { prisma }) {
       const result = await homepageQuery()
       const people = await prisma.person.findMany({

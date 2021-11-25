@@ -1,0 +1,5 @@
+query HomepagePerson($take: Int!, $skip: Int!, $id: Int!) {
+    images(where:{appearances: {some: {person: {id: {equals:$id}}}}}, take: $take, skip: $skip, orderBy: { createdAt: desc }) {
+        ...GridImage
+    }
+}

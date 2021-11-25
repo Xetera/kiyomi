@@ -74,7 +74,9 @@ model Person {
   preferredMembershipId Int?          @map("preferred_membership_id")
   preferredMembership   GroupMember?  @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
   bannerId              Int?          @map("banner_id")
-  banner                Image?        @relation(fields: [bannerId], references: [id])
+  banner                Image?        @relation(name: "person_banner", fields: [bannerId], references: [id])
+  avatarId              Int?          @map("avatar_id")
+  avatar                Image?        @relation(name: "person_avatar", fields: [avatarId], references: [id])
 
   @@index([name], name: "person.name.index")
   @@map("persons")
@@ -159,6 +161,8 @@ model User {
   email         String?     @unique
   emailVerified DateTime?   @map("email_verified")
   image         String?
+  avatarId      Int?        @map("avatar_id")
+  avatar        Image?      @relation("user_avatar", fields: [avatarId], references: [id])
   token         String?     @unique
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
@@ -167,6 +171,8 @@ model User {
   roles         Role[]
   imageLikes    ImageLike[]
   bot           Boolean     @default(false)
+  bannerId      Int?
+  banner        Image?      @relation("user_banner", fields: [bannerId], references: [id])
 
   taggedAppearances Appearance[]
   markedFaces       Face[]
@@ -216,11 +222,16 @@ model Image {
   tags                Tag[]
   faces               Face[]
   likes               ImageLike[]
-  bannerOf            Group?               @relation("banner")
-  avatarOf            Group?               @relation("avatar")
-  people              Person[]
+  // unused shit
+  personBannerOf      Person?              @relation("person_banner")
+  personAvatarOf      Person?              @relation("person_avatar")
+  userAvatarOf        User?                @relation("user_avatar")
+  userBannerOf        User?                @relation("user_banner")
+  groupAvatarOf       Group?               @relation("group_avatar")
+  groupBannerOf       Group?               @relation("group_banner")
 
   @@index([slug], name: "images.slug_index")
+  @@index([pHash2], name: "images.p_hash_2")
   @@map("images")
 }
 
@@ -270,9 +281,9 @@ model Group {
   name       String
   aliases    GroupAlias[]
   members    GroupMember[]
-  banner     Image?        @relation("banner", fields: [bannerId], references: [id])
+  banner     Image?        @relation(name: "group_banner", fields: [bannerId], references: [id])
   bannerId   Int?          @unique @map("banner_id")
-  avatar     Image?        @relation("avatar", fields: [avatarId], references: [id])
+  avatar     Image?        @relation(name: "group_avatar", fields: [avatarId], references: [id])
   avatarId   Int?          @unique @map("avatar_id")
   ireneBotId Int?          @unique @map("irene_bot_id")
   createdAt  DateTime      @default(now()) @map("created_at")

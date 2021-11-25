@@ -1,5 +1,28 @@
-query Homepage($take: Int!, $skip: Int!, id: Int!) {
-  images(where:{appearances: {some: {person: {id: {equals:$id}}}}}, take: $take, skip: $skip) {
-    ...GridImage
-  }
+query Homepage {
+    homepage {
+        id
+        name
+        preferredMembership {
+            group {
+                name
+            }
+        }
+        avatar {
+            url
+            createdAt
+            thumbnail {
+                small
+            }
+        }
+        banner {
+            url
+            rawUrl
+            width
+            height
+            focus {
+                x
+                y
+            }
+        }
+    }
 }
