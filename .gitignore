@@ -25,6 +25,7 @@
 **/yarn-error.log*
 
 # local env files
+**/.env
 .env.local
 .env.development.local
 .env.test.local
@@ -33,7 +34,6 @@
 # vercel
 .vercel
 
-ansible/.env
 site/test.sh
 site/dump.sql
 site/.next
