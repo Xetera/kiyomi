@@ -1,5 +1,5 @@
 import { PrismaClient, Image } from ".prisma/client"
-import { uniqBy } from "lodash"
+import uniqBy from "lodash/uniqBy"
 
 export async function imageConnections(
   base: Image,

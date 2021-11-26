@@ -1,4 +1,3 @@
-// import colors from "tailwindcss/colors"
 import { extendTheme } from "@chakra-ui/react"
 import { createBreakpoints } from "@chakra-ui/theme-tools"
 
@@ -34,8 +33,16 @@ const theme = extendTheme({
   },
   breakpoints,
   colors: {
+    text: {
+      100: "white",
+      200: "#eeeeee",
+      300: "#e5e5e5",
+      400: "#cdcdcd",
+      500: "#b7b7b7",
+      600: "#a5a5a5",
+    },
     // ...colors,
-    bgPrimary: "#0D0F17",
+    bgPrimary: "hsla(222, 20%, 7%, 1)",
     bgSecondary: "#11131d",
     bgTertiary: "#161927",
     borderSubtle: "#131621",
@@ -77,18 +84,19 @@ const theme = extendTheme({
     },
   },
   textStyles: {
-    h1: {
+    "heading-lg": {
       // you can also use responsive styles
-      fontSize: ["48px", "72px"],
+      fontSize: ["16px", "20px"],
       fontWeight: "bold",
       lineHeight: "110%",
-      letterSpacing: "-2%",
     },
-    h2: {
-      fontSize: ["36px", "48px"],
+    heading: {
+      fontSize: ["14px", "18px"],
       fontWeight: "semibold",
-      lineHeight: "110%",
-      letterSpacing: "-1%",
+    },
+    "heading-sm": {
+      fontSize: ["12px", "14px"],
+      fontWeight: "semibold",
     },
   },
   layerStyles: {

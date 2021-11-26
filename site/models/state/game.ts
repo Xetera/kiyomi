@@ -17,7 +17,8 @@ import {
 } from "../../../shared/game"
 import Router from "next/router"
 import { createStandaloneToast } from "@chakra-ui/react"
-import { debounce, keyBy } from "lodash"
+import debounce from "lodash/debounce"
+import keyBy from "lodash/keyBy"
 import { store } from "@/models/store"
 
 const defaultOptions = { position: "bottom-right" } as const

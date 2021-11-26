@@ -25,13 +25,13 @@ export default function useImageSlice({
     image.src = src
     image.onload = () => {
       const ctx = ref.current?.getContext("2d")
-      ctx!.clearRect(
+      ctx?.clearRect(
         0,
         0,
         ref.current?.width ?? 100,
         ref.current?.height ?? 100
       )
-      ctx!.drawImage(
+      ctx?.drawImage(
         image,
         face.x,
         face.y,

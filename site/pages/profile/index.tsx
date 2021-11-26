@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar"
+import { Navbar, WithNavbar } from "@/components/navbar"
 import { User } from "@/components/user"
 import React from "react"
 import { useMeQuery } from "@/lib/__generated__/graphql"
@@ -13,8 +13,7 @@ function Image() {
   }
 
   return (
-    <div>
-      <Navbar />
+    <WithNavbar>
       <div className="flex flex-col w-full mx-auto max-w-7xl px-8">
         <div className="flex justify-content w-full py-10">
           <div>
@@ -23,12 +22,12 @@ function Image() {
         </div>
         <ImageGrid images={data.me.images} />
       </div>
-    </div>
+    </WithNavbar>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const dehydratedState = await prefetchQuery("MeDocument", {})
+  const dehydratedState = await prefetchQuery("Me", {})
   return {
     props: { dehydratedState },
   }

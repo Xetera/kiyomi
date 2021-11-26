@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux"
 import type { Dispatch, RootState } from "@/models/store"
 import { Flex, Heading, Text } from "@chakra-ui/layout"
-import { Navbar } from "@/components/navbar"
+import { Navbar, WithNavbar } from "@/components/navbar"
 import GameLobbyRow, {
   GameLobbyRowSkeleton,
 } from "@/components/game/game-lobby-row"
@@ -30,8 +30,7 @@ export default function GamesLobby() {
   }
 
   return (
-    <>
-      <Navbar />
+    <WithNavbar>
       <Flex width="100%" alignItems="center" justifyContent="center">
         <Flex flex={1} flexFlow="column" maxWidth="900px" mt={[6, 8, null, 12]}>
           <Flex mb={2} justifyContent="space-between" alignItems="center">
@@ -59,6 +58,6 @@ export default function GamesLobby() {
           </VStack>
         </Flex>
       </Flex>
-    </>
+    </WithNavbar>
   )
 }

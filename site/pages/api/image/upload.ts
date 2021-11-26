@@ -1,10 +1,8 @@
 import { handle, withFileUpload, withUser } from "@/lib/middleware"
 import {
-  canPerceptualHash,
   convertImage,
   mimetypeMappings,
   parseExtension,
-  perceptualHash,
   sha256Hash,
 } from "@/lib/file"
 import { uploadImage } from "@/lib/wasabi"
@@ -71,10 +69,7 @@ export default handle(
         if (mime === false) {
           return res.json({ error: "invalid file type" })
         }
-        const [pHash, hash, uploadResult] = await Promise.all([
-          canPerceptualHash(format)
-            ? perceptualHash(buffer, mime)
-            : Promise.resolve(),
+        const [hash, uploadResult] = await Promise.all([
           sha256Hash(buffer),
           uploadImage({
             key: slugWithExtension,
@@ -106,7 +101,6 @@ export default handle(
             height,
             uploadType: contextType,
             mimetype: databaseType,
-            pHash: pHash as string | undefined,
             hash: hash as string,
             public: isPublic,
             bytes: buffer.byteLength,

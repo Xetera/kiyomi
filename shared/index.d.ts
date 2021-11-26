@@ -235,6 +235,8 @@ export interface NexusGenInputs {
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   GroupWhereUniqueInput: { // input type
+    avatarId?: number | null; // Int
+    bannerId?: number | null; // Int
     id?: number | null; // Int
     ireneBotId?: number | null; // Int
   }
@@ -289,8 +291,6 @@ export interface NexusGenInputs {
     NOT?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
     OR?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
     appearances?: NexusGenInputs['AppearanceListRelationFilter'] | null; // AppearanceListRelationFilter
-    avatarOf?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
-    bannerOf?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
     bytes?: NexusGenInputs['IntFilter'] | null; // IntFilter
     caption?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
@@ -298,6 +298,8 @@ export interface NexusGenInputs {
     faceScanRequestDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     faces?: NexusGenInputs['FaceListRelationFilter'] | null; // FaceListRelationFilter
     fileName?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    groupAvatarOf?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
+    groupBannerOf?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
     hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
     height?: NexusGenInputs['IntFilter'] | null; // IntFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
@@ -307,6 +309,8 @@ export interface NexusGenInputs {
     mimetype?: NexusGenInputs['EnumMimeTypeFilter'] | null; // EnumMimeTypeFilter
     pHash?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     palette?: NexusGenInputs['IntNullableListFilter'] | null; // IntNullableListFilter
+    personAvatarOf?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    personBannerOf?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     public?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
     slug?: NexusGenInputs['StringFilter'] | null; // StringFilter
     source?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
@@ -314,6 +318,8 @@ export interface NexusGenInputs {
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     uploadType?: NexusGenInputs['EnumUploadTypeFilter'] | null; // EnumUploadTypeFilter
     user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userAvatarOf?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userBannerOf?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     views?: NexusGenInputs['IntFilter'] | null; // IntFilter
     width?: NexusGenInputs['IntFilter'] | null; // IntFilter
@@ -466,6 +472,10 @@ export interface NexusGenInputs {
     aliases?: NexusGenInputs['AliasListRelationFilter'] | null; // AliasListRelationFilter
     appearances?: NexusGenInputs['AppearanceListRelationFilter'] | null; // AppearanceListRelationFilter
     appearsIn?: NexusGenInputs['FaceListRelationFilter'] | null; // FaceListRelationFilter
+    avatar?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    avatarId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    banner?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    bannerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     description?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
@@ -481,6 +491,7 @@ export interface NexusGenInputs {
   PersonWhereUniqueInput: { // input type
     id?: number | null; // Int
     ireneBotId?: number | null; // Int
+    preferredAliasId?: number | null; // Int
   }
   RoleListRelationFilter: { // input type
     every?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
@@ -560,6 +571,10 @@ export interface NexusGenInputs {
     AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    avatar?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    avatarId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    banner?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    bannerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     bot?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
     cratedTags?: NexusGenInputs['TagListRelationFilter'] | null; // TagListRelationFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
@@ -608,6 +623,12 @@ export interface NexusGenObjects {
   Group: PrismaClient.Group;
   GroupAlias: PrismaClient.GroupAlias;
   GroupMember: PrismaClient.GroupMember;
+  Homepage: { // root type
+    trending: NexusGenRootTypes['HomepageTrendingPerson'][][]; // [[HomepageTrendingPerson!]!]!
+  }
+  HomepageTrendingPerson: { // root type
+    person: NexusGenRootTypes['Person']; // Person!
+  }
   Image: PrismaClient.Image;
   ImageConnections: { // root type
     edges: NexusGenRootTypes['ImageEdge'][]; // [ImageEdge!]!
@@ -708,6 +729,12 @@ export interface NexusGenFieldTypes {
     startDate: NexusGenScalars['DateTime'] | null; // DateTime
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
+  Homepage: { // field return type
+    trending: NexusGenRootTypes['HomepageTrendingPerson'][][]; // [[HomepageTrendingPerson!]!]!
+  }
+  HomepageTrendingPerson: { // field return type
+    person: NexusGenRootTypes['Person']; // Person!
+  }
   Image: { // field return type
     appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
     aspectRatio: number; // Float!
@@ -726,7 +753,6 @@ export interface NexusGenFieldTypes {
     isNsfw: boolean; // Boolean!
     liked: boolean | null; // Boolean
     mimetype: NexusGenEnums['MimeType']; // MimeType!
-    pHash: string | null; // String
     palette: number[]; // [Int!]!
     public: boolean; // Boolean!
     rawUrl: string; // String!
@@ -766,6 +792,8 @@ export interface NexusGenFieldTypes {
   Person: { // field return type
     aliases: NexusGenRootTypes['Alias'][]; // [Alias!]!
     appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
+    avatar: NexusGenRootTypes['Image'] | null; // Image
+    banner: NexusGenRootTypes['Image'] | null; // Image
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     faces: NexusGenRootTypes['Face'][]; // [Face!]!
     id: number; // Int!
@@ -779,6 +807,7 @@ export interface NexusGenFieldTypes {
     countAppearances: NexusGenRootTypes['AppearanceCount'][]; // [AppearanceCount!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
+    homepage: NexusGenRootTypes['Person'][]; // [Person!]!
     image: NexusGenRootTypes['Image'] | null; // Image
     imageConnections: NexusGenRootTypes['ImageConnections'] | null; // ImageConnections
     images: NexusGenRootTypes['Image'][]; // [Image!]!
@@ -874,6 +903,12 @@ export interface NexusGenFieldTypeNames {
     startDate: 'DateTime'
     updatedAt: 'DateTime'
   }
+  Homepage: { // field return type name
+    trending: 'HomepageTrendingPerson'
+  }
+  HomepageTrendingPerson: { // field return type name
+    person: 'Person'
+  }
   Image: { // field return type name
     appearances: 'Appearance'
     aspectRatio: 'Float'
@@ -892,7 +927,6 @@ export interface NexusGenFieldTypeNames {
     isNsfw: 'Boolean'
     liked: 'Boolean'
     mimetype: 'MimeType'
-    pHash: 'String'
     palette: 'Int'
     public: 'Boolean'
     rawUrl: 'String'
@@ -932,6 +966,8 @@ export interface NexusGenFieldTypeNames {
   Person: { // field return type name
     aliases: 'Alias'
     appearances: 'Appearance'
+    avatar: 'Image'
+    banner: 'Image'
     createdAt: 'DateTime'
     faces: 'Face'
     id: 'Int'
@@ -945,6 +981,7 @@ export interface NexusGenFieldTypeNames {
     countAppearances: 'AppearanceCount'
     group: 'Group'
     groups: 'Group'
+    homepage: 'Person'
     image: 'Image'
     imageConnections: 'ImageConnections'
     images: 'Image'

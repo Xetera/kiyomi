@@ -12,6 +12,8 @@ export const Person = objectType({
       .appearances()
       .memberOf()
       .preferredMembership()
+      .avatar()
+      .banner()
       .updatedAt()
       .createdAt()
   },

@@ -1,5 +1,31 @@
-query Homepage($take: Int!, $skip: Int!) {
-  images(orderBy: { createdAt: desc }, take: $take, skip: $skip) {
-    ...GridImage
-  }
+query Homepage {
+    homepage {
+        id
+        name
+        preferredAlias {
+            name
+        }
+        preferredMembership {
+            group {
+                name
+            }
+        }
+        avatar {
+            url
+            createdAt
+            thumbnail {
+                small
+            }
+        }
+        banner {
+            url
+            rawUrl
+            width
+            height
+            focus {
+                x
+                y
+            }
+        }
+    }
 }

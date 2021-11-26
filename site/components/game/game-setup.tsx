@@ -27,7 +27,7 @@ import { GameServerContext } from "@/models/contexts"
 import React, { ReactElement, ReactNode } from "react"
 import Hr from "@/components/hr"
 import isEqual from "react-fast-compare"
-import { pick } from "lodash"
+import pick from "lodash/pick"
 import { useState } from "@/hooks/useState"
 
 interface HeadingLabelParams {

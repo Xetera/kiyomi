@@ -1,21 +1,18 @@
-import {
-  Image as ImageData,
-  Person,
-  Thumbnail,
-} from "@/lib/__generated__/graphql"
+import { Image as ImageData, Person, Thumbnail } from "@/lib/__generated__/graphql"
 import Link from "next/link"
 import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react"
 import React, { useState } from "react"
 import format from "date-fns/format"
 import { AnimatePresence, motion } from "framer-motion"
 
+export type FocusableImage = Pick<ImageData, "focus" | "width" | "height">
+
 export type ImageGridElementProps = {
-  image: Pick<
-    ImageData,
-    "createdAt" | "id" | "url" | "focus" | "width" | "height"
-  > & {
+  forceSmall?: boolean;
+  image: Pick<ImageData,
+    "createdAt" | "id" | "url"> & FocusableImage & {
     thumbnail: Pick<Thumbnail, "small">
-    appearances: Array<{
+    appearances?: Array<{
       person: Pick<Person, "name">
     }>
   }
@@ -23,17 +20,21 @@ export type ImageGridElementProps = {
 
 const MotionBox = motion(Box)
 
+const toPercentage = (position: number, max: number) =>
+  `${Math.floor((position / max) * 100)}%`
+
+export const focusToObjectPosition = (image: FocusableImage) => {
+  return `${toPercentage(image.focus ? image.focus.x : image.width / 2, image.width)} ${toPercentage(
+    image.focus ? image.focus.y : image.height / 2,
+    image.height,
+  )}`
+}
+
 export function ImageGridElement(props: ImageGridElementProps) {
   const [hovering, setHovering] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const { image } = props
-  const { x, y } = image.focus
-  const toPercentage = (position: number, max: number) =>
-    `${Math.floor((position / max) * 100)}%`
-  const objectPosition = `${toPercentage(x, image.width)} ${toPercentage(
-    y,
-    image.height
-  )}`
+  const objectPosition = image ? focusToObjectPosition(image) : ""
 
   return (
     <Link href={image.url} key={image.id} passHref>
@@ -84,14 +85,14 @@ export function ImageGridElement(props: ImageGridElementProps) {
               flexDirection="row"
               alignItems="flex-end"
             >
-              <Text
+              {image.appearances?.[0] && <Text
                 fontSize="xs"
                 color="white"
                 zIndex="1000000"
                 opacity="var(--gradient)"
               >
                 {image.appearances[0]?.person.name ?? "Unknown"}
-              </Text>
+              </Text>}
               <Text
                 as="time"
                 dateTime={image.createdAt}

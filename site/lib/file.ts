@@ -1,14 +1,10 @@
-import { imageHash as imageHashCallback } from "image-hash"
 import multer from "multer"
 import { NextApiRequest, NextApiResponse } from "next"
 import { promisify } from "util"
 import { createHash } from "crypto"
 import { MimeType } from "@prisma/client"
-import ImgProxy from "@jsmonday/imgproxy"
 import { Readable } from "stream"
 import sharp from "sharp"
-
-const imageHash = promisify(imageHashCallback)
 
 const upload = multer({ storage: multer.memoryStorage() })
 
@@ -93,22 +89,6 @@ export function sha256Hash(buff: Buffer) {
       return res(hash.digest("hex"))
     })
   })
-}
-
-const supportedPHashMimetypes = new Set(["jpeg", "png", "jpg"])
-
-export function canPerceptualHash(mimetype: string): boolean {
-  return supportedPHashMimetypes.has(mimetype)
-}
-
-export function perceptualHash(data: Buffer, mimetype: string) {
-  const HASH_BIT_SIZE = 32
-  const USE_PRECISE_HASH = true
-  return imageHash(
-    { data, ext: mimetype, encoding: "utf-8" },
-    HASH_BIT_SIZE,
-    USE_PRECISE_HASH
-  )
 }
 
 export function parseExtension(extension: string): MimeType {

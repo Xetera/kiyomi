@@ -14,7 +14,9 @@ import dynamic from "next/dynamic"
 import { Box, Flex, Heading, Text } from "@chakra-ui/layout"
 import { Input } from "@chakra-ui/input"
 import { PersonSearchbar } from "./search"
-import _ from "lodash"
+import keyBy from "lodash/keyBy"
+import mapValues from "lodash/mapValues"
+import flatMap from "lodash/flatMap"
 import { DropResult } from "react-beautiful-dnd"
 import { RiDeleteBin2Fill } from "react-icons/ri"
 import useOnClickOutside from "@/hooks/useOnClickOutside"
@@ -84,8 +86,8 @@ function ModalHeading({ children }) {
 }
 
 export function ImageEditModal(props: ImageEditModalProps) {
-  const appearanceMap = _.mapValues(
-    _.keyBy(props.image.appearances, (f) => f.id),
+  const appearanceMap = mapValues(
+    keyBy(props.image.appearances, (f) => f.id),
     (f) => ({
       id: f.id,
       person: { name: f.person.name },
@@ -93,13 +95,13 @@ export function ImageEditModal(props: ImageEditModalProps) {
     })
   )
 
-  const unknownFacesMap = _.keyBy(props.image.unknownFaces, (f) => f.id)
+  const unknownFacesMap = keyBy(props.image.unknownFaces, (f) => f.id)
   // TODO: update this once users can create new faces on this screen
   const allFaces = useMemo(() => {
-    const faces = _.flatMap(appearanceMap, (f) => f.faces).concat(
+    const faces = flatMap(appearanceMap, (f) => f.faces).concat(
       props.image.unknownFaces
     )
-    return _.keyBy(faces, (f) => f.id)
+    return keyBy(faces, (f) => f.id)
   }, [])
   const [appearances, setAppearances] = useState<{
     [id: number]: {
@@ -132,6 +134,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
   async function linkFace_(faceId: number, appearanceId: number) {
     const appearance = appearances[appearanceId]
     const face = allFaces[faceId]
+    if (!appearance || !face) return
     setAppearances((prev) => ({
       ...prev,
       [appearance.id]: {
@@ -143,6 +146,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
   }
   async function unlinkFace_(faceId: number, appearanceId: number) {
     const appearance = appearances[appearanceId]
+    if (!appearance) return
     const faces = appearance.faces.filter((face) => face.id !== faceId)
     setAppearances((prev) => ({
       ...prev,
@@ -165,7 +169,13 @@ export function ImageEditModal(props: ImageEditModalProps) {
       source.droppableId !== "unknown"
     ) {
       console.log("unlinking known face")
-      setUnknownFaces((prev) => ({ ...prev, [faceId]: allFaces[faceId] }))
+      setUnknownFaces((prev) => {
+        let face = allFaces[faceId]
+        if (!face) {
+          return prev
+        }
+        return { ...prev, [faceId]: face }
+      })
       await unlinkFace_(faceId, Number(source.droppableId))
     } else if (
       source.droppableId === "unknown" &&

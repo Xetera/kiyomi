@@ -1,5 +1,5 @@
 import { fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from "nexus"
-import { nexusPrisma } from "nexus-plugin-prisma"
+import { nexusPrisma } from "@kenchi/nexus-plugin-prisma"
 import path from "path"
 import * as types from "./resolvers"
 

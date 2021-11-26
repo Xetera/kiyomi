@@ -3,7 +3,7 @@
   "include": ["src", "types", "../shared/*", "../shared/backend/*"],
   "compilerOptions": {
     "types": ["convict"],
-    "module": "esnext",
+    "module": "nodenext",
     "lib": ["esnext"],
     "allowJs": true,
     "importHelpers": true,

@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "dist/labeler/src/index.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -29,7 +29,7 @@
   },
   "prettier": {
     "printWidth": 80,
-    "semi": true,
+    "semi": false,
     "singleQuote": false,
     "trailingComma": "es5"
   },
@@ -70,9 +70,11 @@
     "amqplib": "^0.7.1",
     "axios": "^0.21.2",
     "canvas": "2.7.0",
+    "celery-node": "^0.5.8",
     "convict": "^6.0.1",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
+    "node-fetch": "2",
     "node-pre-gyp": "^0.17.0",
     "pino": "^6.11.2",
     "regenerator-runtime": "^0.13.7",

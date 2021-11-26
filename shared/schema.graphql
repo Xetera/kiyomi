@@ -316,8 +316,18 @@ input GroupWhereInput {
 }
 
 input GroupWhereUniqueInput {
+  avatarId: Int
+  bannerId: Int
   id: Int
   ireneBotId: Int
+}
+
+type Homepage {
+  trending: [[HomepageTrendingPerson!]!]!
+}
+
+type HomepageTrendingPerson {
+  person: Person!
 }
 
 type Image {
@@ -360,11 +370,6 @@ type Image {
 
   """The IANA media type of the image."""
   mimetype: MimeType!
-
-  """
-  Block hash of the image, useful for doing reverse search using hamming distance.
-  """
-  pHash: String
 
   """Dominant colors in the image in decimal format, sorted by frequency."""
   palette: [Int!]!
@@ -474,8 +479,6 @@ input ImageWhereInput {
   NOT: [ImageWhereInput!]
   OR: [ImageWhereInput!]
   appearances: AppearanceListRelationFilter
-  avatarOf: GroupWhereInput
-  bannerOf: GroupWhereInput
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
@@ -483,6 +486,8 @@ input ImageWhereInput {
   faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
   fileName: StringNullableFilter
+  groupAvatarOf: GroupWhereInput
+  groupBannerOf: GroupWhereInput
   hash: StringFilter
   height: IntFilter
   id: IntFilter
@@ -492,6 +497,8 @@ input ImageWhereInput {
   mimetype: EnumMimeTypeFilter
   pHash: StringNullableFilter
   palette: IntNullableListFilter
+  personAvatarOf: PersonWhereInput
+  personBannerOf: PersonWhereInput
   public: BoolFilter
   slug: StringFilter
   source: StringNullableFilter
@@ -499,6 +506,8 @@ input ImageWhereInput {
   updatedAt: DateTimeFilter
   uploadType: EnumUploadTypeFilter
   user: UserWhereInput
+  userAvatarOf: UserWhereInput
+  userBannerOf: UserWhereInput
   userId: IntNullableFilter
   views: IntFilter
   width: IntFilter
@@ -690,6 +699,8 @@ input NestedStringNullableFilter {
 type Person {
   aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
+  avatar: Image
+  banner: Image
   createdAt: DateTime!
   faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
@@ -713,6 +724,10 @@ input PersonWhereInput {
   aliases: AliasListRelationFilter
   appearances: AppearanceListRelationFilter
   appearsIn: FaceListRelationFilter
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   id: IntFilter
@@ -729,12 +744,14 @@ input PersonWhereInput {
 input PersonWhereUniqueInput {
   id: Int
   ireneBotId: Int
+  preferredAliasId: Int
 }
 
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
+  homepage: [Person!]!
 
   """Find a single image by its slug."""
   image(slug: String!): Image
@@ -884,6 +901,10 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
   bot: BoolFilter
   cratedTags: TagListRelationFilter
   createdAt: DateTimeFilter

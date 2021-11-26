@@ -945,8 +945,8 @@ input GroupAliasWhereUniqueInput {
 
 input GroupCreateInput {
   aliases: GroupAliasCreateNestedManyWithoutGroupInput
-  avatar: ImageCreateNestedOneWithoutAvatarOfInput
-  banner: ImageCreateNestedOneWithoutBannerOfInput
+  avatar: ImageCreateNestedOneWithoutGroupAvatarOfInput
+  banner: ImageCreateNestedOneWithoutGroupBannerOfInput
   createdAt: DateTime
   ireneBotId: Int
   members: GroupMemberCreateNestedManyWithoutGroupInput
@@ -989,7 +989,7 @@ input GroupCreateOrConnectWithoutMembersInput {
 
 input GroupCreateWithoutAvatarInput {
   aliases: GroupAliasCreateNestedManyWithoutGroupInput
-  banner: ImageCreateNestedOneWithoutBannerOfInput
+  banner: ImageCreateNestedOneWithoutGroupBannerOfInput
   createdAt: DateTime
   ireneBotId: Int
   members: GroupMemberCreateNestedManyWithoutGroupInput
@@ -999,7 +999,7 @@ input GroupCreateWithoutAvatarInput {
 
 input GroupCreateWithoutBannerInput {
   aliases: GroupAliasCreateNestedManyWithoutGroupInput
-  avatar: ImageCreateNestedOneWithoutAvatarOfInput
+  avatar: ImageCreateNestedOneWithoutGroupAvatarOfInput
   createdAt: DateTime
   ireneBotId: Int
   members: GroupMemberCreateNestedManyWithoutGroupInput
@@ -1009,8 +1009,8 @@ input GroupCreateWithoutBannerInput {
 
 input GroupCreateWithoutMembersInput {
   aliases: GroupAliasCreateNestedManyWithoutGroupInput
-  avatar: ImageCreateNestedOneWithoutAvatarOfInput
-  banner: ImageCreateNestedOneWithoutBannerOfInput
+  avatar: ImageCreateNestedOneWithoutGroupAvatarOfInput
+  banner: ImageCreateNestedOneWithoutGroupBannerOfInput
   createdAt: DateTime
   ireneBotId: Int
   name: String!
@@ -1283,8 +1283,8 @@ input GroupOrderByInput {
 
 input GroupUpdateInput {
   aliases: GroupAliasUpdateManyWithoutGroupInput
-  avatar: ImageUpdateOneWithoutAvatarOfInput
-  banner: ImageUpdateOneWithoutBannerOfInput
+  avatar: ImageUpdateOneWithoutGroupAvatarOfInput
+  banner: ImageUpdateOneWithoutGroupBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   members: GroupMemberUpdateManyWithoutGroupInput
@@ -1322,7 +1322,7 @@ input GroupUpdateOneWithoutBannerInput {
 
 input GroupUpdateWithoutAvatarInput {
   aliases: GroupAliasUpdateManyWithoutGroupInput
-  banner: ImageUpdateOneWithoutBannerOfInput
+  banner: ImageUpdateOneWithoutGroupBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   members: GroupMemberUpdateManyWithoutGroupInput
@@ -1332,7 +1332,7 @@ input GroupUpdateWithoutAvatarInput {
 
 input GroupUpdateWithoutBannerInput {
   aliases: GroupAliasUpdateManyWithoutGroupInput
-  avatar: ImageUpdateOneWithoutAvatarOfInput
+  avatar: ImageUpdateOneWithoutGroupAvatarOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   members: GroupMemberUpdateManyWithoutGroupInput
@@ -1342,8 +1342,8 @@ input GroupUpdateWithoutBannerInput {
 
 input GroupUpdateWithoutMembersInput {
   aliases: GroupAliasUpdateManyWithoutGroupInput
-  avatar: ImageUpdateOneWithoutAvatarOfInput
-  banner: ImageUpdateOneWithoutBannerOfInput
+  avatar: ImageUpdateOneWithoutGroupAvatarOfInput
+  banner: ImageUpdateOneWithoutGroupBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
@@ -1383,8 +1383,18 @@ input GroupWhereInput {
 }
 
 input GroupWhereUniqueInput {
+  avatarId: Int
+  bannerId: Int
   id: Int
   ireneBotId: Int
+}
+
+type Homepage {
+  trending: [[HomepageTrendingPerson!]!]!
+}
+
+type HomepageTrendingPerson {
+  person: Person!
 }
 
 type Image {
@@ -1427,11 +1437,6 @@ type Image {
 
   """The IANA media type of the image."""
   mimetype: MimeType!
-
-  """
-  Block hash of the image, useful for doing reverse search using hamming distance.
-  """
-  pHash: String
 
   """Dominant colors in the image in decimal format, sorted by frequency."""
   palette: [Int!]!
@@ -1526,16 +1531,16 @@ input ImageCreateNestedOneWithoutAppearancesInput {
   create: ImageCreateWithoutAppearancesInput
 }
 
-input ImageCreateNestedOneWithoutAvatarOfInput {
+input ImageCreateNestedOneWithoutGroupAvatarOfInput {
   connect: ImageWhereUniqueInput
-  connectOrCreate: ImageCreateOrConnectWithoutAvatarOfInput
-  create: ImageCreateWithoutAvatarOfInput
+  connectOrCreate: ImageCreateOrConnectWithoutGroupAvatarOfInput
+  create: ImageCreateWithoutGroupAvatarOfInput
 }
 
-input ImageCreateNestedOneWithoutBannerOfInput {
+input ImageCreateNestedOneWithoutGroupBannerOfInput {
   connect: ImageWhereUniqueInput
-  connectOrCreate: ImageCreateOrConnectWithoutBannerOfInput
-  create: ImageCreateWithoutBannerOfInput
+  connectOrCreate: ImageCreateOrConnectWithoutGroupBannerOfInput
+  create: ImageCreateWithoutGroupBannerOfInput
 }
 
 input ImageCreateNestedOneWithoutLikesInput {
@@ -1544,24 +1549,38 @@ input ImageCreateNestedOneWithoutLikesInput {
   create: ImageCreateWithoutLikesInput
 }
 
+input ImageCreateNestedOneWithoutPersonAvatarOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutPersonAvatarOfInput
+  create: ImageCreateWithoutPersonAvatarOfInput
+}
+
+input ImageCreateNestedOneWithoutPersonBannerOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutPersonBannerOfInput
+  create: ImageCreateWithoutPersonBannerOfInput
+}
+
 input ImageCreateNestedOneWithoutTagsInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutTagsInput
   create: ImageCreateWithoutTagsInput
 }
 
+input ImageCreateNestedOneWithoutUserAvatarOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutUserAvatarOfInput
+  create: ImageCreateWithoutUserAvatarOfInput
+}
+
+input ImageCreateNestedOneWithoutUserBannerOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutUserBannerOfInput
+  create: ImageCreateWithoutUserBannerOfInput
+}
+
 input ImageCreateOrConnectWithoutAppearancesInput {
   create: ImageCreateWithoutAppearancesInput!
-  where: ImageWhereUniqueInput!
-}
-
-input ImageCreateOrConnectWithoutAvatarOfInput {
-  create: ImageCreateWithoutAvatarOfInput!
-  where: ImageWhereUniqueInput!
-}
-
-input ImageCreateOrConnectWithoutBannerOfInput {
-  create: ImageCreateWithoutBannerOfInput!
   where: ImageWhereUniqueInput!
 }
 
@@ -1570,13 +1589,43 @@ input ImageCreateOrConnectWithoutFacesInput {
   where: ImageWhereUniqueInput!
 }
 
+input ImageCreateOrConnectWithoutGroupAvatarOfInput {
+  create: ImageCreateWithoutGroupAvatarOfInput!
+  where: ImageWhereUniqueInput!
+}
+
+input ImageCreateOrConnectWithoutGroupBannerOfInput {
+  create: ImageCreateWithoutGroupBannerOfInput!
+  where: ImageWhereUniqueInput!
+}
+
 input ImageCreateOrConnectWithoutLikesInput {
   create: ImageCreateWithoutLikesInput!
   where: ImageWhereUniqueInput!
 }
 
+input ImageCreateOrConnectWithoutPersonAvatarOfInput {
+  create: ImageCreateWithoutPersonAvatarOfInput!
+  where: ImageWhereUniqueInput!
+}
+
+input ImageCreateOrConnectWithoutPersonBannerOfInput {
+  create: ImageCreateWithoutPersonBannerOfInput!
+  where: ImageWhereUniqueInput!
+}
+
 input ImageCreateOrConnectWithoutTagsInput {
   create: ImageCreateWithoutTagsInput!
+  where: ImageWhereUniqueInput!
+}
+
+input ImageCreateOrConnectWithoutUserAvatarOfInput {
+  create: ImageCreateWithoutUserAvatarOfInput!
+  where: ImageWhereUniqueInput!
+}
+
+input ImageCreateOrConnectWithoutUserBannerOfInput {
+  create: ImageCreateWithoutUserBannerOfInput!
   where: ImageWhereUniqueInput!
 }
 
@@ -1586,8 +1635,6 @@ input ImageCreateOrConnectWithoutUserInput {
 }
 
 input ImageCreateWithoutAppearancesInput {
-  avatarOf: GroupCreateNestedOneWithoutAvatarInput
-  bannerOf: GroupCreateNestedOneWithoutBannerInput
   bytes: Int
   caption: String
   createdAt: DateTime
@@ -1595,6 +1642,8 @@ input ImageCreateWithoutAppearancesInput {
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
   ireneBotId: Int
@@ -1603,6 +1652,8 @@ input ImageCreateWithoutAppearancesInput {
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
   public: Boolean
   slug: String!
   source: String
@@ -1610,78 +1661,22 @@ input ImageCreateWithoutAppearancesInput {
   updatedAt: DateTime
   uploadType: UploadType!
   user: UserCreateNestedOneWithoutImagesInput
-  views: Int
-  width: Int!
-}
-
-input ImageCreateWithoutAvatarOfInput {
-  appearances: AppearanceCreateNestedManyWithoutImageInput
-  bannerOf: GroupCreateNestedOneWithoutBannerInput
-  bytes: Int
-  caption: String
-  createdAt: DateTime
-  faceScanDate: DateTime
-  faceScanRequestDate: DateTime
-  faces: FaceCreateNestedManyWithoutImageInput
-  fileName: String
-  hash: String!
-  height: Int!
-  ireneBotId: Int
-  isNsfw: Boolean
-  likes: ImageLikeCreateNestedManyWithoutImageInput
-  mimetype: MimeType!
-  pHash: String
-  palette: ImageCreatepaletteInput
-  public: Boolean
-  slug: String!
-  source: String
-  tags: TagCreateNestedManyWithoutImageInput
-  updatedAt: DateTime
-  uploadType: UploadType!
-  user: UserCreateNestedOneWithoutImagesInput
-  views: Int
-  width: Int!
-}
-
-input ImageCreateWithoutBannerOfInput {
-  appearances: AppearanceCreateNestedManyWithoutImageInput
-  avatarOf: GroupCreateNestedOneWithoutAvatarInput
-  bytes: Int
-  caption: String
-  createdAt: DateTime
-  faceScanDate: DateTime
-  faceScanRequestDate: DateTime
-  faces: FaceCreateNestedManyWithoutImageInput
-  fileName: String
-  hash: String!
-  height: Int!
-  ireneBotId: Int
-  isNsfw: Boolean
-  likes: ImageLikeCreateNestedManyWithoutImageInput
-  mimetype: MimeType!
-  pHash: String
-  palette: ImageCreatepaletteInput
-  public: Boolean
-  slug: String!
-  source: String
-  tags: TagCreateNestedManyWithoutImageInput
-  updatedAt: DateTime
-  uploadType: UploadType!
-  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
   views: Int
   width: Int!
 }
 
 input ImageCreateWithoutFacesInput {
   appearances: AppearanceCreateNestedManyWithoutImageInput
-  avatarOf: GroupCreateNestedOneWithoutAvatarInput
-  bannerOf: GroupCreateNestedOneWithoutBannerInput
   bytes: Int
   caption: String
   createdAt: DateTime
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
   ireneBotId: Int
@@ -1690,6 +1685,8 @@ input ImageCreateWithoutFacesInput {
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
   public: Boolean
   slug: String!
   source: String
@@ -1697,14 +1694,80 @@ input ImageCreateWithoutFacesInput {
   updatedAt: DateTime
   uploadType: UploadType!
   user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutGroupAvatarOfInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutGroupBannerOfInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
   views: Int
   width: Int!
 }
 
 input ImageCreateWithoutLikesInput {
   appearances: AppearanceCreateNestedManyWithoutImageInput
-  avatarOf: GroupCreateNestedOneWithoutAvatarInput
-  bannerOf: GroupCreateNestedOneWithoutBannerInput
   bytes: Int
   caption: String
   createdAt: DateTime
@@ -1712,6 +1775,8 @@ input ImageCreateWithoutLikesInput {
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
   ireneBotId: Int
@@ -1719,6 +1784,8 @@ input ImageCreateWithoutLikesInput {
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
   public: Boolean
   slug: String!
   source: String
@@ -1726,14 +1793,80 @@ input ImageCreateWithoutLikesInput {
   updatedAt: DateTime
   uploadType: UploadType!
   user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutPersonAvatarOfInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutPersonBannerOfInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
   views: Int
   width: Int!
 }
 
 input ImageCreateWithoutTagsInput {
   appearances: AppearanceCreateNestedManyWithoutImageInput
-  avatarOf: GroupCreateNestedOneWithoutAvatarInput
-  bannerOf: GroupCreateNestedOneWithoutBannerInput
   bytes: Int
   caption: String
   createdAt: DateTime
@@ -1741,6 +1874,8 @@ input ImageCreateWithoutTagsInput {
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
   ireneBotId: Int
@@ -1749,20 +1884,22 @@ input ImageCreateWithoutTagsInput {
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
   public: Boolean
   slug: String!
   source: String
   updatedAt: DateTime
   uploadType: UploadType!
   user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
   views: Int
   width: Int!
 }
 
-input ImageCreateWithoutUserInput {
+input ImageCreateWithoutUserAvatarOfInput {
   appearances: AppearanceCreateNestedManyWithoutImageInput
-  avatarOf: GroupCreateNestedOneWithoutAvatarInput
-  bannerOf: GroupCreateNestedOneWithoutBannerInput
   bytes: Int
   caption: String
   createdAt: DateTime
@@ -1770,6 +1907,8 @@ input ImageCreateWithoutUserInput {
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
   fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
   ireneBotId: Int
@@ -1778,12 +1917,82 @@ input ImageCreateWithoutUserInput {
   mimetype: MimeType!
   pHash: String
   palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
   public: Boolean
   slug: String!
   source: String
   tags: TagCreateNestedManyWithoutImageInput
   updatedAt: DateTime
   uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutUserBannerOfInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutUserInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
   views: Int
   width: Int!
 }
@@ -2114,24 +2323,64 @@ input ImageUpdateOneRequiredWithoutTagsInput {
   upsert: ImageUpsertWithoutTagsInput
 }
 
-input ImageUpdateOneWithoutAvatarOfInput {
+input ImageUpdateOneWithoutGroupAvatarOfInput {
   connect: ImageWhereUniqueInput
-  connectOrCreate: ImageCreateOrConnectWithoutAvatarOfInput
-  create: ImageCreateWithoutAvatarOfInput
+  connectOrCreate: ImageCreateOrConnectWithoutGroupAvatarOfInput
+  create: ImageCreateWithoutGroupAvatarOfInput
   delete: Boolean
   disconnect: Boolean
-  update: ImageUpdateWithoutAvatarOfInput
-  upsert: ImageUpsertWithoutAvatarOfInput
+  update: ImageUpdateWithoutGroupAvatarOfInput
+  upsert: ImageUpsertWithoutGroupAvatarOfInput
 }
 
-input ImageUpdateOneWithoutBannerOfInput {
+input ImageUpdateOneWithoutGroupBannerOfInput {
   connect: ImageWhereUniqueInput
-  connectOrCreate: ImageCreateOrConnectWithoutBannerOfInput
-  create: ImageCreateWithoutBannerOfInput
+  connectOrCreate: ImageCreateOrConnectWithoutGroupBannerOfInput
+  create: ImageCreateWithoutGroupBannerOfInput
   delete: Boolean
   disconnect: Boolean
-  update: ImageUpdateWithoutBannerOfInput
-  upsert: ImageUpsertWithoutBannerOfInput
+  update: ImageUpdateWithoutGroupBannerOfInput
+  upsert: ImageUpsertWithoutGroupBannerOfInput
+}
+
+input ImageUpdateOneWithoutPersonAvatarOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutPersonAvatarOfInput
+  create: ImageCreateWithoutPersonAvatarOfInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ImageUpdateWithoutPersonAvatarOfInput
+  upsert: ImageUpsertWithoutPersonAvatarOfInput
+}
+
+input ImageUpdateOneWithoutPersonBannerOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutPersonBannerOfInput
+  create: ImageCreateWithoutPersonBannerOfInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ImageUpdateWithoutPersonBannerOfInput
+  upsert: ImageUpsertWithoutPersonBannerOfInput
+}
+
+input ImageUpdateOneWithoutUserAvatarOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutUserAvatarOfInput
+  create: ImageCreateWithoutUserAvatarOfInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ImageUpdateWithoutUserAvatarOfInput
+  upsert: ImageUpsertWithoutUserAvatarOfInput
+}
+
+input ImageUpdateOneWithoutUserBannerOfInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutUserBannerOfInput
+  create: ImageCreateWithoutUserBannerOfInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ImageUpdateWithoutUserBannerOfInput
+  upsert: ImageUpsertWithoutUserBannerOfInput
 }
 
 input ImageUpdateWithWhereUniqueWithoutUserInput {
@@ -2140,8 +2389,6 @@ input ImageUpdateWithWhereUniqueWithoutUserInput {
 }
 
 input ImageUpdateWithoutAppearancesInput {
-  avatarOf: GroupUpdateOneWithoutAvatarInput
-  bannerOf: GroupUpdateOneWithoutBannerInput
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -2149,6 +2396,8 @@ input ImageUpdateWithoutAppearancesInput {
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2157,6 +2406,8 @@ input ImageUpdateWithoutAppearancesInput {
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2164,78 +2415,22 @@ input ImageUpdateWithoutAppearancesInput {
   updatedAt: DateTimeFieldUpdateOperationsInput
   uploadType: EnumUploadTypeFieldUpdateOperationsInput
   user: UserUpdateOneWithoutImagesInput
-  views: IntFieldUpdateOperationsInput
-  width: IntFieldUpdateOperationsInput
-}
-
-input ImageUpdateWithoutAvatarOfInput {
-  appearances: AppearanceUpdateManyWithoutImageInput
-  bannerOf: GroupUpdateOneWithoutBannerInput
-  bytes: IntFieldUpdateOperationsInput
-  caption: NullableStringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
-  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
-  faces: FaceUpdateManyWithoutImageInput
-  fileName: NullableStringFieldUpdateOperationsInput
-  hash: StringFieldUpdateOperationsInput
-  height: IntFieldUpdateOperationsInput
-  ireneBotId: NullableIntFieldUpdateOperationsInput
-  isNsfw: BoolFieldUpdateOperationsInput
-  likes: ImageLikeUpdateManyWithoutImageInput
-  mimetype: EnumMimeTypeFieldUpdateOperationsInput
-  pHash: NullableStringFieldUpdateOperationsInput
-  palette: ImageUpdatepaletteInput
-  public: BoolFieldUpdateOperationsInput
-  slug: StringFieldUpdateOperationsInput
-  source: NullableStringFieldUpdateOperationsInput
-  tags: TagUpdateManyWithoutImageInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  uploadType: EnumUploadTypeFieldUpdateOperationsInput
-  user: UserUpdateOneWithoutImagesInput
-  views: IntFieldUpdateOperationsInput
-  width: IntFieldUpdateOperationsInput
-}
-
-input ImageUpdateWithoutBannerOfInput {
-  appearances: AppearanceUpdateManyWithoutImageInput
-  avatarOf: GroupUpdateOneWithoutAvatarInput
-  bytes: IntFieldUpdateOperationsInput
-  caption: NullableStringFieldUpdateOperationsInput
-  createdAt: DateTimeFieldUpdateOperationsInput
-  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
-  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
-  faces: FaceUpdateManyWithoutImageInput
-  fileName: NullableStringFieldUpdateOperationsInput
-  hash: StringFieldUpdateOperationsInput
-  height: IntFieldUpdateOperationsInput
-  ireneBotId: NullableIntFieldUpdateOperationsInput
-  isNsfw: BoolFieldUpdateOperationsInput
-  likes: ImageLikeUpdateManyWithoutImageInput
-  mimetype: EnumMimeTypeFieldUpdateOperationsInput
-  pHash: NullableStringFieldUpdateOperationsInput
-  palette: ImageUpdatepaletteInput
-  public: BoolFieldUpdateOperationsInput
-  slug: StringFieldUpdateOperationsInput
-  source: NullableStringFieldUpdateOperationsInput
-  tags: TagUpdateManyWithoutImageInput
-  updatedAt: DateTimeFieldUpdateOperationsInput
-  uploadType: EnumUploadTypeFieldUpdateOperationsInput
-  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
   views: IntFieldUpdateOperationsInput
   width: IntFieldUpdateOperationsInput
 }
 
 input ImageUpdateWithoutFacesInput {
   appearances: AppearanceUpdateManyWithoutImageInput
-  avatarOf: GroupUpdateOneWithoutAvatarInput
-  bannerOf: GroupUpdateOneWithoutBannerInput
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2244,6 +2439,8 @@ input ImageUpdateWithoutFacesInput {
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2251,14 +2448,80 @@ input ImageUpdateWithoutFacesInput {
   updatedAt: DateTimeFieldUpdateOperationsInput
   uploadType: EnumUploadTypeFieldUpdateOperationsInput
   user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutGroupAvatarOfInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutGroupBannerOfInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
   views: IntFieldUpdateOperationsInput
   width: IntFieldUpdateOperationsInput
 }
 
 input ImageUpdateWithoutLikesInput {
   appearances: AppearanceUpdateManyWithoutImageInput
-  avatarOf: GroupUpdateOneWithoutAvatarInput
-  bannerOf: GroupUpdateOneWithoutBannerInput
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -2266,6 +2529,8 @@ input ImageUpdateWithoutLikesInput {
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2273,6 +2538,8 @@ input ImageUpdateWithoutLikesInput {
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2280,14 +2547,80 @@ input ImageUpdateWithoutLikesInput {
   updatedAt: DateTimeFieldUpdateOperationsInput
   uploadType: EnumUploadTypeFieldUpdateOperationsInput
   user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutPersonAvatarOfInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutPersonBannerOfInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
   views: IntFieldUpdateOperationsInput
   width: IntFieldUpdateOperationsInput
 }
 
 input ImageUpdateWithoutTagsInput {
   appearances: AppearanceUpdateManyWithoutImageInput
-  avatarOf: GroupUpdateOneWithoutAvatarInput
-  bannerOf: GroupUpdateOneWithoutBannerInput
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -2295,6 +2628,8 @@ input ImageUpdateWithoutTagsInput {
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2303,20 +2638,22 @@ input ImageUpdateWithoutTagsInput {
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   uploadType: EnumUploadTypeFieldUpdateOperationsInput
   user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
   views: IntFieldUpdateOperationsInput
   width: IntFieldUpdateOperationsInput
 }
 
-input ImageUpdateWithoutUserInput {
+input ImageUpdateWithoutUserAvatarOfInput {
   appearances: AppearanceUpdateManyWithoutImageInput
-  avatarOf: GroupUpdateOneWithoutAvatarInput
-  bannerOf: GroupUpdateOneWithoutBannerInput
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -2324,6 +2661,8 @@ input ImageUpdateWithoutUserInput {
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
   fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2332,12 +2671,82 @@ input ImageUpdateWithoutUserInput {
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
   tags: TagUpdateManyWithoutImageInput
   updatedAt: DateTimeFieldUpdateOperationsInput
   uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutUserBannerOfInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutUserInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
   views: IntFieldUpdateOperationsInput
   width: IntFieldUpdateOperationsInput
 }
@@ -2358,19 +2767,19 @@ input ImageUpsertWithoutAppearancesInput {
   update: ImageUpdateWithoutAppearancesInput!
 }
 
-input ImageUpsertWithoutAvatarOfInput {
-  create: ImageCreateWithoutAvatarOfInput!
-  update: ImageUpdateWithoutAvatarOfInput!
-}
-
-input ImageUpsertWithoutBannerOfInput {
-  create: ImageCreateWithoutBannerOfInput!
-  update: ImageUpdateWithoutBannerOfInput!
-}
-
 input ImageUpsertWithoutFacesInput {
   create: ImageCreateWithoutFacesInput!
   update: ImageUpdateWithoutFacesInput!
+}
+
+input ImageUpsertWithoutGroupAvatarOfInput {
+  create: ImageCreateWithoutGroupAvatarOfInput!
+  update: ImageUpdateWithoutGroupAvatarOfInput!
+}
+
+input ImageUpsertWithoutGroupBannerOfInput {
+  create: ImageCreateWithoutGroupBannerOfInput!
+  update: ImageUpdateWithoutGroupBannerOfInput!
 }
 
 input ImageUpsertWithoutLikesInput {
@@ -2378,9 +2787,29 @@ input ImageUpsertWithoutLikesInput {
   update: ImageUpdateWithoutLikesInput!
 }
 
+input ImageUpsertWithoutPersonAvatarOfInput {
+  create: ImageCreateWithoutPersonAvatarOfInput!
+  update: ImageUpdateWithoutPersonAvatarOfInput!
+}
+
+input ImageUpsertWithoutPersonBannerOfInput {
+  create: ImageCreateWithoutPersonBannerOfInput!
+  update: ImageUpdateWithoutPersonBannerOfInput!
+}
+
 input ImageUpsertWithoutTagsInput {
   create: ImageCreateWithoutTagsInput!
   update: ImageUpdateWithoutTagsInput!
+}
+
+input ImageUpsertWithoutUserAvatarOfInput {
+  create: ImageCreateWithoutUserAvatarOfInput!
+  update: ImageUpdateWithoutUserAvatarOfInput!
+}
+
+input ImageUpsertWithoutUserBannerOfInput {
+  create: ImageCreateWithoutUserBannerOfInput!
+  update: ImageUpdateWithoutUserBannerOfInput!
 }
 
 input ImageWhereInput {
@@ -2388,8 +2817,6 @@ input ImageWhereInput {
   NOT: [ImageWhereInput!]
   OR: [ImageWhereInput!]
   appearances: AppearanceListRelationFilter
-  avatarOf: GroupWhereInput
-  bannerOf: GroupWhereInput
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
@@ -2397,6 +2824,8 @@ input ImageWhereInput {
   faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
   fileName: StringNullableFilter
+  groupAvatarOf: GroupWhereInput
+  groupBannerOf: GroupWhereInput
   hash: StringFilter
   height: IntFilter
   id: IntFilter
@@ -2406,6 +2835,8 @@ input ImageWhereInput {
   mimetype: EnumMimeTypeFilter
   pHash: StringNullableFilter
   palette: IntNullableListFilter
+  personAvatarOf: PersonWhereInput
+  personBannerOf: PersonWhereInput
   public: BoolFilter
   slug: StringFilter
   source: StringNullableFilter
@@ -2413,6 +2844,8 @@ input ImageWhereInput {
   updatedAt: DateTimeFilter
   uploadType: EnumUploadTypeFilter
   user: UserWhereInput
+  userAvatarOf: UserWhereInput
+  userBannerOf: UserWhereInput
   userId: IntNullableFilter
   views: IntFilter
   width: IntFilter
@@ -2636,6 +3069,8 @@ input NullableStringFieldUpdateOperationsInput {
 type Person {
   aliases(cursor: AliasWhereUniqueInput, skip: Int, take: Int): [Alias!]!
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
+  avatar: Image
+  banner: Image
   createdAt: DateTime!
   faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
@@ -2650,6 +3085,8 @@ input PersonCreateInput {
   aliases: AliasCreateNestedManyWithoutPersonInput
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
   ireneBotId: Int
@@ -2661,6 +3098,8 @@ input PersonCreateInput {
 }
 
 input PersonCreateManyPreferredMembershipInput {
+  avatarId: Int
+  bannerId: Int
   createdAt: DateTime
   description: String
   id: Int
@@ -2694,6 +3133,18 @@ input PersonCreateNestedOneWithoutAppearancesInput {
   create: PersonCreateWithoutAppearancesInput
 }
 
+input PersonCreateNestedOneWithoutAvatarInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutAvatarInput
+  create: PersonCreateWithoutAvatarInput
+}
+
+input PersonCreateNestedOneWithoutBannerInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutBannerInput
+  create: PersonCreateWithoutBannerInput
+}
+
 input PersonCreateNestedOneWithoutMemberOfInput {
   connect: PersonWhereUniqueInput
   connectOrCreate: PersonCreateOrConnectWithoutMemberOfInput
@@ -2721,6 +3172,16 @@ input PersonCreateOrConnectWithoutAppearsInInput {
   where: PersonWhereUniqueInput!
 }
 
+input PersonCreateOrConnectWithoutAvatarInput {
+  create: PersonCreateWithoutAvatarInput!
+  where: PersonWhereUniqueInput!
+}
+
+input PersonCreateOrConnectWithoutBannerInput {
+  create: PersonCreateWithoutBannerInput!
+  where: PersonWhereUniqueInput!
+}
+
 input PersonCreateOrConnectWithoutMemberOfInput {
   create: PersonCreateWithoutMemberOfInput!
   where: PersonWhereUniqueInput!
@@ -2739,6 +3200,8 @@ input PersonCreateOrConnectWithoutPreferredMembershipInput {
 input PersonCreateWithoutAliasesInput {
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
   ireneBotId: Int
@@ -2752,6 +3215,8 @@ input PersonCreateWithoutAliasesInput {
 input PersonCreateWithoutAppearancesInput {
   aliases: AliasCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
   ireneBotId: Int
@@ -2765,6 +3230,38 @@ input PersonCreateWithoutAppearancesInput {
 input PersonCreateWithoutAppearsInInput {
   aliases: AliasCreateNestedManyWithoutPersonInput
   appearances: AppearanceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  createdAt: DateTime
+  description: String
+  ireneBotId: Int
+  memberOf: GroupMemberCreateNestedManyWithoutPersonInput
+  name: String!
+  preferredAlias: AliasCreateNestedOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberCreateNestedOneWithoutPreferredMemberships_Input
+  updatedAt: DateTime
+}
+
+input PersonCreateWithoutAvatarInput {
+  aliases: AliasCreateNestedManyWithoutPersonInput
+  appearances: AppearanceCreateNestedManyWithoutPersonInput
+  appearsIn: FaceCreateNestedManyWithoutPersonInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  createdAt: DateTime
+  description: String
+  ireneBotId: Int
+  memberOf: GroupMemberCreateNestedManyWithoutPersonInput
+  name: String!
+  preferredAlias: AliasCreateNestedOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberCreateNestedOneWithoutPreferredMemberships_Input
+  updatedAt: DateTime
+}
+
+input PersonCreateWithoutBannerInput {
+  aliases: AliasCreateNestedManyWithoutPersonInput
+  appearances: AppearanceCreateNestedManyWithoutPersonInput
+  appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   createdAt: DateTime
   description: String
   ireneBotId: Int
@@ -2779,6 +3276,8 @@ input PersonCreateWithoutMemberOfInput {
   aliases: AliasCreateNestedManyWithoutPersonInput
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
   ireneBotId: Int
@@ -2792,6 +3291,8 @@ input PersonCreateWithoutPreferredAliasInput {
   aliases: AliasCreateNestedManyWithoutPersonInput
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
   ireneBotId: Int
@@ -2805,6 +3306,8 @@ input PersonCreateWithoutPreferredMembershipInput {
   aliases: AliasCreateNestedManyWithoutPersonInput
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
   ireneBotId: Int
@@ -2824,6 +3327,8 @@ input PersonScalarWhereInput {
   AND: [PersonScalarWhereInput!]
   NOT: [PersonScalarWhereInput!]
   OR: [PersonScalarWhereInput!]
+  avatarId: IntNullableFilter
+  bannerId: IntNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   id: IntFilter
@@ -2838,6 +3343,8 @@ input PersonUpdateInput {
   aliases: AliasUpdateManyWithoutPersonInput
   appearances: AppearanceUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2909,6 +3416,26 @@ input PersonUpdateOneWithoutAppearsInInput {
   upsert: PersonUpsertWithoutAppearsInInput
 }
 
+input PersonUpdateOneWithoutAvatarInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutAvatarInput
+  create: PersonCreateWithoutAvatarInput
+  delete: Boolean
+  disconnect: Boolean
+  update: PersonUpdateWithoutAvatarInput
+  upsert: PersonUpsertWithoutAvatarInput
+}
+
+input PersonUpdateOneWithoutBannerInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutBannerInput
+  create: PersonCreateWithoutBannerInput
+  delete: Boolean
+  disconnect: Boolean
+  update: PersonUpdateWithoutBannerInput
+  upsert: PersonUpsertWithoutBannerInput
+}
+
 input PersonUpdateOneWithoutPreferredAliasInput {
   connect: PersonWhereUniqueInput
   connectOrCreate: PersonCreateOrConnectWithoutPreferredAliasInput
@@ -2927,6 +3454,8 @@ input PersonUpdateWithWhereUniqueWithoutPreferredMembershipInput {
 input PersonUpdateWithoutAliasesInput {
   appearances: AppearanceUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2940,6 +3469,8 @@ input PersonUpdateWithoutAliasesInput {
 input PersonUpdateWithoutAppearancesInput {
   aliases: AliasUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2953,6 +3484,38 @@ input PersonUpdateWithoutAppearancesInput {
 input PersonUpdateWithoutAppearsInInput {
   aliases: AliasUpdateManyWithoutPersonInput
   appearances: AppearanceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  memberOf: GroupMemberUpdateManyWithoutPersonInput
+  name: StringFieldUpdateOperationsInput
+  preferredAlias: AliasUpdateOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberUpdateOneWithoutPreferredMemberships_Input
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input PersonUpdateWithoutAvatarInput {
+  aliases: AliasUpdateManyWithoutPersonInput
+  appearances: AppearanceUpdateManyWithoutPersonInput
+  appearsIn: FaceUpdateManyWithoutPersonInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  memberOf: GroupMemberUpdateManyWithoutPersonInput
+  name: StringFieldUpdateOperationsInput
+  preferredAlias: AliasUpdateOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberUpdateOneWithoutPreferredMemberships_Input
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input PersonUpdateWithoutBannerInput {
+  aliases: AliasUpdateManyWithoutPersonInput
+  appearances: AppearanceUpdateManyWithoutPersonInput
+  appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2967,6 +3530,8 @@ input PersonUpdateWithoutMemberOfInput {
   aliases: AliasUpdateManyWithoutPersonInput
   appearances: AppearanceUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2980,6 +3545,8 @@ input PersonUpdateWithoutPreferredAliasInput {
   aliases: AliasUpdateManyWithoutPersonInput
   appearances: AppearanceUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -2993,6 +3560,8 @@ input PersonUpdateWithoutPreferredMembershipInput {
   aliases: AliasUpdateManyWithoutPersonInput
   appearances: AppearanceUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
@@ -3023,6 +3592,16 @@ input PersonUpsertWithoutAppearsInInput {
   update: PersonUpdateWithoutAppearsInInput!
 }
 
+input PersonUpsertWithoutAvatarInput {
+  create: PersonCreateWithoutAvatarInput!
+  update: PersonUpdateWithoutAvatarInput!
+}
+
+input PersonUpsertWithoutBannerInput {
+  create: PersonCreateWithoutBannerInput!
+  update: PersonUpdateWithoutBannerInput!
+}
+
 input PersonUpsertWithoutMemberOfInput {
   create: PersonCreateWithoutMemberOfInput!
   update: PersonUpdateWithoutMemberOfInput!
@@ -3040,6 +3619,10 @@ input PersonWhereInput {
   aliases: AliasListRelationFilter
   appearances: AppearanceListRelationFilter
   appearsIn: FaceListRelationFilter
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   id: IntFilter
@@ -3056,12 +3639,14 @@ input PersonWhereInput {
 input PersonWhereUniqueInput {
   id: Int
   ireneBotId: Int
+  preferredAliasId: Int
 }
 
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
+  homepage: [Person!]!
 
   """Find a single image by its slug."""
   image(slug: String!): Image
@@ -3459,6 +4044,18 @@ type User {
   roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
 }
 
+input UserCreateNestedOneWithoutAvatarInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutAvatarInput
+  create: UserCreateWithoutAvatarInput
+}
+
+input UserCreateNestedOneWithoutBannerInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutBannerInput
+  create: UserCreateWithoutBannerInput
+}
+
 input UserCreateNestedOneWithoutCratedTagsInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutCratedTagsInput
@@ -3481,6 +4078,16 @@ input UserCreateNestedOneWithoutTaggedAppearancesInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutTaggedAppearancesInput
   create: UserCreateWithoutTaggedAppearancesInput
+}
+
+input UserCreateOrConnectWithoutAvatarInput {
+  create: UserCreateWithoutAvatarInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutBannerInput {
+  create: UserCreateWithoutBannerInput!
+  where: UserWhereUniqueInput!
 }
 
 input UserCreateOrConnectWithoutCratedTagsInput {
@@ -3508,7 +4115,45 @@ input UserCreateOrConnectWithoutTaggedAppearancesInput {
   where: UserWhereUniqueInput!
 }
 
+input UserCreateWithoutAvatarInput {
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  roles: RoleCreateNestedManyWithoutUserInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
+input UserCreateWithoutBannerInput {
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  roles: RoleCreateNestedManyWithoutUserInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
 input UserCreateWithoutCratedTagsInput {
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
   createdAt: DateTime
   email: String
@@ -3525,6 +4170,8 @@ input UserCreateWithoutCratedTagsInput {
 }
 
 input UserCreateWithoutImageLikesInput {
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
   cratedTags: TagCreateNestedManyWithoutAddedByInput
   createdAt: DateTime
@@ -3541,6 +4188,8 @@ input UserCreateWithoutImageLikesInput {
 }
 
 input UserCreateWithoutImagesInput {
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
   cratedTags: TagCreateNestedManyWithoutAddedByInput
   createdAt: DateTime
@@ -3557,6 +4206,8 @@ input UserCreateWithoutImagesInput {
 }
 
 input UserCreateWithoutMarkedFacesInput {
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
   cratedTags: TagCreateNestedManyWithoutAddedByInput
   createdAt: DateTime
@@ -3573,6 +4224,8 @@ input UserCreateWithoutMarkedFacesInput {
 }
 
 input UserCreateWithoutTaggedAppearancesInput {
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
   cratedTags: TagCreateNestedManyWithoutAddedByInput
   createdAt: DateTime
@@ -3602,6 +4255,26 @@ input UserUpdateOneRequiredWithoutTaggedAppearancesInput {
   create: UserCreateWithoutTaggedAppearancesInput
   update: UserUpdateWithoutTaggedAppearancesInput
   upsert: UserUpsertWithoutTaggedAppearancesInput
+}
+
+input UserUpdateOneWithoutAvatarInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutAvatarInput
+  create: UserCreateWithoutAvatarInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutAvatarInput
+  upsert: UserUpsertWithoutAvatarInput
+}
+
+input UserUpdateOneWithoutBannerInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutBannerInput
+  create: UserCreateWithoutBannerInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutBannerInput
+  upsert: UserUpsertWithoutBannerInput
 }
 
 input UserUpdateOneWithoutCratedTagsInput {
@@ -3634,7 +4307,45 @@ input UserUpdateOneWithoutMarkedFacesInput {
   upsert: UserUpsertWithoutMarkedFacesInput
 }
 
+input UserUpdateWithoutAvatarInput {
+  banner: ImageUpdateOneWithoutUserBannerOfInput
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  roles: RoleUpdateManyWithoutUserInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserUpdateWithoutBannerInput {
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  roles: RoleUpdateManyWithoutUserInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
 input UserUpdateWithoutCratedTagsInput {
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
@@ -3651,6 +4362,8 @@ input UserUpdateWithoutCratedTagsInput {
 }
 
 input UserUpdateWithoutImageLikesInput {
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
   cratedTags: TagUpdateManyWithoutAddedByInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -3667,6 +4380,8 @@ input UserUpdateWithoutImageLikesInput {
 }
 
 input UserUpdateWithoutImagesInput {
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
   cratedTags: TagUpdateManyWithoutAddedByInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -3683,6 +4398,8 @@ input UserUpdateWithoutImagesInput {
 }
 
 input UserUpdateWithoutMarkedFacesInput {
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
   cratedTags: TagUpdateManyWithoutAddedByInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -3699,6 +4416,8 @@ input UserUpdateWithoutMarkedFacesInput {
 }
 
 input UserUpdateWithoutTaggedAppearancesInput {
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
   cratedTags: TagUpdateManyWithoutAddedByInput
   createdAt: DateTimeFieldUpdateOperationsInput
@@ -3712,6 +4431,16 @@ input UserUpdateWithoutTaggedAppearancesInput {
   roles: RoleUpdateManyWithoutUserInput
   token: NullableStringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserUpsertWithoutAvatarInput {
+  create: UserCreateWithoutAvatarInput!
+  update: UserUpdateWithoutAvatarInput!
+}
+
+input UserUpsertWithoutBannerInput {
+  create: UserCreateWithoutBannerInput!
+  update: UserUpdateWithoutBannerInput!
 }
 
 input UserUpsertWithoutCratedTagsInput {
@@ -3743,6 +4472,10 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  avatar: ImageWhereInput
+  avatarId: IntNullableFilter
+  banner: ImageWhereInput
+  bannerId: IntNullableFilter
   bot: BoolFilter
   cratedTags: TagListRelationFilter
   createdAt: DateTimeFilter
