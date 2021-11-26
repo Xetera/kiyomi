@@ -29,6 +29,14 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
                   name="viewport"
                   content="width=device-width, initial-scale=1"
                 />
+                <link
+                  rel="preconnect"
+                  href={process.env.NEXT_PUBLIC_BASE_URL_CDN}
+                />
+                <link
+                  rel="dns-prefetch"
+                  href={process.env.NEXT_PUBLIC_BASE_URL_CDN}
+                />
               </NextHead>
               <div
                 style={{
