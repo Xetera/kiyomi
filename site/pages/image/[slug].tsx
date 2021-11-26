@@ -14,7 +14,11 @@ import { prefetchQuery } from "@/lib/client-helpers"
 import { prisma } from "@/lib/db"
 import { wrapRequest } from "@/lib/data-fetching"
 import { Flex, Heading, Text } from "@chakra-ui/layout"
-import { ContextSidebar, SidebarItem, WithSidebar } from "@/components/context-sidebar"
+import {
+  ContextSidebar,
+  SidebarItem,
+  WithSidebar,
+} from "@/components/context-sidebar"
 import { Box } from "@chakra-ui/react"
 import { FaceAppearance } from "@/components/face-appearance"
 import { GraphDisplay } from "@/components/graph-display"
@@ -51,7 +55,7 @@ const Image = () => {
   }, [])
   const personIds = React.useMemo(
     () => data?.image?.appearances.map((r) => r.person.id) ?? [],
-    [data],
+    [data]
   )
 
   if (!data) {
@@ -75,7 +79,8 @@ const Image = () => {
         <WithNavbar>
           <WithSidebar
             sidebar={
-              (image.appearances.length > 0 || image.unknownFaces.length > 0) && (
+              (image.appearances.length > 0 ||
+                image.unknownFaces.length > 0) && (
                 <ContextSidebar
                   items={[
                     <SidebarItem title="In this Image">
@@ -88,7 +93,11 @@ const Image = () => {
                         />
                       ))}
                       {image.unknownFaces.map((face) => (
-                        <FaceAppearance key={face.id} image={image} face={face} />
+                        <FaceAppearance
+                          key={face.id}
+                          image={image}
+                          face={face}
+                        />
                       ))}
                     </SidebarItem>,
                   ]}
@@ -109,7 +118,8 @@ const Image = () => {
                     >
                       <RiSpyLine className="mr-2" />
                       <Text textAlign="center">
-                        This image is unlisted and can only be viewed with a link.
+                        This image is unlisted and can only be viewed with a
+                        link.
                       </Text>
                     </Flex>
                   </div>
@@ -178,7 +188,7 @@ export const getServerSideProps = wrapRequest(async (ctx) => {
       },
     })
     .catch(console.error)
-  const dehydratedState = await prefetchQuery("OneImageDocument", { slug })
+  const dehydratedState = await prefetchQuery("OneImage", { slug })
   return {
     props: {
       slug,

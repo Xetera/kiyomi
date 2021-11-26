@@ -2,6 +2,9 @@ query Homepage {
     homepage {
         id
         name
+        preferredAlias {
+            name
+        }
         preferredMembership {
             group {
                 name

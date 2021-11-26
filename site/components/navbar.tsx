@@ -47,20 +47,11 @@ function NavLink({
 
   const component = <NavbarClickable>{children}</NavbarClickable>
   if (hardLink) {
-    return (
-      <a href={href}>
-        {component}
-      </a>
-    )
+    return <a href={href}>{component}</a>
   }
   const data = (
-    <Link
-      href={href}
-      {...aProps}
-    >
-      <a>
-        {component}
-      </a>
+    <Link href={href} {...aProps}>
+      <a>{component}</a>
     </Link>
   )
 
@@ -102,8 +93,10 @@ export function Navbar() {
       >
         <HStack spacing={3} py={3}>
           <NavLink href="/">Home</NavLink>
-          <NavLink href="/games">Games</NavLink>
-          <NavLink href="/api/graphql" hardLink>API</NavLink>
+          {/* <NavLink href="/games">Games</NavLink> */}
+          <NavLink href="/api/graphql" hardLink>
+            API
+          </NavLink>
         </HStack>
         <HStack spacing={3}>
           {session?.user ? (
@@ -130,11 +123,7 @@ export function WithNavbar(props: PropsWithChildren<{ noSpace?: boolean }>) {
   return (
     <Box>
       <Navbar />
-      <Box
-        pt={props.noSpace ? 0 : 16}
-      >
-        {props.children}
-      </Box>
+      <Box pt={props.noSpace ? 0 : 16}>{props.children}</Box>
     </Box>
   )
 }

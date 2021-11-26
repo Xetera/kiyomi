@@ -2,7 +2,7 @@ import { PrismaClient } from ".prisma/client"
 import { createSdk } from "../../client"
 import aliases from "../aliases/aliases.json"
 import groups from "./groups.json"
-import { capitalize } from "lodash"
+import capitalize from "lodash/capitalize"
 ;(async () => {
   const groupAliases = aliases.filter((al) => al.isgroup === 1)
   const client = new PrismaClient({

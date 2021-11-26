@@ -1,7 +1,7 @@
 import fetch from "node-fetch"
 import { backend } from "../../../../shared/sdk"
 import { PrismaClient } from "@prisma/client"
-import { uniqBy } from "lodash"
+import uniqBy from "lodash/uniqBy"
 const prod = process.env.NODE_ENV === "production"
 
 ;(async () => {

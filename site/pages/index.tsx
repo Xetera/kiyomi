@@ -8,7 +8,7 @@ import {
   useHomepageQuery,
 } from "@/lib/__generated__/graphql"
 import { prefetchQuery } from "@/lib/client-helpers"
-import { Heading, VStack } from "@chakra-ui/layout"
+import { Grid, Heading, VStack } from "@chakra-ui/layout"
 import { Waypoint } from "react-waypoint"
 import { Box, Flex, HStack, Image, Link, Text } from "@chakra-ui/react"
 import { wrapRequest } from "@/lib/data-fetching"
@@ -63,7 +63,6 @@ export default function Home() {
     }
   )
   const splash = trending.homepage[selected]?.banner
-  console.log({ splash })
 
   async function loadMore() {
     if (isFetching) {
@@ -83,6 +82,7 @@ export default function Home() {
         <AnimatePresence exitBeforeEnter>
           <AnimatedImage
             maxHeight="90vh"
+            zIndex={0}
             position="absolute"
             objectPosition={splash ? focusToObjectPosition(splash) : ""}
             objectFit="cover"
@@ -103,8 +103,9 @@ export default function Home() {
           mx="auto"
           justifyContent="center"
           alignItems="flex-end"
+          px={4}
         >
-          <Box flexDirection="column" width="100%" px={5}>
+          <Box flexDirection="column" width="100%">
             <Flex
               justifyContent="space-between"
               align={["flex-start", null, "flex-end"]}
@@ -116,20 +117,22 @@ export default function Home() {
                   fontSize={["lg", "2xl", "4xl"]}
                   as="h1"
                   color="white"
+                  opacity={0.8}
                   letterSpacing={"-0.5px"}
                   mb={3}
                   fontWeight={700}
                 >
                   Kiyomi
                 </Heading>
-                <Heading
-                  fontSize={["md", "lg", "xl"]}
+                <Text
+                  textStyle="heading-lg"
                   as="h2"
-                  color="white"
+                  opacity={0.5}
+                  color="text.200"
                   fontWeight="semibold"
                 >
                   An image database for Kpop
-                </Heading>
+                </Text>
               </Box>
               {splash && (
                 <Link href={splash.url}>
@@ -146,67 +149,89 @@ export default function Home() {
         </Flex>
       </Box>
       <VStack
+        as="section"
         maxW="7xl"
         mx="auto"
+        px={5}
         p={4}
         alignItems="flex-start"
         overflow="hidden"
       >
-        <Text>Trending</Text>
-        <HStack spacing={3}>
-          {trending.homepage.map((trend, i) => (
-            <Flex flexDir="column">
-              <Box
-                width="200px"
-                height="320px"
-                mb={2}
-                key={trend.id}
-                zIndex={1}
-                opacity={i === selected ? "100%" : "40%"}
-                borderRadius={"lg"}
-                overflow="hidden"
-                cursor="pointer"
-                background="black"
-                onClick={() => setSelected(i)}
+        <Text textStyle="heading" color="text.200">
+          Latest Updated
+        </Text>
+        <Grid
+          templateColumns="repeat(auto-fill, minmax(180px, 1fr))"
+          w="full"
+          gap={6}
+        >
+          {trending.homepage.map((trend, i) => {
+            const opacity = i === selected ? "100%" : "40%"
+            return (
+              <Flex
+                flexDir="column"
+                transition="all 0.4s ease-in-out"
+                opacity={opacity}
+                _hover={{
+                  opacity: "100%",
+                }}
               >
-                <Image
-                  _hover={{
-                    opacity: "100%",
-                  }}
-                  transition="all 0.4s ease-in-out"
-                  objectFit="cover"
-                  h="full"
-                  src={
-                    trend.avatar
-                      ? trend.avatar.thumbnail.small
-                      : "https://placewaifu.com/image/200/320"
-                  }
-                />
-              </Box>
-              <Text fontSize="md" color="white" fontWeight="semibold">
-                {trend.name}
-              </Text>
-            </Flex>
-          ))}
-        </HStack>
+                <Box
+                  mx="auto"
+                  width="180px"
+                  height="320px"
+                  mb={3}
+                  key={trend.id}
+                  zIndex={1}
+                  borderRadius={"lg"}
+                  overflow="hidden"
+                  cursor="pointer"
+                  background="black"
+                  onClick={() => setSelected(i)}
+                >
+                  <Image
+                    objectFit="cover"
+                    h="full"
+                    src={
+                      trend.avatar
+                        ? trend.avatar.thumbnail.small
+                        : "https://placewaifu.com/image/200/320"
+                    }
+                  />
+                </Box>
+                <Text
+                  textStyle="heading-sm"
+                  color="text.100"
+                  textAlign="center"
+                >
+                  {trend.name}
+                </Text>
+              </Flex>
+            )
+          })}
+        </Grid>
       </VStack>
-      <Box
+      <Flex
+        position="relative"
+        flex={1}
+        flexDir="row"
+        justifyContent="center"
         className="relative flex-1 flex-row flex justify-center"
         ref={pageRef}
       >
         <Flex
+          px={5}
           flexDir="column"
           h="full"
           justify="flex-start"
           flex={1}
-          px={5}
           maxWidth="7xl"
         >
           {data && (
             <ImageGrid images={data.pages.flatMap((data) => data.images)} />
           )}
         </Flex>
-      </Box>
+      </Flex>
       <Box height="800px">
         <Waypoint onEnter={loadMore} topOffset="-1500px" />
       </Box>
@@ -216,34 +241,6 @@ export default function Home() {
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
   const dehydratedState = await prefetchQuery("Homepage", {})
-
-  // async function getSplash(image?: ImageType) {
-  //   const defaultValue = {
-  //     rawUrl: "https://my.simp.pics/Tpi0yMEym4qFCfEe.webp",
-  //     url: "",
-  //   }
-  //   if (!image) {
-  //     return defaultValue
-  //   }
-  //   const out = await backend.query({
-  //     image: [
-  //       {
-  //         slug: image.slug,
-  //       },
-  //       {
-  //         url: true,
-  //         rawUrl: true,
-  //         width: true,
-  //         height: true,
-  //         focus: {
-  //           x: true,
-  //           y: true,
-  //         },
-  //       },
-  //     ],
-  //   })
-  //   return out.image ?? defaultValue
-  // }
 
   return {
     props: {

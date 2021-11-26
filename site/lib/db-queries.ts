@@ -36,5 +36,5 @@ export const homepageQuery = (): Promise<HomepageRaw[]> => {
           INNER JOIN persons p2 on p.id = a2.person_id
       WHERE EXISTS(SELECT id from appearances WHERE appearances.person_id = p.id)
       ORDER BY i2.created_at desc LIMIT 1) desc
-  LIMIT 8;`
+  LIMIT 5;`
 }

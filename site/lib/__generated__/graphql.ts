@@ -1263,7 +1263,10 @@ export type HomepageQuery = (
   & { homepage: Array<(
     { __typename?: 'Person' }
     & Pick<Person, 'id' | 'name'>
-    & { preferredMembership?: Maybe<(
+    & { preferredAlias?: Maybe<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )>, preferredMembership?: Maybe<(
       { __typename?: 'GroupMember' }
       & { group: (
         { __typename?: 'Group' }
@@ -1698,6 +1701,9 @@ export const HomepageDocument = `
   homepage {
     id
     name
+    preferredAlias {
+      name
+    }
     preferredMembership {
       group {
         name

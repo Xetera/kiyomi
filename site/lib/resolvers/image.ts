@@ -1,5 +1,8 @@
 import { humanFileSize } from "../shared"
-import _, { camelCase, sample, sampleSize } from "lodash"
+import keyBy from "lodash/keyBy"
+import sample from "lodash/sample"
+import camelCase from "lodash/camelCase"
+import sampleSize from "lodash/sampleSize"
 import {
   objectType,
   queryField,
@@ -202,10 +205,7 @@ export const Image = objectType({
             },
           }),
         ])
-        const appearanceMap = _.keyBy(
-          appearances,
-          (appearance) => appearance.id
-        )
+        const appearanceMap = keyBy(appearances, (appearance) => appearance.id)
 
         return faces.filter(({ appearanceId }) => {
           return !appearanceId || !(appearanceId in appearanceMap)
