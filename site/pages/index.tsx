@@ -38,8 +38,6 @@ export default function Home() {
     throw Error("Trending page was not server side rendered properly...")
   }
 
-  // const splash = trending[0].banner
-  console.log({ trending })
   const [selected, setSelected] = React.useState(0)
   const PER_PAGE = 100
   const {
@@ -175,6 +173,7 @@ export default function Home() {
                 _hover={{
                   opacity: "100%",
                 }}
+                key={trend.id}
               >
                 <Box
                   mx="auto"
