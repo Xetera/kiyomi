@@ -3,30 +3,37 @@ import { getSession } from "next-auth/client"
 import { WithNavbar } from "@/components/navbar"
 import {
   fetcher,
+  HomepageDocument,
   HomepagePersonDocument,
   HomepagePersonQuery,
+  HomepageQuery,
   useHomepageQuery,
 } from "@/lib/__generated__/graphql"
-import { prefetchQuery } from "@/lib/client-helpers"
 import { Grid, Heading, VStack } from "@chakra-ui/layout"
 import { Waypoint } from "react-waypoint"
 import { Box, Flex, HStack, Image, Link, Text } from "@chakra-ui/react"
 import { wrapRequest } from "@/lib/data-fetching"
 import ImageGrid from "@/components/image-grid"
-import { useInfiniteQuery } from "react-query"
+import { dehydrate, QueryClient, useInfiniteQuery } from "react-query"
 import { RiLink } from "react-icons/ri"
 import { focusToObjectPosition } from "@/components/image-grid-element"
 import { AnimatePresence, motion } from "framer-motion"
 
 const AnimatedImage = motion(Image)
 
-type HomepageProps = {
-  // trending: HomepageRaw[]
-  // splash: Partial<FocusableImage> & { rawUrl: string; url: string }
-}
+type HomepageProps = {}
 
 const magicGradient =
   "linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.908) 0%, rgba(0, 0, 0, 1) 19%, rgba(0, 0, 0, 0.841) 34%, rgba(0, 0, 0, 0.782) 47%, rgba(0, 0, 0, 0.498) 56.5%, rgba(0, 0, 0, 0.324) 65%, rgba(0, 0, 0, 0.256) 73%, rgba(0, 0, 0, 0.135) 80.2%, rgba(0, 0, 0, 0.102) 86.1%, rgba(0, 0, 0, 0.051) 91%, rgba(0, 0, 0, 0.015) 95.2%, rgba(0, 0, 0, 0.010) 98.2%, transparent 100%);"
+
+const PER_PAGE = 100
+const fetchParams = (skip: number, id: number = 1) => ({
+  take: PER_PAGE,
+  skip,
+  id,
+})
+
+const homepagePersonKey = (index: number) => ["HomepagePerson", index]
 
 export default function Home() {
   const pageRef = React.useRef(null)
@@ -39,22 +46,21 @@ export default function Home() {
   }
 
   const [selected, setSelected] = React.useState(0)
-  const PER_PAGE = 100
   const {
     data,
     isFetching,
     fetchNextPage,
   } = useInfiniteQuery<HomepagePersonQuery>(
-    ["homepage", selected],
+    homepagePersonKey(selected),
     ({ pageParam = 0 }) => {
-      return fetcher<HomepagePersonQuery, unknown>(HomepagePersonDocument, {
-        take: PER_PAGE,
-        skip: pageParam,
-        id: trending.homepage[selected]?.id ?? 1,
-      })()
+      return fetcher<HomepagePersonQuery, unknown>(
+        HomepagePersonDocument,
+        fetchParams(pageParam, trending.homepage[selected]?.id)
+      )()
     },
     {
-      getNextPageParam(last, all) {
+      refetchOnMount: false,
+      getNextPageParam(_, all) {
         const skip = all.length * PER_PAGE
         return skip
       },
@@ -239,12 +245,21 @@ export default function Home() {
 }
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
-  const dehydratedState = await prefetchQuery("Homepage", {})
+  const client = new QueryClient()
+  let result = await fetcher<HomepageQuery, unknown>(HomepageDocument)()
+  client.setQueryData(["Homepage", {}], result)
+  const personParams = fetchParams(0, result.homepage[0]?.id)
+  let person = await fetcher<HomepageQuery, unknown>(
+    HomepagePersonDocument,
+    personParams
+  )()
+  client.setQueryData(homepagePersonKey(0), { pages: [person] })
+
+  const dehydratedState = dehydrate(client)
 
   return {
     props: {
       session: await getSession(ctx),
-      // splash: await getSplash(homepage[0]),
       dehydratedState,
     } as HomepageProps,
   }
