@@ -8,15 +8,38 @@ import {
 import { uploadImage } from "@/lib/wasabi"
 import mimeType from "mime-types"
 import sizeOf from "image-size"
-import { Appearance, Person, Image, Prisma, MimeType } from "@prisma/client"
+import { MimeType, Person } from "@prisma/client"
 import idgen from "nanoid"
-import { amqpPromise, sendImageToFaceRecognition } from "@/lib/amqp"
+import { sendImageToFaceRecognition } from "@/lib/amqp"
 import { backend, FaceData, ImageData } from "../../../../shared/sdk"
+import { UploadType } from "../../../../shared/backend"
 
 export const config = {
   api: {
     bodyParser: false,
   },
+}
+
+export type PushToVerificationQueueOptions = {
+  // JIU provider type
+  providerType: string
+  // the url of the provider endpoint
+  providerUrl: string
+  // ID that uniquely identifies the endpoint the image was taken from
+  providerId: string
+  postId: string
+  body?: string
+  postDate?: Date
+  accountName: string
+  accountAvatar: string
+  // ireneBotId?: number;
+  // ireneBotIdolId?: number;
+  // ireneBotIdolName?: number;
+  // tags?: string[]
+  // referenceUrl?: string;
+  // public: boolean;
+  // metadata: IncomingMediaMetadata
+  uploadType: UploadType
 }
 
 export default handle(

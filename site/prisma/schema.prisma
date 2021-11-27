@@ -174,8 +174,9 @@ model User {
   bannerId      Int?
   banner        Image?      @relation("user_banner", fields: [bannerId], references: [id])
 
-  taggedAppearances Appearance[]
-  markedFaces       Face[]
+  taggedAppearances   Appearance[]
+  markedFaces         Face[]
+  DiscoveredImageVote DiscoveredImageVote[]
   @@index([token], name: "user.token.index")
   @@map("users")
 }
@@ -229,6 +230,9 @@ model Image {
   userBannerOf        User?                @relation("user_banner")
   groupAvatarOf       Group?               @relation("group_avatar")
   groupBannerOf       Group?               @relation("group_banner")
+  // discovered images that could've been marked as duplicates of this one
+  potentialDuplicates DiscoveredImage[]    @relation("discovery_duplicate_image")
+  discoverySource     DiscoveredImage?
 
   @@index([slug], name: "images.slug_index")
   @@index([pHash2], name: "images.p_hash_2")
@@ -292,9 +296,97 @@ model Group {
   @@map("groups")
 }
 
+// Posts are deleted after they are approved. The delete does NOT
+// cascade to its child images so they can be used for audit logging
+model DiscoveredPost {
+  id                Int               @id @default(autoincrement())
+  // this comes from Jiu
+  providerType      String            @map("provider_type")
+  // Unique for each provider
+  uniqueIdentifier  String            @map("unique_identifier")
+  accountName       String            @map("account_name")
+  accountAvatarUrl  String?           @map("account_avatar_url")
+  body              String?
+  postUrl           String?           @map("post_url")
+  // Foreign keys that point to the right reference.
+  // Normally these would be foreign keys in a junction table
+  // but they're immutable per post and don't need the
+  // metadata we would get with an extra table
+  referencingGroups Int[]             @map("referencing_groups")
+  referencingPeople Int[]             @map("referencing_people")
+  originalPostDate  DateTime?         @map("original_post_date")
+  discoveredImages  DiscoveredImage[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@unique([providerType, uniqueIdentifier], name: "discoveredProvider")
+  @@map("discovered_posts")
+}
+
+model DiscoveredImage {
+  id               Int                      @id @default(autoincrement())
+  mediaType        String
+  // Needs to be copied over to the image as
+  // posts are deleted after approval
+  providerType     String                   @map("provider_type")
+  postId           Int?                     @map("post_id")
+  post             DiscoveredPost?          @relation(fields: [postId], references: [id])
+  // The relationship to a "promoted" image. This field is set after
+  // an image is approved
+  imageId          Int?                     @unique @map("image_id")
+  image            Image?                   @relation(fields: [imageId], references: [id])
+  url              String
+  // The place where the image comes from. Not necessary
+  referenceUrl     String?
+  // This unique identifier is only unique to the provider it's attached to
+  uniqueIdentifier String                   @map("unique_identifier")
+  // If the image is detected to be a potential duplicate of an existing one
+  duplicateImageId Int?                     @map("duplicate_image_id")
+  duplicateImage   Image?                   @relation("discovery_duplicate_image", fields: [duplicateImageId], references: [id])
+  verdict          DiscoveredImageVerdict[]
+  votes            DiscoveredImageVote[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@map("discovered_images")
+}
+
+model DiscoveredImageVerdict {
+  id                Int             @id @default(autoincrement())
+  discoveredImageId Int             @map("discovered_image_id")
+  discoveredImage   DiscoveredImage @relation(fields: [discoveredImageId], references: [id])
+  // "approve" | "reject"
+  verdict           String
+  // only used for declines
+  reason            String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  // doesn't need an update because it's never updated
+
+  @@index([discoveredImageId], name: "discovered_image_verdicts.discovered_image")
+  @@map("discovered_image_verdicts")
+}
+
+model DiscoveredImageVote {
+  id                Int             @id @default(autoincrement())
+  discoveredImageId Int             @map("discovered_image_id")
+  discoveredImage   DiscoveredImage @relation(fields: [discoveredImageId], references: [id])
+  userId            Int             @map("user_id")
+  user              User            @relation(fields: [userId], references: [id])
+  // This has to be copy pasted from verdicts as each
+  // user is able to submit their own vote for what should
+  // happen with new images on the site
+  verdict           String
+  reason            String?
+
+  @@index([userId], name: "discovered_image_votes.user")
+  @@map("discovered_image_votes")
+}
+
 enum UploadType {
   WEBSITE
   TOKEN
+  AUTO_DISCOVERY
 }
 
 enum TagSource {

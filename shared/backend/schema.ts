@@ -252,7 +252,7 @@ export interface Thumbnail {
     __typename: 'Thumbnail'
 }
 
-export type UploadType = 'TOKEN' | 'WEBSITE'
+export type UploadType = 'TOKEN' | 'WEBSITE' | 'AUTO_DISCOVERY'
 
 export interface User {
     avatar?: Scalars['String']

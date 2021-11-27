@@ -8,3 +8,8 @@ export function rawUrl(image: ImageType) {
 export function imageUrl(image: { slug: string }) {
   return `${process.env.NEXT_PUBLIC_BASE_URL}/image/${image.slug}`
 }
+
+
+export function upload() {
+
+}
