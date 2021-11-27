@@ -4,6 +4,7 @@ import { getSession } from "next-auth/client"
 import { amqpPromise } from "@/lib/amqp"
 import { NextApiRequest, NextApiResponse } from "next"
 import { Context } from "./context-type"
+import { getServices } from "@/lib/services"
 
 type ContextInput = {
   req: NextApiRequest
@@ -16,6 +17,7 @@ export async function contextResolver(
   const { req, res } = ctx
   const auth = req.headers.authorization
   const amqp = await amqpPromise.catch(() => undefined)
+  const services = await getServices()
 
   if (auth) {
     const user = (await getUserFromToken(auth, prisma)) ?? undefined
@@ -26,6 +28,7 @@ export async function contextResolver(
       prisma,
       user,
       uploadType: "TOKEN",
+      ...services,
     }
   }
 

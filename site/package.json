@@ -30,6 +30,7 @@
     "apollo-server-micro": "^3.5.0",
     "autoprefixer": "^10.2.5",
     "aws-sdk": "^2.815.0",
+    "camelcase-keys": "^7.0.1",
     "celery-node": "^0.5.8",
     "create-hmac": "^1.1.7",
     "date-fns": "^2.26.0",

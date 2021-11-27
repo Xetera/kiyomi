@@ -114,6 +114,188 @@ input DateTimeNullableFilter {
   notIn: [DateTime!]
 }
 
+type DiscoveredImage {
+  approvedImage: Image
+  createdAt: DateTime!
+  duplicateImage: Image
+  id: Int!
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime!
+  url: String!
+  verdict(cursor: DiscoveredImageVerdictWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVerdict!]!
+  votes(cursor: DiscoveredImageVoteWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVote!]!
+}
+
+input DiscoveredImageListRelationFilter {
+  every: DiscoveredImageWhereInput
+  none: DiscoveredImageWhereInput
+  some: DiscoveredImageWhereInput
+}
+
+input DiscoveredImageOrderByInput {
+  createdAt: SortOrder
+  duplicateImageId: SortOrder
+  id: SortOrder
+  imageId: SortOrder
+  mediaType: SortOrder
+  postId: SortOrder
+  providerType: SortOrder
+  referenceUrl: SortOrder
+  uniqueIdentifier: SortOrder
+  updatedAt: SortOrder
+  url: SortOrder
+}
+
+type DiscoveredImageVerdict {
+  createdAt: DateTime!
+  id: Int!
+  reason: String
+  verdict: String!
+}
+
+input DiscoveredImageVerdictListRelationFilter {
+  every: DiscoveredImageVerdictWhereInput
+  none: DiscoveredImageVerdictWhereInput
+  some: DiscoveredImageVerdictWhereInput
+}
+
+input DiscoveredImageVerdictWhereInput {
+  AND: [DiscoveredImageVerdictWhereInput!]
+  NOT: [DiscoveredImageVerdictWhereInput!]
+  OR: [DiscoveredImageVerdictWhereInput!]
+  createdAt: DateTimeFilter
+  discoveredImage: DiscoveredImageWhereInput
+  discoveredImageId: IntFilter
+  id: IntFilter
+  reason: StringNullableFilter
+  verdict: StringFilter
+}
+
+input DiscoveredImageVerdictWhereUniqueInput {
+  id: Int
+}
+
+type DiscoveredImageVote {
+  createdAt: DateTime!
+  id: Int!
+  reason: String
+  updatedAt: DateTime!
+  user: User!
+  verdict: String!
+}
+
+input DiscoveredImageVoteListRelationFilter {
+  every: DiscoveredImageVoteWhereInput
+  none: DiscoveredImageVoteWhereInput
+  some: DiscoveredImageVoteWhereInput
+}
+
+input DiscoveredImageVoteWhereInput {
+  AND: [DiscoveredImageVoteWhereInput!]
+  NOT: [DiscoveredImageVoteWhereInput!]
+  OR: [DiscoveredImageVoteWhereInput!]
+  createdAt: DateTimeFilter
+  discoveredImage: DiscoveredImageWhereInput
+  discoveredImageId: IntFilter
+  id: IntFilter
+  reason: StringNullableFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntFilter
+  verdict: StringFilter
+}
+
+input DiscoveredImageVoteWhereUniqueInput {
+  id: Int
+}
+
+input DiscoveredImageWhereInput {
+  AND: [DiscoveredImageWhereInput!]
+  NOT: [DiscoveredImageWhereInput!]
+  OR: [DiscoveredImageWhereInput!]
+  createdAt: DateTimeFilter
+  duplicateImage: ImageWhereInput
+  duplicateImageId: IntNullableFilter
+  id: IntFilter
+  image: ImageWhereInput
+  imageId: IntNullableFilter
+  mediaType: StringFilter
+  post: DiscoveredPostWhereInput
+  postId: IntNullableFilter
+  providerType: StringFilter
+  referenceUrl: StringNullableFilter
+  uniqueIdentifier: StringFilter
+  updatedAt: DateTimeFilter
+  url: StringFilter
+  verdict: DiscoveredImageVerdictListRelationFilter
+  votes: DiscoveredImageVoteListRelationFilter
+}
+
+input DiscoveredImageWhereUniqueInput {
+  id: Int
+  imageId: Int
+}
+
+type DiscoveredPost {
+  accountAvatarUrl: String
+  accountName: String!
+  body: String
+  createdAt: DateTime!
+  id: Int!
+  images(cursor: DiscoveredImageWhereUniqueInput, skip: Int, take: Int): [DiscoveredImage!]!
+  originalPostDate: DateTime
+  postUrl: String
+  providerType: String!
+  uniqueIdentifier: String!
+  updatedAt: DateTime!
+}
+
+input DiscoveredPostDiscoveredProviderCompoundUniqueInput {
+  providerType: String!
+  uniqueIdentifier: String!
+}
+
+input DiscoveredPostOrderByInput {
+  accountAvatarUrl: SortOrder
+  accountName: SortOrder
+  body: SortOrder
+  createdAt: SortOrder
+  id: SortOrder
+  originalPostDate: SortOrder
+  postUrl: SortOrder
+  providerType: SortOrder
+  referencingGroups: SortOrder
+  referencingPeople: SortOrder
+  uniqueIdentifier: SortOrder
+  updatedAt: SortOrder
+}
+
+input DiscoveredPostWhereInput {
+  AND: [DiscoveredPostWhereInput!]
+  NOT: [DiscoveredPostWhereInput!]
+  OR: [DiscoveredPostWhereInput!]
+  accountAvatarUrl: StringNullableFilter
+  accountName: StringFilter
+  body: StringNullableFilter
+  createdAt: DateTimeFilter
+  discoveredImages: DiscoveredImageListRelationFilter
+  id: IntFilter
+  originalPostDate: DateTimeNullableFilter
+  postUrl: StringNullableFilter
+  providerType: StringFilter
+  referencingGroups: IntNullableListFilter
+  referencingPeople: IntNullableListFilter
+  uniqueIdentifier: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input DiscoveredPostWhereUniqueInput {
+  discoveredProvider: DiscoveredPostDiscoveredProviderCompoundUniqueInput
+  id: Int
+}
+
 input EnumFaceSourceFilter {
   equals: FaceSource
   in: [FaceSource!]
@@ -482,6 +664,7 @@ input ImageWhereInput {
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
+  discoverySource: DiscoveredImageWhereInput
   faceScanDate: DateTimeNullableFilter
   faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
@@ -499,6 +682,7 @@ input ImageWhereInput {
   palette: IntNullableListFilter
   personAvatarOf: PersonWhereInput
   personBannerOf: PersonWhereInput
+  potentialDuplicates: DiscoveredImageListRelationFilter
   public: BoolFilter
   slug: StringFilter
   source: StringNullableFilter
@@ -749,6 +933,8 @@ input PersonWhereUniqueInput {
 
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
+  discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
+  discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
   homepage: [Person!]!
@@ -884,6 +1070,7 @@ type Thumbnail {
 }
 
 enum UploadType {
+  AUTO_DISCOVERY
   TOKEN
   WEBSITE
 }
@@ -899,6 +1086,7 @@ type User {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
+  DiscoveredImageVote: DiscoveredImageVoteListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   avatar: ImageWhereInput

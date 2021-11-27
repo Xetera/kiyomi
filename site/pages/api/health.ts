@@ -1,5 +1,6 @@
-import { handle } from "@/lib/middleware"
+import { getServices } from "../../lib/services"
 
-export default handle((_req, res) => {
+export default async (_req, res) => {
+  const services = await getServices()
   res.status(200).end()
-})
+}

@@ -513,6 +513,728 @@ input DateTimeNullableFilter {
   notIn: [DateTime!]
 }
 
+type DiscoveredImage {
+  approvedImage: Image
+  createdAt: DateTime!
+  duplicateImage: Image
+  id: Int!
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime!
+  url: String!
+  verdict(cursor: DiscoveredImageVerdictWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVerdict!]!
+  votes(cursor: DiscoveredImageVoteWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVote!]!
+}
+
+input DiscoveredImageCreateManyDuplicateImageInput {
+  createdAt: DateTime
+  id: Int
+  imageId: Int
+  mediaType: String!
+  postId: Int
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+  url: String!
+}
+
+input DiscoveredImageCreateManyDuplicateImageInputEnvelope {
+  data: [DiscoveredImageCreateManyDuplicateImageInput!]
+  skipDuplicates: Boolean
+}
+
+input DiscoveredImageCreateNestedManyWithoutDuplicateImageInput {
+  connect: [DiscoveredImageWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageCreateOrConnectWithoutDuplicateImageInput!]
+  create: [DiscoveredImageCreateWithoutDuplicateImageInput!]
+  createMany: DiscoveredImageCreateManyDuplicateImageInputEnvelope
+}
+
+input DiscoveredImageCreateNestedOneWithoutImageInput {
+  connect: DiscoveredImageWhereUniqueInput
+  connectOrCreate: DiscoveredImageCreateOrConnectWithoutImageInput
+  create: DiscoveredImageCreateWithoutImageInput
+}
+
+input DiscoveredImageCreateNestedOneWithoutVotesInput {
+  connect: DiscoveredImageWhereUniqueInput
+  connectOrCreate: DiscoveredImageCreateOrConnectWithoutVotesInput
+  create: DiscoveredImageCreateWithoutVotesInput
+}
+
+input DiscoveredImageCreateOrConnectWithoutDuplicateImageInput {
+  create: DiscoveredImageCreateWithoutDuplicateImageInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
+input DiscoveredImageCreateOrConnectWithoutImageInput {
+  create: DiscoveredImageCreateWithoutImageInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
+input DiscoveredImageCreateOrConnectWithoutVotesInput {
+  create: DiscoveredImageCreateWithoutVotesInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
+input DiscoveredImageCreateWithoutDuplicateImageInput {
+  createdAt: DateTime
+  image: ImageCreateNestedOneWithoutDiscoverySourceInput
+  mediaType: String!
+  post: DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+  url: String!
+  verdict: DiscoveredImageVerdictCreateNestedManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteCreateNestedManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageCreateWithoutImageInput {
+  createdAt: DateTime
+  duplicateImage: ImageCreateNestedOneWithoutPotentialDuplicatesInput
+  mediaType: String!
+  post: DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+  url: String!
+  verdict: DiscoveredImageVerdictCreateNestedManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteCreateNestedManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageCreateWithoutVotesInput {
+  createdAt: DateTime
+  duplicateImage: ImageCreateNestedOneWithoutPotentialDuplicatesInput
+  image: ImageCreateNestedOneWithoutDiscoverySourceInput
+  mediaType: String!
+  post: DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+  url: String!
+  verdict: DiscoveredImageVerdictCreateNestedManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageListRelationFilter {
+  every: DiscoveredImageWhereInput
+  none: DiscoveredImageWhereInput
+  some: DiscoveredImageWhereInput
+}
+
+input DiscoveredImageOrderByInput {
+  createdAt: SortOrder
+  duplicateImageId: SortOrder
+  id: SortOrder
+  imageId: SortOrder
+  mediaType: SortOrder
+  postId: SortOrder
+  providerType: SortOrder
+  referenceUrl: SortOrder
+  uniqueIdentifier: SortOrder
+  updatedAt: SortOrder
+  url: SortOrder
+}
+
+input DiscoveredImageScalarWhereInput {
+  AND: [DiscoveredImageScalarWhereInput!]
+  NOT: [DiscoveredImageScalarWhereInput!]
+  OR: [DiscoveredImageScalarWhereInput!]
+  createdAt: DateTimeFilter
+  duplicateImageId: IntNullableFilter
+  id: IntFilter
+  imageId: IntNullableFilter
+  mediaType: StringFilter
+  postId: IntNullableFilter
+  providerType: StringFilter
+  referenceUrl: StringNullableFilter
+  uniqueIdentifier: StringFilter
+  updatedAt: DateTimeFilter
+  url: StringFilter
+}
+
+input DiscoveredImageUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  mediaType: StringFieldUpdateOperationsInput
+  providerType: StringFieldUpdateOperationsInput
+  referenceUrl: NullableStringFieldUpdateOperationsInput
+  uniqueIdentifier: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+}
+
+input DiscoveredImageUpdateManyWithWhereWithoutDuplicateImageInput {
+  data: DiscoveredImageUpdateManyMutationInput!
+  where: DiscoveredImageScalarWhereInput!
+}
+
+input DiscoveredImageUpdateManyWithoutDuplicateImageInput {
+  connect: [DiscoveredImageWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageCreateOrConnectWithoutDuplicateImageInput!]
+  create: [DiscoveredImageCreateWithoutDuplicateImageInput!]
+  createMany: DiscoveredImageCreateManyDuplicateImageInputEnvelope
+  delete: [DiscoveredImageWhereUniqueInput!]
+  deleteMany: [DiscoveredImageScalarWhereInput!]
+  disconnect: [DiscoveredImageWhereUniqueInput!]
+  set: [DiscoveredImageWhereUniqueInput!]
+  update: [DiscoveredImageUpdateWithWhereUniqueWithoutDuplicateImageInput!]
+  updateMany: [DiscoveredImageUpdateManyWithWhereWithoutDuplicateImageInput!]
+  upsert: [DiscoveredImageUpsertWithWhereUniqueWithoutDuplicateImageInput!]
+}
+
+input DiscoveredImageUpdateOneRequiredWithoutVotesInput {
+  connect: DiscoveredImageWhereUniqueInput
+  connectOrCreate: DiscoveredImageCreateOrConnectWithoutVotesInput
+  create: DiscoveredImageCreateWithoutVotesInput
+  update: DiscoveredImageUpdateWithoutVotesInput
+  upsert: DiscoveredImageUpsertWithoutVotesInput
+}
+
+input DiscoveredImageUpdateOneWithoutImageInput {
+  connect: DiscoveredImageWhereUniqueInput
+  connectOrCreate: DiscoveredImageCreateOrConnectWithoutImageInput
+  create: DiscoveredImageCreateWithoutImageInput
+  delete: Boolean
+  disconnect: Boolean
+  update: DiscoveredImageUpdateWithoutImageInput
+  upsert: DiscoveredImageUpsertWithoutImageInput
+}
+
+input DiscoveredImageUpdateWithWhereUniqueWithoutDuplicateImageInput {
+  data: DiscoveredImageUpdateWithoutDuplicateImageInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
+input DiscoveredImageUpdateWithoutDuplicateImageInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  image: ImageUpdateOneWithoutDiscoverySourceInput
+  mediaType: StringFieldUpdateOperationsInput
+  post: DiscoveredPostUpdateOneWithoutDiscoveredImagesInput
+  providerType: StringFieldUpdateOperationsInput
+  referenceUrl: NullableStringFieldUpdateOperationsInput
+  uniqueIdentifier: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+  verdict: DiscoveredImageVerdictUpdateManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteUpdateManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageUpdateWithoutImageInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  duplicateImage: ImageUpdateOneWithoutPotentialDuplicatesInput
+  mediaType: StringFieldUpdateOperationsInput
+  post: DiscoveredPostUpdateOneWithoutDiscoveredImagesInput
+  providerType: StringFieldUpdateOperationsInput
+  referenceUrl: NullableStringFieldUpdateOperationsInput
+  uniqueIdentifier: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+  verdict: DiscoveredImageVerdictUpdateManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteUpdateManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageUpdateWithoutVotesInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  duplicateImage: ImageUpdateOneWithoutPotentialDuplicatesInput
+  image: ImageUpdateOneWithoutDiscoverySourceInput
+  mediaType: StringFieldUpdateOperationsInput
+  post: DiscoveredPostUpdateOneWithoutDiscoveredImagesInput
+  providerType: StringFieldUpdateOperationsInput
+  referenceUrl: NullableStringFieldUpdateOperationsInput
+  uniqueIdentifier: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+  verdict: DiscoveredImageVerdictUpdateManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageUpsertWithWhereUniqueWithoutDuplicateImageInput {
+  create: DiscoveredImageCreateWithoutDuplicateImageInput!
+  update: DiscoveredImageUpdateWithoutDuplicateImageInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
+input DiscoveredImageUpsertWithoutImageInput {
+  create: DiscoveredImageCreateWithoutImageInput!
+  update: DiscoveredImageUpdateWithoutImageInput!
+}
+
+input DiscoveredImageUpsertWithoutVotesInput {
+  create: DiscoveredImageCreateWithoutVotesInput!
+  update: DiscoveredImageUpdateWithoutVotesInput!
+}
+
+type DiscoveredImageVerdict {
+  createdAt: DateTime!
+  id: Int!
+  reason: String
+  verdict: String!
+}
+
+input DiscoveredImageVerdictCreateManyDiscoveredImageInput {
+  createdAt: DateTime
+  id: Int
+  reason: String
+  verdict: String!
+}
+
+input DiscoveredImageVerdictCreateManyDiscoveredImageInputEnvelope {
+  data: [DiscoveredImageVerdictCreateManyDiscoveredImageInput!]
+  skipDuplicates: Boolean
+}
+
+input DiscoveredImageVerdictCreateNestedManyWithoutDiscoveredImageInput {
+  connect: [DiscoveredImageVerdictWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageVerdictCreateOrConnectWithoutDiscoveredImageInput!]
+  create: [DiscoveredImageVerdictCreateWithoutDiscoveredImageInput!]
+  createMany: DiscoveredImageVerdictCreateManyDiscoveredImageInputEnvelope
+}
+
+input DiscoveredImageVerdictCreateOrConnectWithoutDiscoveredImageInput {
+  create: DiscoveredImageVerdictCreateWithoutDiscoveredImageInput!
+  where: DiscoveredImageVerdictWhereUniqueInput!
+}
+
+input DiscoveredImageVerdictCreateWithoutDiscoveredImageInput {
+  createdAt: DateTime
+  reason: String
+  verdict: String!
+}
+
+input DiscoveredImageVerdictListRelationFilter {
+  every: DiscoveredImageVerdictWhereInput
+  none: DiscoveredImageVerdictWhereInput
+  some: DiscoveredImageVerdictWhereInput
+}
+
+input DiscoveredImageVerdictScalarWhereInput {
+  AND: [DiscoveredImageVerdictScalarWhereInput!]
+  NOT: [DiscoveredImageVerdictScalarWhereInput!]
+  OR: [DiscoveredImageVerdictScalarWhereInput!]
+  createdAt: DateTimeFilter
+  discoveredImageId: IntFilter
+  id: IntFilter
+  reason: StringNullableFilter
+  verdict: StringFilter
+}
+
+input DiscoveredImageVerdictUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  reason: NullableStringFieldUpdateOperationsInput
+  verdict: StringFieldUpdateOperationsInput
+}
+
+input DiscoveredImageVerdictUpdateManyWithWhereWithoutDiscoveredImageInput {
+  data: DiscoveredImageVerdictUpdateManyMutationInput!
+  where: DiscoveredImageVerdictScalarWhereInput!
+}
+
+input DiscoveredImageVerdictUpdateManyWithoutDiscoveredImageInput {
+  connect: [DiscoveredImageVerdictWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageVerdictCreateOrConnectWithoutDiscoveredImageInput!]
+  create: [DiscoveredImageVerdictCreateWithoutDiscoveredImageInput!]
+  createMany: DiscoveredImageVerdictCreateManyDiscoveredImageInputEnvelope
+  delete: [DiscoveredImageVerdictWhereUniqueInput!]
+  deleteMany: [DiscoveredImageVerdictScalarWhereInput!]
+  disconnect: [DiscoveredImageVerdictWhereUniqueInput!]
+  set: [DiscoveredImageVerdictWhereUniqueInput!]
+  update: [DiscoveredImageVerdictUpdateWithWhereUniqueWithoutDiscoveredImageInput!]
+  updateMany: [DiscoveredImageVerdictUpdateManyWithWhereWithoutDiscoveredImageInput!]
+  upsert: [DiscoveredImageVerdictUpsertWithWhereUniqueWithoutDiscoveredImageInput!]
+}
+
+input DiscoveredImageVerdictUpdateWithWhereUniqueWithoutDiscoveredImageInput {
+  data: DiscoveredImageVerdictUpdateWithoutDiscoveredImageInput!
+  where: DiscoveredImageVerdictWhereUniqueInput!
+}
+
+input DiscoveredImageVerdictUpdateWithoutDiscoveredImageInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  reason: NullableStringFieldUpdateOperationsInput
+  verdict: StringFieldUpdateOperationsInput
+}
+
+input DiscoveredImageVerdictUpsertWithWhereUniqueWithoutDiscoveredImageInput {
+  create: DiscoveredImageVerdictCreateWithoutDiscoveredImageInput!
+  update: DiscoveredImageVerdictUpdateWithoutDiscoveredImageInput!
+  where: DiscoveredImageVerdictWhereUniqueInput!
+}
+
+input DiscoveredImageVerdictWhereInput {
+  AND: [DiscoveredImageVerdictWhereInput!]
+  NOT: [DiscoveredImageVerdictWhereInput!]
+  OR: [DiscoveredImageVerdictWhereInput!]
+  createdAt: DateTimeFilter
+  discoveredImage: DiscoveredImageWhereInput
+  discoveredImageId: IntFilter
+  id: IntFilter
+  reason: StringNullableFilter
+  verdict: StringFilter
+}
+
+input DiscoveredImageVerdictWhereUniqueInput {
+  id: Int
+}
+
+type DiscoveredImageVote {
+  createdAt: DateTime!
+  id: Int!
+  reason: String
+  updatedAt: DateTime!
+  user: User!
+  verdict: String!
+}
+
+input DiscoveredImageVoteCreateManyDiscoveredImageInput {
+  createdAt: DateTime
+  id: Int
+  reason: String
+  updatedAt: DateTime
+  userId: Int!
+  verdict: String!
+}
+
+input DiscoveredImageVoteCreateManyDiscoveredImageInputEnvelope {
+  data: [DiscoveredImageVoteCreateManyDiscoveredImageInput!]
+  skipDuplicates: Boolean
+}
+
+input DiscoveredImageVoteCreateManyUserInput {
+  createdAt: DateTime
+  discoveredImageId: Int!
+  id: Int
+  reason: String
+  updatedAt: DateTime
+  verdict: String!
+}
+
+input DiscoveredImageVoteCreateManyUserInputEnvelope {
+  data: [DiscoveredImageVoteCreateManyUserInput!]
+  skipDuplicates: Boolean
+}
+
+input DiscoveredImageVoteCreateNestedManyWithoutDiscoveredImageInput {
+  connect: [DiscoveredImageVoteWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageVoteCreateOrConnectWithoutDiscoveredImageInput!]
+  create: [DiscoveredImageVoteCreateWithoutDiscoveredImageInput!]
+  createMany: DiscoveredImageVoteCreateManyDiscoveredImageInputEnvelope
+}
+
+input DiscoveredImageVoteCreateNestedManyWithoutUserInput {
+  connect: [DiscoveredImageVoteWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageVoteCreateOrConnectWithoutUserInput!]
+  create: [DiscoveredImageVoteCreateWithoutUserInput!]
+  createMany: DiscoveredImageVoteCreateManyUserInputEnvelope
+}
+
+input DiscoveredImageVoteCreateOrConnectWithoutDiscoveredImageInput {
+  create: DiscoveredImageVoteCreateWithoutDiscoveredImageInput!
+  where: DiscoveredImageVoteWhereUniqueInput!
+}
+
+input DiscoveredImageVoteCreateOrConnectWithoutUserInput {
+  create: DiscoveredImageVoteCreateWithoutUserInput!
+  where: DiscoveredImageVoteWhereUniqueInput!
+}
+
+input DiscoveredImageVoteCreateWithoutDiscoveredImageInput {
+  createdAt: DateTime
+  reason: String
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutDiscoveredImageVoteInput!
+  verdict: String!
+}
+
+input DiscoveredImageVoteCreateWithoutUserInput {
+  createdAt: DateTime
+  discoveredImage: DiscoveredImageCreateNestedOneWithoutVotesInput!
+  reason: String
+  updatedAt: DateTime
+  verdict: String!
+}
+
+input DiscoveredImageVoteListRelationFilter {
+  every: DiscoveredImageVoteWhereInput
+  none: DiscoveredImageVoteWhereInput
+  some: DiscoveredImageVoteWhereInput
+}
+
+input DiscoveredImageVoteScalarWhereInput {
+  AND: [DiscoveredImageVoteScalarWhereInput!]
+  NOT: [DiscoveredImageVoteScalarWhereInput!]
+  OR: [DiscoveredImageVoteScalarWhereInput!]
+  createdAt: DateTimeFilter
+  discoveredImageId: IntFilter
+  id: IntFilter
+  reason: StringNullableFilter
+  updatedAt: DateTimeFilter
+  userId: IntFilter
+  verdict: StringFilter
+}
+
+input DiscoveredImageVoteUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  reason: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  verdict: StringFieldUpdateOperationsInput
+}
+
+input DiscoveredImageVoteUpdateManyWithWhereWithoutDiscoveredImageInput {
+  data: DiscoveredImageVoteUpdateManyMutationInput!
+  where: DiscoveredImageVoteScalarWhereInput!
+}
+
+input DiscoveredImageVoteUpdateManyWithWhereWithoutUserInput {
+  data: DiscoveredImageVoteUpdateManyMutationInput!
+  where: DiscoveredImageVoteScalarWhereInput!
+}
+
+input DiscoveredImageVoteUpdateManyWithoutDiscoveredImageInput {
+  connect: [DiscoveredImageVoteWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageVoteCreateOrConnectWithoutDiscoveredImageInput!]
+  create: [DiscoveredImageVoteCreateWithoutDiscoveredImageInput!]
+  createMany: DiscoveredImageVoteCreateManyDiscoveredImageInputEnvelope
+  delete: [DiscoveredImageVoteWhereUniqueInput!]
+  deleteMany: [DiscoveredImageVoteScalarWhereInput!]
+  disconnect: [DiscoveredImageVoteWhereUniqueInput!]
+  set: [DiscoveredImageVoteWhereUniqueInput!]
+  update: [DiscoveredImageVoteUpdateWithWhereUniqueWithoutDiscoveredImageInput!]
+  updateMany: [DiscoveredImageVoteUpdateManyWithWhereWithoutDiscoveredImageInput!]
+  upsert: [DiscoveredImageVoteUpsertWithWhereUniqueWithoutDiscoveredImageInput!]
+}
+
+input DiscoveredImageVoteUpdateManyWithoutUserInput {
+  connect: [DiscoveredImageVoteWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageVoteCreateOrConnectWithoutUserInput!]
+  create: [DiscoveredImageVoteCreateWithoutUserInput!]
+  createMany: DiscoveredImageVoteCreateManyUserInputEnvelope
+  delete: [DiscoveredImageVoteWhereUniqueInput!]
+  deleteMany: [DiscoveredImageVoteScalarWhereInput!]
+  disconnect: [DiscoveredImageVoteWhereUniqueInput!]
+  set: [DiscoveredImageVoteWhereUniqueInput!]
+  update: [DiscoveredImageVoteUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [DiscoveredImageVoteUpdateManyWithWhereWithoutUserInput!]
+  upsert: [DiscoveredImageVoteUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input DiscoveredImageVoteUpdateWithWhereUniqueWithoutDiscoveredImageInput {
+  data: DiscoveredImageVoteUpdateWithoutDiscoveredImageInput!
+  where: DiscoveredImageVoteWhereUniqueInput!
+}
+
+input DiscoveredImageVoteUpdateWithWhereUniqueWithoutUserInput {
+  data: DiscoveredImageVoteUpdateWithoutUserInput!
+  where: DiscoveredImageVoteWhereUniqueInput!
+}
+
+input DiscoveredImageVoteUpdateWithoutDiscoveredImageInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  reason: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneRequiredWithoutDiscoveredImageVoteInput
+  verdict: StringFieldUpdateOperationsInput
+}
+
+input DiscoveredImageVoteUpdateWithoutUserInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  discoveredImage: DiscoveredImageUpdateOneRequiredWithoutVotesInput
+  reason: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  verdict: StringFieldUpdateOperationsInput
+}
+
+input DiscoveredImageVoteUpsertWithWhereUniqueWithoutDiscoveredImageInput {
+  create: DiscoveredImageVoteCreateWithoutDiscoveredImageInput!
+  update: DiscoveredImageVoteUpdateWithoutDiscoveredImageInput!
+  where: DiscoveredImageVoteWhereUniqueInput!
+}
+
+input DiscoveredImageVoteUpsertWithWhereUniqueWithoutUserInput {
+  create: DiscoveredImageVoteCreateWithoutUserInput!
+  update: DiscoveredImageVoteUpdateWithoutUserInput!
+  where: DiscoveredImageVoteWhereUniqueInput!
+}
+
+input DiscoveredImageVoteWhereInput {
+  AND: [DiscoveredImageVoteWhereInput!]
+  NOT: [DiscoveredImageVoteWhereInput!]
+  OR: [DiscoveredImageVoteWhereInput!]
+  createdAt: DateTimeFilter
+  discoveredImage: DiscoveredImageWhereInput
+  discoveredImageId: IntFilter
+  id: IntFilter
+  reason: StringNullableFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntFilter
+  verdict: StringFilter
+}
+
+input DiscoveredImageVoteWhereUniqueInput {
+  id: Int
+}
+
+input DiscoveredImageWhereInput {
+  AND: [DiscoveredImageWhereInput!]
+  NOT: [DiscoveredImageWhereInput!]
+  OR: [DiscoveredImageWhereInput!]
+  createdAt: DateTimeFilter
+  duplicateImage: ImageWhereInput
+  duplicateImageId: IntNullableFilter
+  id: IntFilter
+  image: ImageWhereInput
+  imageId: IntNullableFilter
+  mediaType: StringFilter
+  post: DiscoveredPostWhereInput
+  postId: IntNullableFilter
+  providerType: StringFilter
+  referenceUrl: StringNullableFilter
+  uniqueIdentifier: StringFilter
+  updatedAt: DateTimeFilter
+  url: StringFilter
+  verdict: DiscoveredImageVerdictListRelationFilter
+  votes: DiscoveredImageVoteListRelationFilter
+}
+
+input DiscoveredImageWhereUniqueInput {
+  id: Int
+  imageId: Int
+}
+
+type DiscoveredPost {
+  accountAvatarUrl: String
+  accountName: String!
+  body: String
+  createdAt: DateTime!
+  id: Int!
+  images(cursor: DiscoveredImageWhereUniqueInput, skip: Int, take: Int): [DiscoveredImage!]!
+  originalPostDate: DateTime
+  postUrl: String
+  providerType: String!
+  uniqueIdentifier: String!
+  updatedAt: DateTime!
+}
+
+input DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput {
+  connect: DiscoveredPostWhereUniqueInput
+  connectOrCreate: DiscoveredPostCreateOrConnectWithoutDiscoveredImagesInput
+  create: DiscoveredPostCreateWithoutDiscoveredImagesInput
+}
+
+input DiscoveredPostCreateOrConnectWithoutDiscoveredImagesInput {
+  create: DiscoveredPostCreateWithoutDiscoveredImagesInput!
+  where: DiscoveredPostWhereUniqueInput!
+}
+
+input DiscoveredPostCreateWithoutDiscoveredImagesInput {
+  accountAvatarUrl: String
+  accountName: String!
+  body: String
+  createdAt: DateTime
+  originalPostDate: DateTime
+  postUrl: String
+  providerType: String!
+  referencingGroups: DiscoveredPostCreatereferencingGroupsInput
+  referencingPeople: DiscoveredPostCreatereferencingPeopleInput
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+}
+
+input DiscoveredPostCreatereferencingGroupsInput {
+  set: [Int!]
+}
+
+input DiscoveredPostCreatereferencingPeopleInput {
+  set: [Int!]
+}
+
+input DiscoveredPostDiscoveredProviderCompoundUniqueInput {
+  providerType: String!
+  uniqueIdentifier: String!
+}
+
+input DiscoveredPostOrderByInput {
+  accountAvatarUrl: SortOrder
+  accountName: SortOrder
+  body: SortOrder
+  createdAt: SortOrder
+  id: SortOrder
+  originalPostDate: SortOrder
+  postUrl: SortOrder
+  providerType: SortOrder
+  referencingGroups: SortOrder
+  referencingPeople: SortOrder
+  uniqueIdentifier: SortOrder
+  updatedAt: SortOrder
+}
+
+input DiscoveredPostUpdateOneWithoutDiscoveredImagesInput {
+  connect: DiscoveredPostWhereUniqueInput
+  connectOrCreate: DiscoveredPostCreateOrConnectWithoutDiscoveredImagesInput
+  create: DiscoveredPostCreateWithoutDiscoveredImagesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: DiscoveredPostUpdateWithoutDiscoveredImagesInput
+  upsert: DiscoveredPostUpsertWithoutDiscoveredImagesInput
+}
+
+input DiscoveredPostUpdateWithoutDiscoveredImagesInput {
+  accountAvatarUrl: NullableStringFieldUpdateOperationsInput
+  accountName: StringFieldUpdateOperationsInput
+  body: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  originalPostDate: NullableDateTimeFieldUpdateOperationsInput
+  postUrl: NullableStringFieldUpdateOperationsInput
+  providerType: StringFieldUpdateOperationsInput
+  referencingGroups: DiscoveredPostUpdatereferencingGroupsInput
+  referencingPeople: DiscoveredPostUpdatereferencingPeopleInput
+  uniqueIdentifier: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input DiscoveredPostUpdatereferencingGroupsInput {
+  push: Int
+  set: [Int!]
+}
+
+input DiscoveredPostUpdatereferencingPeopleInput {
+  push: Int
+  set: [Int!]
+}
+
+input DiscoveredPostUpsertWithoutDiscoveredImagesInput {
+  create: DiscoveredPostCreateWithoutDiscoveredImagesInput!
+  update: DiscoveredPostUpdateWithoutDiscoveredImagesInput!
+}
+
+input DiscoveredPostWhereInput {
+  AND: [DiscoveredPostWhereInput!]
+  NOT: [DiscoveredPostWhereInput!]
+  OR: [DiscoveredPostWhereInput!]
+  accountAvatarUrl: StringNullableFilter
+  accountName: StringFilter
+  body: StringNullableFilter
+  createdAt: DateTimeFilter
+  discoveredImages: DiscoveredImageListRelationFilter
+  id: IntFilter
+  originalPostDate: DateTimeNullableFilter
+  postUrl: StringNullableFilter
+  providerType: StringFilter
+  referencingGroups: IntNullableListFilter
+  referencingPeople: IntNullableListFilter
+  uniqueIdentifier: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input DiscoveredPostWhereUniqueInput {
+  discoveredProvider: DiscoveredPostDiscoveredProviderCompoundUniqueInput
+  id: Int
+}
+
 input EnumFaceSourceFieldUpdateOperationsInput {
   set: FaceSource
 }
@@ -1531,6 +2253,12 @@ input ImageCreateNestedOneWithoutAppearancesInput {
   create: ImageCreateWithoutAppearancesInput
 }
 
+input ImageCreateNestedOneWithoutDiscoverySourceInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutDiscoverySourceInput
+  create: ImageCreateWithoutDiscoverySourceInput
+}
+
 input ImageCreateNestedOneWithoutGroupAvatarOfInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutGroupAvatarOfInput
@@ -1561,6 +2289,12 @@ input ImageCreateNestedOneWithoutPersonBannerOfInput {
   create: ImageCreateWithoutPersonBannerOfInput
 }
 
+input ImageCreateNestedOneWithoutPotentialDuplicatesInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutPotentialDuplicatesInput
+  create: ImageCreateWithoutPotentialDuplicatesInput
+}
+
 input ImageCreateNestedOneWithoutTagsInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutTagsInput
@@ -1581,6 +2315,11 @@ input ImageCreateNestedOneWithoutUserBannerOfInput {
 
 input ImageCreateOrConnectWithoutAppearancesInput {
   create: ImageCreateWithoutAppearancesInput!
+  where: ImageWhereUniqueInput!
+}
+
+input ImageCreateOrConnectWithoutDiscoverySourceInput {
+  create: ImageCreateWithoutDiscoverySourceInput!
   where: ImageWhereUniqueInput!
 }
 
@@ -1614,6 +2353,11 @@ input ImageCreateOrConnectWithoutPersonBannerOfInput {
   where: ImageWhereUniqueInput!
 }
 
+input ImageCreateOrConnectWithoutPotentialDuplicatesInput {
+  create: ImageCreateWithoutPotentialDuplicatesInput!
+  where: ImageWhereUniqueInput!
+}
+
 input ImageCreateOrConnectWithoutTagsInput {
   create: ImageCreateWithoutTagsInput!
   where: ImageWhereUniqueInput!
@@ -1638,6 +2382,7 @@ input ImageCreateWithoutAppearancesInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1654,6 +2399,42 @@ input ImageCreateWithoutAppearancesInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutDiscoverySourceInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1672,6 +2453,7 @@ input ImageCreateWithoutFacesInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   fileName: String
@@ -1687,6 +2469,7 @@ input ImageCreateWithoutFacesInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1705,6 +2488,7 @@ input ImageCreateWithoutGroupAvatarOfInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1720,6 +2504,7 @@ input ImageCreateWithoutGroupAvatarOfInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1738,6 +2523,7 @@ input ImageCreateWithoutGroupBannerOfInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1753,6 +2539,7 @@ input ImageCreateWithoutGroupBannerOfInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1771,6 +2558,7 @@ input ImageCreateWithoutLikesInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1786,6 +2574,7 @@ input ImageCreateWithoutLikesInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1804,6 +2593,7 @@ input ImageCreateWithoutPersonAvatarOfInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1819,6 +2609,7 @@ input ImageCreateWithoutPersonAvatarOfInput {
   pHash: String
   palette: ImageCreatepaletteInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1837,6 +2628,7 @@ input ImageCreateWithoutPersonBannerOfInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1852,6 +2644,42 @@ input ImageCreateWithoutPersonBannerOfInput {
   pHash: String
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
+  public: Boolean
+  slug: String!
+  source: String
+  tags: TagCreateNestedManyWithoutImageInput
+  updatedAt: DateTime
+  uploadType: UploadType!
+  user: UserCreateNestedOneWithoutImagesInput
+  userAvatarOf: UserCreateNestedOneWithoutAvatarInput
+  userBannerOf: UserCreateNestedOneWithoutBannerInput
+  views: Int
+  width: Int!
+}
+
+input ImageCreateWithoutPotentialDuplicatesInput {
+  appearances: AppearanceCreateNestedManyWithoutImageInput
+  bytes: Int
+  caption: String
+  createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
+  faceScanDate: DateTime
+  faceScanRequestDate: DateTime
+  faces: FaceCreateNestedManyWithoutImageInput
+  fileName: String
+  groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
+  groupBannerOf: GroupCreateNestedOneWithoutBannerInput
+  hash: String!
+  height: Int!
+  ireneBotId: Int
+  isNsfw: Boolean
+  likes: ImageLikeCreateNestedManyWithoutImageInput
+  mimetype: MimeType!
+  pHash: String
+  palette: ImageCreatepaletteInput
+  personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
+  personBannerOf: PersonCreateNestedOneWithoutBannerInput
   public: Boolean
   slug: String!
   source: String
@@ -1870,6 +2698,7 @@ input ImageCreateWithoutTagsInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1886,6 +2715,7 @@ input ImageCreateWithoutTagsInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1903,6 +2733,7 @@ input ImageCreateWithoutUserAvatarOfInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1919,6 +2750,7 @@ input ImageCreateWithoutUserAvatarOfInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1936,6 +2768,7 @@ input ImageCreateWithoutUserBannerOfInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1952,6 +2785,7 @@ input ImageCreateWithoutUserBannerOfInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -1969,6 +2803,7 @@ input ImageCreateWithoutUserInput {
   bytes: Int
   caption: String
   createdAt: DateTime
+  discoverySource: DiscoveredImageCreateNestedOneWithoutImageInput
   faceScanDate: DateTime
   faceScanRequestDate: DateTime
   faces: FaceCreateNestedManyWithoutImageInput
@@ -1985,6 +2820,7 @@ input ImageCreateWithoutUserInput {
   palette: ImageCreatepaletteInput
   personAvatarOf: PersonCreateNestedOneWithoutAvatarInput
   personBannerOf: PersonCreateNestedOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageCreateNestedManyWithoutDuplicateImageInput
   public: Boolean
   slug: String!
   source: String
@@ -2323,6 +3159,16 @@ input ImageUpdateOneRequiredWithoutTagsInput {
   upsert: ImageUpsertWithoutTagsInput
 }
 
+input ImageUpdateOneWithoutDiscoverySourceInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutDiscoverySourceInput
+  create: ImageCreateWithoutDiscoverySourceInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ImageUpdateWithoutDiscoverySourceInput
+  upsert: ImageUpsertWithoutDiscoverySourceInput
+}
+
 input ImageUpdateOneWithoutGroupAvatarOfInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutGroupAvatarOfInput
@@ -2363,6 +3209,16 @@ input ImageUpdateOneWithoutPersonBannerOfInput {
   upsert: ImageUpsertWithoutPersonBannerOfInput
 }
 
+input ImageUpdateOneWithoutPotentialDuplicatesInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutPotentialDuplicatesInput
+  create: ImageCreateWithoutPotentialDuplicatesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: ImageUpdateWithoutPotentialDuplicatesInput
+  upsert: ImageUpsertWithoutPotentialDuplicatesInput
+}
+
 input ImageUpdateOneWithoutUserAvatarOfInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutUserAvatarOfInput
@@ -2392,6 +3248,7 @@ input ImageUpdateWithoutAppearancesInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2408,6 +3265,42 @@ input ImageUpdateWithoutAppearancesInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutDiscoverySourceInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2426,6 +3319,7 @@ input ImageUpdateWithoutFacesInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   fileName: NullableStringFieldUpdateOperationsInput
@@ -2441,6 +3335,7 @@ input ImageUpdateWithoutFacesInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2459,6 +3354,7 @@ input ImageUpdateWithoutGroupAvatarOfInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2474,6 +3370,7 @@ input ImageUpdateWithoutGroupAvatarOfInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2492,6 +3389,7 @@ input ImageUpdateWithoutGroupBannerOfInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2507,6 +3405,7 @@ input ImageUpdateWithoutGroupBannerOfInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2525,6 +3424,7 @@ input ImageUpdateWithoutLikesInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2540,6 +3440,7 @@ input ImageUpdateWithoutLikesInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2558,6 +3459,7 @@ input ImageUpdateWithoutPersonAvatarOfInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2573,6 +3475,7 @@ input ImageUpdateWithoutPersonAvatarOfInput {
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2591,6 +3494,7 @@ input ImageUpdateWithoutPersonBannerOfInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2606,6 +3510,42 @@ input ImageUpdateWithoutPersonBannerOfInput {
   pHash: NullableStringFieldUpdateOperationsInput
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
+  public: BoolFieldUpdateOperationsInput
+  slug: StringFieldUpdateOperationsInput
+  source: NullableStringFieldUpdateOperationsInput
+  tags: TagUpdateManyWithoutImageInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  uploadType: EnumUploadTypeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutImagesInput
+  userAvatarOf: UserUpdateOneWithoutAvatarInput
+  userBannerOf: UserUpdateOneWithoutBannerInput
+  views: IntFieldUpdateOperationsInput
+  width: IntFieldUpdateOperationsInput
+}
+
+input ImageUpdateWithoutPotentialDuplicatesInput {
+  appearances: AppearanceUpdateManyWithoutImageInput
+  bytes: IntFieldUpdateOperationsInput
+  caption: NullableStringFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
+  faceScanDate: NullableDateTimeFieldUpdateOperationsInput
+  faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
+  faces: FaceUpdateManyWithoutImageInput
+  fileName: NullableStringFieldUpdateOperationsInput
+  groupAvatarOf: GroupUpdateOneWithoutAvatarInput
+  groupBannerOf: GroupUpdateOneWithoutBannerInput
+  hash: StringFieldUpdateOperationsInput
+  height: IntFieldUpdateOperationsInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  isNsfw: BoolFieldUpdateOperationsInput
+  likes: ImageLikeUpdateManyWithoutImageInput
+  mimetype: EnumMimeTypeFieldUpdateOperationsInput
+  pHash: NullableStringFieldUpdateOperationsInput
+  palette: ImageUpdatepaletteInput
+  personAvatarOf: PersonUpdateOneWithoutAvatarInput
+  personBannerOf: PersonUpdateOneWithoutBannerInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2624,6 +3564,7 @@ input ImageUpdateWithoutTagsInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2640,6 +3581,7 @@ input ImageUpdateWithoutTagsInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2657,6 +3599,7 @@ input ImageUpdateWithoutUserAvatarOfInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2673,6 +3616,7 @@ input ImageUpdateWithoutUserAvatarOfInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2690,6 +3634,7 @@ input ImageUpdateWithoutUserBannerOfInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2706,6 +3651,7 @@ input ImageUpdateWithoutUserBannerOfInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2723,6 +3669,7 @@ input ImageUpdateWithoutUserInput {
   bytes: IntFieldUpdateOperationsInput
   caption: NullableStringFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
+  discoverySource: DiscoveredImageUpdateOneWithoutImageInput
   faceScanDate: NullableDateTimeFieldUpdateOperationsInput
   faceScanRequestDate: NullableDateTimeFieldUpdateOperationsInput
   faces: FaceUpdateManyWithoutImageInput
@@ -2739,6 +3686,7 @@ input ImageUpdateWithoutUserInput {
   palette: ImageUpdatepaletteInput
   personAvatarOf: PersonUpdateOneWithoutAvatarInput
   personBannerOf: PersonUpdateOneWithoutBannerInput
+  potentialDuplicates: DiscoveredImageUpdateManyWithoutDuplicateImageInput
   public: BoolFieldUpdateOperationsInput
   slug: StringFieldUpdateOperationsInput
   source: NullableStringFieldUpdateOperationsInput
@@ -2765,6 +3713,11 @@ input ImageUpsertWithWhereUniqueWithoutUserInput {
 input ImageUpsertWithoutAppearancesInput {
   create: ImageCreateWithoutAppearancesInput!
   update: ImageUpdateWithoutAppearancesInput!
+}
+
+input ImageUpsertWithoutDiscoverySourceInput {
+  create: ImageCreateWithoutDiscoverySourceInput!
+  update: ImageUpdateWithoutDiscoverySourceInput!
 }
 
 input ImageUpsertWithoutFacesInput {
@@ -2797,6 +3750,11 @@ input ImageUpsertWithoutPersonBannerOfInput {
   update: ImageUpdateWithoutPersonBannerOfInput!
 }
 
+input ImageUpsertWithoutPotentialDuplicatesInput {
+  create: ImageCreateWithoutPotentialDuplicatesInput!
+  update: ImageUpdateWithoutPotentialDuplicatesInput!
+}
+
 input ImageUpsertWithoutTagsInput {
   create: ImageCreateWithoutTagsInput!
   update: ImageUpdateWithoutTagsInput!
@@ -2820,6 +3778,7 @@ input ImageWhereInput {
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
+  discoverySource: DiscoveredImageWhereInput
   faceScanDate: DateTimeNullableFilter
   faceScanRequestDate: DateTimeNullableFilter
   faces: FaceListRelationFilter
@@ -2837,6 +3796,7 @@ input ImageWhereInput {
   palette: IntNullableListFilter
   personAvatarOf: PersonWhereInput
   personBannerOf: PersonWhereInput
+  potentialDuplicates: DiscoveredImageListRelationFilter
   public: BoolFilter
   slug: StringFilter
   source: StringNullableFilter
@@ -3644,6 +4604,8 @@ input PersonWhereUniqueInput {
 
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
+  discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
+  discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
   homepage: [Person!]!
@@ -4031,6 +4993,7 @@ type Thumbnail {
 }
 
 enum UploadType {
+  AUTO_DISCOVERY
   TOKEN
   WEBSITE
 }
@@ -4060,6 +5023,12 @@ input UserCreateNestedOneWithoutCratedTagsInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutCratedTagsInput
   create: UserCreateWithoutCratedTagsInput
+}
+
+input UserCreateNestedOneWithoutDiscoveredImageVoteInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutDiscoveredImageVoteInput
+  create: UserCreateWithoutDiscoveredImageVoteInput
 }
 
 input UserCreateNestedOneWithoutImageLikesInput {
@@ -4095,6 +5064,11 @@ input UserCreateOrConnectWithoutCratedTagsInput {
   where: UserWhereUniqueInput!
 }
 
+input UserCreateOrConnectWithoutDiscoveredImageVoteInput {
+  create: UserCreateWithoutDiscoveredImageVoteInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserCreateOrConnectWithoutImageLikesInput {
   create: UserCreateWithoutImageLikesInput!
   where: UserWhereUniqueInput!
@@ -4116,6 +5090,7 @@ input UserCreateOrConnectWithoutTaggedAppearancesInput {
 }
 
 input UserCreateWithoutAvatarInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
   cratedTags: TagCreateNestedManyWithoutAddedByInput
@@ -4134,6 +5109,7 @@ input UserCreateWithoutAvatarInput {
 }
 
 input UserCreateWithoutBannerInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   bot: Boolean
   cratedTags: TagCreateNestedManyWithoutAddedByInput
@@ -4152,6 +5128,7 @@ input UserCreateWithoutBannerInput {
 }
 
 input UserCreateWithoutCratedTagsInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
@@ -4169,7 +5146,27 @@ input UserCreateWithoutCratedTagsInput {
   updatedAt: DateTime
 }
 
+input UserCreateWithoutDiscoveredImageVoteInput {
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  roles: RoleCreateNestedManyWithoutUserInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
 input UserCreateWithoutImageLikesInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
@@ -4188,6 +5185,7 @@ input UserCreateWithoutImageLikesInput {
 }
 
 input UserCreateWithoutImagesInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
@@ -4206,6 +5204,7 @@ input UserCreateWithoutImagesInput {
 }
 
 input UserCreateWithoutMarkedFacesInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
@@ -4224,6 +5223,7 @@ input UserCreateWithoutMarkedFacesInput {
 }
 
 input UserCreateWithoutTaggedAppearancesInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
@@ -4239,6 +5239,14 @@ input UserCreateWithoutTaggedAppearancesInput {
   roles: RoleCreateNestedManyWithoutUserInput
   token: String
   updatedAt: DateTime
+}
+
+input UserUpdateOneRequiredWithoutDiscoveredImageVoteInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutDiscoveredImageVoteInput
+  create: UserCreateWithoutDiscoveredImageVoteInput
+  update: UserUpdateWithoutDiscoveredImageVoteInput
+  upsert: UserUpsertWithoutDiscoveredImageVoteInput
 }
 
 input UserUpdateOneRequiredWithoutImageLikesInput {
@@ -4308,6 +5316,7 @@ input UserUpdateOneWithoutMarkedFacesInput {
 }
 
 input UserUpdateWithoutAvatarInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
   cratedTags: TagUpdateManyWithoutAddedByInput
@@ -4326,6 +5335,7 @@ input UserUpdateWithoutAvatarInput {
 }
 
 input UserUpdateWithoutBannerInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   bot: BoolFieldUpdateOperationsInput
   cratedTags: TagUpdateManyWithoutAddedByInput
@@ -4344,6 +5354,7 @@ input UserUpdateWithoutBannerInput {
 }
 
 input UserUpdateWithoutCratedTagsInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -4361,7 +5372,27 @@ input UserUpdateWithoutCratedTagsInput {
   updatedAt: DateTimeFieldUpdateOperationsInput
 }
 
+input UserUpdateWithoutDiscoveredImageVoteInput {
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  roles: RoleUpdateManyWithoutUserInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
 input UserUpdateWithoutImageLikesInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -4380,6 +5411,7 @@ input UserUpdateWithoutImageLikesInput {
 }
 
 input UserUpdateWithoutImagesInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -4398,6 +5430,7 @@ input UserUpdateWithoutImagesInput {
 }
 
 input UserUpdateWithoutMarkedFacesInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -4416,6 +5449,7 @@ input UserUpdateWithoutMarkedFacesInput {
 }
 
 input UserUpdateWithoutTaggedAppearancesInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -4448,6 +5482,11 @@ input UserUpsertWithoutCratedTagsInput {
   update: UserUpdateWithoutCratedTagsInput!
 }
 
+input UserUpsertWithoutDiscoveredImageVoteInput {
+  create: UserCreateWithoutDiscoveredImageVoteInput!
+  update: UserUpdateWithoutDiscoveredImageVoteInput!
+}
+
 input UserUpsertWithoutImageLikesInput {
   create: UserCreateWithoutImageLikesInput!
   update: UserUpdateWithoutImageLikesInput!
@@ -4470,6 +5509,7 @@ input UserUpsertWithoutTaggedAppearancesInput {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
+  DiscoveredImageVote: DiscoveredImageVoteListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   avatar: ImageWhereInput

@@ -4,7 +4,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 })
 
 module.exports = withBundleAnalyzer({
-  swcMinify: true,
+  // swcMinify: true,
   experimental: {
     scrollRestoration: true,
     externalDir: true,

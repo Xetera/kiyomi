@@ -21,7 +21,6 @@ import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
 import centroid from "@turf/centroid"
 import { points } from "@turf/helpers"
-import { hashStringToCube } from "../services/peceptual-hash"
 import { imageUrl, rawUrl } from "../services/image"
 import { homepageQuery } from "../db-queries"
 
@@ -558,7 +557,7 @@ export const PrivateMutation = mutationField((t) => {
         pHash,
         palette,
       },
-      { prisma, user }
+      { prisma, user, phash }
     ) {
       if (!user) {
         throw new Error("Unauthorized")
@@ -639,7 +638,7 @@ export const PrivateMutation = mutationField((t) => {
 
       // I know this is a very strange way to do this but prisma doesn't let us
       // update CUBE values any other way
-      const pHashArray = hashStringToCube(pHash)
+      const pHashArray = phash.hashStringToCube(pHash)
       prisma.$queryRaw`${Prisma.raw(`
         UPDATE images SET p_hash_2 = CUBE(ARRAY[${pHashArray.join(
           ","

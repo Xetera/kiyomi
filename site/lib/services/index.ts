@@ -1,26 +1,28 @@
-import { JiuService, makeJiu } from "@/lib/services/jiu"
-import {
-  makePerceptualHash,
-  PerceptualHashService,
-} from "@/lib/services/peceptual-hash"
-import { amqpPromise } from "@/lib/amqp"
+import { JiuService, makeJiu } from "./jiu"
+import { makePerceptualHash, PerceptualHashService } from "./perceptual-hash"
+import { amqpPromise } from "../amqp"
 
-type Services = {
+export type Services = {
   jiu: JiuService
   phash: PerceptualHashService
 }
 
-let services: Services | undefined
-
 export async function getServices(): Promise<Services> {
-  if (services) {
-    return services
+  if (global.servicesPromise) {
+    return global.servicesPromise
   }
-  const amqp = await amqpPromise
-  const phash = makePerceptualHash()
-  const jiu = await makeJiu({ phash, amqp })
-  return {
-    phash,
-    jiu,
+  // terrible disgusting next.js hack to make sure that we only
+  // initialize this object one time without getting owned
+  // by the thundering herd problem
+  async function getter(): Promise<Services> {
+    const amqp = await amqpPromise
+    const phash = makePerceptualHash()
+    const jiu = await makeJiu({ phash, amqp })
+    return {
+      phash,
+      jiu,
+    }
   }
+  global.servicesPromise = getter()
+  return global.servicesPromise
 }
