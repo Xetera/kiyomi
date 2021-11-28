@@ -750,6 +750,13 @@ export interface NexusGenObjects {
   DiscoveredImageVerdict: PrismaClient.DiscoveredImageVerdict;
   DiscoveredImageVote: PrismaClient.DiscoveredImageVote;
   DiscoveredPost: PrismaClient.DiscoveredPost;
+  DiscoveryProvider: { // root type
+    destination: string; // String!
+    name?: string | null; // String
+    provider: string; // String!
+    url: string; // String!
+    waitDays: number; // Int!
+  }
   Face: PrismaClient.Face;
   Group: PrismaClient.Group;
   GroupAlias: PrismaClient.GroupAlias;
@@ -860,6 +867,13 @@ export interface NexusGenFieldTypes {
     providerType: string; // String!
     uniqueIdentifier: string; // String!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  DiscoveryProvider: { // field return type
+    destination: string; // String!
+    name: string | null; // String
+    provider: string; // String!
+    url: string; // String!
+    waitDays: number; // Int!
   }
   Face: { // field return type
     addedBy: NexusGenRootTypes['User'] | null; // User
@@ -978,6 +992,7 @@ export interface NexusGenFieldTypes {
     countAppearances: NexusGenRootTypes['AppearanceCount'][]; // [AppearanceCount!]!
     discoveredImages: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     discoveredPosts: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
+    discoveryProviders: NexusGenRootTypes['DiscoveryProvider'][]; // [DiscoveryProvider!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
     homepage: NexusGenRootTypes['Person'][]; // [Person!]!
@@ -1076,6 +1091,13 @@ export interface NexusGenFieldTypeNames {
     providerType: 'String'
     uniqueIdentifier: 'String'
     updatedAt: 'DateTime'
+  }
+  DiscoveryProvider: { // field return type name
+    destination: 'String'
+    name: 'String'
+    provider: 'String'
+    url: 'String'
+    waitDays: 'Int'
   }
   Face: { // field return type name
     addedBy: 'User'
@@ -1194,6 +1216,7 @@ export interface NexusGenFieldTypeNames {
     countAppearances: 'AppearanceCount'
     discoveredImages: 'DiscoveredImage'
     discoveredPosts: 'DiscoveredPost'
+    discoveryProviders: 'DiscoveryProvider'
     group: 'Group'
     groups: 'Group'
     homepage: 'Person'

@@ -1,6 +1,7 @@
 import React from "react"
 import { Provider } from "next-auth/client"
 import { Provider as ReduxProvider } from "react-redux"
+import "focus-visible/dist/focus-visible"
 // Import our CSS
 import "../styles/tailwind.css"
 import "../styles/globals.css"

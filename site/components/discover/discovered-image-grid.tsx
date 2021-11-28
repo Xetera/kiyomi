@@ -1,4 +1,4 @@
-import { DiscoveredPostProps } from "@/components/discovered-post"
+import { DiscoveredPostProps } from "@/components/discover/discovered-post"
 import {
   Button,
   ButtonGroup,
@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react"
 import { Flex } from "@chakra-ui/layout"
 import {
+  RiAddBoxFill,
   RiCheckLine,
   RiCloseLine,
   RiDeleteBinLine,
@@ -48,14 +49,14 @@ function DiscoverImageLoader({
 }
 
 function DiscoveredImage({ image }: DiscoveredImageProps) {
-  const isDuplicate = Boolean(image.duplicateImage && image.id % 2 === 0)
+  const isDuplicate = Boolean(image.duplicateImage)
   const preview = useDisclosure()
   return (
     <Flex position="relative" overflow="hidden" borderRadius="sm" w="full">
       <DiscoverImageLoader image={image} isDuplicate={isDuplicate} />
       {isDuplicate && (
         <Text
-          bg="bgPrimary"
+          bg="rgba(0, 0, 0, 0.5)"
           position="absolute"
           left={0}
           right={0}
@@ -68,7 +69,7 @@ function DiscoveredImage({ image }: DiscoveredImageProps) {
           color="text.400"
         >
           This image is very likely a duplicate of{" "}
-          <NextLink href={image.duplicateImage.url} passHref>
+          <NextLink href={image.duplicateImage!.url} passHref>
             <Link color="brand.100" target="_blank">
               an existing image
             </Link>
@@ -149,10 +150,30 @@ export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
             size="sm"
             w="full"
           >
-            <Button colorScheme="blue" w="full" borderRadius="4">
+            {image.duplicateImage && (
+              <Button
+                w="full"
+                borderRadius="4"
+                flex="100%"
+                leftIcon={<RiAddBoxFill />}
+              >
+                Merge
+              </Button>
+            )}
+            <Button
+              colorScheme="blue"
+              w="full"
+              borderRadius="4"
+              flex={image.duplicateImage ? "20%" : "100%"}
+            >
               <RiCheckLine />
             </Button>
-            <Button colorScheme="red" w="full" borderRadius="4">
+            <Button
+              colorScheme="red"
+              w="full"
+              borderRadius="4"
+              flex={image.duplicateImage ? "20%" : "100%"}
+            >
               <RiDeleteBinLine />
             </Button>
           </ButtonGroup>

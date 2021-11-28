@@ -1,10 +1,11 @@
 import { UserDataFragment } from "@/lib/__generated__/graphql"
 import { signOut, useSession } from "next-auth/client"
-import Link from "next/link"
+import NextLink from "next/link"
 import React, { PropsWithChildren } from "react"
 import BetterLink from "./nextjs/link"
 import { Box } from "@chakra-ui/layout"
-import { Flex, forwardRef, HStack, Text } from "@chakra-ui/react"
+import { Flex, forwardRef, HStack, Text, Link } from "@chakra-ui/react"
+import { useRouter } from "next/router"
 
 type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
@@ -13,26 +14,30 @@ type NavLinkProps = AType & {
   hardLink?: boolean
 }
 
-const NavbarClickable = forwardRef(({ children, ...props }, ref) => (
-  <Flex
-    align="center"
-    py={2}
-    px={6}
-    borderRadius="3px"
-    fontWeight="600"
-    fontSize="14px"
-    color="#caccd1"
-    transition="all 0.2s ease-in-out"
-    cursor="pointer"
-    _hover={{
-      bg: "rgba(0, 0, 0, 0.3)",
-    }}
-    ref={ref}
-    {...props}
-  >
-    {children}
-  </Flex>
-))
+const NavbarClickable = forwardRef(({ children, active, ...props }, ref) => {
+  const activeBg = "rgba(0, 0, 0, 0.3)"
+  return (
+    <Flex
+      align="center"
+      py={2}
+      px={6}
+      borderRadius="3px"
+      fontWeight="600"
+      fontSize="14px"
+      color="#caccd1"
+      transition="all 0.2s ease-in-out"
+      cursor="pointer"
+      bg={active ? activeBg : "inherit"}
+      _hover={{
+        bg: activeBg,
+      }}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </Flex>
+  )
+})
 
 function NavLink({
   children,
@@ -41,25 +46,31 @@ function NavLink({
   hardLink,
   ...rest
 }: PropsWithChildren<NavLinkProps>) {
+  const router = useRouter()
+
+  const isSelected = router.pathname === href
+
   const aProps: AType = {
     ...rest,
   }
 
-  const component = <NavbarClickable>{children}</NavbarClickable>
+  const component = (
+    <NavbarClickable active={isSelected}>{children}</NavbarClickable>
+  )
   if (hardLink) {
     return <a href={href}>{component}</a>
   }
   const data = (
-    <Link href={href} {...aProps}>
-      <a>{component}</a>
-    </Link>
+    <NextLink href={href} {...aProps} passHref>
+      <Link _hover={{ textDecoration: "none" }}>{component}</Link>
+    </NextLink>
   )
 
   if (hardLink) return data
   return (
-    <BetterLink href={href} as={as}>
+    <NextLink href={href} as={as}>
       {data}
-    </BetterLink>
+    </NextLink>
   )
 }
 

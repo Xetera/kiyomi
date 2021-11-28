@@ -3516,6 +3516,11 @@ focus-lock@^0.9.1:
   dependencies:
     tslib "^2.0.3"
 
+focus-visible@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.npmjs.org/focus-visible/-/focus-visible-5.2.0.tgz#3a9e41fccf587bd25dcc2ef045508284f0a4d6b3"
+  integrity sha512-Rwix9pBtC1Nuy5wysTmKy+UjbDJpIfg8eHjw0rjZ1mX4GNLz1Bmd16uDpI3Gk1i70Fgcs8Csg2lPm8HULFg9DQ==
+
 force-graph@^1.42:
   version "1.42.4"
   resolved "https://registry.npmjs.org/force-graph/-/force-graph-1.42.4.tgz#4be856f043922d455c1c1e04ffec20837b982a60"

@@ -296,6 +296,19 @@ input DiscoveredPostWhereUniqueInput {
   id: Int
 }
 
+"""The list of providers that supply images for the discover feed"""
+type DiscoveryProvider {
+  destination: String!
+  name: String
+  provider: String!
+  url: String!
+
+  """
+  The number of days remaining until this provider is checked for updates again
+  """
+  waitDays: Int!
+}
+
 input EnumFaceSourceFilter {
   equals: FaceSource
   in: [FaceSource!]
@@ -935,6 +948,7 @@ type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
   discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
+  discoveryProviders: [DiscoveryProvider!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
   homepage: [Person!]!

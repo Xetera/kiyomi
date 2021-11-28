@@ -1,4 +1,4 @@
-import { Box, Image } from "@chakra-ui/react"
+import { Box, forwardRef, Image } from "@chakra-ui/react"
 import { focusToObjectPosition } from "@/components/image-grid-element"
 import React from "react"
 
@@ -7,21 +7,25 @@ const magicGradient =
 
 const DEFAULT_HEIGHT = ["30vh", "40vh", "55vh", "65vh"]
 
-export function LargeBanner({ url, height = DEFAULT_HEIGHT }) {
-  return (
-    <Box mb={3} height={height} display="flex" opacity={0.2}>
-      <Image
-        maxHeight="90vh"
-        top={0}
-        zIndex={-1}
-        draggable="false"
-        userSelect="none"
-        position="absolute"
-        objectFit="cover"
-        width="100%"
-        src={url}
-        sx={{ WebkitMaskImage: magicGradient }}
-      />
-    </Box>
-  )
-}
+export const LargeBanner = forwardRef(
+  ({ url, height = DEFAULT_HEIGHT, ...rest }, ref) => {
+    return (
+      <Box mb={3} height={height} display="flex" opacity={0.2}>
+        <Image
+          maxHeight="90vh"
+          top={0}
+          zIndex={-1}
+          draggable="false"
+          userSelect="none"
+          position="absolute"
+          objectFit="cover"
+          width="100%"
+          src={url}
+          sx={{ WebkitMaskImage: magicGradient }}
+          {...rest}
+          ref={ref}
+        />
+      </Box>
+    )
+  }
+)

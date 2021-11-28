@@ -1,4 +1,4 @@
-import { RiCheckLine, RiTwitterLine } from "react-icons/ri"
+import { RiCheckLine, RiPinterestLine, RiTwitterLine } from "react-icons/ri"
 import { DiscoveredPostsQuery } from "@/lib/__generated__/graphql"
 import {
   Box,
@@ -18,10 +18,11 @@ export type ProviderIconProps = {
   providerType: string
 }
 
-function decideProvider(
+export function decideProvider(
   providerType: string
 ): { component?: React.ReactElement; label: string } {
   switch (providerType) {
+    case "weverse.artist_feed":
     case "WeverseArtistFeed":
       return {
         component: (
@@ -29,10 +30,21 @@ function decideProvider(
         ),
         label: "Weverse",
       }
+    case "twitter.feed":
     case "TwitterFeed":
       return { component: <RiTwitterLine size={24} />, label: "Twitter" }
     default:
-      return { label: "Unknown" }
+      return { label: "Unknown", component: <Text>?</Text> }
+    case "united_cube.artist_feed":
+      return {
+        component: <Image src="/provider-icons/united-cube.png" />,
+        label: "UCube",
+      }
+    case "pinterest.board_feed":
+      return {
+        component: <RiPinterestLine size={24} />,
+        label: "Pinterest",
+      }
   }
 }
 
@@ -47,7 +59,8 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       autoFlow="row"
       p={8}
       gap={5}
-      background="bgSecondary"
+      background="rgba(0, 0, 0, 0.1)"
+      backdropFilter="blur(7px)"
       borderRadius="md"
       borderColor="borderSubtle"
       borderWidth="1px"
@@ -124,7 +137,7 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       </HStack>
       <Flex>
         <Text textStyle="text-sm" color="text.500" fontWeight="medium">
-          <Box as="b">Hint:</Box> This account normally posts about{" "}
+          <Box as="b">Note:</Box> This account normally posts about{" "}
           <Box as="span" fontWeight="bold" color="text.100">
             Dreamcatcher
           </Box>

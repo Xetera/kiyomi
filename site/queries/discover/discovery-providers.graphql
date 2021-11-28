@@ -1,0 +1,9 @@
+query DiscoveryProviders {
+    discoveryProviders {
+        destination
+        name
+        waitDays
+        url
+        provider
+    }
+}

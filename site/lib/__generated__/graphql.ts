@@ -363,6 +363,17 @@ export type DiscoveredPostWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
 };
 
+/** The list of providers that supply images for the discover feed */
+export type DiscoveryProvider = {
+  __typename?: 'DiscoveryProvider';
+  destination: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  provider: Scalars['String'];
+  url: Scalars['String'];
+  /** The number of days remaining until this provider is checked for updates again */
+  waitDays: Scalars['Int'];
+};
+
 export type EnumFaceSourceFilter = {
   equals?: Maybe<FaceSource>;
   in?: Maybe<Array<FaceSource>>;
@@ -1082,6 +1093,7 @@ export type Query = {
   countAppearances: Array<AppearanceCount>;
   discoveredImages: Array<DiscoveredImage>;
   discoveredPosts: Array<DiscoveredPost>;
+  discoveryProviders: Array<DiscoveryProvider>;
   group?: Maybe<Group>;
   groups: Array<Group>;
   homepage: Array<Person>;
@@ -1463,6 +1475,17 @@ export type ConnectionGraphQuery = (
       { __typename?: 'Image' }
       & Pick<Image, 'slug' | 'id' | 'rawUrl'>
     )> }
+  )> }
+);
+
+export type DiscoveryProvidersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveryProvidersQuery = (
+  { __typename?: 'Query' }
+  & { discoveryProviders: Array<(
+    { __typename?: 'DiscoveryProvider' }
+    & Pick<DiscoveryProvider, 'destination' | 'name' | 'waitDays' | 'url' | 'provider'>
   )> }
 );
 
@@ -1920,6 +1943,29 @@ export const useConnectionGraphQuery = <
     useQuery<ConnectionGraphQuery, TError, TData>(
       ['connectionGraph', variables],
       fetcher<ConnectionGraphQuery, ConnectionGraphQueryVariables>(ConnectionGraphDocument, variables),
+      options
+    );
+export const DiscoveryProvidersDocument = `
+    query DiscoveryProviders {
+  discoveryProviders {
+    destination
+    name
+    waitDays
+    url
+    provider
+  }
+}
+    `;
+export const useDiscoveryProvidersQuery = <
+      TData = DiscoveryProvidersQuery,
+      TError = unknown
+    >(
+      variables?: DiscoveryProvidersQueryVariables, 
+      options?: UseQueryOptions<DiscoveryProvidersQuery, TError, TData>
+    ) => 
+    useQuery<DiscoveryProvidersQuery, TError, TData>(
+      ['DiscoveryProviders', variables],
+      fetcher<DiscoveryProvidersQuery, DiscoveryProvidersQueryVariables>(DiscoveryProvidersDocument, variables),
       options
     );
 export const DiscoveredPostsDocument = `

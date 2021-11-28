@@ -42,5 +42,6 @@ export async function contextResolver(
     session,
     uploadType: "WEBSITE",
     prisma,
+    ...services,
   }
 }
