@@ -152,6 +152,7 @@ export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
           >
             {image.duplicateImage && (
               <Button
+                colorScheme="blue"
                 w="full"
                 borderRadius="4"
                 flex="100%"
@@ -161,20 +162,23 @@ export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
               </Button>
             )}
             <Button
-              colorScheme="blue"
               w="full"
               borderRadius="4"
+              bg="inherit"
+              borderColor="borderSubtle"
+              borderWidth="1px"
               flex={image.duplicateImage ? "20%" : "100%"}
+              leftIcon={!image.duplicateImage ? <RiCheckLine /> : undefined}
             >
-              <RiCheckLine />
+              {!image.duplicateImage ? "Approve" : <RiCheckLine />}
             </Button>
             <Button
-              colorScheme="red"
               w="full"
               borderRadius="4"
               flex={image.duplicateImage ? "20%" : "100%"}
+              leftIcon={!image.duplicateImage ? <RiDeleteBinLine /> : undefined}
             >
-              <RiDeleteBinLine />
+              {!image.duplicateImage ? "Decline" : <RiDeleteBinLine />}
             </Button>
           </ButtonGroup>
         </VStack>

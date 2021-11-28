@@ -133,9 +133,10 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       <HStack justify="flex-start">
         <ButtonGroup>
           <Button
-            colorScheme="blue"
             borderWidth="1px"
+            bg="inherit"
             borderRadius="4"
+            borderColor="borderSubtle"
             leftIcon={<RiCheckLine />}
           >
             <Text fontWeight="medium">Approve All</Text>

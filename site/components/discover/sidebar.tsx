@@ -17,6 +17,10 @@ import { decideProvider } from "@/components/discover/discovered-post"
 import groupBy from "lodash/groupBy"
 import { RiLink } from "react-icons/ri"
 
+function isGraphQlError(error: any): error is { message: string } {
+  return error && "message" in error
+}
+
 export default function DiscoverSidebar() {
   const { data, isFetching, error, isLoading } = useDiscoveryProvidersQuery()
   console.log({ error })
@@ -24,7 +28,7 @@ export default function DiscoverSidebar() {
   return (
     <VStack align="flex-start" spacing={8}>
       {isLoading && <Spinner />}
-      {error && (
+      {isGraphQlError(error) && (
         <>
           <Text color="pink.300" fontWeight="regular">
             There was an error getting a response from the JiU server
