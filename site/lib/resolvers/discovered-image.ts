@@ -9,6 +9,7 @@ export const DiscoveredImage = objectType({
       .votes()
       .referenceUrl()
       .uniqueIdentifier()
+      .duplicateImage()
       .verdict()
       .url()
       .image({ alias: "approvedImage" })

@@ -93,7 +93,7 @@ export function Navbar() {
       >
         <HStack spacing={3} py={3}>
           <NavLink href="/">Home</NavLink>
-          {/* <NavLink href="/games">Games</NavLink> */}
+          <NavLink href="/discover">Discover</NavLink>
           <NavLink href="/api/graphql" hardLink>
             API
           </NavLink>

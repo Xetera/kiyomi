@@ -156,6 +156,213 @@ export type DateTimeNullableFilter = {
   notIn?: Maybe<Array<Scalars['DateTime']>>;
 };
 
+export type DiscoveredImage = {
+  __typename?: 'DiscoveredImage';
+  approvedImage?: Maybe<Image>;
+  createdAt: Scalars['DateTime'];
+  duplicateImage?: Maybe<Image>;
+  id: Scalars['Int'];
+  providerType: Scalars['String'];
+  referenceUrl?: Maybe<Scalars['String']>;
+  uniqueIdentifier: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+  url: Scalars['String'];
+  verdict: Array<DiscoveredImageVerdict>;
+  votes: Array<DiscoveredImageVote>;
+};
+
+
+export type DiscoveredImageVerdictArgs = {
+  cursor?: Maybe<DiscoveredImageVerdictWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
+export type DiscoveredImageVotesArgs = {
+  cursor?: Maybe<DiscoveredImageVoteWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+export type DiscoveredImageListRelationFilter = {
+  every?: Maybe<DiscoveredImageWhereInput>;
+  none?: Maybe<DiscoveredImageWhereInput>;
+  some?: Maybe<DiscoveredImageWhereInput>;
+};
+
+export type DiscoveredImageOrderByInput = {
+  createdAt?: Maybe<SortOrder>;
+  duplicateImageId?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  imageId?: Maybe<SortOrder>;
+  mediaType?: Maybe<SortOrder>;
+  postId?: Maybe<SortOrder>;
+  providerType?: Maybe<SortOrder>;
+  referenceUrl?: Maybe<SortOrder>;
+  uniqueIdentifier?: Maybe<SortOrder>;
+  updatedAt?: Maybe<SortOrder>;
+  url?: Maybe<SortOrder>;
+};
+
+export type DiscoveredImageVerdict = {
+  __typename?: 'DiscoveredImageVerdict';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Int'];
+  reason?: Maybe<Scalars['String']>;
+  verdict: Scalars['String'];
+};
+
+export type DiscoveredImageVerdictListRelationFilter = {
+  every?: Maybe<DiscoveredImageVerdictWhereInput>;
+  none?: Maybe<DiscoveredImageVerdictWhereInput>;
+  some?: Maybe<DiscoveredImageVerdictWhereInput>;
+};
+
+export type DiscoveredImageVerdictWhereInput = {
+  AND?: Maybe<Array<DiscoveredImageVerdictWhereInput>>;
+  NOT?: Maybe<Array<DiscoveredImageVerdictWhereInput>>;
+  OR?: Maybe<Array<DiscoveredImageVerdictWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  discoveredImage?: Maybe<DiscoveredImageWhereInput>;
+  discoveredImageId?: Maybe<IntFilter>;
+  id?: Maybe<IntFilter>;
+  reason?: Maybe<StringNullableFilter>;
+  verdict?: Maybe<StringFilter>;
+};
+
+export type DiscoveredImageVerdictWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type DiscoveredImageVote = {
+  __typename?: 'DiscoveredImageVote';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Int'];
+  reason?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['DateTime'];
+  user: User;
+  verdict: Scalars['String'];
+};
+
+export type DiscoveredImageVoteListRelationFilter = {
+  every?: Maybe<DiscoveredImageVoteWhereInput>;
+  none?: Maybe<DiscoveredImageVoteWhereInput>;
+  some?: Maybe<DiscoveredImageVoteWhereInput>;
+};
+
+export type DiscoveredImageVoteWhereInput = {
+  AND?: Maybe<Array<DiscoveredImageVoteWhereInput>>;
+  NOT?: Maybe<Array<DiscoveredImageVoteWhereInput>>;
+  OR?: Maybe<Array<DiscoveredImageVoteWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  discoveredImage?: Maybe<DiscoveredImageWhereInput>;
+  discoveredImageId?: Maybe<IntFilter>;
+  id?: Maybe<IntFilter>;
+  reason?: Maybe<StringNullableFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  user?: Maybe<UserWhereInput>;
+  userId?: Maybe<IntFilter>;
+  verdict?: Maybe<StringFilter>;
+};
+
+export type DiscoveredImageVoteWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type DiscoveredImageWhereInput = {
+  AND?: Maybe<Array<DiscoveredImageWhereInput>>;
+  NOT?: Maybe<Array<DiscoveredImageWhereInput>>;
+  OR?: Maybe<Array<DiscoveredImageWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  duplicateImage?: Maybe<ImageWhereInput>;
+  duplicateImageId?: Maybe<IntNullableFilter>;
+  id?: Maybe<IntFilter>;
+  image?: Maybe<ImageWhereInput>;
+  imageId?: Maybe<IntNullableFilter>;
+  mediaType?: Maybe<StringFilter>;
+  post?: Maybe<DiscoveredPostWhereInput>;
+  postId?: Maybe<IntNullableFilter>;
+  providerType?: Maybe<StringFilter>;
+  referenceUrl?: Maybe<StringNullableFilter>;
+  uniqueIdentifier?: Maybe<StringFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  url?: Maybe<StringFilter>;
+  verdict?: Maybe<DiscoveredImageVerdictListRelationFilter>;
+  votes?: Maybe<DiscoveredImageVoteListRelationFilter>;
+};
+
+export type DiscoveredImageWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+  imageId?: Maybe<Scalars['Int']>;
+};
+
+export type DiscoveredPost = {
+  __typename?: 'DiscoveredPost';
+  accountAvatarUrl?: Maybe<Scalars['String']>;
+  accountName: Scalars['String'];
+  body?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Int'];
+  images: Array<DiscoveredImage>;
+  originalPostDate?: Maybe<Scalars['DateTime']>;
+  postUrl?: Maybe<Scalars['String']>;
+  providerType: Scalars['String'];
+  uniqueIdentifier: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+};
+
+
+export type DiscoveredPostImagesArgs = {
+  cursor?: Maybe<DiscoveredImageWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+export type DiscoveredPostDiscoveredProviderCompoundUniqueInput = {
+  providerType: Scalars['String'];
+  uniqueIdentifier: Scalars['String'];
+};
+
+export type DiscoveredPostOrderByInput = {
+  accountAvatarUrl?: Maybe<SortOrder>;
+  accountName?: Maybe<SortOrder>;
+  body?: Maybe<SortOrder>;
+  createdAt?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  originalPostDate?: Maybe<SortOrder>;
+  postUrl?: Maybe<SortOrder>;
+  providerType?: Maybe<SortOrder>;
+  referencingGroups?: Maybe<SortOrder>;
+  referencingPeople?: Maybe<SortOrder>;
+  uniqueIdentifier?: Maybe<SortOrder>;
+  updatedAt?: Maybe<SortOrder>;
+};
+
+export type DiscoveredPostWhereInput = {
+  AND?: Maybe<Array<DiscoveredPostWhereInput>>;
+  NOT?: Maybe<Array<DiscoveredPostWhereInput>>;
+  OR?: Maybe<Array<DiscoveredPostWhereInput>>;
+  accountAvatarUrl?: Maybe<StringNullableFilter>;
+  accountName?: Maybe<StringFilter>;
+  body?: Maybe<StringNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  discoveredImages?: Maybe<DiscoveredImageListRelationFilter>;
+  id?: Maybe<IntFilter>;
+  originalPostDate?: Maybe<DateTimeNullableFilter>;
+  postUrl?: Maybe<StringNullableFilter>;
+  providerType?: Maybe<StringFilter>;
+  referencingGroups?: Maybe<IntNullableListFilter>;
+  referencingPeople?: Maybe<IntNullableListFilter>;
+  uniqueIdentifier?: Maybe<StringFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type DiscoveredPostWhereUniqueInput = {
+  discoveredProvider?: Maybe<DiscoveredPostDiscoveredProviderCompoundUniqueInput>;
+  id?: Maybe<Scalars['Int']>;
+};
+
 export type EnumFaceSourceFilter = {
   equals?: Maybe<FaceSource>;
   in?: Maybe<Array<FaceSource>>;
@@ -546,6 +753,7 @@ export type ImageWhereInput = {
   bytes?: Maybe<IntFilter>;
   caption?: Maybe<StringNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
+  discoverySource?: Maybe<DiscoveredImageWhereInput>;
   faceScanDate?: Maybe<DateTimeNullableFilter>;
   faceScanRequestDate?: Maybe<DateTimeNullableFilter>;
   faces?: Maybe<FaceListRelationFilter>;
@@ -563,6 +771,7 @@ export type ImageWhereInput = {
   palette?: Maybe<IntNullableListFilter>;
   personAvatarOf?: Maybe<PersonWhereInput>;
   personBannerOf?: Maybe<PersonWhereInput>;
+  potentialDuplicates?: Maybe<DiscoveredImageListRelationFilter>;
   public?: Maybe<BoolFilter>;
   slug?: Maybe<StringFilter>;
   source?: Maybe<StringNullableFilter>;
@@ -871,6 +1080,8 @@ export type PersonWhereUniqueInput = {
 export type Query = {
   __typename?: 'Query';
   countAppearances: Array<AppearanceCount>;
+  discoveredImages: Array<DiscoveredImage>;
+  discoveredPosts: Array<DiscoveredPost>;
   group?: Maybe<Group>;
   groups: Array<Group>;
   homepage: Array<Person>;
@@ -887,6 +1098,24 @@ export type Query = {
 
 export type QueryCountAppearancesArgs = {
   groups: Array<Scalars['Int']>;
+};
+
+
+export type QueryDiscoveredImagesArgs = {
+  cursor?: Maybe<DiscoveredImageWhereUniqueInput>;
+  orderBy?: Maybe<Array<DiscoveredImageOrderByInput>>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+  where?: Maybe<DiscoveredImageWhereInput>;
+};
+
+
+export type QueryDiscoveredPostsArgs = {
+  cursor?: Maybe<DiscoveredPostWhereUniqueInput>;
+  orderBy?: Maybe<Array<DiscoveredPostOrderByInput>>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+  where?: Maybe<DiscoveredPostWhereInput>;
 };
 
 
@@ -1066,6 +1295,7 @@ export type Thumbnail = {
 };
 
 export enum UploadType {
+  AutoDiscovery = 'AUTO_DISCOVERY',
   Token = 'TOKEN',
   Website = 'WEBSITE'
 }
@@ -1098,6 +1328,7 @@ export type UserRolesArgs = {
 
 export type UserWhereInput = {
   AND?: Maybe<Array<UserWhereInput>>;
+  DiscoveredImageVote?: Maybe<DiscoveredImageVoteListRelationFilter>;
   NOT?: Maybe<Array<UserWhereInput>>;
   OR?: Maybe<Array<UserWhereInput>>;
   avatar?: Maybe<ImageWhereInput>;
@@ -1231,6 +1462,25 @@ export type ConnectionGraphQuery = (
     )>, images: Array<(
       { __typename?: 'Image' }
       & Pick<Image, 'slug' | 'id' | 'rawUrl'>
+    )> }
+  )> }
+);
+
+export type DiscoveredPostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveredPostsQuery = (
+  { __typename?: 'Query' }
+  & { discoveredPosts: Array<(
+    { __typename?: 'DiscoveredPost' }
+    & Pick<DiscoveredPost, 'providerType' | 'uniqueIdentifier' | 'body' | 'accountName' | 'accountAvatarUrl' | 'postUrl' | 'createdAt' | 'originalPostDate'>
+    & { images: Array<(
+      { __typename?: 'DiscoveredImage' }
+      & Pick<DiscoveredImage, 'url' | 'id'>
+      & { duplicateImage?: Maybe<(
+        { __typename?: 'Image' }
+        & Pick<Image, 'url' | 'rawUrl'>
+      )> }
     )> }
   )> }
 );
@@ -1670,6 +1920,40 @@ export const useConnectionGraphQuery = <
     useQuery<ConnectionGraphQuery, TError, TData>(
       ['connectionGraph', variables],
       fetcher<ConnectionGraphQuery, ConnectionGraphQueryVariables>(ConnectionGraphDocument, variables),
+      options
+    );
+export const DiscoveredPostsDocument = `
+    query DiscoveredPosts {
+  discoveredPosts {
+    providerType
+    uniqueIdentifier
+    body
+    accountName
+    accountAvatarUrl
+    postUrl
+    createdAt
+    originalPostDate
+    images {
+      url
+      id
+      duplicateImage {
+        url
+        rawUrl
+      }
+    }
+  }
+}
+    `;
+export const useDiscoveredPostsQuery = <
+      TData = DiscoveredPostsQuery,
+      TError = unknown
+    >(
+      variables?: DiscoveredPostsQueryVariables, 
+      options?: UseQueryOptions<DiscoveredPostsQuery, TError, TData>
+    ) => 
+    useQuery<DiscoveredPostsQuery, TError, TData>(
+      ['DiscoveredPosts', variables],
+      fetcher<DiscoveredPostsQuery, DiscoveredPostsQueryVariables>(DiscoveredPostsDocument, variables),
       options
     );
 export const HomepagePersonDocument = `

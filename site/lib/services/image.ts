@@ -1,4 +1,4 @@
-import { Image as ImageType } from "@prisma/client"
+import type { Image as ImageType } from "@prisma/client"
 
 export function rawUrl(image: ImageType) {
   const baseCdnUrl = process.env.NEXT_PUBLIC_BASE_URL_CDN
@@ -9,7 +9,4 @@ export function imageUrl(image: { slug: string }) {
   return `${process.env.NEXT_PUBLIC_BASE_URL}/image/${image.slug}`
 }
 
-
-export function upload() {
-
-}
+export function upload() {}

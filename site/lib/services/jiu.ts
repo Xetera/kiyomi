@@ -77,9 +77,13 @@ export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
                 const t = hashes[i]
                 // we don't care if the request failed or the hash couldn't be computed
                 if (t) {
-                  if (t.status === "fulfilled") {
+                  if (
+                    t.status === "fulfilled" &&
+                    t.value &&
+                    t.value.distance <= 5
+                  ) {
                     duplicateImageId = t.value?.id
-                  } else {
+                  } else if (t.status === "rejected") {
                     console.error(
                       `Could not get hash value for ${image.mediaUrl}`
                     )

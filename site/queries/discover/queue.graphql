@@ -1,0 +1,20 @@
+query DiscoveredPosts {
+    discoveredPosts {
+        providerType
+        uniqueIdentifier
+        body
+        accountName
+        accountAvatarUrl
+        postUrl
+        createdAt
+        originalPostDate
+        images {
+            url
+            id
+            duplicateImage {
+                url
+                rawUrl
+            }
+        }
+    }
+}

@@ -33,6 +33,14 @@ const theme = extendTheme({
   },
   breakpoints,
   colors: {
+    blue: {
+      100: "white",
+      200: "#6a75a9",
+      300: "#576399",
+      400: "#cdcdcd",
+      500: "#b7b7b7",
+      600: "#a5a5a5",
+    },
     text: {
       100: "white",
       200: "#eeeeee",
@@ -98,7 +106,14 @@ const theme = extendTheme({
       fontSize: ["12px", "14px"],
       fontWeight: "semibold",
     },
+    "text-sm": {
+      fontSize: ["11px", "12px"],
+    },
+    text: {
+      fontSize: ["12px", "14px"],
+    },
   },
+
   layerStyles: {
     base: {
       bg: "bgPrimary",
