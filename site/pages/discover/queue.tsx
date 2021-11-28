@@ -11,8 +11,10 @@ export default function QueuePage() {
 
   const discover = (
     <Grid
-      templateColumns={["1fr", null, "1fr 2fr"]}
-      autoFlow={["row", "column"]}
+      as="main"
+      templateColumns={["1fr", null, null, "1fr 2fr"]}
+      templateRows={"auto"}
+      autoFlow={["row", null, null, "column"]}
       gap={6}
     >
       <DiscoverSidebar />

@@ -115,9 +115,9 @@ export type DiscoveredImageGridProps = {
 
 function calculateGridColumns(count: number) {
   if (count > 1) {
-    return "1fr 1fr"
+    return ["1fr", null, "1fr 1fr"]
   } else {
-    return "1fr"
+    return ["1fr"]
   }
 }
 

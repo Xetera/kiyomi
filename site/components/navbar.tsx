@@ -1,11 +1,27 @@
 import { UserDataFragment } from "@/lib/__generated__/graphql"
 import { signOut, useSession } from "next-auth/client"
 import NextLink from "next/link"
-import React, { PropsWithChildren } from "react"
-import BetterLink from "./nextjs/link"
+import React, { PropsWithChildren, useRef } from "react"
 import { Box } from "@chakra-ui/layout"
-import { Flex, forwardRef, HStack, Text, Link } from "@chakra-ui/react"
+import {
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Flex,
+  forwardRef,
+  HStack,
+  Link,
+  Text,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react"
 import { useRouter } from "next/router"
+import { RiStackLine } from "react-icons/ri"
 
 type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
@@ -39,40 +55,56 @@ const NavbarClickable = forwardRef(({ children, active, ...props }, ref) => {
   )
 })
 
-function NavLink({
-  children,
-  href,
-  as = undefined,
-  hardLink,
-  ...rest
-}: PropsWithChildren<NavLinkProps>) {
-  const router = useRouter()
+const NavLink = forwardRef(
+  (
+    {
+      children,
+      href,
+      as = undefined,
+      hardLink,
+      ...rest
+    }: PropsWithChildren<NavLinkProps>,
+    ref
+  ) => {
+    const router = useRouter()
 
-  const isSelected = router.pathname === href
+    const isSelected = router.pathname === href
 
-  const aProps: AType = {
-    ...rest,
+    const aProps: AType = {
+      ...rest,
+    }
+
+    const component = (
+      <NavbarClickable active={isSelected}>{children}</NavbarClickable>
+    )
+    if (hardLink) {
+      return (
+        <Link
+          _hover={{ textDecoration: "none" }}
+          href={href}
+          {...rest}
+          ref={ref}
+        >
+          {component}
+        </Link>
+      )
+    }
+    const data = (
+      <NextLink href={href} {...aProps} passHref>
+        <Link _hover={{ textDecoration: "none" }} {...rest} ref={ref}>
+          {component}
+        </Link>
+      </NextLink>
+    )
+
+    if (hardLink) return data
+    return (
+      <NextLink href={href} as={as}>
+        {data}
+      </NextLink>
+    )
   }
-
-  const component = (
-    <NavbarClickable active={isSelected}>{children}</NavbarClickable>
-  )
-  if (hardLink) {
-    return <a href={href}>{component}</a>
-  }
-  const data = (
-    <NextLink href={href} {...aProps} passHref>
-      <Link _hover={{ textDecoration: "none" }}>{component}</Link>
-    </NextLink>
-  )
-
-  if (hardLink) return data
-  return (
-    <NextLink href={href} as={as}>
-      {data}
-    </NextLink>
-  )
-}
+)
 
 export type NavbarProps = {
   user?: UserDataFragment
@@ -80,6 +112,8 @@ export type NavbarProps = {
 
 export function Navbar() {
   const [session] = useSession()
+  const { isOpen, onClose, onOpen } = useDisclosure()
+  const btnRef = useRef(null)
 
   function logout() {
     signOut().then(console.log)
@@ -99,21 +133,37 @@ export function Navbar() {
         maxW="7xl"
         items="center"
         px={4}
+        py={3}
         mx="auto"
         flex={1}
       >
-        <HStack spacing={3} py={3}>
-          <NavLink href="/">Home</NavLink>
-          <NavLink href="/discover">Discover</NavLink>
-          <NavLink href="/api/graphql" hardLink>
-            API
-          </NavLink>
-        </HStack>
-        <HStack spacing={3}>
+        <Box>
+          <HStack spacing={3} display={["none", null, "flex"]}>
+            <NavLink href="/">Home</NavLink>
+            <NavLink href="/discover">Discover</NavLink>
+            <NavLink href="/api/graphql" hardLink>
+              API
+            </NavLink>
+          </HStack>
+        </Box>
+        <Flex display={["flex", null, "none"]}>
+          <Button onClick={onOpen}>
+            <RiStackLine />
+          </Button>
+        </Flex>
+        <HStack spacing={3} display={["none", null, "flex"]}>
           {session?.user ? (
             <>
               <NavLink href="/profile">
-                <Text>{session.user.name}</Text>
+                <Text
+                  maxW="25ch"
+                  whiteSpace="nowrap"
+                  w="full"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {session.user.name}
+                </Text>
               </NavLink>
               <NavbarClickable onClick={logout}>
                 <Text>Logout</Text>
@@ -126,6 +176,63 @@ export function Navbar() {
           )}
         </HStack>
       </Flex>
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent bg="bgPrimary">
+          <DrawerCloseButton />
+          <DrawerHeader></DrawerHeader>
+
+          <DrawerBody>
+            <VStack spacing={8}>
+              <VStack spacing={4} w="full" align="flex-start">
+                <NavLink href="/" w="full">
+                  Home
+                </NavLink>
+                <NavLink href="/discover" w="full">
+                  Discover
+                </NavLink>
+                <NavLink href="/api/graphql" w="full" hardLink>
+                  API
+                </NavLink>
+              </VStack>
+            </VStack>
+          </DrawerBody>
+
+          <DrawerFooter>
+            <VStack spacing={4} w="full" align="flex-start">
+              {session?.user ? (
+                <>
+                  <NavLink href="/profile" w="full">
+                    <Text
+                      maxW="25ch"
+                      whiteSpace="nowrap"
+                      w="full"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                    >
+                      {session.user.name}
+                    </Text>
+                  </NavLink>
+                  <NavbarClickable onClick={logout} w="full">
+                    <Text>Logout</Text>
+                  </NavbarClickable>
+                </>
+              ) : (
+                <></>
+              )}
+            </VStack>
+            {/*<Button variant="outline" mr={3} onClick={onClose}>*/}
+            {/*  Cancel*/}
+            {/*</Button>*/}
+            {/*<Button colorScheme="blue">Save</Button>*/}
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </HStack>
   )
 }

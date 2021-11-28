@@ -8,6 +8,7 @@ import {
   HStack,
   Image,
   Link,
+  Stack,
   VStack,
 } from "@chakra-ui/react"
 import { Flex, Text } from "@chakra-ui/layout"
@@ -66,7 +67,13 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       borderWidth="1px"
       zIndex={1}
     >
-      <Flex justify="space-between" w="full" flex={1}>
+      <Flex
+        justify="space-between"
+        direction={["column", null, "row"]}
+        w="full"
+        sx={{ gap: 4 }}
+        flex={1}
+      >
         <HStack spacing={3}>
           <HStack align="center" spacing={3}>
             <Flex
@@ -94,7 +101,7 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
             </VStack>
           </HStack>
         </HStack>
-        <HStack align="center" spacing={1}>
+        <HStack align="center" spacing={1} justify="flex-end">
           <VStack spacing={0} align="flex-start" textAlign="right">
             <Text
               fontSize="sm"
