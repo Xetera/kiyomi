@@ -7,8 +7,10 @@ export type Services = {
   phash: PerceptualHashService
 }
 
+let errored = false
+
 export async function getServices(): Promise<Services> {
-  if (global.servicesPromise) {
+  if (global.servicesPromise && !errored) {
     return global.servicesPromise
   }
   // terrible disgusting next.js hack to make sure that we only
@@ -23,6 +25,16 @@ export async function getServices(): Promise<Services> {
       jiu,
     }
   }
-  global.servicesPromise = getter()
+
+  global.servicesPromise = getter().then(
+    (result) => {
+      errored = false
+      return result
+    },
+    (err) => {
+      errored = true
+      throw err
+    }
+  )
   return global.servicesPromise
 }

@@ -17,7 +17,7 @@ export async function contextResolver(
   const { req, res } = ctx
   const auth = req.headers.authorization
   const amqp = await amqpPromise.catch(() => undefined)
-  const services = await getServices()
+  const services = await getServices().catch(() => ({}))
 
   if (auth) {
     const user = (await getUserFromToken(auth, prisma)) ?? undefined
