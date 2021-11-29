@@ -3,6 +3,7 @@ import { Context } from "@/lib/context-type"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 import { PrismaError } from "prisma-error-enum"
 import { GraphQLError } from "graphql"
+import { GraphqlAuth } from "@/lib/auth"
 
 export const DiscoveredImage = objectType({
   name: "DiscoveredImage",
@@ -56,9 +57,7 @@ export const Mutation = mutationField((t) => {
       verdict: nonNull("String"),
       reason: "String",
     },
-    async authorize(_, __, { user }: Context) {
-      return Boolean(user)
-    },
+    authorize: GraphqlAuth.isLoggedIn,
     async resolve(root, args, { user, discovery }) {
       try {
         return await discovery.voteImage({

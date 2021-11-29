@@ -1,5 +1,6 @@
 import { PrismaClient, User } from "@prisma/client"
 import { randomBytes } from "crypto"
+import { Context } from "@/lib/context-type"
 
 const TOKEN_PREFIX = "SIMP_"
 
@@ -16,4 +17,10 @@ export function getUserFromToken(
     throw new Error("malformed token")
   }
   return db.user.findUnique({ where: { token } })
+}
+
+export const GraphqlAuth = {
+  isLoggedIn(_: any, __: any, { user }: Context) {
+    return Boolean(user)
+  },
 }
