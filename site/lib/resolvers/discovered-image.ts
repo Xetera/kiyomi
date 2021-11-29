@@ -3,7 +3,7 @@ import { Context } from "@/lib/context-type"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 import { PrismaError } from "prisma-error-enum"
 import { GraphQLError } from "graphql"
-import { GraphqlAuth } from "@/lib/auth"
+import { GraphqlAuth } from "../auth"
 
 export const DiscoveredImage = objectType({
   name: "DiscoveredImage",
