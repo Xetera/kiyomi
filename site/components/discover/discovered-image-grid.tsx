@@ -23,6 +23,11 @@ import {
 } from "react-icons/ri"
 import NextLink from "next/link"
 import { useState } from "react"
+import { Verdict } from "@/lib/shared"
+import {
+  Maybe,
+  useVoteDiscoveryImageMutation,
+} from "@/lib/__generated__/graphql"
 
 type Images = DiscoveredPostProps["post"]["images"]
 
@@ -129,7 +134,19 @@ function calculateGridRows(count: number) {
   }
 }
 
+function colorWhen(
+  v: Verdict,
+  color: string,
+  a?: Maybe<{ verdict?: Maybe<string> }>
+): string {
+  return a && a.verdict === v ? color : "inherit"
+}
+
 export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
+  const { mutateAsync } = useVoteDiscoveryImageMutation()
+  function vote(verdict: string, imageId: number, reason?: string) {
+    mutateAsync({ verdict, reason, imageId: imageId })
+  }
   const imageCount = images.length
   return (
     <Grid
@@ -152,10 +169,16 @@ export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
           >
             {image.duplicateImage && (
               <Button
-                colorScheme="blue"
                 w="full"
+                bg={colorWhen(Verdict.Merge, "green.600", image.vote)}
+                borderColor="lightTransparent"
+                borderWidth="1px"
                 borderRadius="4"
                 flex="100%"
+                onClick={() => vote(Verdict.Merge, image.id)}
+                _hover={{
+                  bg: "green.600",
+                }}
                 leftIcon={<RiAddBoxFill />}
               >
                 Merge
@@ -164,9 +187,13 @@ export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
             <Button
               w="full"
               borderRadius="4"
-              bg="inherit"
-              borderColor="borderSubtle"
+              bg={colorWhen(Verdict.Approve, "cyan.600", image.vote)}
+              borderColor="lightTransparent"
               borderWidth="1px"
+              onClick={() => vote(Verdict.Approve, image.id)}
+              _hover={{
+                bg: "cyan.600",
+              }}
               flex={image.duplicateImage ? "20%" : "100%"}
               leftIcon={!image.duplicateImage ? <RiCheckLine /> : undefined}
             >
@@ -175,6 +202,13 @@ export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
             <Button
               w="full"
               borderRadius="4"
+              bg={colorWhen(Verdict.Decline, "red.600", image.vote)}
+              borderColor="lightTransparent"
+              borderWidth="1px"
+              _hover={{
+                bg: "red.600",
+              }}
+              onClick={() => vote(Verdict.Decline, image.id)}
               flex={image.duplicateImage ? "20%" : "100%"}
               leftIcon={!image.duplicateImage ? <RiDeleteBinLine /> : undefined}
             >

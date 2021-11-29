@@ -168,6 +168,9 @@ export type DiscoveredImage = {
   updatedAt: Scalars['DateTime'];
   url: Scalars['String'];
   verdict: Array<DiscoveredImageVerdict>;
+  /** The vote cast by the currently logged in user */
+  vote?: Maybe<DiscoveredImageVote>;
+  /** Votes cast by all users */
   votes: Array<DiscoveredImageVote>;
 };
 
@@ -183,6 +186,7 @@ export type DiscoveredImageVotesArgs = {
   cursor?: Maybe<DiscoveredImageVoteWhereUniqueInput>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
+  where?: Maybe<DiscoveredImageVoteWhereInput>;
 };
 
 export type DiscoveredImageListRelationFilter = {
@@ -232,6 +236,7 @@ export type DiscoveredImageVerdictWhereInput = {
 };
 
 export type DiscoveredImageVerdictWhereUniqueInput = {
+  discoveredImageId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
 };
 
@@ -251,6 +256,11 @@ export type DiscoveredImageVoteListRelationFilter = {
   some?: Maybe<DiscoveredImageVoteWhereInput>;
 };
 
+export type DiscoveredImageVoteUserVoteCompoundUniqueInput = {
+  discoveredImageId: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
 export type DiscoveredImageVoteWhereInput = {
   AND?: Maybe<Array<DiscoveredImageVoteWhereInput>>;
   NOT?: Maybe<Array<DiscoveredImageVoteWhereInput>>;
@@ -268,6 +278,7 @@ export type DiscoveredImageVoteWhereInput = {
 
 export type DiscoveredImageVoteWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
+  userVote?: Maybe<DiscoveredImageVoteUserVoteCompoundUniqueInput>;
 };
 
 export type DiscoveredImageWhereInput = {
@@ -848,6 +859,9 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Add an appearance relation on an image. */
   addAppearance: Appearance;
+  discoveredImageVote: DiscoveredImageVote;
+  /** Vote using the same verdict on all images in a post, returns the number of votes created */
+  discoveredPostVote: Scalars['Int'];
   /** Attach an existing face to an apperance. */
   linkFace: Appearance;
   /** Removes an appearance from an image */
@@ -863,6 +877,20 @@ export type Mutation = {
 export type MutationAddAppearanceArgs = {
   imageId: Scalars['Int'];
   personId: Scalars['Int'];
+};
+
+
+export type MutationDiscoveredImageVoteArgs = {
+  imageId: Scalars['Int'];
+  reason?: Maybe<Scalars['String']>;
+  verdict: Scalars['String'];
+};
+
+
+export type MutationDiscoveredPostVoteArgs = {
+  postId: Scalars['Int'];
+  reason?: Maybe<Scalars['String']>;
+  verdict: Scalars['String'];
 };
 
 
@@ -1093,6 +1121,7 @@ export type Query = {
   countAppearances: Array<AppearanceCount>;
   discoveredImages: Array<DiscoveredImage>;
   discoveredPosts: Array<DiscoveredPost>;
+  discoveryFeed: Array<DiscoveredPost>;
   discoveryProviders: Array<DiscoveryProvider>;
   group?: Maybe<Group>;
   groups: Array<Group>;
@@ -1128,6 +1157,12 @@ export type QueryDiscoveredPostsArgs = {
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<DiscoveredPostWhereInput>;
+};
+
+
+export type QueryDiscoveryFeedArgs = {
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
 };
 
 
@@ -1204,11 +1239,6 @@ export type RoleListRelationFilter = {
   some?: Maybe<RoleWhereInput>;
 };
 
-export type RoleUserRoleCompoundUniqueInput = {
-  name: Scalars['String'];
-  userId: Scalars['Int'];
-};
-
 export type RoleWhereInput = {
   AND?: Maybe<Array<RoleWhereInput>>;
   NOT?: Maybe<Array<RoleWhereInput>>;
@@ -1219,11 +1249,6 @@ export type RoleWhereInput = {
   updatedAt?: Maybe<DateTimeFilter>;
   user?: Maybe<UserWhereInput>;
   userId?: Maybe<IntFilter>;
-};
-
-export type RoleWhereUniqueInput = {
-  id?: Maybe<Scalars['Int']>;
-  userRole?: Maybe<RoleUserRoleCompoundUniqueInput>;
 };
 
 export enum SortOrder {
@@ -1329,13 +1354,6 @@ export type UserImagesArgs = {
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
-};
-
-
-export type UserRolesArgs = {
-  cursor?: Maybe<RoleWhereUniqueInput>;
-  skip?: Maybe<Scalars['Int']>;
-  take?: Maybe<Scalars['Int']>;
 };
 
 export type UserWhereInput = {
@@ -1494,18 +1512,48 @@ export type DiscoveredPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DiscoveredPostsQuery = (
   { __typename?: 'Query' }
-  & { discoveredPosts: Array<(
+  & { discoveryFeed: Array<(
     { __typename?: 'DiscoveredPost' }
-    & Pick<DiscoveredPost, 'providerType' | 'uniqueIdentifier' | 'body' | 'accountName' | 'accountAvatarUrl' | 'postUrl' | 'createdAt' | 'originalPostDate'>
+    & Pick<DiscoveredPost, 'id' | 'providerType' | 'uniqueIdentifier' | 'body' | 'accountName' | 'accountAvatarUrl' | 'postUrl' | 'createdAt' | 'originalPostDate'>
     & { images: Array<(
       { __typename?: 'DiscoveredImage' }
       & Pick<DiscoveredImage, 'url' | 'id'>
-      & { duplicateImage?: Maybe<(
+      & { vote?: Maybe<(
+        { __typename?: 'DiscoveredImageVote' }
+        & Pick<DiscoveredImageVote, 'verdict'>
+      )>, duplicateImage?: Maybe<(
         { __typename?: 'Image' }
         & Pick<Image, 'url' | 'rawUrl'>
       )> }
     )> }
   )> }
+);
+
+export type VoteDiscoveryImageMutationVariables = Exact<{
+  imageId: Scalars['Int'];
+  verdict: Scalars['String'];
+  reason?: Maybe<Scalars['String']>;
+}>;
+
+
+export type VoteDiscoveryImageMutation = (
+  { __typename?: 'Mutation' }
+  & { discoveredImageVote: (
+    { __typename?: 'DiscoveredImageVote' }
+    & Pick<DiscoveredImageVote, 'id'>
+  ) }
+);
+
+export type VoteDiscoveryPostMutationVariables = Exact<{
+  postId: Scalars['Int'];
+  verdict: Scalars['String'];
+  reason?: Maybe<Scalars['String']>;
+}>;
+
+
+export type VoteDiscoveryPostMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'discoveredPostVote'>
 );
 
 export type FaceDataFragment = (
@@ -1970,7 +2018,8 @@ export const useDiscoveryProvidersQuery = <
     );
 export const DiscoveredPostsDocument = `
     query DiscoveredPosts {
-  discoveredPosts {
+  discoveryFeed {
+    id
     providerType
     uniqueIdentifier
     body
@@ -1982,6 +2031,9 @@ export const DiscoveredPostsDocument = `
     images {
       url
       id
+      vote {
+        verdict
+      }
       duplicateImage {
         url
         rawUrl
@@ -2000,6 +2052,34 @@ export const useDiscoveredPostsQuery = <
     useQuery<DiscoveredPostsQuery, TError, TData>(
       ['DiscoveredPosts', variables],
       fetcher<DiscoveredPostsQuery, DiscoveredPostsQueryVariables>(DiscoveredPostsDocument, variables),
+      options
+    );
+export const VoteDiscoveryImageDocument = `
+    mutation VoteDiscoveryImage($imageId: Int!, $verdict: String!, $reason: String) {
+  discoveredImageVote(imageId: $imageId, verdict: $verdict, reason: $reason) {
+    id
+  }
+}
+    `;
+export const useVoteDiscoveryImageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<VoteDiscoveryImageMutation, TError, VoteDiscoveryImageMutationVariables, TContext>) => 
+    useMutation<VoteDiscoveryImageMutation, TError, VoteDiscoveryImageMutationVariables, TContext>(
+      (variables?: VoteDiscoveryImageMutationVariables) => fetcher<VoteDiscoveryImageMutation, VoteDiscoveryImageMutationVariables>(VoteDiscoveryImageDocument, variables)(),
+      options
+    );
+export const VoteDiscoveryPostDocument = `
+    mutation VoteDiscoveryPost($postId: Int!, $verdict: String!, $reason: String) {
+  discoveredPostVote(postId: $postId, verdict: $verdict, reason: $reason)
+}
+    `;
+export const useVoteDiscoveryPostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<VoteDiscoveryPostMutation, TError, VoteDiscoveryPostMutationVariables, TContext>) => 
+    useMutation<VoteDiscoveryPostMutation, TError, VoteDiscoveryPostMutationVariables, TContext>(
+      (variables?: VoteDiscoveryPostMutationVariables) => fetcher<VoteDiscoveryPostMutation, VoteDiscoveryPostMutationVariables>(VoteDiscoveryPostDocument, variables)(),
       options
     );
 export const HomepagePersonDocument = `

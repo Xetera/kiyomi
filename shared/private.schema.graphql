@@ -524,7 +524,12 @@ type DiscoveredImage {
   updatedAt: DateTime!
   url: String!
   verdict(cursor: DiscoveredImageVerdictWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVerdict!]!
-  votes(cursor: DiscoveredImageVoteWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVote!]!
+
+  """The vote cast by the currently logged in user"""
+  vote: DiscoveredImageVote
+
+  """Votes cast by all users"""
+  votes(cursor: DiscoveredImageVoteWhereUniqueInput, skip: Int, take: Int, where: DiscoveredImageVoteWhereInput): [DiscoveredImageVote!]!
 }
 
 input DiscoveredImageCreateManyDuplicateImageInput {
@@ -877,6 +882,7 @@ input DiscoveredImageVerdictWhereInput {
 }
 
 input DiscoveredImageVerdictWhereUniqueInput {
+  discoveredImageId: Int
   id: Int
 }
 
@@ -1059,6 +1065,11 @@ input DiscoveredImageVoteUpsertWithWhereUniqueWithoutUserInput {
   where: DiscoveredImageVoteWhereUniqueInput!
 }
 
+input DiscoveredImageVoteUserVoteCompoundUniqueInput {
+  discoveredImageId: Int!
+  userId: Int!
+}
+
 input DiscoveredImageVoteWhereInput {
   AND: [DiscoveredImageVoteWhereInput!]
   NOT: [DiscoveredImageVoteWhereInput!]
@@ -1076,6 +1087,7 @@ input DiscoveredImageVoteWhereInput {
 
 input DiscoveredImageVoteWhereUniqueInput {
   id: Int
+  userVote: DiscoveredImageVoteUserVoteCompoundUniqueInput
 }
 
 input DiscoveredImageWhereInput {
@@ -3883,6 +3895,12 @@ type Mutation {
   """Add an appearance relation on an image."""
   addAppearance(imageId: Int!, personId: Int!): Appearance!
   createOnePerson(data: PersonCreateInput!): Person!
+  discoveredImageVote(imageId: Int!, reason: String, verdict: String!): DiscoveredImageVote!
+
+  """
+  Vote using the same verdict on all images in a post, returns the number of votes created
+  """
+  discoveredPostVote(postId: Int!, reason: String, verdict: String!): Int!
 
   """
   Add metadata labels to an existing image. Only available to bot accounts
@@ -4619,6 +4637,7 @@ type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
   discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
+  discoveryFeed(skip: Int, take: Int): [DiscoveredPost!]!
   discoveryProviders: [DiscoveryProvider!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
@@ -5018,7 +5037,7 @@ type User {
   id: Int!
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
-  roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
+  roles: [Role!]!
 }
 
 input UserCreateNestedOneWithoutAvatarInput {

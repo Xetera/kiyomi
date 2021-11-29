@@ -125,7 +125,12 @@ type DiscoveredImage {
   updatedAt: DateTime!
   url: String!
   verdict(cursor: DiscoveredImageVerdictWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVerdict!]!
-  votes(cursor: DiscoveredImageVoteWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVote!]!
+
+  """The vote cast by the currently logged in user"""
+  vote: DiscoveredImageVote
+
+  """Votes cast by all users"""
+  votes(cursor: DiscoveredImageVoteWhereUniqueInput, skip: Int, take: Int, where: DiscoveredImageVoteWhereInput): [DiscoveredImageVote!]!
 }
 
 input DiscoveredImageListRelationFilter {
@@ -174,6 +179,7 @@ input DiscoveredImageVerdictWhereInput {
 }
 
 input DiscoveredImageVerdictWhereUniqueInput {
+  discoveredImageId: Int
   id: Int
 }
 
@@ -190,6 +196,11 @@ input DiscoveredImageVoteListRelationFilter {
   every: DiscoveredImageVoteWhereInput
   none: DiscoveredImageVoteWhereInput
   some: DiscoveredImageVoteWhereInput
+}
+
+input DiscoveredImageVoteUserVoteCompoundUniqueInput {
+  discoveredImageId: Int!
+  userId: Int!
 }
 
 input DiscoveredImageVoteWhereInput {
@@ -209,6 +220,7 @@ input DiscoveredImageVoteWhereInput {
 
 input DiscoveredImageVoteWhereUniqueInput {
   id: Int
+  userVote: DiscoveredImageVoteUserVoteCompoundUniqueInput
 }
 
 input DiscoveredImageWhereInput {
@@ -760,6 +772,12 @@ enum MimeType {
 type Mutation {
   """Add an appearance relation on an image."""
   addAppearance(imageId: Int!, personId: Int!): Appearance!
+  discoveredImageVote(imageId: Int!, reason: String, verdict: String!): DiscoveredImageVote!
+
+  """
+  Vote using the same verdict on all images in a post, returns the number of votes created
+  """
+  discoveredPostVote(postId: Int!, reason: String, verdict: String!): Int!
 
   """Attach an existing face to an apperance."""
   linkFace(appearanceId: Int!, faceId: Int!): Appearance!
@@ -948,6 +966,7 @@ type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
   discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
+  discoveryFeed(skip: Int, take: Int): [DiscoveredPost!]!
   discoveryProviders: [DiscoveryProvider!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
@@ -983,11 +1002,6 @@ input RoleListRelationFilter {
   some: RoleWhereInput
 }
 
-input RoleUserRoleCompoundUniqueInput {
-  name: String!
-  userId: Int!
-}
-
 input RoleWhereInput {
   AND: [RoleWhereInput!]
   NOT: [RoleWhereInput!]
@@ -998,11 +1012,6 @@ input RoleWhereInput {
   updatedAt: DateTimeFilter
   user: UserWhereInput
   userId: IntFilter
-}
-
-input RoleWhereUniqueInput {
-  id: Int
-  userRole: RoleUserRoleCompoundUniqueInput
 }
 
 enum SortOrder {
@@ -1095,7 +1104,7 @@ type User {
   id: Int!
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
-  roles(cursor: RoleWhereUniqueInput, skip: Int, take: Int): [Role!]!
+  roles: [Role!]!
 }
 
 input UserWhereInput {

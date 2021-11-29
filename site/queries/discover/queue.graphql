@@ -1,5 +1,6 @@
 query DiscoveredPosts {
-    discoveredPosts {
+    discoveryFeed {
+        id
         providerType
         uniqueIdentifier
         body
@@ -11,6 +12,9 @@ query DiscoveredPosts {
         images {
             url
             id
+            vote {
+                verdict
+            }
             duplicateImage {
                 url
                 rawUrl

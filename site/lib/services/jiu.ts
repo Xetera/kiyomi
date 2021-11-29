@@ -4,7 +4,6 @@ import { JiuMessage, JiuMessageMetadata } from "./jiu-types"
 import { prisma } from "../db"
 import camelCaseKeys from "camelcase-keys"
 import { z } from "zod"
-import { inspect } from "util"
 
 type JiuMessageType = z.infer<typeof JiuMessage>
 
@@ -29,7 +28,7 @@ type JiuServiceOptions = {
 const DIRECT_QUEUE_NAME = "image_discovery"
 
 export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
-  console.log("Creating JiU")
+  console.log("Creating JiUs")
   const channel = await opts.amqp.createChannel()
   // we only want to fetch 1 message at a time as they're quite expensive to process
   await channel.prefetch(1)
@@ -37,7 +36,8 @@ export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
 
   const methods: JiuService = {
     async handleJiuMessage(message) {
-      for (const post of message.posts) {
+      // reversing because we want to process the most recently discovered post last
+      for (const post of message.posts.reverse()) {
         const hashes = await Promise.allSettled(
           post.images.map((image) => {
             return opts.phash.mostSimilarImage(image.mediaUrl)
@@ -73,7 +73,7 @@ export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
                   if (
                     t.status === "fulfilled" &&
                     t.value &&
-                    t.value.distance <= 5
+                    opts.phash.isNearPerfectMatch(t.value.distance)
                   ) {
                     duplicateImageId = t.value?.id
                   } else if (t.status === "rejected") {

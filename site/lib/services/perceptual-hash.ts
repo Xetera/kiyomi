@@ -7,7 +7,7 @@ export const getPerceptualHash = celeryClient.createTask(
 )
 
 export function makePerceptualHash(): PerceptualHashService {
-  const methods = {
+  const methods: PerceptualHashService = {
     hashStringToCube(hash) {
       return Uint8Array.from(hash.split(""), (val) => parseInt(String(val), 16))
     },
@@ -17,6 +17,9 @@ export function makePerceptualHash(): PerceptualHashService {
       const similar = await similarImagesQuery(cube)
       return similar[0]
     },
+    isNearPerfectMatch(distance) {
+      return distance <= 5
+    },
   }
   return methods
 }
@@ -24,4 +27,5 @@ export function makePerceptualHash(): PerceptualHashService {
 export type PerceptualHashService = {
   mostSimilarImage(url: string): Promise<SimilarImage | undefined>
   hashStringToCube(hash: string): Uint8Array
+  isNearPerfectMatch(distance: number): boolean
 }

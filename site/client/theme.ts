@@ -50,6 +50,7 @@ const theme = extendTheme({
       600: "#a5a5a5",
     },
     // ...colors,
+    lightTransparent: "rgba(60, 60, 60, 0.5)",
     bgPrimary: "hsla(222, 20%, 7%, 1)",
     bgSecondary: "#11131d",
     bgTertiary: "#161927",

@@ -46,19 +46,25 @@ query Idol($name: String!) {
 
 const apolloServer = new ApolloServer({
   introspection: true,
-  plugins: [ApolloServerPluginLandingPageGraphQLPlayground({
-    workspaceName: "Kiyomi API",
-    tabs: [{
-      name: "Jiu's Images",
-      endpoint: process.env.API_URL!,
-      query: query,
-      variables: JSON.stringify({ name: "Kim Min-ji" })
-    }],
-    settings: {
-      "editor.theme": "dark",
-      "general.betaUpdates": true
-    }
-  })],
+  plugins: [
+    ApolloServerPluginLandingPageGraphQLPlayground({
+      workspaceName: "Kiyomi API",
+      tabs: [
+        {
+          name: "Jiu's Images",
+          endpoint: process.env.API_URL!,
+          query: query,
+          variables: JSON.stringify({ name: "Kim Min-ji" }),
+        },
+      ],
+      settings: {
+        "editor.theme": "dark",
+        "general.betaUpdates": true,
+        "editor.reuseHeaders": true,
+        "request.credentials": "include",
+      },
+    }),
+  ],
   context: contextResolver,
   schema,
 })
@@ -72,15 +78,16 @@ export default async (req, res) => {
   })(req, res)
 }
 
-let apolloServerHandler: (req: IncomingMessage, res: ServerResponse) => Promise<void>
+let apolloServerHandler: (
+  req: IncomingMessage,
+  res: ServerResponse
+) => Promise<void>
 
 const getApolloServerHandler = async (server: ApolloServer) => {
   if (!apolloServerHandler) {
-    apolloServerHandler = server
-      .createHandler({
-        path: "/api/graphql",
-      })
+    apolloServerHandler = server.createHandler({
+      path: "/api/graphql",
+    })
   }
   return apolloServerHandler
 }
-

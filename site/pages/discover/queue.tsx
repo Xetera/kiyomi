@@ -19,7 +19,7 @@ export default function QueuePage() {
     >
       <DiscoverSidebar />
       <Grid zIndex={10} gap={4} autoFlow="row">
-        {data?.discoveredPosts.map((post) => (
+        {data?.discoveryFeed.map((post) => (
           <DiscoveredPost
             post={post}
             key={`${post.providerType}-${post.uniqueIdentifier}`}
@@ -32,7 +32,7 @@ export default function QueuePage() {
     <WithNavbar>
       <LargeBanner
         url="https://my.simp.pics/fKgpCdJxphzlsWqy.webp"
-        height={["14vh", "20vh", "35vh"]}
+        height={["14vh", "20vh", "20vh"]}
         objectPosition="50% 24%"
       />
       <VStack mx="auto" maxW="6xl" w="full">

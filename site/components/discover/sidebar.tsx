@@ -49,7 +49,7 @@ export default function DiscoverSidebar() {
                 const { component } = decideProvider(provider.provider)
                 return (
                   <HStack spacing={3} align="center">
-                    <Flex h="8" w="8" justify="center">
+                    <Flex h="8" w="8" justify="center" align="center">
                       {component}
                     </Flex>
                     <VStack align="flex-start" spacing={1}>
@@ -81,7 +81,7 @@ export default function DiscoverSidebar() {
               {Object.entries(groups).map(([name, providers]) => {
                 const { component, label } = decideProvider(name)
                 return providers.map((pr) => (
-                  <AccordionItem>
+                  <AccordionItem borderColor="rgba(60, 60, 60, 0.4)">
                     <AccordionButton>
                       <Flex justify="space-between" w="full">
                         <HStack spacing={3}>

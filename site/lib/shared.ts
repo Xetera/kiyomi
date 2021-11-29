@@ -38,3 +38,9 @@ export type BackendUser = User & {
   id: number
   createdAt: Date
 }
+
+export enum Verdict {
+  Approve = "approve",
+  Decline = "decline",
+  Merge = "merge",
+}

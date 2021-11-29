@@ -1,9 +1,11 @@
 import { JiuService, makeJiu } from "./jiu"
 import { makePerceptualHash, PerceptualHashService } from "./perceptual-hash"
 import { amqpPromise } from "../amqp"
+import { DiscoveryService, makeDiscovery } from "@/lib/services/discovery"
 
 export type Services = {
   jiu: JiuService
+  discovery: DiscoveryService
   phash: PerceptualHashService
 }
 
@@ -20,8 +22,10 @@ export async function getServices(): Promise<Services> {
     const amqp = await amqpPromise
     const phash = makePerceptualHash()
     const jiu = await makeJiu({ phash, amqp })
+    const discovery = makeDiscovery()
     return {
       phash,
+      discovery,
       jiu,
     }
   }

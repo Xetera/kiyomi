@@ -5577,6 +5577,11 @@ pretty-hrtime@^1.0.3:
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
 
+prisma-error-enum@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.npmjs.org/prisma-error-enum/-/prisma-error-enum-0.1.2.tgz#973f63f3ef1a1fe3d559d4ee876b85edb515801a"
+  integrity sha512-O70RgSy++Vojnlg9RIrmheoja7IRgtmka7fDJWmSOWst8EHRnc3pP07GujFOvnlF6f42gzZ65+Ny8ICjhU3TYg==
+
 prisma@2.30.0:
   version "2.30.0"
   resolved "https://registry.npmjs.org/prisma/-/prisma-2.30.0.tgz#5b12091c480d538540b898d364b73651d44b4a01"

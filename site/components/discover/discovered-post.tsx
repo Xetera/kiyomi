@@ -1,5 +1,8 @@
 import { RiCheckLine, RiPinterestLine, RiTwitterLine } from "react-icons/ri"
-import { DiscoveredPostsQuery } from "@/lib/__generated__/graphql"
+import {
+  DiscoveredPostsQuery,
+  useVoteDiscoveryPostMutation,
+} from "@/lib/__generated__/graphql"
 import {
   Box,
   Button,
@@ -50,18 +53,27 @@ export function decideProvider(
 }
 
 export type DiscoveredPostProps = {
-  post: DiscoveredPostsQuery["discoveredPosts"][number]
+  post: DiscoveredPostsQuery["discoveryFeed"][number]
 }
 
 export function DiscoveredPost({ post }: DiscoveredPostProps) {
   const { component, label } = decideProvider(post.providerType)
+  const { mutateAsync } = useVoteDiscoveryPostMutation()
+  async function votePost(verdict: string, reason?: string) {
+    const result = await mutateAsync({
+      postId: post.id,
+      reason,
+      verdict,
+    })
+    console.log({ result })
+  }
   return (
     <Grid
       autoFlow="row"
       p={8}
       gap={5}
       background="rgba(0, 0, 0, 0.1)"
-      backdropFilter="blur(7px)"
+      backdropFilter="blur(15px)"
       borderRadius="md"
       borderColor="borderSubtle"
       borderWidth="1px"
@@ -136,8 +148,12 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
             borderWidth="1px"
             bg="inherit"
             borderRadius="4"
-            borderColor="borderSubtle"
+            borderColor="lightTransparent"
+            _hover={{
+              bg: "cyan.600",
+            }}
             leftIcon={<RiCheckLine />}
+            onClick={() => votePost("approve")}
           >
             <Text fontWeight="medium">Approve All</Text>
           </Button>

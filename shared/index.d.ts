@@ -133,12 +133,17 @@ export interface NexusGenInputs {
     verdict?: NexusGenInputs['StringFilter'] | null; // StringFilter
   }
   DiscoveredImageVerdictWhereUniqueInput: { // input type
+    discoveredImageId?: number | null; // Int
     id?: number | null; // Int
   }
   DiscoveredImageVoteListRelationFilter: { // input type
     every?: NexusGenInputs['DiscoveredImageVoteWhereInput'] | null; // DiscoveredImageVoteWhereInput
     none?: NexusGenInputs['DiscoveredImageVoteWhereInput'] | null; // DiscoveredImageVoteWhereInput
     some?: NexusGenInputs['DiscoveredImageVoteWhereInput'] | null; // DiscoveredImageVoteWhereInput
+  }
+  DiscoveredImageVoteUserVoteCompoundUniqueInput: { // input type
+    discoveredImageId: number; // Int!
+    userId: number; // Int!
   }
   DiscoveredImageVoteWhereInput: { // input type
     AND?: NexusGenInputs['DiscoveredImageVoteWhereInput'][] | null; // [DiscoveredImageVoteWhereInput!]
@@ -156,6 +161,7 @@ export interface NexusGenInputs {
   }
   DiscoveredImageVoteWhereUniqueInput: { // input type
     id?: number | null; // Int
+    userVote?: NexusGenInputs['DiscoveredImageVoteUserVoteCompoundUniqueInput'] | null; // DiscoveredImageVoteUserVoteCompoundUniqueInput
   }
   DiscoveredImageWhereInput: { // input type
     AND?: NexusGenInputs['DiscoveredImageWhereInput'][] | null; // [DiscoveredImageWhereInput!]
@@ -624,10 +630,6 @@ export interface NexusGenInputs {
     none?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
     some?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
   }
-  RoleUserRoleCompoundUniqueInput: { // input type
-    name: string; // String!
-    userId: number; // Int!
-  }
   RoleWhereInput: { // input type
     AND?: NexusGenInputs['RoleWhereInput'][] | null; // [RoleWhereInput!]
     NOT?: NexusGenInputs['RoleWhereInput'][] | null; // [RoleWhereInput!]
@@ -638,10 +640,6 @@ export interface NexusGenInputs {
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     userId?: NexusGenInputs['IntFilter'] | null; // IntFilter
-  }
-  RoleWhereUniqueInput: { // input type
-    id?: number | null; // Int
-    userRole?: NexusGenInputs['RoleUserRoleCompoundUniqueInput'] | null; // RoleUserRoleCompoundUniqueInput
   }
   StringFilter: { // input type
     contains?: string | null; // String
@@ -839,6 +837,7 @@ export interface NexusGenFieldTypes {
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     url: string; // String!
     verdict: NexusGenRootTypes['DiscoveredImageVerdict'][]; // [DiscoveredImageVerdict!]!
+    vote: NexusGenRootTypes['DiscoveredImageVote'] | null; // DiscoveredImageVote
     votes: NexusGenRootTypes['DiscoveredImageVote'][]; // [DiscoveredImageVote!]!
   }
   DiscoveredImageVerdict: { // field return type
@@ -968,6 +967,8 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
+    discoveredPostVote: number; // Int!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     scanFaces: NexusGenRootTypes['QueueInfo']; // QueueInfo!
@@ -992,6 +993,7 @@ export interface NexusGenFieldTypes {
     countAppearances: NexusGenRootTypes['AppearanceCount'][]; // [AppearanceCount!]!
     discoveredImages: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     discoveredPosts: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
+    discoveryFeed: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryProviders: NexusGenRootTypes['DiscoveryProvider'][]; // [DiscoveryProvider!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
@@ -1063,6 +1065,7 @@ export interface NexusGenFieldTypeNames {
     updatedAt: 'DateTime'
     url: 'String'
     verdict: 'DiscoveredImageVerdict'
+    vote: 'DiscoveredImageVote'
     votes: 'DiscoveredImageVote'
   }
   DiscoveredImageVerdict: { // field return type name
@@ -1192,6 +1195,8 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     addAppearance: 'Appearance'
+    discoveredImageVote: 'DiscoveredImageVote'
+    discoveredPostVote: 'Int'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
     scanFaces: 'QueueInfo'
@@ -1216,6 +1221,7 @@ export interface NexusGenFieldTypeNames {
     countAppearances: 'AppearanceCount'
     discoveredImages: 'DiscoveredImage'
     discoveredPosts: 'DiscoveredPost'
+    discoveryFeed: 'DiscoveredPost'
     discoveryProviders: 'DiscoveryProvider'
     group: 'Group'
     groups: 'Group'
@@ -1274,6 +1280,7 @@ export interface NexusGenArgTypes {
       cursor?: NexusGenInputs['DiscoveredImageVoteWhereUniqueInput'] | null; // DiscoveredImageVoteWhereUniqueInput
       skip?: number | null; // Int
       take?: number | null; // Int
+      where?: NexusGenInputs['DiscoveredImageVoteWhereInput'] | null; // DiscoveredImageVoteWhereInput
     }
   }
   DiscoveredPost: {
@@ -1314,6 +1321,16 @@ export interface NexusGenArgTypes {
     addAppearance: { // args
       imageId: number; // Int!
       personId: number; // Int!
+    }
+    discoveredImageVote: { // args
+      imageId: number; // Int!
+      reason?: string | null; // String
+      verdict: string; // String!
+    }
+    discoveredPostVote: { // args
+      postId: number; // Int!
+      reason?: string | null; // String
+      verdict: string; // String!
     }
     linkFace: { // args
       appearanceId: number; // Int!
@@ -1373,6 +1390,10 @@ export interface NexusGenArgTypes {
       take?: number | null; // Int
       where?: NexusGenInputs['DiscoveredPostWhereInput'] | null; // DiscoveredPostWhereInput
     }
+    discoveryFeed: { // args
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
     group: { // args
       where: NexusGenInputs['GroupWhereUniqueInput']; // GroupWhereUniqueInput!
     }
@@ -1417,11 +1438,6 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
       take?: number | null; // Int
       where?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
-    }
-    roles: { // args
-      cursor?: NexusGenInputs['RoleWhereUniqueInput'] | null; // RoleWhereUniqueInput
-      skip?: number | null; // Int
-      take?: number | null; // Int
     }
   }
 }

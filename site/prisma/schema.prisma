@@ -325,7 +325,7 @@ model DiscoveredPost {
 
 model DiscoveredImage {
   id               Int                      @id @default(autoincrement())
-  mediaType        String
+  mediaType        String @map("media_type")
   // Needs to be copied over to the image as
   // posts are deleted after approval
   providerType     String                   @map("provider_type")
@@ -337,7 +337,7 @@ model DiscoveredImage {
   image            Image?                   @relation(fields: [imageId], references: [id])
   url              String
   // The place where the image comes from. Not necessary
-  referenceUrl     String?
+  referenceUrl     String? @map("reference_url")
   // This unique identifier is only unique to the provider it's attached to
   uniqueIdentifier String                   @map("unique_identifier")
   // If the image is detected to be a potential duplicate of an existing one
@@ -353,7 +353,7 @@ model DiscoveredImage {
 
 model DiscoveredImageVerdict {
   id                Int             @id @default(autoincrement())
-  discoveredImageId Int             @map("discovered_image_id")
+  discoveredImageId Int             @unique @map("discovered_image_id")
   discoveredImage   DiscoveredImage @relation(fields: [discoveredImageId], references: [id])
   // "approve" | "reject"
   verdict           String
@@ -378,9 +378,10 @@ model DiscoveredImageVote {
   // happen with new images on the site
   verdict           String
   reason            String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @default(now()) @updatedAt @map("updated_at")
 
+  @@unique([userId, discoveredImageId], name: "userVote")
   @@index([userId], name: "discovered_image_votes.user")
   @@map("discovered_image_votes")
 }

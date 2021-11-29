@@ -1,0 +1,5 @@
+mutation VoteDiscoveryImage($imageId: Int!, $verdict: String!, $reason: String) {
+    discoveredImageVote(imageId: $imageId, verdict: $verdict, reason: $reason) {
+        id
+    }
+}

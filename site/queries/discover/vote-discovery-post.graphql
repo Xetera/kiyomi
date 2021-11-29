@@ -1,0 +1,3 @@
+mutation VoteDiscoveryPost($postId: Int!, $verdict: String!, $reason: String) {
+    discoveredPostVote(postId: $postId, verdict: $verdict, reason: $reason)
+}
