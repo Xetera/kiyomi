@@ -5,7 +5,7 @@ export function FrontPage() {
   return (
     <header className="max-w-7xl mx-auto h-96 flex items-center justify-start">
       {/* <Image
-        src="https://my.simp.pics/0CMeV33SKzUpajhI.jpg"
+        src="https://img.kiyomi.io/0CMeV33SKzUpajhI.jpg"
         className="opacity-10 absolute h-vh faded-bottom"
         objectPosition="top"
         layout="fill"

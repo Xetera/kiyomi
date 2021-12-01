@@ -10,7 +10,7 @@ module.exports = withBundleAnalyzer({
     externalDir: true,
   },
   images: {
-    domains: ["localhost", "my.simp.pics", "cdn.discordapp.com"],
+    domains: ["localhost", "img.kiyomi.io", "cdn.discordapp.com"],
   },
   webpack: (config, { isServer }) => {
     config.resolve.extensions = [".mjs", ".js", ".jsx", ".tsx", ".ts", ".json"]

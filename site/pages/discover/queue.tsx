@@ -27,7 +27,7 @@ export default function QueuePage() {
               social media.
             </Text>
             <Image
-              src="https://my.simp.pics/GW6IjQuBX2YBoosn.webp"
+              src="https://img.kiyomi.io/GW6IjQuBX2YBoosn.webp"
               borderRadius="md"
             />
             <Text textStyle="heading-sm" textAlign="center" w="full">
@@ -47,7 +47,7 @@ export default function QueuePage() {
   return (
     <WithNavbar>
       <LargeBanner
-        url="https://my.simp.pics/fKgpCdJxphzlsWqy.webp"
+        url="https://img.kiyomi.io/fKgpCdJxphzlsWqy.webp"
         height={["14vh", "20vh", "20vh"]}
         objectPosition="50% 24%"
       />

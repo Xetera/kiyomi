@@ -11,14 +11,14 @@ async function main() {
   const jiubot = await prisma.user.upsert({
     where: { email: "bot@kiyomi.io" },
     update: {
-      image: "https://my.simp.pics/ymT4UWHNEeBFtn-x.webp",
+      image: "https://img.kiyomi.io/ymT4UWHNEeBFtn-x.webp",
       roles: {
         create: role,
       },
     },
     create: {
       email: "bot@kiyomi.io",
-      image: "https://my.simp.pics/ymT4UWHNEeBFtn-x.webp",
+      image: "https://img.kiyomi.io/ymT4UWHNEeBFtn-x.webp",
       name: "JiuBot",
       bot: true,
       token: generateUserToken(),

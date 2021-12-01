@@ -2,7 +2,7 @@ import { S3, Endpoint } from "aws-sdk"
 import { FileDetails } from "./file"
 
 const config = {
-  bucketName: "my.simp.pics",
+  bucketName: process.env.WASABI_BUCKET_NAME!,
   region: "eu-east-1",
   accessKeyId: process.env.WASABI_ACCESS_KEY!,
   secretAccessKey: process.env.WASABI_SECRET!,

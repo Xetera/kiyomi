@@ -20,7 +20,7 @@ export function hashStringToCube(hash: string): Uint8Array {
   }
   console.log("assigning all images phashes")
   for (const image of images.filter((a) => !a.p_hash)) {
-    const url = `https://s3.wasabisys.com/my.simp.pics/${image.slug}.webp`
+    const url = `https://s3.wasabisys.com/img.kiyomi.io/${image.slug}.webp`
     console.log("fetching", image.slug)
     const data = await fetch(url).then((r) => r.arrayBuffer())
     const phash = await getPerceptualHash
