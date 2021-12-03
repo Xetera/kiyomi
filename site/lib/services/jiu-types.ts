@@ -8,13 +8,13 @@ export const JiuProvider = z.object({
 
 export const JiuAccount = z.object({
   name: z.string(),
-  avatarUrl: z.string().optional(),
+  avatarUrl: z.string().nullish(),
 })
 
 export const JiuMedia = z.object({
   type: z.string(),
   mediaUrl: z.string(),
-  referenceUrl: z.string().optional(),
+  referenceUrl: z.string().nullish(),
   uniqueIdentifier: z.string(),
   metadata: z.unknown(),
 })
@@ -23,15 +23,15 @@ export const JiuPost = z.object({
   account: JiuAccount,
   uniqueIdentifier: z.string(),
   images: z.array(JiuMedia),
-  body: z.string().optional(),
-  url: z.string().optional(),
-  postDate: z.preprocess((arg) => new Date(arg as string), z.date()).optional(),
+  body: z.string().nullish(),
+  url: z.string().nullish(),
+  postDate: z.preprocess((arg) => new Date(arg as string), z.date()).nullish(),
   metadata: z.unknown(),
 })
 
 export const JiuMessageMetadata = z.object({
-  groups: z.array(z.number()).optional(),
-  people: z.array(z.number()).optional(),
+  groups: z.array(z.number()).nullish(),
+  people: z.array(z.number()).nullish(),
 })
 
 export const JiuMessage = z.object({

@@ -71,10 +71,13 @@ const apolloServer = new ApolloServer({
 
 const promise = apolloServer.start()
 export default async (req, res) => {
+  if (req.method === "OPTIONS") {
+    return res.end()
+  }
   await promise
   const handler = await getApolloServerHandler(apolloServer)
   return cors((req, res) => {
-    return req.method === "OPTIONS" ? res.end() : handler(req, res)
+    return handler(req, res)
   })(req, res)
 }
 
