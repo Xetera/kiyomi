@@ -61,8 +61,12 @@ export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
             accountName: post.account.name,
             postUrl: post.url,
             body: post.body,
-            referencingGroups: metadata.success ? metadata.data.groups : [],
-            referencingPeople: metadata.success ? metadata.data.people : [],
+            referencingGroups: metadata.success
+              ? metadata.data?.groups ?? []
+              : [],
+            referencingPeople: metadata.success
+              ? metadata.data?.people ?? []
+              : [],
             originalPostDate: post.postDate,
             discoveredImages: {
               create: post.images.map((image, i) => {
