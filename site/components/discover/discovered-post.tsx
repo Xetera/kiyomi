@@ -1,4 +1,9 @@
-import { RiCheckLine, RiPinterestLine, RiTwitterLine } from "react-icons/ri"
+import {
+  RiAddBoxFill,
+  RiCheckLine,
+  RiPinterestLine,
+  RiTwitterLine,
+} from "react-icons/ri"
 import {
   DiscoveredPostsQuery,
   Maybe,
@@ -141,6 +146,10 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
     }
   }
 
+  const hasImageNeedsMerging = Object.values(post.images).some(
+    (e) => e.duplicateImage
+  )
+
   return (
     <Grid
       autoFlow="row"
@@ -243,7 +252,22 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       {/* show approve all only if all images are visible */}
       {showingAll && (
         <HStack justify="flex-start">
-          <ButtonGroup>
+          <ButtonGroup spacing={3} size="sm">
+            {hasImageNeedsMerging && (
+              <Button
+                borderWidth="1px"
+                bg="inherit"
+                borderRadius="4"
+                borderColor="lightTransparent"
+                _hover={{
+                  bg: "green.600",
+                }}
+                leftIcon={<RiAddBoxFill />}
+                onClick={() => votePost(Verdict.Merge)}
+              >
+                <Text fontWeight="medium">Merge All Pending</Text>
+              </Button>
+            )}
             <Button
               borderWidth="1px"
               bg="inherit"
