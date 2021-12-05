@@ -520,6 +520,9 @@ type DiscoveredImage {
   id: Int!
   providerType: String!
   referenceUrl: String
+
+  """A smaller thumbnail of the image"""
+  thumbnail: String!
   uniqueIdentifier: String!
   updatedAt: DateTime!
   url: String!

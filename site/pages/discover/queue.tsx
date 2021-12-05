@@ -1,15 +1,25 @@
 import { WithNavbar } from "@/components/navbar"
 import { useDiscoveredPostsQuery } from "@/lib/__generated__/graphql"
 import { DiscoveredPost } from "@/components/discover/discovered-post"
-import { Grid, Text, Image, VStack } from "@chakra-ui/react"
+import { Grid, Image, Text, VStack } from "@chakra-ui/react"
 import { LargeBanner } from "@/components/large-banner"
 import DiscoverTabs from "@/components/discover/tabs"
 import DiscoverSidebar from "@/components/discover/sidebar"
+import { useState } from "react"
 
-export default function QueuePage() {
-  const { data, isLoading, isError } = useDiscoveredPostsQuery()
+const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 
-  const discover = (
+function Queue() {
+  const [skip, setSkip] = useState(0)
+  const { data, isLoading, isError } = useDiscoveredPostsQuery(
+    { take: 10, skip },
+    {
+      refetchOnMount: false,
+      refetchInterval: false,
+      staleTime: twentyFourHoursInMs,
+    }
+  )
+  return (
     <Grid
       as="main"
       templateColumns={["1fr", null, null, "1fr 2fr"]}
@@ -44,6 +54,9 @@ export default function QueuePage() {
       </Grid>
     </Grid>
   )
+}
+
+export default function QueuePage() {
   return (
     <WithNavbar>
       <LargeBanner
@@ -52,7 +65,7 @@ export default function QueuePage() {
         objectPosition="50% 24%"
       />
       <VStack mx="auto" maxW="6xl" w="full">
-        <DiscoverTabs discover={discover} />
+        <DiscoverTabs discover={<Queue />} />
       </VStack>
     </WithNavbar>
   )

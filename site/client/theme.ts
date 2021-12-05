@@ -83,6 +83,10 @@ const theme = extendTheme({
   },
   styles: {
     global: {
+      ".post-body--ucube hr": {
+        my: 5,
+        borderColor: "borderLight",
+      },
       "*, *::before, ::after": {
         borderColor: "borderLight",
       },

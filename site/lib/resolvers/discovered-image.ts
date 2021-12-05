@@ -1,9 +1,9 @@
 import { mutationField, nonNull, objectType, queryField } from "nexus"
-import { Context } from "@/lib/context-type"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 import { PrismaError } from "prisma-error-enum"
 import { GraphQLError } from "graphql"
 import { GraphqlAuth } from "../auth"
+import { imgproxy } from "../imgproxy"
 
 export const DiscoveredImage = objectType({
   name: "DiscoveredImage",
@@ -40,6 +40,18 @@ export const DiscoveredImage = objectType({
             },
           },
         })
+      },
+    })
+    t.field("thumbnail", {
+      type: nonNull("String"),
+      description: "A smaller thumbnail of the image",
+      resolve(root, _, {}) {
+        const base = imgproxy
+          .image(root.url)
+          .width(0)
+          .resizeType("fill")
+          .extension("webp")
+        return base.height(500).get()
       },
     })
   },

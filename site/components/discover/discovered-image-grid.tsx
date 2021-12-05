@@ -1,4 +1,7 @@
-import { DiscoveredPostProps } from "@/components/discover/discovered-post"
+import {
+  DiscoveredPostProps,
+  MAX_IMAGE_DISPLAY,
+} from "@/components/discover/discovered-post"
 import {
   Button,
   ButtonGroup,
@@ -41,9 +44,11 @@ function DiscoverImageLoader({
 }: DiscoveredImageProps & { isDuplicate: boolean }) {
   const [loaded, setLoaded] = useState(false)
   return (
-    <Skeleton isLoaded={loaded} width="full" height="full">
+    <Skeleton isLoaded={loaded} h="full" w="full">
       <Image
-        src={image.url}
+        src={image.thumbnail}
+        minH="full"
+        w="full"
         borderRadius="sm"
         objectFit="cover"
         onLoad={(_) => setLoaded(true)}
@@ -57,7 +62,13 @@ function DiscoveredImage({ image }: DiscoveredImageProps) {
   const isDuplicate = Boolean(image.duplicateImage)
   const preview = useDisclosure()
   return (
-    <Flex position="relative" overflow="hidden" borderRadius="sm" w="full">
+    <Flex
+      position="relative"
+      overflow="hidden"
+      borderRadius="sm"
+      w="full"
+      h="full"
+    >
       <DiscoverImageLoader image={image} isDuplicate={isDuplicate} />
       {isDuplicate && (
         <Text
@@ -115,6 +126,7 @@ function DiscoveredImage({ image }: DiscoveredImageProps) {
 }
 
 export type DiscoveredImageGridProps = {
+  showingMore: boolean
   images: Images
 }
 
@@ -130,7 +142,7 @@ function calculateGridRows(count: number) {
   if (count > 2) {
     return "350px 350px"
   } else {
-    return "500px"
+    return "600px"
   }
 }
 
@@ -142,12 +154,16 @@ function colorWhen(
   return a && a.verdict === v ? color : "inherit"
 }
 
-export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
+export function DiscoveredImageGrid({
+  images,
+  showingMore,
+}: DiscoveredImageGridProps) {
   const { mutateAsync } = useVoteDiscoveryImageMutation()
   function vote(verdict: string, imageId: number, reason?: string) {
     mutateAsync({ verdict, reason, imageId: imageId })
   }
   const imageCount = images.length
+  const imageToMap = showingMore ? images : images.slice(0, MAX_IMAGE_DISPLAY)
   return (
     <Grid
       gap={2}
@@ -156,8 +172,8 @@ export function DiscoveredImageGrid({ images }: DiscoveredImageGridProps) {
       gridTemplateRows={calculateGridRows(imageCount)}
       overflow="hidden"
     >
-      {images.map((image) => (
-        <VStack direction="column" spacing={2}>
+      {imageToMap.map((image) => (
+        <VStack direction="column" spacing={2} key={image.id}>
           <DiscoveredImage image={image} />
           <ButtonGroup
             bottom={0}

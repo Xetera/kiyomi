@@ -833,6 +833,7 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     providerType: string; // String!
     referenceUrl: string | null; // String
+    thumbnail: string; // String!
     uniqueIdentifier: string; // String!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     url: string; // String!
@@ -1061,6 +1062,7 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     providerType: 'String'
     referenceUrl: 'String'
+    thumbnail: 'String'
     uniqueIdentifier: 'String'
     updatedAt: 'DateTime'
     url: 'String'

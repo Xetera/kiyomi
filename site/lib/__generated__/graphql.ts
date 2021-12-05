@@ -164,6 +164,8 @@ export type DiscoveredImage = {
   id: Scalars['Int'];
   providerType: Scalars['String'];
   referenceUrl?: Maybe<Scalars['String']>;
+  /** A smaller thumbnail of the image */
+  thumbnail: Scalars['String'];
   uniqueIdentifier: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   url: Scalars['String'];
@@ -1507,7 +1509,10 @@ export type DiscoveryProvidersQuery = (
   )> }
 );
 
-export type DiscoveredPostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type DiscoveredPostsQueryVariables = Exact<{
+  skip: Scalars['Int'];
+  take: Scalars['Int'];
+}>;
 
 
 export type DiscoveredPostsQuery = (
@@ -1517,7 +1522,7 @@ export type DiscoveredPostsQuery = (
     & Pick<DiscoveredPost, 'id' | 'providerType' | 'uniqueIdentifier' | 'body' | 'accountName' | 'accountAvatarUrl' | 'postUrl' | 'createdAt' | 'originalPostDate'>
     & { images: Array<(
       { __typename?: 'DiscoveredImage' }
-      & Pick<DiscoveredImage, 'url' | 'id'>
+      & Pick<DiscoveredImage, 'thumbnail' | 'url' | 'id'>
       & { vote?: Maybe<(
         { __typename?: 'DiscoveredImageVote' }
         & Pick<DiscoveredImageVote, 'verdict'>
@@ -2017,8 +2022,8 @@ export const useDiscoveryProvidersQuery = <
       options
     );
 export const DiscoveredPostsDocument = `
-    query DiscoveredPosts {
-  discoveryFeed {
+    query DiscoveredPosts($skip: Int!, $take: Int!) {
+  discoveryFeed(skip: $skip, take: $take) {
     id
     providerType
     uniqueIdentifier
@@ -2029,6 +2034,7 @@ export const DiscoveredPostsDocument = `
     createdAt
     originalPostDate
     images {
+      thumbnail
       url
       id
       vote {
@@ -2046,7 +2052,7 @@ export const useDiscoveredPostsQuery = <
       TData = DiscoveredPostsQuery,
       TError = unknown
     >(
-      variables?: DiscoveredPostsQueryVariables, 
+      variables: DiscoveredPostsQueryVariables, 
       options?: UseQueryOptions<DiscoveredPostsQuery, TError, TData>
     ) => 
     useQuery<DiscoveredPostsQuery, TError, TData>(

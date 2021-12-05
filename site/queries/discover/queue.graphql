@@ -1,5 +1,5 @@
-query DiscoveredPosts {
-    discoveryFeed {
+query DiscoveredPosts($skip: Int!, $take: Int!) {
+    discoveryFeed(skip: $skip, take: $take) {
         id
         providerType
         uniqueIdentifier
@@ -10,6 +10,7 @@ query DiscoveredPosts {
         createdAt
         originalPostDate
         images {
+            thumbnail
             url
             id
             vote {
