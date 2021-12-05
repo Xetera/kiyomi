@@ -82,20 +82,8 @@ export default function QueuePage() {
       />
       <VStack mx="auto" maxW="6xl" w="full">
         <DiscoverTabs
-          discover={
-            <Grid
-              as="main"
-              templateColumns={["1fr", null, null, "1fr 2fr"]}
-              templateRows={"auto"}
-              autoFlow={["row", null, null, "column"]}
-              gap={6}
-            >
-              <DiscoverSidebar />
-              <Grid zIndex={10} gap={4} autoFlow="row">
-                <Queue />
-              </Grid>
-            </Grid>
-          }
+          previousVerdicts={{ approve: 0, decline: 0 }}
+          queue={<Queue />}
         />
       </VStack>
     </WithNavbar>

@@ -387,6 +387,12 @@ export type DiscoveryProvider = {
   waitDays: Scalars['Int'];
 };
 
+export type DiscoveryStatistic = {
+  __typename?: 'DiscoveryStatistic';
+  count: Scalars['Int'];
+  verdict: Scalars['String'];
+};
+
 export type EnumFaceSourceFilter = {
   equals?: Maybe<FaceSource>;
   in?: Maybe<Array<FaceSource>>;
@@ -1125,6 +1131,7 @@ export type Query = {
   discoveredPosts: Array<DiscoveredPost>;
   discoveryFeed: Array<DiscoveredPost>;
   discoveryProviders: Array<DiscoveryProvider>;
+  discoveryStats: Array<DiscoveryStatistic>;
   group?: Maybe<Group>;
   groups: Array<Group>;
   homepage: Array<Person>;
@@ -1506,6 +1513,17 @@ export type DiscoveryProvidersQuery = (
   & { discoveryProviders: Array<(
     { __typename?: 'DiscoveryProvider' }
     & Pick<DiscoveryProvider, 'destination' | 'name' | 'waitDays' | 'url' | 'provider'>
+  )> }
+);
+
+export type DiscoveryStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveryStatsQuery = (
+  { __typename?: 'Query' }
+  & { discoveryStats: Array<(
+    { __typename?: 'DiscoveryStatistic' }
+    & Pick<DiscoveryStatistic, 'count' | 'verdict'>
   )> }
 );
 
@@ -2026,6 +2044,26 @@ export const useDiscoveryProvidersQuery = <
     useQuery<DiscoveryProvidersQuery, TError, TData>(
       ['DiscoveryProviders', variables],
       fetcher<DiscoveryProvidersQuery, DiscoveryProvidersQueryVariables>(DiscoveryProvidersDocument, variables),
+      options
+    );
+export const DiscoveryStatsDocument = `
+    query DiscoveryStats {
+  discoveryStats {
+    count
+    verdict
+  }
+}
+    `;
+export const useDiscoveryStatsQuery = <
+      TData = DiscoveryStatsQuery,
+      TError = unknown
+    >(
+      variables?: DiscoveryStatsQueryVariables, 
+      options?: UseQueryOptions<DiscoveryStatsQuery, TError, TData>
+    ) => 
+    useQuery<DiscoveryStatsQuery, TError, TData>(
+      ['DiscoveryStats', variables],
+      fetcher<DiscoveryStatsQuery, DiscoveryStatsQueryVariables>(DiscoveryStatsDocument, variables),
       options
     );
 export const DiscoveredPostsDocument = `

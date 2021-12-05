@@ -1,0 +1,6 @@
+query DiscoveryStats {
+    discoveryStats {
+        count
+        verdict
+    }
+}

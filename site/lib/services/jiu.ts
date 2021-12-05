@@ -28,7 +28,7 @@ type JiuServiceOptions = {
 const DIRECT_QUEUE_NAME = "image_discovery"
 
 export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
-  console.log("Creating JiUs")
+  console.log("Creating JiU")
   const channel = await opts.amqp.createChannel()
   // we only want to fetch 1 message at a time as they're quite expensive to process
   await channel.prefetch(1)

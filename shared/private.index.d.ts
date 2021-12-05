@@ -4712,6 +4712,10 @@ export interface NexusGenObjects {
     url: string; // String!
     waitDays: number; // Int!
   }
+  DiscoveryStatistic: { // root type
+    count: number; // Int!
+    verdict: string; // String!
+  }
   Face: PrismaClient.Face;
   Group: PrismaClient.Group;
   GroupAlias: PrismaClient.GroupAlias;
@@ -4836,6 +4840,10 @@ export interface NexusGenFieldTypes {
     provider: string; // String!
     url: string; // String!
     waitDays: number; // Int!
+  }
+  DiscoveryStatistic: { // field return type
+    count: number; // Int!
+    verdict: string; // String!
   }
   Face: { // field return type
     addedBy: NexusGenRootTypes['User'] | null; // User
@@ -4967,6 +4975,7 @@ export interface NexusGenFieldTypes {
     discoveredPosts: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryFeed: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryProviders: NexusGenRootTypes['DiscoveryProvider'][]; // [DiscoveryProvider!]!
+    discoveryStats: NexusGenRootTypes['DiscoveryStatistic'][]; // [DiscoveryStatistic!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
     homepage: NexusGenRootTypes['Person'][]; // [Person!]!
@@ -5075,6 +5084,10 @@ export interface NexusGenFieldTypeNames {
     provider: 'String'
     url: 'String'
     waitDays: 'Int'
+  }
+  DiscoveryStatistic: { // field return type name
+    count: 'Int'
+    verdict: 'String'
   }
   Face: { // field return type name
     addedBy: 'User'
@@ -5206,6 +5219,7 @@ export interface NexusGenFieldTypeNames {
     discoveredPosts: 'DiscoveredPost'
     discoveryFeed: 'DiscoveredPost'
     discoveryProviders: 'DiscoveryProvider'
+    discoveryStats: 'DiscoveryStatistic'
     group: 'Group'
     groups: 'Group'
     homepage: 'Person'

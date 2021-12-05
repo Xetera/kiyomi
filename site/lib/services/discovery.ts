@@ -4,6 +4,21 @@ import camelCaseKeys from "camelcase-keys"
 
 export function makeDiscovery(): DiscoveryService {
   return {
+    async discoveryStats(userId) {
+      const counts = await prisma.discoveredImageVote.groupBy({
+        by: ["verdict"],
+        where: {
+          userId,
+        },
+        _count: {
+          verdict: true,
+        },
+      })
+      return counts.map(({ verdict, _count }) => ({
+        verdict,
+        count: _count.verdict,
+      }))
+    },
     async personalFeed({ userId, skip = 0, take = 30 }) {
       const results = await prisma.$queryRaw`
       SELECT dp.*
@@ -89,6 +104,7 @@ type PersonalFeedInput = {
 }
 
 export type DiscoveryService = {
+  discoveryStats(userId: number): Promise<any[]>
   voteImage(input: DiscoveryImageVoteInput): Promise<DiscoveredImageVote>
   votePost(input: DiscoveryPostVoteInput): Promise<number>
   personalFeed(input: PersonalFeedInput): Promise<DiscoveredPost[]>

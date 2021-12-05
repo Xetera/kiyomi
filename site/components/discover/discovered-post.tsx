@@ -54,7 +54,9 @@ export function decideProvider(
     case "UnitedCubeArtistFeed":
     case "united_cube.artist_feed":
       return {
-        component: <Image src="/provider-icons/united-cube.png" w={8} h={8} />,
+        component: (
+          <Image src="/provider-icons/united-cube.png" w="full" h="full" />
+        ),
         label: "UCube",
       }
     case "pinterest.board_feed":

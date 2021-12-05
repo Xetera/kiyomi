@@ -1263,6 +1263,11 @@ type DiscoveryProvider {
   waitDays: Int!
 }
 
+type DiscoveryStatistic {
+  count: Int!
+  verdict: String!
+}
+
 input EnumFaceSourceFieldUpdateOperationsInput {
   set: FaceSource
 }
@@ -4640,6 +4645,7 @@ type Query {
   discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
   discoveryFeed(skip: Int, take: Int): [DiscoveredPost!]!
   discoveryProviders: [DiscoveryProvider!]!
+  discoveryStats: [DiscoveryStatistic!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
   homepage: [Person!]!

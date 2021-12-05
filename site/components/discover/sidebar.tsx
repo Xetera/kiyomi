@@ -1,4 +1,7 @@
-import { useDiscoveryProvidersQuery } from "@/lib/__generated__/graphql"
+import {
+  DiscoveryProvider,
+  useDiscoveryProvidersQuery,
+} from "@/lib/__generated__/graphql"
 import {
   Accordion,
   AccordionButton,
@@ -21,10 +24,16 @@ function isGraphQlError(error: any): error is { message: string } {
   return error && "message" in error
 }
 
+type DiscoverSidebarProps = {
+  providers?: DiscoveryProvider[]
+  isLoading: boolean
+  error: unknown
+}
+
 export default function DiscoverSidebar() {
   const { data, isFetching, error, isLoading } = useDiscoveryProvidersQuery()
-  console.log({ error })
-  const groups = groupBy(data?.discoveryProviders ?? [], (e) => e.provider)
+  const providers = data?.discoveryProviders
+  const groups = groupBy(providers ?? [], (e) => e.provider)
   return (
     <VStack align="flex-start" spacing={8}>
       {isLoading && <Spinner />}
@@ -38,11 +47,11 @@ export default function DiscoverSidebar() {
           </Text>
         </>
       )}
-      {data && (
+      {providers && (
         <>
           <VStack align="flex-start" spacing={3}>
             <Text textStyle="heading">Upcoming Checks</Text>
-            {[...(data?.discoveryProviders ?? [])]
+            {[...(providers ?? [])]
               .sort((a, b) => a.waitDays - b.waitDays)
               .slice(0, 10)
               .map((provider) => {
@@ -85,9 +94,9 @@ export default function DiscoverSidebar() {
                     <AccordionButton>
                       <Flex justify="space-between" w="full">
                         <HStack spacing={3}>
-                          <Box h="6" w="6">
+                          <Flex h="6" w="6">
                             {component}
-                          </Box>
+                          </Flex>
                           <Text>{label}</Text>
                         </HStack>
                         <Tag lineHeight="1">{providers.length}</Tag>
