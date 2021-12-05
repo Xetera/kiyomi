@@ -81,10 +81,7 @@ export default function QueuePage() {
         objectPosition="50% 24%"
       />
       <VStack mx="auto" maxW="6xl" w="full">
-        <DiscoverTabs
-          previousVerdicts={{ approve: 0, decline: 0 }}
-          queue={<Queue />}
-        />
+        <DiscoverTabs queue={<Queue />} />
       </VStack>
     </WithNavbar>
   )
