@@ -174,18 +174,20 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       >
         <HStack spacing={3}>
           <HStack align="center" spacing={3}>
-            <Flex
-              align="center"
-              justify="center"
-              borderRadius="full"
-              borderColor="borderSubtle"
-              overflow="hidden"
-              borderWidth="1px"
-              h={12}
-              w={12}
-            >
-              {post.accountAvatarUrl && <Image src={post.accountAvatarUrl} />}
-            </Flex>
+            {post.accountAvatarUrl && (
+              <Flex
+                align="center"
+                justify="center"
+                borderRadius="full"
+                borderColor="borderSubtle"
+                overflow="hidden"
+                borderWidth="1px"
+                h={12}
+                w={12}
+              >
+                <Image src={post.accountAvatarUrl} />
+              </Flex>
+            )}
             <VStack spacing={0} align="flex-start" justify="center">
               <HStack spacing={2}>
                 <Text textStyle="heading-sm">{post.accountName}</Text>
@@ -199,7 +201,7 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
             </VStack>
           </HStack>
         </HStack>
-        <HStack align="center" spacing={1} justify="flex-end">
+        <HStack align="center" spacing={2} justify="flex-end">
           <VStack spacing={0} align="flex-start" textAlign="right">
             <Text
               fontSize="sm"
@@ -222,8 +224,8 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
             )}
           </VStack>
           <Flex
-            w={12}
-            h={12}
+            w={label === "UCube" ? 8 : 12}
+            h={label === "UCube" ? 8 : 12}
             marginInlineEnd={2}
             align="center"
             justify="center"

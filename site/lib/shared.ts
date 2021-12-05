@@ -40,7 +40,7 @@ export type BackendUser = User & {
 }
 
 export enum Verdict {
-  Approve = "approve",
-  Decline = "decline",
-  Merge = "merge",
+  Approve = "Approve",
+  Decline = "Decline",
+  Merge = "Merge",
 }

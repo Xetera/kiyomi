@@ -99,7 +99,9 @@ export default function DiscoverSidebar() {
                           </Flex>
                           <Text>{label}</Text>
                         </HStack>
-                        <Tag lineHeight="1">{providers.length}</Tag>
+                        <Tag lineHeight="1" size="sm">
+                          {providers.length}
+                        </Tag>
                       </Flex>
                     </AccordionButton>
                     <AccordionPanel mb={-2}>

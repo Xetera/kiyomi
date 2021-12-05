@@ -329,6 +329,18 @@ type DiscoveryStatistic {
   verdict: String!
 }
 
+"""A verdict on how a discovery should be processed."""
+enum DiscoveryVerdictKind {
+  """Image/post should be approved"""
+  Approve
+
+  """Image/post should be rejected"""
+  Decline
+
+  """Image/post should have its sources merged with an existing duplicate"""
+  Merge
+}
+
 input EnumFaceSourceFilter {
   equals: FaceSource
   in: [FaceSource!]
@@ -780,7 +792,9 @@ enum MimeType {
 type Mutation {
   """Add an appearance relation on an image."""
   addAppearance(imageId: Int!, personId: Int!): Appearance!
-  discoveredImageVote(imageId: Int!, reason: String, verdict: String!): DiscoveredImageVote!
+
+  """Cast a vote on a single discovered image"""
+  discoveredImageVote(imageId: Int!, reason: String, verdict: DiscoveryVerdictKind!): DiscoveredImageVote!
 
   """Vote using the same verdict on all images in a post"""
   discoveredPostVote(postId: Int!, reason: String, verdict: String!): [DiscoveredImage!]!

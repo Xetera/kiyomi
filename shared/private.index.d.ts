@@ -4676,6 +4676,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  DiscoveryVerdictKind: "Approve" | "Decline" | "Merge"
   FaceSource: PrismaClient.FaceSource
   ImageConnectionEdge: "IMAGE_TO_PERSON" | "PERSON_TO_IMAGE"
   MimeType: PrismaClient.MimeType
@@ -5326,7 +5327,7 @@ export interface NexusGenArgTypes {
     discoveredImageVote: { // args
       imageId: number; // Int!
       reason?: string | null; // String
-      verdict: string; // String!
+      verdict: NexusGenEnums['DiscoveryVerdictKind']; // DiscoveryVerdictKind!
     }
     discoveredPostVote: { // args
       postId: number; // Int!

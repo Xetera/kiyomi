@@ -1,9 +1,10 @@
-import { mutationField, nonNull, objectType, queryField } from "nexus"
+import { enumType, mutationField, nonNull, objectType, queryField } from "nexus"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 import { PrismaError } from "prisma-error-enum"
 import { GraphQLError } from "graphql"
 import { GraphqlAuth } from "../auth"
 import { imgproxy } from "../imgproxy"
+import { DiscoveryVerdictKind } from "./discovered-image-verdict"
 
 export const DiscoveredImage = objectType({
   name: "DiscoveredImage",
@@ -64,9 +65,10 @@ export const Query = queryField((t) => {
 export const Mutation = mutationField((t) => {
   t.field("discoveredImageVote", {
     type: nonNull("DiscoveredImageVote"),
+    description: "Cast a vote on a single discovered image",
     args: {
       imageId: nonNull("Int"),
-      verdict: nonNull("String"),
+      verdict: nonNull(DiscoveryVerdictKind),
       reason: "String",
     },
     authorize: GraphqlAuth.isLoggedIn,
