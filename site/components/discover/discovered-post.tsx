@@ -78,11 +78,10 @@ function PostBody({ text, providerType }: PostBodyProps) {
 
 export const MAX_IMAGE_DISPLAY = 4
 
-export function DiscoveredPost({ post: initialPost }: DiscoveredPostProps) {
+export function DiscoveredPost({ post }: DiscoveredPostProps) {
   const [showingAll, showMore] = useState(
-    initialPost.images.length < MAX_IMAGE_DISPLAY
+    post.images.length < MAX_IMAGE_DISPLAY
   )
-  const [post, setPost] = useState(initialPost)
   const { component, label } = decideProvider(post.providerType)
   const { mutateAsync } = useVoteDiscoveryPostMutation()
 
@@ -179,7 +178,6 @@ export function DiscoveredPost({ post: initialPost }: DiscoveredPostProps) {
       <DiscoveredImageGrid images={post.images} showingMore={showingAll} />
       {!showingAll && (
         <Button
-          // colorSchema="red"
           bg="bgPrimary"
           borderColor="borderSubtle"
           borderWidth="1px"

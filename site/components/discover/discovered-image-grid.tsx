@@ -34,8 +34,10 @@ import {
 
 type Images = DiscoveredPostProps["post"]["images"]
 
+type ImageType = Images[number]
+
 export type DiscoveredImageProps = {
-  image: Images[number]
+  image: ImageType
 }
 
 function DiscoverImageLoader({
@@ -125,6 +127,68 @@ function DiscoveredImage({ image }: DiscoveredImageProps) {
   )
 }
 
+type ImageProps = {
+  image: ImageType
+  vote: (v: Verdict, id: number, reason?: string) => void
+}
+
+function ImageComponent({ image, vote }: ImageProps) {
+  return (
+    <VStack direction="column" spacing={2} key={image.id}>
+      <DiscoveredImage image={image} />
+      <ButtonGroup bottom={0} zIndex={1} size="sm" w="full">
+        {image.duplicateImage && (
+          <Button
+            w="full"
+            bg={colorWhen(Verdict.Merge, "green.600", image.vote)}
+            borderColor="lightTransparent"
+            borderWidth="1px"
+            borderRadius="4"
+            flex="100%"
+            onClick={() => vote(Verdict.Merge, image.id)}
+            _hover={{
+              bg: "green.600",
+            }}
+            leftIcon={<RiAddBoxFill />}
+          >
+            Merge
+          </Button>
+        )}
+        <Button
+          w="full"
+          borderRadius="4"
+          bg={colorWhen(Verdict.Approve, "cyan.600", image.vote)}
+          borderColor="lightTransparent"
+          borderWidth="1px"
+          onClick={() => vote(Verdict.Approve, image.id)}
+          _hover={{
+            bg: "cyan.600",
+          }}
+          flex={image.duplicateImage ? "20%" : "100%"}
+          leftIcon={!image.duplicateImage ? <RiCheckLine /> : undefined}
+        >
+          {!image.duplicateImage ? "Approve" : <RiCheckLine />}
+        </Button>
+        <Button
+          w="full"
+          borderRadius="4"
+          bg={colorWhen(Verdict.Decline, "red.600", image.vote)}
+          borderColor="lightTransparent"
+          borderWidth="1px"
+          _hover={{
+            bg: "red.600",
+          }}
+          onClick={() => vote(Verdict.Decline, image.id)}
+          flex={image.duplicateImage ? "20%" : "100%"}
+          leftIcon={!image.duplicateImage ? <RiDeleteBinLine /> : undefined}
+        >
+          {!image.duplicateImage ? "Decline" : <RiDeleteBinLine />}
+        </Button>
+      </ButtonGroup>
+    </VStack>
+  )
+}
+
 export type DiscoveredImageGridProps = {
   showingMore: boolean
   images: Images
@@ -159,9 +223,11 @@ export function DiscoveredImageGrid({
   showingMore,
 }: DiscoveredImageGridProps) {
   const { mutateAsync } = useVoteDiscoveryImageMutation()
+
   function vote(verdict: string, imageId: number, reason?: string) {
     mutateAsync({ verdict, reason, imageId: imageId })
   }
+
   const imageCount = images.length
   const imageToMap = showingMore ? images : images.slice(0, MAX_IMAGE_DISPLAY)
   return (
@@ -173,65 +239,7 @@ export function DiscoveredImageGrid({
       overflow="hidden"
     >
       {imageToMap.map((image) => (
-        <VStack direction="column" spacing={2} key={image.id}>
-          <DiscoveredImage image={image} />
-          <ButtonGroup
-            bottom={0}
-            // right={0}
-            zIndex={1}
-            // m={2}
-            size="sm"
-            w="full"
-          >
-            {image.duplicateImage && (
-              <Button
-                w="full"
-                bg={colorWhen(Verdict.Merge, "green.600", image.vote)}
-                borderColor="lightTransparent"
-                borderWidth="1px"
-                borderRadius="4"
-                flex="100%"
-                onClick={() => vote(Verdict.Merge, image.id)}
-                _hover={{
-                  bg: "green.600",
-                }}
-                leftIcon={<RiAddBoxFill />}
-              >
-                Merge
-              </Button>
-            )}
-            <Button
-              w="full"
-              borderRadius="4"
-              bg={colorWhen(Verdict.Approve, "cyan.600", image.vote)}
-              borderColor="lightTransparent"
-              borderWidth="1px"
-              onClick={() => vote(Verdict.Approve, image.id)}
-              _hover={{
-                bg: "cyan.600",
-              }}
-              flex={image.duplicateImage ? "20%" : "100%"}
-              leftIcon={!image.duplicateImage ? <RiCheckLine /> : undefined}
-            >
-              {!image.duplicateImage ? "Approve" : <RiCheckLine />}
-            </Button>
-            <Button
-              w="full"
-              borderRadius="4"
-              bg={colorWhen(Verdict.Decline, "red.600", image.vote)}
-              borderColor="lightTransparent"
-              borderWidth="1px"
-              _hover={{
-                bg: "red.600",
-              }}
-              onClick={() => vote(Verdict.Decline, image.id)}
-              flex={image.duplicateImage ? "20%" : "100%"}
-              leftIcon={!image.duplicateImage ? <RiDeleteBinLine /> : undefined}
-            >
-              {!image.duplicateImage ? "Decline" : <RiDeleteBinLine />}
-            </Button>
-          </ButtonGroup>
-        </VStack>
+        <ImageComponent image={image} vote={vote} />
       ))}
     </Grid>
   )
