@@ -862,8 +862,8 @@ export type Mutation = {
   /** Add an appearance relation on an image. */
   addAppearance: Appearance;
   discoveredImageVote: DiscoveredImageVote;
-  /** Vote using the same verdict on all images in a post, returns the number of votes created */
-  discoveredPostVote: Scalars['Int'];
+  /** Vote using the same verdict on all images in a post */
+  discoveredPostVote: Array<DiscoveredImage>;
   /** Attach an existing face to an apperance. */
   linkFace: Appearance;
   /** Removes an appearance from an image */
@@ -1558,7 +1558,14 @@ export type VoteDiscoveryPostMutationVariables = Exact<{
 
 export type VoteDiscoveryPostMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'discoveredPostVote'>
+  & { discoveredPostVote: Array<(
+    { __typename?: 'DiscoveredImage' }
+    & Pick<DiscoveredImage, 'id'>
+    & { vote?: Maybe<(
+      { __typename?: 'DiscoveredImageVote' }
+      & Pick<DiscoveredImageVote, 'reason' | 'verdict'>
+    )> }
+  )> }
 );
 
 export type FaceDataFragment = (
@@ -2077,7 +2084,13 @@ export const useVoteDiscoveryImageMutation = <
     );
 export const VoteDiscoveryPostDocument = `
     mutation VoteDiscoveryPost($postId: Int!, $verdict: String!, $reason: String) {
-  discoveredPostVote(postId: $postId, verdict: $verdict, reason: $reason)
+  discoveredPostVote(postId: $postId, verdict: $verdict, reason: $reason) {
+    id
+    vote {
+      reason
+      verdict
+    }
+  }
 }
     `;
 export const useVoteDiscoveryPostMutation = <

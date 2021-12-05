@@ -1,5 +1,6 @@
 import {
   DiscoveredPostProps,
+  ImageVerdictVote,
   MAX_IMAGE_DISPLAY,
 } from "@/components/discover/discovered-post"
 import {
@@ -25,12 +26,13 @@ import {
   RiFullscreenLine,
 } from "react-icons/ri"
 import NextLink from "next/link"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Verdict } from "@/lib/shared"
 import {
   Maybe,
   useVoteDiscoveryImageMutation,
 } from "@/lib/__generated__/graphql"
+import useToast from "@/hooks/useToast"
 
 type Images = DiscoveredPostProps["post"]["images"]
 
@@ -60,7 +62,7 @@ function DiscoverImageLoader({
   )
 }
 
-function DiscoveredImage({ image }: DiscoveredImageProps) {
+const DiscoveredImage = ({ image }: DiscoveredImageProps) => {
   const isDuplicate = Boolean(image.duplicateImage)
   const preview = useDisclosure()
   return (
@@ -129,18 +131,23 @@ function DiscoveredImage({ image }: DiscoveredImageProps) {
 
 type ImageProps = {
   image: ImageType
-  vote: (v: Verdict, id: number, reason?: string) => void
+  voteStatus?: ImageVerdictVote
+  // actionKey: string
+  vote: (v: Verdict, id: number, reason?: string) => Promise<unknown>
 }
 
-function ImageComponent({ image, vote }: ImageProps) {
+function ImageComponent({ image, vote, voteStatus }: ImageProps) {
+  const voteProps = voteStatus ? { verdict: voteStatus.verdict } : undefined
+  const imageMemo = useMemo(() => <DiscoveredImage image={image} />, [image.id])
+
   return (
-    <VStack direction="column" spacing={2} key={image.id}>
-      <DiscoveredImage image={image} />
+    <VStack direction="column" spacing={2}>
+      {imageMemo}
       <ButtonGroup bottom={0} zIndex={1} size="sm" w="full">
         {image.duplicateImage && (
           <Button
             w="full"
-            bg={colorWhen(Verdict.Merge, "green.600", image.vote)}
+            bg={colorWhen(Verdict.Merge, "green.600", voteProps)}
             borderColor="lightTransparent"
             borderWidth="1px"
             borderRadius="4"
@@ -157,7 +164,7 @@ function ImageComponent({ image, vote }: ImageProps) {
         <Button
           w="full"
           borderRadius="4"
-          bg={colorWhen(Verdict.Approve, "cyan.600", image.vote)}
+          bg={colorWhen(Verdict.Approve, "cyan.600", voteProps)}
           borderColor="lightTransparent"
           borderWidth="1px"
           onClick={() => vote(Verdict.Approve, image.id)}
@@ -172,7 +179,7 @@ function ImageComponent({ image, vote }: ImageProps) {
         <Button
           w="full"
           borderRadius="4"
-          bg={colorWhen(Verdict.Decline, "red.600", image.vote)}
+          bg={colorWhen(Verdict.Decline, "red.600", voteProps)}
           borderColor="lightTransparent"
           borderWidth="1px"
           _hover={{
@@ -191,7 +198,9 @@ function ImageComponent({ image, vote }: ImageProps) {
 
 export type DiscoveredImageGridProps = {
   showingMore: boolean
+  voteImage(verdict: string, imageId: number, reason?: string): Promise<unknown>
   images: Images
+  verdicts: Record<string, ImageVerdictVote>
 }
 
 function calculateGridColumns(count: number) {
@@ -221,13 +230,9 @@ function colorWhen(
 export function DiscoveredImageGrid({
   images,
   showingMore,
+  verdicts,
+  voteImage,
 }: DiscoveredImageGridProps) {
-  const { mutateAsync } = useVoteDiscoveryImageMutation()
-
-  function vote(verdict: string, imageId: number, reason?: string) {
-    mutateAsync({ verdict, reason, imageId: imageId })
-  }
-
   const imageCount = images.length
   const imageToMap = showingMore ? images : images.slice(0, MAX_IMAGE_DISPLAY)
   return (
@@ -239,7 +244,12 @@ export function DiscoveredImageGrid({
       overflow="hidden"
     >
       {imageToMap.map((image) => (
-        <ImageComponent image={image} vote={vote} />
+        <ImageComponent
+          image={image}
+          vote={voteImage}
+          voteStatus={verdicts[image.id]}
+          key={image.id}
+        />
       ))}
     </Grid>
   )

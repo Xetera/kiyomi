@@ -3900,10 +3900,8 @@ type Mutation {
   createOnePerson(data: PersonCreateInput!): Person!
   discoveredImageVote(imageId: Int!, reason: String, verdict: String!): DiscoveredImageVote!
 
-  """
-  Vote using the same verdict on all images in a post, returns the number of votes created
-  """
-  discoveredPostVote(postId: Int!, reason: String, verdict: String!): Int!
+  """Vote using the same verdict on all images in a post"""
+  discoveredPostVote(postId: Int!, reason: String, verdict: String!): [DiscoveredImage!]!
 
   """
   Add metadata labels to an existing image. Only available to bot accounts

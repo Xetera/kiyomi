@@ -969,7 +969,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
-    discoveredPostVote: number; // Int!
+    discoveredPostVote: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     scanFaces: NexusGenRootTypes['QueueInfo']; // QueueInfo!
@@ -1198,7 +1198,7 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     addAppearance: 'Appearance'
     discoveredImageVote: 'DiscoveredImageVote'
-    discoveredPostVote: 'Int'
+    discoveredPostVote: 'DiscoveredImage'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
     scanFaces: 'QueueInfo'

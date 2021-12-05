@@ -56,9 +56,8 @@ export const Query = queryField((t) => {
 
 export const Mutation = mutationField((t) => {
   t.field("discoveredPostVote", {
-    type: nonNull("Int"),
-    description:
-      "Vote using the same verdict on all images in a post, returns the number of votes created",
+    type: nonNull(list(nonNull("DiscoveredImage"))),
+    description: "Vote using the same verdict on all images in a post",
     args: {
       postId: nonNull("Int"),
       verdict: nonNull("String"),
@@ -69,11 +68,16 @@ export const Mutation = mutationField((t) => {
     },
     async resolve(_, args, { discovery, user, prisma }) {
       try {
-        return await discovery.votePost({
+        await discovery.votePost({
           postId: args.postId,
           verdict: args.verdict,
           reason: args.reason ?? undefined,
           userId: user!.id,
+        })
+        return prisma.discoveredImage.findMany({
+          where: {
+            postId: args.postId,
+          },
         })
       } catch (err) {
         if (

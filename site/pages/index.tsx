@@ -18,6 +18,7 @@ import { dehydrate, QueryClient, useInfiniteQuery } from "react-query"
 import { RiLink } from "react-icons/ri"
 import { focusToObjectPosition } from "@/components/image-grid-element"
 import { AnimatePresence, motion } from "framer-motion"
+import { paginateBySkip } from "@/client/pagination"
 
 const AnimatedImage = motion(Image)
 
@@ -60,10 +61,7 @@ export default function Home() {
     },
     {
       refetchOnMount: false,
-      getNextPageParam(_, all) {
-        const skip = all.length * PER_PAGE
-        return skip
-      },
+      getNextPageParam: paginateBySkip(PER_PAGE),
     }
   )
   const splash = trending.homepage[selected]?.banner

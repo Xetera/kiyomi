@@ -1,3 +1,9 @@
 mutation VoteDiscoveryPost($postId: Int!, $verdict: String!, $reason: String) {
-    discoveredPostVote(postId: $postId, verdict: $verdict, reason: $reason)
+    discoveredPostVote(postId: $postId, verdict: $verdict, reason: $reason) {
+        id
+        vote {
+            reason
+            verdict
+        }
+    }
 }

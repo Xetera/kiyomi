@@ -1,6 +1,8 @@
 import { RiCheckLine, RiPinterestLine, RiTwitterLine } from "react-icons/ri"
 import {
   DiscoveredPostsQuery,
+  Maybe,
+  useVoteDiscoveryImageMutation,
   useVoteDiscoveryPostMutation,
 } from "@/lib/__generated__/graphql"
 import {
@@ -18,6 +20,10 @@ import formatDistance from "date-fns/formatDistance"
 import { DiscoveredImageGrid } from "./discovered-image-grid"
 import { useState } from "react"
 import { Verdict } from "@/lib/shared"
+import keyBy from "lodash/keyBy"
+import mapValues from "lodash/mapValues"
+import { DiscoveredImageVote } from "@prisma/client"
+import useToast from "@/hooks/useToast"
 
 export type ProviderIconProps = {
   providerType: string
@@ -26,7 +32,6 @@ export type ProviderIconProps = {
 export function decideProvider(
   providerType: string
 ): { component?: React.ReactElement; label: string } {
-  console.log({ providerType })
   switch (providerType) {
     case "weverse.artist_feed":
     case "WeverseArtistFeed":
@@ -36,8 +41,8 @@ export function decideProvider(
         ),
         label: "Weverse",
       }
-    case "twitter.feed":
-    case "TwitterFeed":
+    case "twitter.timeline":
+    case "TwitterTimeline":
       return { component: <RiTwitterLine size={24} />, label: "Twitter" }
     default:
       return { label: "Unknown", component: <Text>?</Text> }
@@ -78,19 +83,62 @@ function PostBody({ text, providerType }: PostBodyProps) {
 
 export const MAX_IMAGE_DISPLAY = 4
 
+export type ImageVerdictVote = Maybe<Pick<DiscoveredImageVote, "verdict">>
+
+export type ImageVerdict = {
+  id: number
+  vote?: ImageVerdictVote
+}
+
 export function DiscoveredPost({ post }: DiscoveredPostProps) {
   const [showingAll, showMore] = useState(
     post.images.length < MAX_IMAGE_DISPLAY
   )
+
+  function toVerdicts(images: ImageVerdict[]) {
+    return mapValues(
+      keyBy(
+        images.filter((image) => image.vote),
+        (e) => e.id
+      ),
+      (a) => a.vote
+    ) as Record<string, ImageVerdictVote>
+  }
+
+  const [verdicts, setVerdicts] = useState(() => toVerdicts(post.images))
   const { component, label } = decideProvider(post.providerType)
-  const { mutateAsync } = useVoteDiscoveryPostMutation()
+  const { mutateAsync: runVotePost } = useVoteDiscoveryPostMutation()
+  const { mutateAsync: runVoteImage } = useVoteDiscoveryImageMutation()
+  const toast = useToast("error")
 
   async function votePost(verdict: Verdict, reason?: string) {
-    const result = await mutateAsync({
+    const result = await runVotePost({
       postId: post.id,
       reason,
       verdict,
     })
+    setVerdicts((prev) => ({
+      ...prev,
+      ...toVerdicts(result.discoveredPostVote),
+    }))
+  }
+
+  async function voteImage(verdict: string, imageId: number, reason?: string) {
+    try {
+      setVerdicts((prev) => ({
+        ...prev,
+        [imageId]: { verdict },
+      }))
+      await runVoteImage({ imageId, reason, verdict })
+    } catch (err) {
+      if (err instanceof Error) {
+        toast({
+          title: "Error voting",
+          description: err.message,
+        })
+      }
+      setVerdicts(verdicts)
+    }
   }
 
   return (
@@ -103,6 +151,7 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       borderRadius="md"
       borderColor="borderSubtle"
       borderWidth="1px"
+      data-provider-type={post.providerType}
       zIndex={1}
     >
       <Flex
@@ -175,7 +224,12 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
       {post.body && (
         <PostBody text={post.body} providerType={post.providerType} />
       )}
-      <DiscoveredImageGrid images={post.images} showingMore={showingAll} />
+      <DiscoveredImageGrid
+        images={post.images}
+        showingMore={showingAll}
+        verdicts={verdicts}
+        voteImage={voteImage}
+      />
       {!showingAll && (
         <Button
           bg="bgPrimary"
@@ -183,7 +237,7 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
           borderWidth="1px"
           onClick={() => showMore(true)}
         >
-          Show more
+          Show {post.images.length - MAX_IMAGE_DISPLAY} more images
         </Button>
       )}
       {/* show approve all only if all images are visible */}

@@ -12,8 +12,8 @@ import DiscoverSidebar from "@/components/discover/sidebar"
 import React, { useState } from "react"
 import { useInfiniteQuery } from "react-query"
 import { Waypoint } from "react-waypoint"
+import { paginateBySkip } from "@/client/pagination"
 
-const twentyFourHoursInMs = 1000 * 60 * 60 * 24
 const PER_PAGE = 10
 
 function Queue() {
@@ -28,10 +28,10 @@ function Queue() {
     },
     {
       refetchOnMount: false,
-      getNextPageParam(_, all) {
-        const skip = all.length * PER_PAGE
-        return skip
-      },
+      refetchInterval: false,
+      // refetching this data can cause the page to shift
+      staleTime: 1000 * 60,
+      getNextPageParam: paginateBySkip(PER_PAGE),
     }
   )
   const feed = data?.pages.flatMap((e) => e.discoveryFeed)
@@ -40,7 +40,6 @@ function Queue() {
     if (isFetching) return
     fetchNextPage()
   }
-  console.log({ feed })
 
   return (
     <>
@@ -73,33 +72,31 @@ function Queue() {
   )
 }
 
-function QueuePageInner() {
-  return (
-    <Grid
-      as="main"
-      templateColumns={["1fr", null, null, "1fr 2fr"]}
-      templateRows={"auto"}
-      autoFlow={["row", null, null, "column"]}
-      gap={6}
-    >
-      <DiscoverSidebar />
-      <Grid zIndex={10} gap={4} autoFlow="row">
-        <Queue />
-      </Grid>
-    </Grid>
-  )
-}
-
 export default function QueuePage() {
   return (
     <WithNavbar>
       <LargeBanner
-        url="https://img.kiyomi.io/fKgpCdJxphzlsWqy.webp"
+        url={`${process.env.NEXT_PUBLIC_BASE_URL_CDN}/fKgpCdJxphzlsWqy.webp`}
         height={["14vh", "20vh", "20vh"]}
         objectPosition="50% 24%"
       />
       <VStack mx="auto" maxW="6xl" w="full">
-        <DiscoverTabs discover={<QueuePageInner />} />
+        <DiscoverTabs
+          discover={
+            <Grid
+              as="main"
+              templateColumns={["1fr", null, null, "1fr 2fr"]}
+              templateRows={"auto"}
+              autoFlow={["row", null, null, "column"]}
+              gap={6}
+            >
+              <DiscoverSidebar />
+              <Grid zIndex={10} gap={4} autoFlow="row">
+                <Queue />
+              </Grid>
+            </Grid>
+          }
+        />
       </VStack>
     </WithNavbar>
   )

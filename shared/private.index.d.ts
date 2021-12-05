@@ -4937,7 +4937,7 @@ export interface NexusGenFieldTypes {
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     createOnePerson: NexusGenRootTypes['Person']; // Person!
     discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
-    discoveredPostVote: number; // Int!
+    discoveredPostVote: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     labelImage: NexusGenRootTypes['Image'] | null; // Image
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
@@ -5176,7 +5176,7 @@ export interface NexusGenFieldTypeNames {
     addAppearance: 'Appearance'
     createOnePerson: 'Person'
     discoveredImageVote: 'DiscoveredImageVote'
-    discoveredPostVote: 'Int'
+    discoveredPostVote: 'DiscoveredImage'
     labelImage: 'Image'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'

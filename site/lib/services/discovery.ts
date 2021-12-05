@@ -46,12 +46,22 @@ export function makeDiscovery(): DiscoveryService {
       return results.count
     },
     voteImage(args) {
-      return prisma.discoveredImageVote.create({
-        data: {
-          discoveredImageId: args.imageId,
+      return prisma.discoveredImageVote.upsert({
+        where: {
+          userVote: {
+            discoveredImageId: args.imageId,
+            userId: args.userId,
+          },
+        },
+        update: {
           verdict: args.verdict,
           reason: args.reason,
+        },
+        create: {
+          discoveredImageId: args.imageId,
           userId: args.userId,
+          verdict: args.verdict,
+          reason: args.reason,
         },
       })
     },
