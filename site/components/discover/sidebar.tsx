@@ -7,7 +7,6 @@ import {
   AccordionButton,
   AccordionItem,
   AccordionPanel,
-  Box,
   Flex,
   HStack,
   Link,
@@ -89,7 +88,7 @@ export default function DiscoverSidebar() {
             <Accordion w="full" allowToggle allowMultiple>
               {Object.entries(groups).map(([name, providers]) => {
                 const { component, label } = decideProvider(name)
-                return providers.map((pr) => (
+                return (
                   <AccordionItem borderColor="rgba(60, 60, 60, 0.4)">
                     <AccordionButton>
                       <Flex justify="space-between" w="full">
@@ -103,12 +102,14 @@ export default function DiscoverSidebar() {
                       </Flex>
                     </AccordionButton>
                     <AccordionPanel mb={-2}>
-                      <Tag mr={2} mb={2}>
-                        {pr.name}
-                      </Tag>
+                      {providers.map((pr) => (
+                        <Tag mr={2} mb={2} key={pr.name}>
+                          {pr.name}
+                        </Tag>
+                      ))}
                     </AccordionPanel>
                   </AccordionItem>
-                ))
+                )
               })}
             </Accordion>
           </VStack>
