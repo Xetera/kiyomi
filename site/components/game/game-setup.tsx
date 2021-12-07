@@ -21,7 +21,7 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Input } from "@chakra-ui/input"
-import { useSession } from "next-auth/client"
+import { useSession } from "next-auth/react"
 import GamePersonPicker from "@/components/game/game-person-picker"
 import { GameServerContext } from "@/models/contexts"
 import React, { ReactElement, ReactNode } from "react"
@@ -185,7 +185,7 @@ const hintLevels: Array<{
 ]
 
 export default function GameSetup() {
-  const [session] = useSession()
+  const { data: session } = useSession()
   const room = useState((root) => {
     return pick(root.game.room, [
       "hints",

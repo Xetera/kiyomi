@@ -6,7 +6,7 @@ import {
   GetServerSidePropsContext,
   GetServerSidePropsResult,
 } from "next"
-import { getSession } from "next-auth/client"
+import { getSession } from "next-auth/react"
 
 export const client = new GraphQLClient(
   `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`

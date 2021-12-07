@@ -1,5 +1,5 @@
 import { UserDataFragment } from "@/lib/__generated__/graphql"
-import { signOut, useSession } from "next-auth/client"
+import { signOut, useSession } from "next-auth/react"
 import NextLink from "next/link"
 import React, { PropsWithChildren, useRef } from "react"
 import { Box } from "@chakra-ui/layout"
@@ -111,7 +111,7 @@ export type NavbarProps = {
 }
 
 export function Navbar() {
-  const [session] = useSession()
+  const { data: session } = useSession()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const btnRef = useRef(null)
 

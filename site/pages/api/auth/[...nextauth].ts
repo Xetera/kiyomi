@@ -1,11 +1,11 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
-import Providers from "next-auth/providers"
+import Discord from "next-auth/providers/discord"
 import Adapters from "next-auth/adapters"
 import { prisma } from "@/lib/db"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { NextApiRequest, NextApiResponse } from "next"
 import { generateUserToken } from "@/lib/auth"
 import { Role } from "@/lib/permissions"
-import { JWT } from "next-auth/jwt"
 
 if (!process.env.JWT_SECRET) {
   throw new Error("Missing JWT_SECRET")
@@ -19,24 +19,20 @@ type Token = {
 }
 
 const options: NextAuthOptions = {
+  theme: {
+    colorScheme: "dark",
+  },
   secret: process.env.JWT_SECRET,
   providers: [
-    Providers.Discord({
+    Discord({
       clientId: process.env.DISCORD_ID!,
       clientSecret: process.env.DISCORD_SECRET!,
     }),
   ],
-  adapter: Adapters.Prisma.Adapter({
-    prisma,
-    modelMapping: {
-      User: "user",
-      Account: "account",
-      VerificationRequest: "verificationRequest",
-      Session: "session",
-    },
-  }),
+  adapter: PrismaAdapter(prisma),
+  useSecureCookies: process.env.NODE_ENV === "production",
   session: {
-    jwt: true,
+    strategy: "jwt",
     // Seconds - How long until an idle session expires and is no longer valid.
     maxAge: 30 * 24 * 60 * 60, // 30 days
 
@@ -47,16 +43,16 @@ const options: NextAuthOptions = {
   },
   jwt: {
     secret: process.env.JWT_SECRET,
-    encryption: false,
-    signingKey: process.env.JWT_SIGNING_KEY,
-    verificationOptions: {
-      algorithms: ["HS256"],
-    },
+    // encryption: false,
+    // signingKey: process.env.JWT_SIGNING_KEY,
+    // verificationOptions: {
+    //   algorithms: ["HS256"],
+    // },
   },
-  // database: process.env.DATABASE_URL,
   callbacks: {
-    session: (session, user: JWT) => {
+    session({ session, user }) {
       const userId = Number(user.sub)
+      console.log({ userId })
       // @ts-ignore
       session.user.id = userId
       return Promise.resolve({
@@ -66,7 +62,7 @@ const options: NextAuthOptions = {
     },
   },
   events: {
-    async createUser(user) {
+    async createUser({ user }) {
       // TODO: this fires 2 save requests per sign up
       // should just add a token while creating the user but
       // idk how lol

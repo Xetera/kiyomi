@@ -1,5 +1,5 @@
 import React from "react"
-import { Provider } from "next-auth/client"
+import { SessionProvider } from "next-auth/react"
 import { Provider as ReduxProvider } from "react-redux"
 import "focus-visible/dist/focus-visible"
 // Import our CSS
@@ -13,7 +13,11 @@ import { ChakraProvider } from "@chakra-ui/react"
 import theme from "@/client/theme"
 import { store } from "@/models/store"
 
-const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
+const CustomApp = ({
+  Component,
+  pageProps: { dehydratedState, session, ...pageProps },
+  ...rest
+}: AppProps) => {
   const queryClientRef = React.useRef<QueryClient>()
   if (!queryClientRef.current) {
     queryClientRef.current = new QueryClient()
@@ -21,9 +25,9 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
 
   return (
     <QueryClientProvider client={queryClientRef.current}>
-      <Hydrate state={pageProps.dehydratedState}>
+      <Hydrate state={dehydratedState}>
         <ReduxProvider store={store}>
-          <Provider session={pageProps.session}>
+          <SessionProvider session={session}>
             <ChakraProvider theme={theme}>
               <NextHead>
                 <meta
@@ -51,7 +55,7 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
                 {/* </GameServerGateway> */}
               </div>
             </ChakraProvider>
-          </Provider>
+          </SessionProvider>
         </ReduxProvider>
       </Hydrate>
     </QueryClientProvider>

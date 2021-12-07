@@ -73,9 +73,9 @@ model Person {
   memberOf              GroupMember[]
   preferredMembershipId Int?          @map("preferred_membership_id")
   preferredMembership   GroupMember?  @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
-  bannerId              Int?          @map("banner_id")
+  bannerId              Int?          @map("banner_id")@unique
   banner                Image?        @relation(name: "person_banner", fields: [bannerId], references: [id])
-  avatarId              Int?          @map("avatar_id")
+  avatarId              Int?          @map("avatar_id")@unique
   avatar                Image?        @relation(name: "person_avatar", fields: [avatarId], references: [id])
 
   @@index([name], name: "person.name.index")
@@ -161,7 +161,7 @@ model User {
   email         String?     @unique
   emailVerified DateTime?   @map("email_verified")
   image         String?
-  avatarId      Int?        @map("avatar_id")
+  avatarId      Int?        @map("avatar_id")@unique
   avatar        Image?      @relation("user_avatar", fields: [avatarId], references: [id])
   token         String?     @unique
   createdAt     DateTime    @default(now()) @map("created_at")
@@ -171,7 +171,7 @@ model User {
   roles         Role[]
   imageLikes    ImageLike[]
   bot           Boolean     @default(false)
-  bannerId      Int?
+  bannerId      Int?        @unique
   banner        Image?      @relation("user_banner", fields: [bannerId], references: [id])
 
   taggedAppearances   Appearance[]
@@ -325,7 +325,7 @@ model DiscoveredPost {
 
 model DiscoveredImage {
   id               Int                      @id @default(autoincrement())
-  mediaType        String @map("media_type")
+  mediaType        String                   @map("media_type")
   // Needs to be copied over to the image as
   // posts are deleted after approval
   providerType     String                   @map("provider_type")
@@ -337,7 +337,7 @@ model DiscoveredImage {
   image            Image?                   @relation(fields: [imageId], references: [id])
   url              String
   // The place where the image comes from. Not necessary
-  referenceUrl     String? @map("reference_url")
+  referenceUrl     String?                  @map("reference_url")
   // This unique identifier is only unique to the provider it's attached to
   uniqueIdentifier String                   @map("unique_identifier")
   // If the image is detected to be a potential duplicate of an existing one

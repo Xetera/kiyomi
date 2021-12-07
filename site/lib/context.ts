@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db"
 import { getUserFromToken } from "@/lib/auth"
-import { getSession } from "next-auth/client"
+import { getSession } from "next-auth/react"
 import { amqpPromise } from "@/lib/amqp"
 import { NextApiRequest, NextApiResponse } from "next"
 import { Context } from "./context-type"

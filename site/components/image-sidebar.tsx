@@ -14,7 +14,7 @@ import { User } from "./user"
 import { ImageContext } from "@/models/contexts"
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout"
 import { Grid, Tooltip, useToast, UseToastOptions } from "@chakra-ui/react"
-import { useSession } from "next-auth/client"
+import { useSession } from "next-auth/react"
 import { useToggleLikeMutation } from "@/lib/__generated__/graphql"
 import useQueue from "./queue-button"
 import { useRouter } from "next/router"
@@ -69,7 +69,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const image = React.useContext(ImageContext)
   const router = useRouter()
   const { data, mutate, isLoading } = useToggleLikeMutation()
-  const [session] = useSession()
+  const { data: session } = useSession()
   if (!image) {
     return null
   }

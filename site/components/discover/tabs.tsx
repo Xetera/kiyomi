@@ -3,7 +3,7 @@ import { Flex, Grid, Spinner, Tag } from "@chakra-ui/react"
 import React from "react"
 import { useDiscoveryStatsQuery } from "@/lib/__generated__/graphql"
 import DiscoverSidebar from "@/components/discover/sidebar"
-import { useSession } from "next-auth/client"
+import { useSession } from "next-auth/react"
 
 type DiscoverTabsOptions = {
   queue: React.ReactElement
@@ -11,7 +11,7 @@ type DiscoverTabsOptions = {
 
 export default function DiscoverTabs(props: DiscoverTabsOptions) {
   const { data } = useDiscoveryStatsQuery()
-  const [user] = useSession()
+  const { data: user } = useSession()
   const totalVerdicts = data
     ? data.discoveryStats.reduce((total, stat) => stat.count, 0)
     : undefined

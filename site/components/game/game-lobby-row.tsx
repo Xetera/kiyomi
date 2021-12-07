@@ -10,7 +10,6 @@ import {
   SkeletonText,
 } from "@chakra-ui/react"
 import NextLink from "next/link"
-import { useSession } from "next-auth/client"
 import { useSelector } from "react-redux"
 import { RootState } from "@/models/store"
 
