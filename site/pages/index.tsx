@@ -11,7 +11,18 @@ import {
 } from "@/lib/__generated__/graphql"
 import { Grid, Heading, VStack } from "@chakra-ui/layout"
 import { Waypoint } from "react-waypoint"
-import { Box, Flex, HStack, Image, Link, Text } from "@chakra-ui/react"
+import {
+  Box,
+  Flex,
+  HStack,
+  Image,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  Text,
+} from "@chakra-ui/react"
 import { wrapRequest } from "@/lib/data-fetching"
 import ImageGrid from "@/components/image-grid"
 import { dehydrate, QueryClient, useInfiniteQuery } from "react-query"
@@ -19,6 +30,7 @@ import { RiLink } from "react-icons/ri"
 import { focusToObjectPosition } from "@/components/image-grid-element"
 import { AnimatePresence, motion } from "framer-motion"
 import { paginateBySkip } from "@/client/pagination"
+import { QuickSearch } from "@/components/search/QuickSearch"
 
 const AnimatedImage = motion(Image)
 
@@ -75,6 +87,15 @@ export default function Home() {
 
   return (
     <WithNavbar noSpace>
+      <Modal isOpen onClose={() => {}} closeOnOverlayClick>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalBody p="0">
+            <QuickSearch />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
       <Box
         position="relative"
         mb={3}
