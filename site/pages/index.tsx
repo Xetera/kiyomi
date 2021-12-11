@@ -11,19 +11,7 @@ import {
 } from "@/lib/__generated__/graphql"
 import { Grid, Heading, VStack } from "@chakra-ui/layout"
 import { Waypoint } from "react-waypoint"
-import NextHead from "next/head"
-import {
-  Box,
-  Flex,
-  HStack,
-  Image,
-  Link,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
-  Text,
-} from "@chakra-ui/react"
+import { Box, Flex, Image, Link, Text } from "@chakra-ui/react"
 import { wrapRequest } from "@/lib/data-fetching"
 import ImageGrid from "@/components/image-grid"
 import { dehydrate, QueryClient, useInfiniteQuery } from "react-query"
@@ -31,7 +19,6 @@ import { RiLink } from "react-icons/ri"
 import { focusToObjectPosition } from "@/components/image-grid-element"
 import { AnimatePresence, motion } from "framer-motion"
 import { paginateBySkip } from "@/client/pagination"
-import { QuickSearch } from "@/components/search/QuickSearch"
 import { OgImage } from "@/components/og-image"
 
 const AnimatedImage = motion(Image)
