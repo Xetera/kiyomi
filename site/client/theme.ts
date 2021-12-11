@@ -83,9 +83,13 @@ const theme = extendTheme({
   },
   styles: {
     global: {
-      ".highlight-em em": {
+      ".highlight-em mark": {
         fontStyle: "normal",
-        fontWeight: "semibold",
+        px: 1,
+        py: "2px",
+        borderRadius: "sm",
+        fontWeight: "medium",
+        color: "inherit",
         bg: "rgb(108 109 155 / 20%)",
       },
       ".post-body--ucube hr": {

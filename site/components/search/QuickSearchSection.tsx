@@ -10,32 +10,37 @@ import { FaUserCircle } from "react-icons/fa"
 import { RiAccountPinCircleLine } from "react-icons/ri"
 import { intersperse } from "@/client/jsx-helpers"
 
+type QuickSearchTag = {
+  href: string
+  tagName: string
+  tagCategory?: string
+  amount?: number
+}
+
+type QuickSearchPerson = {
+  href: string
+  name: string
+  aliases: string[]
+  image?: string
+}
+
+type QuickSearchGroup = {
+  name: string
+  href: string
+}
+
+type QuickSearchSection =
+  | {
+      type: "tag"
+      data: QuickSearchTag[]
+    }
+  | { type: "person"; data: QuickSearchPerson[] }
+  | {
+      type: "group"
+      data: QuickSearchGroup[]
+    }
+
 export type QuickSearchSectionKind = "tag" | "person" | "group"
-
-export type QuickSearchSectionData = {
-  tag: {
-    href: string
-    tagName: string
-    tagCategory?: string
-    amount?: number
-  }
-  person: {
-    href: string
-    name: string
-    aliases: string[]
-    group?: string
-    image?: string
-  }
-  group: {
-    name: string
-    href: string
-  }
-}
-
-export type QuickSearchSectionProps<T extends QuickSearchSectionKind> = {
-  kind: T
-  data: Array<QuickSearchSectionData[T]>
-}
 
 const mapping: Record<QuickSearchSectionKind, string> = {
   tag: "tags",
@@ -107,9 +112,7 @@ const VerticalElems = ({ children }) => (
   </VStack>
 )
 
-function QuickSearchSectionGroup<T extends QuickSearchSectionKind>(
-  props: QuickSearchSectionData["group"]
-) {
+function QuickSearchSectionGroup(props: QuickSearchGroup) {
   return (
     <QuickSearchSectionGeneric
       href={props.href}
@@ -129,9 +132,7 @@ function QuickSearchSectionGroup<T extends QuickSearchSectionKind>(
   )
 }
 
-function QuickSearchSectionPerson<T extends QuickSearchSectionKind>(
-  props: QuickSearchSectionData["person"]
-) {
+function QuickSearchSectionPerson(props: QuickSearchPerson) {
   return (
     <QuickSearchSectionGeneric
       href={props.href}
@@ -181,9 +182,7 @@ function QuickSearchSectionPerson<T extends QuickSearchSectionKind>(
   )
 }
 
-function QuickSearchSectionTag<T extends QuickSearchSectionKind>(
-  props: QuickSearchSectionData["tag"]
-) {
+function QuickSearchSectionTag(props: QuickSearchTag) {
   return (
     <QuickSearchSectionGeneric
       href={props.href}
@@ -214,9 +213,7 @@ function QuickSearchSectionTag<T extends QuickSearchSectionKind>(
   )
 }
 
-export function QuickSearchSection<T extends QuickSearchSectionKind>(
-  props: QuickSearchSectionProps<T>
-) {
+export function QuickSearchSection(props: QuickSearchSection) {
   return (
     <VStack spacing={3} alignItems="flex-start" w="full">
       <Text
@@ -226,31 +223,17 @@ export function QuickSearchSection<T extends QuickSearchSectionKind>(
         fontWeight="medium"
         color="hsla(228, 15%, 76%, 1)"
       >
-        {mapping[props.kind]}
+        {mapping[props.type]}
       </Text>
       <VStack w="full">
         {props.data.map((r) => {
-          switch (props.kind) {
+          switch (props.type) {
             case "tag":
-              return (
-                <QuickSearchSectionTag
-                  {...(r as QuickSearchSectionData["tag"])}
-                />
-              )
+              return <QuickSearchSectionTag {...r} />
             case "person":
-              return (
-                <QuickSearchSectionPerson
-                  {...(r as QuickSearchSectionData["person"])}
-                />
-              )
+              return <QuickSearchSectionPerson {...r} />
             case "group":
-              return (
-                <QuickSearchSectionGroup
-                  {...(r as QuickSearchSectionData["group"])}
-                />
-              )
-            default:
-              return null
+              return <QuickSearchSectionGroup {...r} />
           }
         })}
       </VStack>

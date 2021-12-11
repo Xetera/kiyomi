@@ -87,15 +87,7 @@ export default function Home() {
 
   return (
     <WithNavbar noSpace>
-      <Modal isOpen onClose={() => {}} closeOnOverlayClick>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalBody p="0">
-            <QuickSearch />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-
+      {/*<QuickSearch />*/}
       <Box
         position="relative"
         mb={3}

@@ -17,6 +17,8 @@ import capitalize from "lodash/capitalize"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-query"
 import { useDebounce } from "react-use"
+import { SearchIdol, searchIdol } from "@/client/typesense"
+import { SearchResponse } from "typesense/lib/Typesense/Documents"
 
 function intersperse<T>(arr: T[], inter: T) {
   return flatMap(arr, (a, i) => (i ? [inter, a] : [a]))
@@ -43,12 +45,9 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
   const [isModalForceClosed, setModalForceClosed] = useState(false)
   // Call hook passing in the ref and a function to call on outside click
   useOnClickOutside(ref, () => setModalForceClosed(true))
-  const { data, refetch, isLoading } = useQuery<SearchResults>(
+  const { data, refetch, isLoading } = useQuery<SearchResponse<SearchIdol>>(
     "idols",
-    (a) =>
-      fetch(
-        `${process.env.NEXT_PUBLIC_MEILISEARCH_URL}/indexes/idols/search?q=${name}&limit=6`
-      ).then((r) => r.json()),
+    (a) => searchIdol(name),
     { enabled: false }
   )
   console.log(data)
@@ -99,17 +98,17 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
       >
         {name !== "" &&
           !isModalForceClosed &&
-          data?.hits.map((person) => (
+          data?.hits?.map((person) => (
             <Button
               borderRadius="md"
               overflow="hidden"
               height="auto"
               padding="0"
-              key={person.id}
+              key={person.document.id}
               _hover={{
                 background: "black",
               }}
-              onClick={() => select(person.id)}
+              onClick={() => select(person.document.personId)}
               justifyContent="start"
             >
               <Image
@@ -135,7 +134,7 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
                     color="trueGray.100"
                     cursor="pointer"
                   >
-                    {person.name}
+                    {person.document.name}
                   </Heading>
                   <Text
                     size="xs"
@@ -157,7 +156,7 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
                   </Text>
                   <Flex flexFlow="row wrap" alignItems="center">
                     {intersperse(
-                      person.aliases.map((alias) => (
+                      person.document.aliases.map((alias) => (
                         <Text color="gray.500" fontWeight="400" fontSize="sm">
                           {capitalize(alias)}
                         </Text>

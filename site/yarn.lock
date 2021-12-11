@@ -2037,6 +2037,13 @@ aws-sdk@^2.815.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
+axios@^0.21.1:
+  version "0.21.4"
+  resolved "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
+  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+  dependencies:
+    follow-redirects "^1.14.0"
+
 babel-plugin-macros@^2.6.1:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-macros/-/babel-plugin-macros-2.8.0.tgz#0f958a7cc6556b1e65344465d99111a1e5e10138"
@@ -3521,6 +3528,11 @@ focus-visible@^5.2.0:
   resolved "https://registry.npmjs.org/focus-visible/-/focus-visible-5.2.0.tgz#3a9e41fccf587bd25dcc2ef045508284f0a4d6b3"
   integrity sha512-Rwix9pBtC1Nuy5wysTmKy+UjbDJpIfg8eHjw0rjZ1mX4GNLz1Bmd16uDpI3Gk1i70Fgcs8Csg2lPm8HULFg9DQ==
 
+follow-redirects@^1.14.0:
+  version "1.14.6"
+  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.6.tgz#8cfb281bbc035b3c067d6cd975b0f6ade6e855cd"
+  integrity sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==
+
 force-graph@^1.42:
   version "1.42.4"
   resolved "https://registry.npmjs.org/force-graph/-/force-graph-1.42.4.tgz#4be856f043922d455c1c1e04ffec20837b982a60"
@@ -4626,7 +4638,7 @@ log-symbols@^4.1.0:
     chalk "^4.1.0"
     is-unicode-supported "^0.1.0"
 
-loglevel@^1.6.8:
+loglevel@^1.6.8, loglevel@^1.7.1:
   version "1.8.0"
   resolved "https://registry.npmjs.org/loglevel/-/loglevel-1.8.0.tgz#e7ec73a57e1e7b419cb6c6ac06bf050b67356114"
   integrity sha512-G6A/nJLRgWOuuwdNuA6koovfEV1YpqqAG4pRUlFaz3jj2QNZ8M4vBqnVA+HBTmU/AMNUtlOsMmSpF6NyOjztbA==
@@ -6947,6 +6959,14 @@ typescript@^4.5.2:
   version "4.5.2"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.5.2.tgz#8ac1fba9f52256fdb06fb89e4122fa6a346c2998"
   integrity sha512-5BlMof9H1yGt0P8/WF+wPNw6GfctgGjXp5hkblpyT+8rkASSmkUKMXrxR0Xg8ThVCi/JnHQiKXeBaEwCeQwMFw==
+
+typesense@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/typesense/-/typesense-1.0.2.tgz#aba7ad4b6e8b183558bc595be98c712032b7bb43"
+  integrity sha512-eMg+yUVejnyEBwSHX4bo8ascFhg6RWLur14hd4oQNdmINbDHwYBpZe+HcFyL2WgcSr8rWlYEblHdF8R9blcjng==
+  dependencies:
+    axios "^0.21.1"
+    loglevel "^1.7.1"
 
 unbox-primitive@^1.0.0:
   version "1.0.1"

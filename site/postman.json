@@ -1,0 +1,1193 @@
+{
+	"info": {
+		"_postman_id": "edc94969-43df-4bb9-891f-3784323fa6f1",
+		"name": "Typesense",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Collections",
+			"item": [
+				{
+					"name": "Create collection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"collection_name\", jsonData.name);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n         \"name\": \"companies\",\n         \"fields\": [\n           {\"name\": \"company_name\", \"type\": \"string\" },\n           {\"name\": \"num_employees\", \"type\": \"int32\" },\n           {\"name\": \"country\", \"type\": \"string\", \"facet\": true }\n         ],\n         \"default_sorting_field\": \"num_employees\"\n       }"
+						},
+						"url": {
+							"raw": "{{url}}/collections",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a Collection",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all collections",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Drop a collection",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Documents",
+			"item": [
+				{
+					"name": "Geosearch",
+					"item": [
+						{
+							"name": "Collection create",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"geo_collection_name\", jsonData.name);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-TYPESENSE-API-KEY",
+										"value": "{{TYPESENSE_API_KEY}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"places\",\n    \"fields\": [\n        {\n            \"name\": \"title\",\n            \"type\": \"string\"\n        },\n        {\n            \"name\": \"points\",\n            \"type\": \"int32\"\n        },\n        {\n            \"name\": \"location\",\n            \"type\": \"geopoint\"\n        }\n    ],\n    \"default_sorting_field\": \"points\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/collections",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"collections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Index  a doc",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-TYPESENSE-API-KEY",
+										"value": "{{TYPESENSE_API_KEY}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"points\": 1,\n    \"title\": \"Louvre Museuem\",\n    \"location\": [\n        48.86093481609114,\n        2.33698396872901\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{url}}/collections/{{geo_collection_name}}/documents",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"collections",
+										"{{geo_collection_name}}",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Index a document",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"document_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"125\",\n    \"company_name\": \"Stark Industries\",\n    \"num_employees\": 5215,\n    \"country\": \"USA\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upsert a document",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"124\",\n    \"company_name\": \"Stark Industries\",\n    \"num_employees\": 5215,\n    \"country\": \"USA\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents?action=upsert",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "upsert"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents/search?q=stark&query_by=company_name&filter_by=num_employees:>100&sort_by=num_employees:desc",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "stark"
+								},
+								{
+									"key": "query_by",
+									"value": "company_name"
+								},
+								{
+									"key": "filter_by",
+									"value": "num_employees:>100"
+								},
+								{
+									"key": "sort_by",
+									"value": "num_employees:desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Multi Search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"searches\": [\n            {\n              \"collection\": \"products\",\n              \"q\": \"shoe\",\n              \"filter_by\": \"price:=[50..120]\"\n            },\n            {\n              \"collection\": \"brands\",\n              \"q\": \"Nike\"\n            }\n          ]\n        }"
+						},
+						"url": {
+							"raw": "{{url}}/multi_search?query_by=name",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"multi_search"
+							],
+							"query": [
+								{
+									"key": "query_by",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a document",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents/{{document_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents",
+								"{{document_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a document",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_name\": \"Stark Industries\",\n    \"num_employees\": 5500\n}"
+						},
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents/{{document_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents",
+								"{{document_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete documents",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents/{{document_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents",
+								"{{document_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by query",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents?filter_by=num_employees:>=100&batch_size=100",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents"
+							],
+							"query": [
+								{
+									"key": "filter_by",
+									"value": "num_employees:>=100"
+								},
+								{
+									"key": "batch_size",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Export documents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents/export?include_fields=company_name&exclude_fields=_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents",
+								"export"
+							],
+							"query": [
+								{
+									"key": "include_fields",
+									"value": "company_name"
+								},
+								{
+									"key": "exclude_fields",
+									"value": "_id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import Document",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\": \"124\",\"company_name\": \"Stark Industries\",\"num_employees\": 5215,\"country\": \"USA\"}\n{\"id\": \"125\",\"company_name\": \"Acme Corp\",\"num_employees\": 2133,\"country\": \"CA\"}"
+						},
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents/import?action=create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents",
+								"import"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "create"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Indexing a document with dirty data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": 1984,\n    \"points\": 100\n}"
+						},
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/documents?dirty_values=coerce_or_reject",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"documents"
+							],
+							"query": [
+								{
+									"key": "dirty_values",
+									"value": "coerce_or_reject"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Api Keys",
+			"item": [
+				{
+					"name": "Create an API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"apikey_id\", jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Admin key.\",\n    \"actions\": [\n        \"*\"\n    ],\n    \"collections\": [\n        \"*\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/keys",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve an API Key",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/keys/{{apikey_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"keys",
+								"{{apikey_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all Keys",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/keys",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"keys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete API Key",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/keys/{{apikey_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"keys",
+								"{{apikey_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Curation",
+			"item": [
+				{
+					"name": "Create or update an override",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rule\": {\n    \"query\": \"apple\",\n    \"match\": \"exact\"\n  },\n  \"includes\": [\n    {\"id\": \"422\", \"position\": 1},\n    {\"id\": \"54\", \"position\": 2}\n  ],\n  \"excludes\": [\n    {\"id\": \"287\"}\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/overrides/customize-apple",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"overrides",
+								"customize-apple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all overrides",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/overrides",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"overrides"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve an override",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/overrides/customize-apple",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"overrides",
+								"customize-apple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an override",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/overrides/customize-apple",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"overrides",
+								"customize-apple"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Collection Alias",
+			"item": [
+				{
+					"name": "Create or Update an alias",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"collection_name\": \"companies\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/aliases/{{collection_alias}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"aliases",
+								"{{collection_alias}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve an alias",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/aliases/{{collection_alias}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"aliases",
+								"{{collection_alias}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all aliases",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/aliases",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"aliases"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an alias",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/aliases/{{collection_alias}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"aliases",
+								"{{collection_alias}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Synonyms",
+			"item": [
+				{
+					"name": "Create or update a synonym",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"synonyms\": [\n        \"iphone\",\n        \"android\"\n    ],\n    \"root\": \"smart phone\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/synonyms/{{synonym_name}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"synonyms",
+								"{{synonym_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a synonym",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/synonyms",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"synonyms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all synonyms",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/synonyms",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"synonyms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a synonym",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "$TYPESENSE_API_KEY"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/collections/{{collection_name}}/synonyms/{{synonym_name}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"collections",
+								"{{collection_name}}",
+								"synonyms",
+								"{{synonym_name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cluster Operations",
+			"item": [
+				{
+					"name": "Create Snapshot (for backups)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/operations/snapshot?snapshot_path={{snapshot_path}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"operations",
+								"snapshot"
+							],
+							"query": [
+								{
+									"key": "snapshot_path",
+									"value": "{{snapshot_path}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Re-elect Leader",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/operations/vote",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"operations",
+								"vote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Slow Request Log",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"log-slow-requests-time-ms\": 2000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/config",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cluster Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/metrics.json",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"metrics.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-TYPESENSE-API-KEY",
+								"value": "{{TYPESENSE_API_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/stats.json",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"stats.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/health",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

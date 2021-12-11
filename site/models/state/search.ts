@@ -1,15 +1,15 @@
 import { createModel } from "@rematch/core"
 import { RootModel } from "@/models/state/index"
 import {
-  MeiliSearchGroup,
+  SearchGroup,
   MeiliSearchHit,
-  MeiliSearchIdol,
-  searchGroups,
-  searchIdols,
-} from "@/client/meilisearch"
+  SearchIdol,
+  searchGeneric,
+} from "@/client/typesense"
+import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 
-type Idol = MeiliSearchHit<MeiliSearchIdol>
-type Group = MeiliSearchHit<MeiliSearchGroup>
+type Idol = SearchResponseHit<SearchIdol>
+type Group = SearchResponseHit<SearchGroup>
 
 type SearchModel = {
   query: string
@@ -43,13 +43,12 @@ export const searchModel = createModel<RootModel>()({
   effects(dispatch) {
     return {
       async runSearch(query: string) {
-        const [idols, groups] = await Promise.allSettled([
-          searchIdols(query),
-          searchGroups(query),
-        ])
+        const result = await searchGeneric(query)
+        const [idols, groups] = result
+
         dispatch.search.receive({
-          idols: idols.status === "fulfilled" ? idols.value.hits : [],
-          groups: groups.status === "fulfilled" ? groups.value.hits : [],
+          idols: idols?.hits ?? [],
+          groups: groups?.hits ?? [],
         })
       },
     }

@@ -37,6 +37,7 @@ export async function run(url: string) {
         },
         update: {
           name: { set: member.full_name },
+          aliases: aliasesOp,
         },
       })
       .then(console.log, console.error)

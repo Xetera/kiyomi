@@ -1,8 +1,16 @@
 import fetch from "node-fetch"
-import { backend } from "../../../../shared/sdk"
 import { PrismaClient } from "@prisma/client"
 import uniqBy from "lodash/uniqBy"
+import { Client } from "typesense"
+
 const prod = process.env.NODE_ENV === "production"
+
+const typesense = new Client({
+  apiKey: "test",
+  nodes: [{ host: "localhost", path: "/", port: 8080, protocol: "http" }],
+})
+
+let index = "typesense" // meilisearch
 
 ;(async () => {
   console.log(process.env.POSTGRES_URL)
@@ -45,7 +53,7 @@ group by persons.id, persons.name`
   const PREFIX = prod ? "https://search.mamamoo.solar" : "http://localhost:7700"
 
   const toUpload = people.map((person: any) => ({
-    id: person.id,
+    personId: person.id,
     name: person.name,
     aliases: uniqBy(person.aliases, (alias: any) => alias.name).map(
       (alias: any) => alias.name
@@ -57,17 +65,70 @@ group by persons.id, persons.name`
     ),
   }))
 
-  await fetch(`${PREFIX}/indexes/idols/documents`, {
-    method: "POST",
-    body: JSON.stringify(toUpload),
-  })
   const groupUpload = groups.map((group) => ({
-    id: group.id,
+    groupId: group.id,
     name: group.name,
     aliases: group.aliases.map((alias) => alias.name),
   }))
-  await fetch(`${PREFIX}/indexes/groups/documents`, {
-    method: "POST",
-    body: JSON.stringify(groupUpload),
-  })
+  const person = toUpload.find((e) => e.aliases.includes("Irene"))
+
+  console.log({ a: toUpload.length })
+  if (index === "meilisearch") {
+    await fetch(`${PREFIX}/indexes/idols/documents`, {
+      method: "POST",
+      body: JSON.stringify(toUpload),
+    })
+
+    await fetch(`${PREFIX}/indexes/groups/documents`, {
+      method: "POST",
+      body: JSON.stringify(groupUpload),
+    })
+  } else {
+    await typesense.collections("groups").delete()
+    await typesense.collections("people").delete()
+    await typesense.collections().create({
+      name: "people",
+      fields: [
+        {
+          name: "name",
+          type: "string",
+          facet: true,
+        },
+        {
+          name: "aliases",
+          type: "string[]",
+          facet: true,
+        },
+      ],
+    })
+    await typesense.collections().create({
+      name: "groups",
+      fields: [
+        {
+          name: "name",
+          type: "string",
+          facet: true,
+        },
+        {
+          name: "aliases",
+          type: "string[]",
+          facet: true,
+        },
+      ],
+    })
+    await typesense
+      .collections("people")
+      .documents()
+      .import(toUpload.map((obj) => JSON.stringify(obj)).join("\n"), {
+        action: "create",
+        dirty_values: "coerce_or_reject",
+      })
+    await typesense
+      .collections("groups")
+      .documents()
+      .import(groupUpload.map((obj) => JSON.stringify(obj)).join("\n"), {
+        action: "create",
+        dirty_values: "coerce_or_reject",
+      })
+  }
 })()
