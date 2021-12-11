@@ -26,20 +26,6 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
         <ReduxProvider store={store}>
           <Provider session={pageProps.session}>
             <ChakraProvider theme={theme}>
-              <NextHead>
-                <meta
-                  name="viewport"
-                  content="width=device-width, initial-scale=1"
-                />
-                <link
-                  rel="preconnect"
-                  href={process.env.NEXT_PUBLIC_BASE_URL_CDN}
-                />
-                <link
-                  rel="dns-prefetch"
-                  href={process.env.NEXT_PUBLIC_BASE_URL_CDN}
-                />
-              </NextHead>
               <div
                 style={{
                   minHeight: "100vh",

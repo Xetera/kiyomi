@@ -2,9 +2,55 @@ import type { DiscoveredImageVote, DiscoveredPost } from "@prisma/client"
 import { prisma } from "../db"
 import camelCaseKeys from "camelcase-keys"
 
-export function makeDiscovery(): DiscoveryService {
+export function makeDiscovery() {
   return {
-    async discoveryStats(userId) {
+    async postsByPerson(peopleId: number[]): Promise<Array<DiscoveredPost>> {
+      return prisma.discoveredPost.findMany({
+        where: {
+          referencingGroups: {
+            hasSome: peopleId,
+          },
+        },
+      })
+    },
+    async postsByGroup(groupId: number): Promise<Array<DiscoveredPost>> {
+      const groupAndMembers = await prisma.group.findUnique({
+        include: {
+          members: {
+            include: {
+              person: true,
+            },
+          },
+        },
+        where: {
+          id: groupId,
+        },
+      })
+      if (!groupAndMembers) {
+        // TODO: turn this into an error
+        return []
+      }
+      const peopleIds = groupAndMembers.members.map(
+        (member) => member.person.id
+      )
+      return prisma.discoveredPost.findMany({
+        where: {
+          OR: [
+            {
+              referencingGroups: {
+                has: groupAndMembers.id,
+              },
+            },
+            {
+              referencingPeople: {
+                hasSome: peopleIds,
+              },
+            },
+          ],
+        },
+      })
+    },
+    async discoveryStats(userId: number): Promise<any> {
       const counts = await prisma.discoveredImageVote.groupBy({
         by: ["verdict"],
         where: {
@@ -19,7 +65,11 @@ export function makeDiscovery(): DiscoveryService {
         count: _count.verdict,
       }))
     },
-    async personalFeed({ userId, skip = 0, take = 30 }) {
+    async personalFeed({
+      userId,
+      skip = 0,
+      take = 30,
+    }: PersonalFeedInput): Promise<Array<DiscoveredPost>> {
       const results = await prisma.$queryRaw`
       SELECT dp.*
       FROM discovered_posts dp
@@ -43,7 +93,7 @@ export function makeDiscovery(): DiscoveryService {
       `
       return results.map(camelCaseKeys)
     },
-    async votePost(args) {
+    async votePost(args: DiscoveryPostVoteInput): Promise<number> {
       const images = await prisma.discoveredImage.findMany({
         where: {
           postId: args.postId,
@@ -60,7 +110,7 @@ export function makeDiscovery(): DiscoveryService {
       })
       return results.count
     },
-    voteImage(args) {
+    voteImage(args: DiscoveryImageVoteInput): Promise<DiscoveredImageVote> {
       return prisma.discoveredImageVote.upsert({
         where: {
           userVote: {
@@ -103,9 +153,4 @@ type PersonalFeedInput = {
   skip: number
 }
 
-export type DiscoveryService = {
-  discoveryStats(userId: number): Promise<any[]>
-  voteImage(input: DiscoveryImageVoteInput): Promise<DiscoveredImageVote>
-  votePost(input: DiscoveryPostVoteInput): Promise<number>
-  personalFeed(input: PersonalFeedInput): Promise<DiscoveredPost[]>
-}
+export type DiscoveryService = ReturnType<typeof makeDiscovery>

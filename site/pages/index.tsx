@@ -11,6 +11,7 @@ import {
 } from "@/lib/__generated__/graphql"
 import { Grid, Heading, VStack } from "@chakra-ui/layout"
 import { Waypoint } from "react-waypoint"
+import NextHead from "next/head"
 import {
   Box,
   Flex,
@@ -31,6 +32,7 @@ import { focusToObjectPosition } from "@/components/image-grid-element"
 import { AnimatePresence, motion } from "framer-motion"
 import { paginateBySkip } from "@/client/pagination"
 import { QuickSearch } from "@/components/search/QuickSearch"
+import { OgImage } from "@/components/og-image"
 
 const AnimatedImage = motion(Image)
 
@@ -87,6 +89,12 @@ export default function Home() {
 
   return (
     <WithNavbar noSpace>
+      <OgImage
+        imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/kiyomi_splash.jpg`}
+        title="Kiyomi.io (Alpha)"
+        description="A single place to find Kpop images"
+      />
+
       <Box
         position="relative"
         mb={3}
