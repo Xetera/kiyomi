@@ -44,6 +44,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
         onClose={onClose}
         closeOnOverlayClick
         scrollBehavior="inside"
+        closeOnEsc
       >
         <ModalOverlay />
         <ModalContent
