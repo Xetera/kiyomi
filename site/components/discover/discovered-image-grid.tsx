@@ -23,16 +23,14 @@ import {
   RiCheckLine,
   RiCloseLine,
   RiDeleteBinLine,
+  RiDownload2Line,
   RiFullscreenLine,
 } from "react-icons/ri"
 import NextLink from "next/link"
 import { useMemo, useState } from "react"
 import { Verdict } from "@/lib/shared"
-import {
-  Maybe,
-  useVoteDiscoveryImageMutation,
-} from "@/lib/__generated__/graphql"
-import useToast from "@/hooks/useToast"
+import { Maybe } from "@/lib/__generated__/graphql"
+import { downloadDiscoveredImageUrl } from "@/lib/services/image"
 
 type Images = DiscoveredPostProps["post"]["images"]
 
@@ -40,6 +38,13 @@ type ImageType = Images[number]
 
 export type DiscoveredImageProps = {
   image: ImageType
+}
+
+const hoverableButtonLike = {
+  bg: "rgba(0, 0, 0, 0.4)",
+  _hover: {
+    bg: "rgba(0, 0, 0, 0.6)",
+  },
 }
 
 function DiscoverImageLoader({
@@ -96,9 +101,22 @@ const DiscoveredImage = ({ image }: DiscoveredImageProps) => {
           </NextLink>
         </Text>
       )}
-      <Button position="absolute" bottom={2} left={2} onClick={preview.onOpen}>
-        <RiFullscreenLine />
-      </Button>
+      <ButtonGroup position="absolute" bottom={2} left={2}>
+        <Button onClick={preview.onOpen} {...hoverableButtonLike}>
+          <RiFullscreenLine />
+        </Button>
+        <Link
+          href={downloadDiscoveredImageUrl(image.id)}
+          {...hoverableButtonLike}
+          target="_blank"
+          display="flex"
+          alignItems="center"
+          borderRadius="md"
+          px={4}
+        >
+          <RiDownload2Line />
+        </Link>
+      </ButtonGroup>
       <Modal isOpen={preview.isOpen} onClose={preview.onClose}>
         <ModalOverlay />
         <ModalContent position="relative">

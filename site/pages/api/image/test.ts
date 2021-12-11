@@ -1,8 +1,4 @@
-import {
-  getPerceptualHash,
-  hashStringToCube,
-  mostSimilarImage,
-} from "@/lib/services/perceptual-hash"
+import { getPerceptualHash } from "@/lib/services/perceptual-hash"
 import { Image } from "@prisma/client"
 import { prisma } from "@/lib/db"
 import { NextApiRequest } from "next"

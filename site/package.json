@@ -86,6 +86,7 @@
     "@types/multer": "^1.4.7",
     "@types/next-auth": "^3.1.18",
     "@types/node": "^16.11.9",
+    "@types/node-fetch": "2.X",
     "@types/react": "^17.0.36",
     "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-modal": "^3.13.1",
