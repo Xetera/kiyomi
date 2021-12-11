@@ -27,7 +27,7 @@ import { useState } from "react"
 import { Verdict } from "@/lib/shared"
 import keyBy from "lodash/keyBy"
 import mapValues from "lodash/mapValues"
-import { DiscoveredImageVote } from "@prisma/client"
+import type { DiscoveredImageVote } from "@prisma/client"
 import useToast from "@/hooks/useToast"
 
 export type ProviderIconProps = {
@@ -99,7 +99,7 @@ export type ImageVerdict = {
 
 export function DiscoveredPost({ post }: DiscoveredPostProps) {
   const [showingAll, showMore] = useState(
-    post.images.length < MAX_IMAGE_DISPLAY
+    post.images.length <= MAX_IMAGE_DISPLAY
   )
 
   function toVerdicts(images: ImageVerdict[]) {

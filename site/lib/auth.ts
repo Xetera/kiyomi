@@ -2,7 +2,7 @@ import { PrismaClient, User } from "@prisma/client"
 import { randomBytes } from "crypto"
 import { Context } from "@/lib/context-type"
 
-const TOKEN_PREFIX = "SIMP_"
+const TOKEN_PREFIX = "KIYOMI_"
 
 export function generateUserToken() {
   const token = randomBytes(32).toString("hex")

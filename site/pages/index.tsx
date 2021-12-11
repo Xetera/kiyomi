@@ -87,7 +87,6 @@ export default function Home() {
 
   return (
     <WithNavbar noSpace>
-      {/*<QuickSearch />*/}
       <Box
         position="relative"
         mb={3}

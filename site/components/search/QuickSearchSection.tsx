@@ -74,7 +74,10 @@ function QuickSearchSectionGeneric(props) {
           px={3}
           py={2}
           w="full"
-          _hover={{ bg: "hsla(225, 27%, 9%, 1)" }}
+          borderColor="transparent"
+          borderWidth="1px"
+          _hover={{ borderColor: "hsla(240,6%,16%,0.76)" }}
+          transition="all 0.2s ease-in-out"
           borderRadius="md"
           align="center"
         >

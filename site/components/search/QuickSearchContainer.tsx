@@ -4,6 +4,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  ModalCloseButton,
   VStack,
 } from "@chakra-ui/react"
 import { RiSearchLine } from "react-icons/ri"
@@ -60,6 +61,7 @@ export function QuickSearchHeader({
           }}
           boxShadow="none"
         />
+        <ModalCloseButton />
       </InputGroup>
     </Flex>
   )

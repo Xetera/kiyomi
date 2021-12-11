@@ -1,17 +1,13 @@
 import { createModel } from "@rematch/core"
 import { RootModel } from "@/models/state/index"
-import {
-  SearchGroup,
-  MeiliSearchHit,
-  SearchIdol,
-  searchGeneric,
-} from "@/client/typesense"
+import { searchGeneric, SearchGroup, SearchIdol } from "@/client/typesense"
 import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 
 type Idol = SearchResponseHit<SearchIdol>
 type Group = SearchResponseHit<SearchGroup>
 
 type SearchModel = {
+  open: boolean
   query: string
   idols: Idol[]
   groups: Group[]
@@ -25,11 +21,16 @@ type ReceivePayload = {
 export const searchModel = createModel<RootModel>()({
   name: "search",
   state: {
+    open: false,
     query: "",
     idols: [],
     groups: [],
   } as SearchModel,
   reducers: {
+    toggleSearch(state) {
+      state.open = !state.open
+      return state
+    },
     setSearch(state, query: string) {
       state.query = query
       return state

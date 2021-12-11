@@ -15,13 +15,15 @@ import {
   Flex,
   forwardRef,
   HStack,
+  Kbd,
   Link,
   Text,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import { RiStackLine } from "react-icons/ri"
+import { RiSearchLine, RiStackLine } from "react-icons/ri"
+import { store } from "@/models/store"
 
 type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
@@ -30,13 +32,18 @@ type NavLinkProps = AType & {
   hardLink?: boolean
 }
 
+const activeBg = "rgba(0, 0, 0, 0.3)"
+const hoverBackground = { bg: activeBg }
+const navSpacing = {
+  py: 2,
+  px: 6,
+}
+
 const NavbarClickable = forwardRef(({ children, active, ...props }, ref) => {
-  const activeBg = "rgba(0, 0, 0, 0.3)"
   return (
     <Flex
       align="center"
-      py={2}
-      px={6}
+      {...navSpacing}
       borderRadius="3px"
       fontWeight="600"
       fontSize="14px"
@@ -44,9 +51,7 @@ const NavbarClickable = forwardRef(({ children, active, ...props }, ref) => {
       transition="all 0.2s ease-in-out"
       cursor="pointer"
       bg={active ? activeBg : "inherit"}
-      _hover={{
-        bg: activeBg,
-      }}
+      _hover={hoverBackground}
       ref={ref}
       {...props}
     >
@@ -119,6 +124,10 @@ export function Navbar() {
     signOut().then(console.log)
   }
 
+  function openSearch() {
+    store.dispatch.search.toggleSearch()
+  }
+
   return (
     <HStack
       as="nav"
@@ -152,6 +161,21 @@ export function Navbar() {
           </Button>
         </Flex>
         <HStack spacing={3} display={["none", null, "flex"]}>
+          <HStack
+            align="center"
+            onClick={openSearch}
+            cursor="pointer"
+            borderRadius="md"
+            spacing={4}
+            p={2}
+            _hover={hoverBackground}
+            {...navSpacing}
+          >
+            <RiSearchLine />
+            <Text display={{ base: "none", lg: "block" }}>
+              Press <Kbd>/</Kbd> to search
+            </Text>
+          </HStack>
           {session?.user ? (
             <>
               <NavLink href="/profile">

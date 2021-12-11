@@ -80,6 +80,14 @@ const theme = extendTheme({
         borderColor: "borderSubtle",
       },
     },
+    Kbd: {
+      baseStyle: {
+        verticalAlign: "middle",
+        color: "text.500",
+        borderBottom: "1px",
+        borderColor: "borderLight",
+      },
+    },
   },
   styles: {
     global: {

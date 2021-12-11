@@ -14,8 +14,11 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react"
+import { AnimatePresence } from "framer-motion"
 
-export function QuickSearch() {
+export type QuickSearchProps = { onClose: () => void }
+
+export function QuickSearch({ onClose }: QuickSearchProps) {
   const { query, idols, groups } = useSelector((root: RootState) => root.search)
   const runSearch = (query: string) => store.dispatch.search.setSearch(query)
 
@@ -35,66 +38,70 @@ export function QuickSearch() {
   }
 
   return (
-    <Modal
-      isOpen
-      onClose={() => {}}
-      closeOnOverlayClick
-      scrollBehavior="inside"
-    >
-      <ModalOverlay />
-      <ModalContent
-        backdropFilter="blur(10px)"
-        bg="hsla(231, 28%, 7%, 0.8)"
-        overflow="hidden"
-        borderRadius="md"
+    <AnimatePresence>
+      <Modal
+        isOpen
+        onClose={onClose}
+        closeOnOverlayClick
+        scrollBehavior="inside"
       >
-        <ModalHeader p={2}>
-          <QuickSearchHeader query={query} onSearch={runSearch} />
-        </ModalHeader>
-        <ModalBody p="0">
-          <QuickSearchContainer>
-            {idols.length > 0 && (
-              <QuickSearchSection
-                type="person"
-                data={idols.map((idol) => ({
-                  href: "/",
-                  aliases: (extractFieldOr(idol, "aliases") ?? []) as string[],
-                  name: extractFieldOr(idol, "name") as string,
-                }))}
-              />
-            )}
-            {groups.length > 0 && (
-              <QuickSearchSection
-                type="group"
-                data={groups.map((group) => ({
-                  href: "/",
-                  name: extractFieldOr(group, "name") as string,
-                }))}
-              />
-            )}
-            {/*<QuickSearchSection*/}
-            {/*  kind="tag"*/}
-            {/*  data={[*/}
-            {/*    {*/}
-            {/*      href: "/",*/}
-            {/*      amount: 1234,*/}
-            {/*      tagName: "Blonde",*/}
-            {/*      tagCategory: "Hair",*/}
-            {/*    },*/}
-            {/*    {*/}
-            {/*      href: "/",*/}
-            {/*      tagName: "Waving",*/}
-            {/*      tagCategory: "Poses",*/}
-            {/*    },*/}
-            {/*    {*/}
-            {/*      tagName: "Laying Down",*/}
-            {/*      href: "/",*/}
-            {/*    },*/}
-            {/*  ]}*/}
-            {/*/>*/}
-          </QuickSearchContainer>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        <ModalOverlay />
+        <ModalContent
+          sx={{ colorScheme: "dark" }}
+          backdropFilter="blur(10px)"
+          bg="hsla(231, 28%, 7%, 0.8)"
+          overflow="hidden"
+          borderRadius="md"
+        >
+          <ModalHeader p={2}>
+            <QuickSearchHeader query={query} onSearch={runSearch} />
+          </ModalHeader>
+          <ModalBody p="0">
+            <QuickSearchContainer>
+              {idols.length > 0 && (
+                <QuickSearchSection
+                  type="person"
+                  data={idols.map((idol) => ({
+                    href: "/",
+                    aliases: (extractFieldOr(idol, "aliases") ??
+                      []) as string[],
+                    name: extractFieldOr(idol, "name") as string,
+                  }))}
+                />
+              )}
+              {groups.length > 0 && (
+                <QuickSearchSection
+                  type="group"
+                  data={groups.map((group) => ({
+                    href: "/",
+                    name: extractFieldOr(group, "name") as string,
+                  }))}
+                />
+              )}
+              {/*<QuickSearchSection*/}
+              {/*  kind="tag"*/}
+              {/*  data={[*/}
+              {/*    {*/}
+              {/*      href: "/",*/}
+              {/*      amount: 1234,*/}
+              {/*      tagName: "Blonde",*/}
+              {/*      tagCategory: "Hair",*/}
+              {/*    },*/}
+              {/*    {*/}
+              {/*      href: "/",*/}
+              {/*      tagName: "Waving",*/}
+              {/*      tagCategory: "Poses",*/}
+              {/*    },*/}
+              {/*    {*/}
+              {/*      tagName: "Laying Down",*/}
+              {/*      href: "/",*/}
+              {/*    },*/}
+              {/*  ]}*/}
+              {/*/>*/}
+            </QuickSearchContainer>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </AnimatePresence>
   )
 }

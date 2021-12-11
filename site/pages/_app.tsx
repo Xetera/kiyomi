@@ -12,6 +12,7 @@ import { Hydrate } from "react-query/hydration"
 import { ChakraProvider } from "@chakra-ui/react"
 import theme from "@/client/theme"
 import { store } from "@/models/store"
+import { AppWrapper } from "@/components/app-wrapper"
 
 const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
   const queryClientRef = React.useRef<QueryClient>()
@@ -46,9 +47,11 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
                   flexFlow: "column",
                 }}
               >
-                {/* <GameServerGateway> */}
-                <Component {...pageProps} />
                 {/* </GameServerGateway> */}
+                <AppWrapper>
+                  <Component {...pageProps} />
+                </AppWrapper>
+                {/* <GameServerGateway> */}
               </div>
             </ChakraProvider>
           </Provider>

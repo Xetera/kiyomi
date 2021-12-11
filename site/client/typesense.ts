@@ -33,7 +33,6 @@ export const searchIdol = async (
     {
       q: query,
       query_by: "name,aliases",
-      // highlight_fields: false
     },
     { cacheSearchResultsForSeconds: 30 }
   )) as any
@@ -42,7 +41,7 @@ export const searchIdol = async (
 export const searchGeneric = async (
   query: string,
   commonParams: Partial<MultiSearchRequestSchema<unknown>> = { per_page: 6 }
-): Promise<Array<SearchResponse<SearchGroup | SearchIdol>>> => {
+): Promise<[SearchResponse<SearchIdol>, SearchResponse<SearchGroup>]> => {
   const response = await typesense.multiSearch.perform(
     {
       searches: [
