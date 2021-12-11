@@ -76,7 +76,7 @@ export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
                 if (t) {
                   if (
                     t.status === "fulfilled" &&
-                    t.value &&
+                    t.value?.distance &&
                     opts.phash.isNearPerfectMatch(t.value.distance)
                   ) {
                     duplicateImageId = t.value?.id

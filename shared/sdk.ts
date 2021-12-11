@@ -11,10 +11,6 @@ export const backend = createClient({
   },
 })
 
-export const client = createClient({
-  url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`,
-})
-
 export const FaceData: Partial<FaceRequest> = {
   id: true,
   x: true,
