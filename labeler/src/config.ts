@@ -1,6 +1,6 @@
 // @ts-ignore
-import convict from "convict";
-import pino from "pino";
+import convict from "convict"
+import pino from "pino"
 
 export const config = convict({
   env: {
@@ -16,7 +16,7 @@ export const config = convict({
   },
   faceRecognitionQueue: {
     doc: "Face recognition queue name in rabbitMQ",
-    default: "labeler",
+    default: "labeler-development",
     env: "FACE_RECOGNITION_QUEUE",
   },
   backendUrl: {
@@ -29,8 +29,8 @@ export const config = convict({
     default: "SIMP_12345",
     env: "USER_TOKEN",
   },
-});
+})
 
 export const logger = pino({
   prettyPrint: config.get("env") === "development",
-});
+})

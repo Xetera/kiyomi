@@ -5,23 +5,17 @@ import {
 } from "@/lib/services/perceptual-hash"
 import { Image } from "@prisma/client"
 import { prisma } from "@/lib/db"
+import { NextApiRequest } from "next"
+import { getServices } from "@/lib/services"
 
-export default async (req, res) => {
+export default async (req: NextApiRequest, res) => {
   const url = req.query.id
   console.log({ url })
   console.log("sending perceptual hash")
   console.log("waiting for celery response...")
-  const image = await mostSimilarImage(url)
-  // const data = await getPerceptualHash.applyAsync([url]).get()
-  // console.log("got perceptual hash")
-  // console.log({ data })
-  // const cube =hashStringToCube(data)
-  // console.log({ cube })
-  // console.time("test")
-  // const result: Image[] = await prisma.$queryRaw(`
-  //   SELECT slug, p_hash_2 <-> CUBE(ARRAY[${cube.join(",")}]) as distance FROM images ORDER BY distance asc nulls last LIMIT 10
-  // `)
-  // console.timeEnd("test")
-  // console.log({ result })
+  const { phash } = await getServices()
+  const image = await phash.mostSimilarImage(url as string)
+  console.log("got perceptual hash")
+  console.log({ image })
   res.json({ image })
 }
