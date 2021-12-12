@@ -34,40 +34,46 @@ const QuickSearchTab = forwardRef(({ children, ...rest }, ref) => (
   </Tab>
 ))
 
-export function QuickSearchHeader({
-  placeholder = "Search for anything...",
-  query,
-  onSearch,
-  closeButton = <ModalCloseButton />,
-}: QuickSearchProps) {
-  return (
-    <Flex w="full" overflow="hidden">
-      <InputGroup w="full" outline="none">
-        <InputLeftElement pointerEvents="none">
-          <RiSearchLine size={22} />
-        </InputLeftElement>
+export const QuickSearchHeader = forwardRef<QuickSearchProps, "div">(
+  (
+    {
+      placeholder = "Search for anything...",
+      query,
+      onSearch,
+      closeButton = <ModalCloseButton />,
+      ...rest
+    },
+    ref
+  ) => {
+    return (
+      <Flex w="full" overflow="hidden" ref={ref} {...rest}>
+        <InputGroup w="full" outline="none">
+          <InputLeftElement pointerEvents="none">
+            <RiSearchLine size={22} />
+          </InputLeftElement>
 
-        <Input
-          autoFocus
-          placeholder={placeholder}
-          autoCorrect="false"
-          value={query}
-          onChange={(event) => onSearch(event.target.value)}
-          w="full"
-          border="none"
-          ml={3}
-          fontWeight="medium"
-          fontSize="lg"
-          _focus={{
-            boxShadow: "none",
-          }}
-          boxShadow="none"
-        />
-        {closeButton}
-      </InputGroup>
-    </Flex>
-  )
-}
+          <Input
+            autoFocus
+            placeholder={placeholder}
+            autoCorrect="false"
+            value={query}
+            onChange={(event) => onSearch(event.target.value)}
+            w="full"
+            border="none"
+            ml={3}
+            fontWeight="medium"
+            fontSize="lg"
+            _focus={{
+              boxShadow: "none",
+            }}
+            boxShadow="none"
+          />
+          {closeButton}
+        </InputGroup>
+      </Flex>
+    )
+  }
+)
 
 export function QuickSearchContainer({ children }: PropsWithChildren<{}>) {
   return (

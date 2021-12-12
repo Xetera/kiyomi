@@ -1,6 +1,6 @@
-import { HStack, Image, Link, Text, VStack } from "@chakra-ui/react"
+import { forwardRef, HStack, Image, Link, Text, VStack } from "@chakra-ui/react"
 import { IoPricetag } from "react-icons/io5"
-import { Flex } from "@chakra-ui/layout"
+import { Box, Flex } from "@chakra-ui/layout"
 import NextLink from "next/link"
 import { useEffect, useState } from "react"
 import { IoIosReturnLeft } from "react-icons/io"
@@ -28,8 +28,7 @@ type QuickSearchPerson = {
 
 type QuickSearchGroup = {
   name: string
-  href: string
-}
+} & ({ onClick: () => void } | { href: string })
 
 type QuickSearchSection =
   | {
@@ -74,10 +73,13 @@ export function idolsSearchToQuickSearchSection(
 }
 
 export function groupsSearchToQuickSearchSection(
-  groups: Array<SearchResponseHit<SearchGroup>>
+  groups: Array<SearchResponseHit<SearchGroup>>,
+  destinationMapper: (
+    group: SearchResponseHit<SearchGroup>
+  ) => { href: string } | { onClick: () => void } = () => ({ href: "/" })
 ): QuickSearchGroup[] {
   return groups.map((group) => ({
-    href: "/",
+    ...destinationMapper(group),
     name: extractFieldOr(group, "name") as string,
   }))
 }
@@ -91,6 +93,55 @@ function QuickSearchSectionGeneric(props) {
       router.push(props.href)
     }
   }, [pressed])
+
+  const component = (
+    <Flex
+      display="flex"
+      justify="space-between"
+      px={3}
+      py={2}
+      w="full"
+      borderColor="transparent"
+      borderWidth="1px"
+      _hover={{ borderColor: "hsla(228,26%,16%,0.7)" }}
+      transition="all 0.2s ease-in-out"
+      borderRadius="md"
+      tabindex="0"
+      align="center"
+    >
+      {props.left}
+      {hovering ? (
+        <Flex align="center" color="gray.500">
+          <Text fontSize="14px" fontWeight="medium">
+            Select
+          </Text>
+          <Flex
+            px={2}
+            py={1}
+            ml={2}
+            bg="hsla(225, 27%, 12%, 1)"
+            borderRadius="md"
+          >
+            <IoIosReturnLeft />
+          </Flex>
+        </Flex>
+      ) : (
+        props.right
+      )}
+    </Flex>
+  )
+  if ("onClick" in props) {
+    return (
+      <Box
+        className="highlight-em"
+        w="full"
+        _hover={{ textDecoration: "none" }}
+        onClick={props.onClick}
+      >
+        {component}
+      </Box>
+    )
+  }
   return (
     <NextLink href={props.href} passHref>
       <Link
@@ -100,39 +151,7 @@ function QuickSearchSectionGeneric(props) {
         onFocusCapture={() => isHovering(true)}
         onBlur={() => isHovering(false)}
       >
-        <Flex
-          display="flex"
-          justify="space-between"
-          px={3}
-          py={2}
-          w="full"
-          borderColor="transparent"
-          borderWidth="1px"
-          _hover={{ borderColor: "hsla(228,26%,16%,0.7)" }}
-          transition="all 0.2s ease-in-out"
-          borderRadius="md"
-          align="center"
-        >
-          {props.left}
-          {hovering ? (
-            <Flex align="center" color="gray.500">
-              <Text fontSize="14px" fontWeight="medium">
-                Select
-              </Text>
-              <Flex
-                px={2}
-                py={1}
-                ml={2}
-                bg="hsla(225, 27%, 12%, 1)"
-                borderRadius="md"
-              >
-                <IoIosReturnLeft />
-              </Flex>
-            </Flex>
-          ) : (
-            props.right
-          )}
-        </Flex>
+        {component}
       </Link>
     </NextLink>
   )
@@ -148,9 +167,10 @@ const VerticalElems = ({ children }) => (
 )
 
 function QuickSearchSectionGroup(props: QuickSearchGroup) {
+  const p = "href" in props ? { href: props.href } : { onClick: props.onClick }
   return (
     <QuickSearchSectionGeneric
-      href={props.href}
+      {...p}
       left={
         <HorizontalElems>
           <RiAccountPinCircleLine color="hsla(226, 28%, 25%, 1)" size={32} />
@@ -248,30 +268,32 @@ function QuickSearchSectionTag(props: QuickSearchTag) {
   )
 }
 
-export function QuickSearchSection(props: QuickSearchSection) {
-  return (
-    <VStack spacing={3} alignItems="flex-start" w="full">
-      <Text
-        textTransform="uppercase"
-        letterSpacing="1.2px"
-        fontSize="13px"
-        fontWeight="medium"
-        color="hsla(228, 15%, 76%, 1)"
-      >
-        {mapping[props.type]}
-      </Text>
-      <VStack w="full">
-        {props.data.map((r) => {
-          switch (props.type) {
-            case "tag":
-              return <QuickSearchSectionTag {...r} />
-            case "person":
-              return <QuickSearchSectionPerson {...r} />
-            case "group":
-              return <QuickSearchSectionGroup {...r} />
-          }
-        })}
+export const QuickSearchSection = forwardRef<QuickSearchSection, "div">(
+  (props, ref) => {
+    return (
+      <VStack spacing={3} alignItems="flex-start" w="full" ref={ref} {...props}>
+        <Text
+          textTransform="uppercase"
+          letterSpacing="1.2px"
+          fontSize="13px"
+          fontWeight="medium"
+          color="hsla(228, 15%, 76%, 1)"
+        >
+          {mapping[props.type]}
+        </Text>
+        <VStack w="full">
+          {props.data.map((r) => {
+            switch (props.type) {
+              case "tag":
+                return <QuickSearchSectionTag {...r} />
+              case "person":
+                return <QuickSearchSectionPerson {...r} />
+              case "group":
+                return <QuickSearchSectionGroup {...r} />
+            }
+          })}
+        </VStack>
       </VStack>
-    </VStack>
-  )
-}
+    )
+  }
+)

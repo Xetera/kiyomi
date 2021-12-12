@@ -321,6 +321,7 @@ export type DiscoveredPost = {
   originalPostDate?: Maybe<Scalars['DateTime']>;
   postUrl?: Maybe<Scalars['String']>;
   providerType: Scalars['String'];
+  referencingGroups: Array<Group>;
   uniqueIdentifier: Scalars['String'];
   updatedAt: Scalars['DateTime'];
 };
@@ -1170,6 +1171,8 @@ export type QueryDiscoveredPostsArgs = {
 
 
 export type QueryDiscoveryFeedArgs = {
+  groupIds: Array<Scalars['Int']>;
+  peopleIds: Array<Scalars['Int']>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
 };
@@ -1530,6 +1533,8 @@ export type DiscoveryStatsQuery = (
 export type DiscoveredPostsQueryVariables = Exact<{
   skip: Scalars['Int'];
   take: Scalars['Int'];
+  groupIds?: Array<Scalars['Int']> | Scalars['Int'];
+  peopleIds?: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
@@ -1538,7 +1543,10 @@ export type DiscoveredPostsQuery = (
   & { discoveryFeed: Array<(
     { __typename?: 'DiscoveredPost' }
     & Pick<DiscoveredPost, 'id' | 'providerType' | 'uniqueIdentifier' | 'body' | 'accountName' | 'accountAvatarUrl' | 'postUrl' | 'createdAt' | 'originalPostDate'>
-    & { images: Array<(
+    & { referencingGroups: Array<(
+      { __typename?: 'Group' }
+      & Pick<Group, 'id' | 'name'>
+    )>, images: Array<(
       { __typename?: 'DiscoveredImage' }
       & Pick<DiscoveredImage, 'thumbnail' | 'url' | 'id'>
       & { vote?: Maybe<(
@@ -2067,8 +2075,13 @@ export const useDiscoveryStatsQuery = <
       options
     );
 export const DiscoveredPostsDocument = `
-    query DiscoveredPosts($skip: Int!, $take: Int!) {
-  discoveryFeed(skip: $skip, take: $take) {
+    query DiscoveredPosts($skip: Int!, $take: Int!, $groupIds: [Int!]! = [], $peopleIds: [Int!]! = []) {
+  discoveryFeed(
+    skip: $skip
+    take: $take
+    groupIds: $groupIds
+    peopleIds: $peopleIds
+  ) {
     id
     providerType
     uniqueIdentifier
@@ -2078,6 +2091,10 @@ export const DiscoveredPostsDocument = `
     postUrl
     createdAt
     originalPostDate
+    referencingGroups {
+      id
+      name
+    }
     images {
       thumbnail
       url

@@ -69,8 +69,11 @@ export function makeDiscovery() {
       userId,
       skip = 0,
       take = 30,
+      groupIds = [],
+      peopleIds = [],
     }: PersonalFeedInput): Promise<Array<DiscoveredPost>> {
-      const results = await prisma.$queryRaw`
+      const results = await prisma.$queryRaw(
+        `
       SELECT dp.*
       FROM discovered_posts dp
       WHERE (
@@ -79,18 +82,31 @@ export function makeDiscovery() {
               WHERE dp.id = di.post_id
             INTERSECT
             SELECT div.discovered_image_id FROM discovered_image_votes div
-              WHERE div.user_id = ${userId}
+              WHERE div.user_id = $1
         ),
          all_images AS (
              SELECT di.id
              FROM discovered_images di
              WHERE dp.id = di.post_id
          )
-      SELECT (SELECT COUNT(*) FROM liked_images) = (SELECT COUNT(*) FROM all_images)) = False
-      ORDER BY original_post_date desc, created_at
-      OFFSET ${skip}
-      LIMIT ${take}
-      `
+         SELECT (SELECT COUNT(*) FROM liked_images) = (SELECT COUNT(*) FROM all_images)
+      ) = False
+      AND (
+        cardinality($2::integer[] || $3::integer[]) = 0 OR (
+          (cardinality($2::integer[]) > 0 AND dp.referencing_groups && $2)
+          OR (cardinality($3::integer[]) > 0 AND dp.referencing_people && $3)
+        )
+      )
+      ORDER BY original_post_date desc, created_at desc
+      OFFSET $4
+      LIMIT $5
+      `,
+        userId,
+        groupIds,
+        peopleIds,
+        skip,
+        take
+      )
       return results.map(camelCaseKeys)
     },
     async votePost(args: DiscoveryPostVoteInput): Promise<number> {
@@ -151,6 +167,8 @@ type PersonalFeedInput = {
   userId: number
   take: number
   skip: number
+  groupIds?: number[]
+  peopleIds?: number[]
 }
 
 export type DiscoveryService = ReturnType<typeof makeDiscovery>

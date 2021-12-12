@@ -263,6 +263,16 @@ type DiscoveredPost {
   originalPostDate: DateTime
   postUrl: String
   providerType: String!
+
+  """
+  Groups who are associated with the social media account that created this post.
+  """
+  referencingGroups: [Group!]!
+
+  """
+  People who are associated with the social media account that created this post.
+  """
+  referencingPeople: [Person!]!
   uniqueIdentifier: String!
   updatedAt: DateTime!
 }
@@ -972,7 +982,7 @@ type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
   discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
-  discoveryFeed(skip: Int, take: Int): [DiscoveredPost!]!
+  discoveryFeed(groupIds: [Int!]!, peopleIds: [Int!]!, skip: Int, take: Int): [DiscoveredPost!]!
   discoveryProviders: [DiscoveryProvider!]!
   discoveryStats: [DiscoveryStatistic!]!
   group(where: GroupWhereUniqueInput!): Group

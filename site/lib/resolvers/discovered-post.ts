@@ -17,11 +17,42 @@ export const DiscoveredPost = objectType({
       .accountName()
       .accountAvatarUrl()
       .originalPostDate()
-      // TODO: make this a manual query that does a fetchAll
-      // .referencingGroups({ description: "Groups" })
-      // .referencingPeople()
       .createdAt()
       .updatedAt()
+    t.field("referencingPeople", {
+      type: nonNull(list(nonNull("Person"))),
+      description:
+        "People who are associated with the social media account that created this post.",
+      resolve(root, _, { prisma }) {
+        if (!root.referencingPeople) {
+          return []
+        }
+        return prisma.person.findMany({
+          where: {
+            id: {
+              in: root.referencingPeople,
+            },
+          },
+        })
+      },
+    })
+    t.field("referencingGroups", {
+      type: nonNull(list(nonNull("Group"))),
+      description:
+        "Groups who are associated with the social media account that created this post.",
+      resolve(root, _, { prisma }) {
+        if (!root.referencingGroups) {
+          return []
+        }
+        return prisma.group.findMany({
+          where: {
+            id: {
+              in: root.referencingGroups,
+            },
+          },
+        })
+      },
+    })
   },
 })
 
@@ -31,6 +62,8 @@ export const Query = queryField((t) => {
     args: {
       take: "Int",
       skip: "Int",
+      groupIds: nonNull(list(nonNull("Int"))),
+      peopleIds: nonNull(list(nonNull("Int"))),
     },
     async resolve(_, args, { user, prisma, discovery }) {
       const DEFAULT_TAKE = 30
@@ -40,10 +73,14 @@ export const Query = queryField((t) => {
           take: args.take ?? DEFAULT_TAKE,
         })
       }
+
+      console.log({ g: args.groupIds, p: args.peopleIds })
       return discovery.personalFeed({
         skip: args.skip ?? 0,
         take: args.take ?? DEFAULT_TAKE,
         userId: user.id,
+        groupIds: args.groupIds,
+        peopleIds: args.peopleIds,
       })
     },
   })

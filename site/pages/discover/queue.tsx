@@ -2,29 +2,40 @@ import { WithNavbar } from "@/components/navbar"
 import {
   DiscoveredPostsDocument,
   DiscoveredPostsQuery,
+  DiscoveredPostsQueryVariables,
   fetcher,
 } from "@/lib/__generated__/graphql"
 import { DiscoveredPost } from "@/components/discover/discovered-post"
-import { Box, Grid, Image, Text, VStack } from "@chakra-ui/react"
+import { Box, Image, Text, VStack } from "@chakra-ui/react"
 import { LargeBanner } from "@/components/large-banner"
 import DiscoverTabs from "@/components/discover/tabs"
-import DiscoverSidebar from "@/components/discover/sidebar"
 import React, { useState } from "react"
 import { useInfiniteQuery } from "react-query"
 import { Waypoint } from "react-waypoint"
 import { paginateBySkip } from "@/client/pagination"
+import { useSelector } from "react-redux"
+import { RootState } from "@/models/store"
 
 const PER_PAGE = 10
 
 function Queue() {
   const [skip, setSkip] = useState(0)
+  const filters = useSelector((root: RootState) => root.discovery?.searchFilter)
+  const groupIds = filters.filter((f) => f.type === "group").map((f) => f.id)
   const { data, isFetching, fetchNextPage } = useInfiniteQuery(
-    ["DiscoveredPosts", skip],
+    // kinda yikes?
+    ["DiscoveredPosts", skip, groupIds],
     ({ pageParam = 0 }) => {
-      return fetcher<DiscoveredPostsQuery, unknown>(DiscoveredPostsDocument, {
-        skip: pageParam,
-        take: PER_PAGE,
-      })()
+      return fetcher<DiscoveredPostsQuery, DiscoveredPostsQueryVariables>(
+        DiscoveredPostsDocument,
+        {
+          skip: pageParam,
+          take: PER_PAGE,
+          groupIds,
+          // TODO: implement
+          peopleIds: [],
+        }
+      )()
     },
     {
       refetchOnMount: false,
@@ -43,7 +54,7 @@ function Queue() {
 
   return (
     <>
-      {feed && feed.length === 0 && (
+      {feed && feed.length === 0 && filters.length === 0 && (
         <VStack spacing={4} align="flex-start">
           <Text textStyle="text">
             Wow... you've gone through every single post that needs to be

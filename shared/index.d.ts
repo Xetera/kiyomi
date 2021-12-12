@@ -869,6 +869,8 @@ export interface NexusGenFieldTypes {
     originalPostDate: NexusGenScalars['DateTime'] | null; // DateTime
     postUrl: string | null; // String
     providerType: string; // String!
+    referencingGroups: NexusGenRootTypes['Group'][]; // [Group!]!
+    referencingPeople: NexusGenRootTypes['Person'][]; // [Person!]!
     uniqueIdentifier: string; // String!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
@@ -1103,6 +1105,8 @@ export interface NexusGenFieldTypeNames {
     originalPostDate: 'DateTime'
     postUrl: 'String'
     providerType: 'String'
+    referencingGroups: 'Group'
+    referencingPeople: 'Person'
     uniqueIdentifier: 'String'
     updatedAt: 'DateTime'
   }
@@ -1407,6 +1411,8 @@ export interface NexusGenArgTypes {
       where?: NexusGenInputs['DiscoveredPostWhereInput'] | null; // DiscoveredPostWhereInput
     }
     discoveryFeed: { // args
+      groupIds: number[]; // [Int!]!
+      peopleIds: number[]; // [Int!]!
       skip?: number | null; // Int
       take?: number | null; // Int
     }

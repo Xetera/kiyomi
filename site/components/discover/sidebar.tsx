@@ -15,45 +15,11 @@ import {
 import { decideProvider } from "@/components/discover/discovered-post"
 import groupBy from "lodash/groupBy"
 import { RiLink } from "react-icons/ri"
-import { QuickSearchHeader } from "@/components/search/QuickSearchContainer"
+import { SidebarSearch } from "@/components/discover/sidebar-search"
 import { useState } from "react"
-import {
-  groupsSearchToQuickSearchSection,
-  QuickSearchSection,
-} from "@/components/search/QuickSearchSection"
-import { SearchGroup, searchGroup } from "@/client/typesense"
-import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 
 function isGraphQlError(error: any): error is { message: string } {
   return error && "message" in error
-}
-
-type GroupResult = Array<SearchResponseHit<SearchGroup>>
-
-function SidebarSearch() {
-  const [search, setSearch] = useState("")
-  const [hits, setHits] = useState<GroupResult>([])
-
-  async function changeSearch(text: string) {
-    setSearch(text)
-    const groups = await searchGroup(text)
-    setHits(groups.hits ?? [])
-  }
-
-  return (
-    <VStack align="flex-start">
-      <QuickSearchHeader
-        placeholder="Search social media posts"
-        query={search}
-        onSearch={changeSearch}
-        closeButton={<div />}
-      />
-      <QuickSearchSection
-        type="group"
-        data={groupsSearchToQuickSearchSection(hits)}
-      />
-    </VStack>
-  )
 }
 
 export default function DiscoverSidebar() {
@@ -62,6 +28,7 @@ export default function DiscoverSidebar() {
   const groups = groupBy(providers ?? [], (e) => e.provider)
   return (
     <VStack align="flex-start" spacing={8}>
+      <SidebarSearch />
       {isLoading && <Spinner />}
       {isGraphQlError(error) && (
         <>
@@ -73,7 +40,6 @@ export default function DiscoverSidebar() {
           </Text>
         </>
       )}
-      <SidebarSearch />
       {providers && (
         <>
           <VStack align="flex-start" spacing={3}>

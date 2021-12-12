@@ -286,14 +286,14 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
           </ButtonGroup>
         </HStack>
       )}
-      <Flex>
+      {post.referencingGroups[0] && (
         <Text textStyle="text-sm" color="text.500" fontWeight="medium">
-          <Box as="b">Note:</Box> This account normally posts about{" "}
+          This account normally posts about{" "}
           <Box as="span" fontWeight="bold" color="text.100">
-            Dreamcatcher
+            {post.referencingGroups[0].name}
           </Box>
         </Text>
-      </Flex>
+      )}
     </Grid>
   )
 }

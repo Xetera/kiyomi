@@ -1,5 +1,5 @@
-query DiscoveredPosts($skip: Int!, $take: Int!) {
-    discoveryFeed(skip: $skip, take: $take) {
+query DiscoveredPosts($skip: Int!, $take: Int!, $groupIds: [Int!]! = [], $peopleIds: [Int!]! = []) {
+    discoveryFeed(skip: $skip, take: $take, groupIds: $groupIds, peopleIds: $peopleIds) {
         id
         providerType
         uniqueIdentifier
@@ -9,6 +9,10 @@ query DiscoveredPosts($skip: Int!, $take: Int!) {
         postUrl
         createdAt
         originalPostDate
+        referencingGroups {
+            id
+            name
+        }
         images {
             thumbnail
             url
