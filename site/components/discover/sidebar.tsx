@@ -1,7 +1,4 @@
-import {
-  DiscoveryProvider,
-  useDiscoveryProvidersQuery,
-} from "@/lib/__generated__/graphql"
+import { useDiscoveryProvidersQuery } from "@/lib/__generated__/graphql"
 import {
   Accordion,
   AccordionButton,
@@ -31,14 +28,18 @@ function isGraphQlError(error: any): error is { message: string } {
   return error && "message" in error
 }
 
+type GroupResult = Array<SearchResponseHit<SearchGroup>>
+
 function SidebarSearch() {
   const [search, setSearch] = useState("")
-  const [hits, setHits] = useState<Array<SearchResponseHit<SearchGroup>>>([])
+  const [hits, setHits] = useState<GroupResult>([])
+
   async function changeSearch(text: string) {
     setSearch(text)
     const groups = await searchGroup(text)
     setHits(groups.hits ?? [])
   }
+
   return (
     <VStack align="flex-start">
       <QuickSearchHeader

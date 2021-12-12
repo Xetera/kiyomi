@@ -57,7 +57,7 @@ export const searchIdol = queryFieldsBy<SearchIdol>({
   per_page: PER_PAGE,
 })
 
-export const searchGroup = queryFieldsBy({
+export const searchGroup = queryFieldsBy<SearchGroup>({
   collection: "groups",
   query_by: "aliases,name",
   per_page: PER_PAGE,
