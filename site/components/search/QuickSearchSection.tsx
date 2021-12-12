@@ -9,6 +9,8 @@ import { useRouter } from "next/router"
 import { FaUserCircle } from "react-icons/fa"
 import { RiAccountPinCircleLine } from "react-icons/ri"
 import { intersperse } from "@/client/jsx-helpers"
+import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
+import { SearchGroup, SearchIdol } from "@/client/typesense"
 
 type QuickSearchTag = {
   href: string
@@ -49,6 +51,36 @@ const mapping: Record<QuickSearchSectionKind, string> = {
 }
 
 const formatter = new Intl.NumberFormat()
+
+function extractFieldOr(
+  hit: SearchResponseHit<any>,
+  name: string
+): string | string[] | undefined {
+  const field = hit.highlights?.find(({ field }) => field === name)
+  if (field?.snippets) {
+    return field.snippets
+  }
+  return field?.snippet ?? hit.document[name]
+}
+
+export function idolsSearchToQuickSearchSection(
+  idols: Array<SearchResponseHit<SearchIdol>>
+): QuickSearchPerson[] {
+  return idols.map((idol) => ({
+    href: "/",
+    aliases: (extractFieldOr(idol, "aliases") ?? []) as string[],
+    name: extractFieldOr(idol, "name") as string,
+  }))
+}
+
+export function groupsSearchToQuickSearchSection(
+  groups: Array<SearchResponseHit<SearchGroup>>
+): QuickSearchGroup[] {
+  return groups.map((group) => ({
+    href: "/",
+    name: extractFieldOr(group, "name") as string,
+  }))
+}
 
 function QuickSearchSectionGeneric(props) {
   const router = useRouter()

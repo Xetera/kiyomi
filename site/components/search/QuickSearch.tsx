@@ -5,11 +5,16 @@ import {
   QuickSearchHeader,
 } from "@/components/search/QuickSearchContainer"
 import React, { useEffect } from "react"
-import { QuickSearchSection } from "@/components/search/QuickSearchSection"
+import {
+  groupsSearchToQuickSearchSection,
+  idolsSearchToQuickSearchSection,
+  QuickSearchSection,
+} from "@/components/search/QuickSearchSection"
 import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 import {
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -25,17 +30,6 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
   useEffect(() => {
     store.dispatch.search.runSearch(query)
   }, [query])
-
-  function extractFieldOr(
-    hit: SearchResponseHit<any>,
-    name: string
-  ): string | string[] | undefined {
-    const field = hit.highlights?.find(({ field }) => field === name)
-    if (field?.snippets) {
-      return field.snippets
-    }
-    return field?.snippet ?? hit.document[name]
-  }
 
   return (
     <AnimatePresence>
@@ -55,28 +49,24 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
           borderRadius="md"
         >
           <ModalHeader p={2}>
-            <QuickSearchHeader query={query} onSearch={runSearch} />
+            <QuickSearchHeader
+              query={query}
+              onSearch={runSearch}
+              closeButton={<ModalCloseButton />}
+            />
           </ModalHeader>
           <ModalBody p="0">
             <QuickSearchContainer>
               {idols.length > 0 && (
                 <QuickSearchSection
                   type="person"
-                  data={idols.map((idol) => ({
-                    href: "/",
-                    aliases: (extractFieldOr(idol, "aliases") ??
-                      []) as string[],
-                    name: extractFieldOr(idol, "name") as string,
-                  }))}
+                  data={idolsSearchToQuickSearchSection(idols)}
                 />
               )}
               {groups.length > 0 && (
                 <QuickSearchSection
                   type="group"
-                  data={groups.map((group) => ({
-                    href: "/",
-                    name: extractFieldOr(group, "name") as string,
-                  }))}
+                  data={groupsSearchToQuickSearchSection(groups)}
                 />
               )}
               {/*<QuickSearchSection*/}

@@ -1,6 +1,9 @@
 import { SearchClient } from "typesense"
 import type { NodeConfiguration } from "typesense/lib/Typesense/Configuration"
-import type { SearchResponse } from "typesense/lib/Typesense/Documents"
+import type {
+  SearchParams,
+  SearchResponse,
+} from "typesense/lib/Typesense/Documents"
 import type { MultiSearchRequestSchema } from "typesense/lib/Typesense/MultiSearch"
 
 export const typesense = new SearchClient({
@@ -26,21 +29,45 @@ export type SearchIdol = {
   aliases: string[]
 }
 
-export const searchIdol = async (
-  query: string
-): Promise<SearchResponse<SearchIdol>> => {
-  return (await typesense.collections("people").documents().search(
-    {
-      q: query,
-      query_by: "name,aliases",
-    },
-    { cacheSearchResultsForSeconds: 30 }
-  )) as any
+// not sure why group_by causes issues here
+type SearchInput = Omit<SearchParams<any>, "q" | "group_by"> & {
+  collection: string
 }
+
+const queryFieldsBy = <T>({ collection, ...opts }: SearchInput) => async (
+  query: string
+): Promise<SearchResponse<T>> => {
+  return (await typesense
+    .collections(collection)
+    .documents()
+    .search(
+      {
+        q: query,
+        ...opts,
+      },
+      { cacheSearchResultsForSeconds: 30 }
+    )) as any
+}
+
+const PER_PAGE = 6
+
+export const searchIdol = queryFieldsBy<SearchIdol>({
+  collection: "people",
+  query_by: "aliases,name",
+  per_page: PER_PAGE,
+})
+
+export const searchGroup = queryFieldsBy({
+  collection: "groups",
+  query_by: "aliases,name",
+  per_page: PER_PAGE,
+})
 
 export const searchGeneric = async (
   query: string,
-  commonParams: Partial<MultiSearchRequestSchema<unknown>> = { per_page: 6 }
+  commonParams: Partial<MultiSearchRequestSchema<unknown>> = {
+    per_page: PER_PAGE,
+  }
 ): Promise<[SearchResponse<SearchIdol>, SearchResponse<SearchGroup>]> => {
   const response = await typesense.multiSearch.perform(
     {

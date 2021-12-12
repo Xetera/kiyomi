@@ -15,6 +15,7 @@ export type QuickSearchProps = {
   placeholder?: string
   query: string
   onSearch: (query: string) => void
+  closeButton: React.ReactElement
 }
 
 const QuickSearchTab = forwardRef(({ children, ...rest }, ref) => (
@@ -37,9 +38,10 @@ export function QuickSearchHeader({
   placeholder = "Search for anything...",
   query,
   onSearch,
+  closeButton = <ModalCloseButton />,
 }: QuickSearchProps) {
   return (
-    <Flex w="full" overflow="hidden" boxShadow="lg">
+    <Flex w="full" overflow="hidden">
       <InputGroup w="full" outline="none">
         <InputLeftElement pointerEvents="none">
           <RiSearchLine size={22} />
@@ -61,7 +63,7 @@ export function QuickSearchHeader({
           }}
           boxShadow="none"
         />
-        <ModalCloseButton />
+        {closeButton}
       </InputGroup>
     </Flex>
   )
