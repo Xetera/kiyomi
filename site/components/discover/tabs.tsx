@@ -14,7 +14,7 @@ type DiscoverTabsOptions = {
 export default function DiscoverTabs(props: DiscoverTabsOptions) {
   const { data } = useDiscoveryStatsQuery()
   const totalVerdicts = data
-    ? data.discoveryStats.reduce((total, stat) => stat.count, 0)
+    ? data.discoveryStats.reduce((total, stat) => stat.count + total, 0)
     : undefined
   return (
     <Tabs w="full" zIndex={2} colorScheme="white">
