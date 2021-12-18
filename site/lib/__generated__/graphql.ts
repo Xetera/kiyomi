@@ -321,7 +321,10 @@ export type DiscoveredPost = {
   originalPostDate?: Maybe<Scalars['DateTime']>;
   postUrl?: Maybe<Scalars['String']>;
   providerType: Scalars['String'];
+  /** Groups who are associated with the social media account that created this post. */
   referencingGroups: Array<Group>;
+  /** People who are associated with the social media account that created this post. */
+  referencingPeople: Array<Person>;
   uniqueIdentifier: Scalars['String'];
   updatedAt: Scalars['DateTime'];
 };

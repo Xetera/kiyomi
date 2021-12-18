@@ -19,12 +19,11 @@ import { RootState } from "@/models/store"
 const PER_PAGE = 10
 
 function Queue() {
-  const [skip, setSkip] = useState(0)
   const filters = useSelector((root: RootState) => root.discovery?.searchFilter)
   const groupIds = filters.filter((f) => f.type === "group").map((f) => f.id)
   const { data, isFetching, fetchNextPage } = useInfiniteQuery(
     // kinda yikes?
-    ["DiscoveredPosts", skip, groupIds],
+    ["DiscoveredPosts", groupIds],
     ({ pageParam = 0 }) => {
       return fetcher<DiscoveredPostsQuery, DiscoveredPostsQueryVariables>(
         DiscoveredPostsDocument,

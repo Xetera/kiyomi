@@ -1,21 +1,25 @@
-import { Image as ImageData, Person, Thumbnail } from "@/lib/__generated__/graphql"
+import {
+  Image as ImageData,
+  Person,
+  Thumbnail,
+} from "@/lib/__generated__/graphql"
 import Link from "next/link"
 import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react"
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import format from "date-fns/format"
 import { AnimatePresence, motion } from "framer-motion"
 
 export type FocusableImage = Pick<ImageData, "focus" | "width" | "height">
 
 export type ImageGridElementProps = {
-  forceSmall?: boolean;
-  image: Pick<ImageData,
-    "createdAt" | "id" | "url"> & FocusableImage & {
-    thumbnail: Pick<Thumbnail, "small">
-    appearances?: Array<{
-      person: Pick<Person, "name">
-    }>
-  }
+  forceSmall?: boolean
+  image: Pick<ImageData, "createdAt" | "id" | "url"> &
+    FocusableImage & {
+      thumbnail: Pick<Thumbnail, "small">
+      appearances?: Array<{
+        person: Pick<Person, "name">
+      }>
+    }
 }
 
 const MotionBox = motion(Box)
@@ -24,15 +28,46 @@ const toPercentage = (position: number, max: number) =>
   `${Math.floor((position / max) * 100)}%`
 
 export const focusToObjectPosition = (image: FocusableImage) => {
-  return `${toPercentage(image.focus ? image.focus.x : image.width / 2, image.width)} ${toPercentage(
+  return `${toPercentage(
+    image.focus ? image.focus.x : image.width / 2,
+    image.width
+  )} ${toPercentage(
     image.focus ? image.focus.y : image.height / 2,
-    image.height,
+    image.height
   )}`
+}
+
+const ImageDisplay = ({ objectPosition, thumbnail }) => {
+  const [loaded, setLoaded] = useState(false)
+  const ref = useRef<HTMLImageElement | null>(null)
+  useEffect(() => {
+    if (ref.current?.complete) {
+      setLoaded(true)
+    }
+  }, [])
+  return (
+    <Skeleton
+      isLoaded={loaded}
+      height="100%"
+      startColor="bgPrimary"
+      endColor="bgSecondary"
+    >
+      <Image
+        objectPosition={objectPosition}
+        objectFit="cover"
+        width="100%"
+        height="100%"
+        loading="lazy"
+        onLoad={() => setLoaded(true)}
+        ref={ref}
+        src={thumbnail}
+      />
+    </Skeleton>
+  )
 }
 
 export function ImageGridElement(props: ImageGridElementProps) {
   const [hovering, setHovering] = useState(false)
-  const [loaded, setLoaded] = useState(false)
   const { image } = props
   const objectPosition = image ? focusToObjectPosition(image) : ""
 
@@ -50,18 +85,10 @@ export function ImageGridElement(props: ImageGridElementProps) {
         position="relative"
         overflow="hidden"
       >
-        <Skeleton isLoaded={loaded} height="100%">
-          <Image
-            objectPosition={objectPosition}
-            objectFit="cover"
-            width="100%"
-            height="100%"
-            loading="lazy"
-            onLoad={() => setLoaded(true)}
-            src={image.thumbnail.small}
-            // src={"a"}
-          />
-        </Skeleton>
+        <ImageDisplay
+          objectPosition={objectPosition}
+          thumbnail={image.thumbnail.small}
+        />
         <AnimatePresence>
           {hovering && (
             <MotionBox
@@ -85,14 +112,16 @@ export function ImageGridElement(props: ImageGridElementProps) {
               flexDirection="row"
               alignItems="flex-end"
             >
-              {image.appearances?.[0] && <Text
-                fontSize="xs"
-                color="white"
-                zIndex="1000000"
-                opacity="var(--gradient)"
-              >
-                {image.appearances[0]?.person.name ?? "Unknown"}
-              </Text>}
+              {image.appearances?.[0] && (
+                <Text
+                  fontSize="xs"
+                  color="white"
+                  zIndex="1000000"
+                  opacity="var(--gradient)"
+                >
+                  {image.appearances[0]?.person.name ?? "Unknown"}
+                </Text>
+              )}
               <Text
                 as="time"
                 dateTime={image.createdAt}
