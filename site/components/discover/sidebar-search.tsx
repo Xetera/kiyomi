@@ -32,10 +32,11 @@ export function SidebarSearch() {
       .every((tag) => tag.id !== hit.document.groupId)
   )
   return (
-    <VStack align="flex-start">
-      <Flex p={2} bg="rgba(0, 0, 0, 0.2)" borderRadius="md">
+    <VStack align="flex-start" w="full">
+      <Flex p={2} bg="rgba(0, 0, 0, 0.2)" borderRadius="md" w="full">
         <QuickSearchHeader
-          fontSize="14px"
+          fontSize="16px"
+          w="full"
           placeholder="Search social media posts"
           query={search}
           onSearch={changeSearch}

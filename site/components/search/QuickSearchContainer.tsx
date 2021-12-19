@@ -62,7 +62,7 @@ export const QuickSearchHeader = forwardRef<QuickSearchProps, "div">(
             border="none"
             ml={3}
             fontWeight="medium"
-            fontSize="lg"
+            fontSize="inherit"
             _focus={{
               boxShadow: "none",
             }}

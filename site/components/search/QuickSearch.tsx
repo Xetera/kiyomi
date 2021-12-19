@@ -48,7 +48,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
           overflow="hidden"
           borderRadius="md"
         >
-          <ModalHeader p={2}>
+          <ModalHeader p={2} fontSize="lg">
             <QuickSearchHeader
               query={query}
               onSearch={runSearch}

@@ -41,7 +41,11 @@ COPY --from=jrottenberg/ffmpeg:4.3-alpine312 /usr/local /usr/local/
 WORKDIR /opt/app
 
 ENV NODE_ENV=production
+ENV TS_NODE_TRANSPILE_ONLY=true
+ENV TS_NODE_BASEURL="dist/site"
 WORKDIR /opt/app
+
+RUN yarn global add ts-node
 
 COPY site/package.json site/yarn.lock ./
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
