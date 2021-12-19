@@ -1,8 +1,15 @@
-import type { DiscoveredImageVote, DiscoveredPost } from "@prisma/client"
-import { prisma } from "../db"
+import type {
+  DiscoveredImageVote,
+  DiscoveredPost,
+  PrismaClient,
+} from "@prisma/client"
 import camelCaseKeys from "camelcase-keys"
 
-export function makeDiscovery() {
+export type DiscoveryOptions = {
+  prisma: PrismaClient
+}
+
+export function makeDiscovery({ prisma }: DiscoveryOptions) {
   return {
     async postsByPerson(peopleId: number[]): Promise<Array<DiscoveredPost>> {
       return prisma.discoveredPost.findMany({

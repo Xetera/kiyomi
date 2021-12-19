@@ -6,26 +6,22 @@ export const getPerceptualHash = celeryClient.createTask(
   PERCEPTUAL_HASH_TASK_NAME
 )
 
-export function makePerceptualHash(): PerceptualHashService {
-  const methods: PerceptualHashService = {
-    hashStringToCube(hash) {
+export function makePerceptualHash() {
+  const methods = {
+    hashStringToCube(hash: string): Uint8Array {
       return Uint8Array.from(hash.split(""), (val) => parseInt(String(val), 16))
     },
-    async mostSimilarImage(url) {
+    async mostSimilarImage(url: string): Promise<SimilarImage | undefined> {
       const hash: string = await getPerceptualHash.applyAsync([url]).get()
       const cube = methods.hashStringToCube(hash)
       const similar = await similarImagesQuery(cube)
       return similar[0]
     },
-    isNearPerfectMatch(distance) {
+    isNearPerfectMatch(distance: number): boolean {
       return distance <= 5
     },
   }
   return methods
 }
 
-export type PerceptualHashService = {
-  mostSimilarImage(url: string): Promise<SimilarImage | undefined>
-  hashStringToCube(hash: string): Uint8Array
-  isNearPerfectMatch(distance: number): boolean
-}
+export type PerceptualHashService = ReturnType<typeof makePerceptualHash>

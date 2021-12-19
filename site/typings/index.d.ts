@@ -1,12 +1,18 @@
 import type { PrismaClient } from "@prisma/client"
-import { Services } from "@/lib/services"
+import type { Services } from "@/lib/services"
+
+declare module "http" {
+  export interface IncomingMessage {
+    services: Services
+    prisma: PrismaClient
+  }
+}
 
 declare global {
   import amqplib from "amqplib"
+
   namespace NodeJS {
     interface Global {
-      prisma?: PrismaClient
-      servicesPromise?: Promise<Services>
       amqpPromise: Promise<amqplib.Connection>
     }
   }

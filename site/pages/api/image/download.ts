@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { prisma } from "@/lib/db"
 import { rawUrl } from "@/lib/services/image"
 import fetch from "node-fetch"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, discoveredImageId } = req.query
+  const { prisma } = req
   if (!slug && !discoveredImageId) {
     return res.status(400).end()
   }

@@ -1,20 +1,19 @@
 import { humanFileSize } from "../shared"
 import keyBy from "lodash/keyBy"
-import sample from "lodash/sample"
 import camelCase from "lodash/camelCase"
 import sampleSize from "lodash/sampleSize"
 import {
-  objectType,
-  queryField,
-  nonNull,
-  stringArg,
-  list,
-  mutationField,
+  enumType,
   inputObjectType,
   intArg,
-  enumType,
+  list,
+  mutationField,
+  nonNull,
+  objectType,
+  queryField,
+  stringArg,
 } from "nexus"
-import { hasRole, Role } from "../permissions"
+import { Role } from "../permissions"
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client"
 import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
@@ -395,9 +394,7 @@ export const Mutation = mutationField((t) => {
         )
       }
 
-      const channel = await amqp.createChannel()
-      const queueInfo = await channel.assertQueue(queueName)
-      channel.sendToQueue(queueName, Buffer.from(JSON.stringify({ slug })))
+      const { queueInfo } = await amqp.sendToQueue(queueName, { slug })
       prisma.image
         .update({
           where: { slug },
@@ -409,7 +406,7 @@ export const Mutation = mutationField((t) => {
         })
       console.log(`Got an image queue request for ${slug}`)
       return {
-        queueSize: queueInfo.messageCount,
+        queueSize: queueInfo.messageCount ?? -1,
       }
     },
   })

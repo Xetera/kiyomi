@@ -3,10 +3,8 @@ import { getSession } from "next-auth/client"
 import { WithNavbar } from "@/components/navbar"
 import {
   fetcher,
-  HomepageDocument,
   HomepagePersonDocument,
   HomepagePersonQuery,
-  HomepageQuery,
   useHomepageQuery,
 } from "@/lib/__generated__/graphql"
 import { Grid, Heading, VStack } from "@chakra-ui/layout"
@@ -37,15 +35,12 @@ const fetchParams = (skip: number, id: number = 1) => ({
 
 const homepagePersonKey = (index: number) => ["HomepagePerson", index]
 
-export default function Home() {
+function HomeContent() {
   const pageRef = React.useRef(null)
   const { data: trending } = useHomepageQuery(
     {},
     { keepPreviousData: true, refetchOnMount: false }
   )
-  if (!trending) {
-    throw Error("Trending page was not server side rendered properly...")
-  }
 
   const [selected, setSelected] = React.useState(0)
   const {
@@ -55,6 +50,10 @@ export default function Home() {
   } = useInfiniteQuery<HomepagePersonQuery>(
     homepagePersonKey(selected),
     ({ pageParam = 0 }) => {
+      if (!trending) {
+        // not ready to fetch
+        throw Error
+      }
       return fetcher<HomepagePersonQuery, unknown>(
         HomepagePersonDocument,
         fetchParams(pageParam, trending.homepage[selected]?.id)
@@ -65,7 +64,7 @@ export default function Home() {
       getNextPageParam: paginateBySkip(PER_PAGE),
     }
   )
-  const splash = trending.homepage[selected]?.banner
+  const splash = trending?.homepage[selected]?.banner
 
   async function loadMore() {
     if (isFetching) {
@@ -75,13 +74,7 @@ export default function Home() {
   }
 
   return (
-    <WithNavbar noSpace>
-      <OgImage
-        imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/kiyomi_splash.jpg`}
-        title="Kiyomi.io (Alpha)"
-        description="A single place to find Kpop images"
-      />
-
+    <>
       <Box
         position="relative"
         mb={3}
@@ -174,7 +167,7 @@ export default function Home() {
           w="full"
           gap={6}
         >
-          {trending.homepage.map((trend, i) => {
+          {trending?.homepage.map((trend, i) => {
             const opacity = i === selected ? "100%" : "40%"
             return (
               <Flex
@@ -245,20 +238,33 @@ export default function Home() {
       <Box height="800px">
         <Waypoint onEnter={loadMore} topOffset="-1500px" />
       </Box>
+    </>
+  )
+}
+
+export default function Home() {
+  return (
+    <WithNavbar noSpace>
+      <OgImage
+        imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/kiyomi_splash.jpg`}
+        title="Kiyomi.io (Alpha)"
+        description="A single place to find Kpop images"
+      />
+      <HomeContent />
     </WithNavbar>
   )
 }
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
   const client = new QueryClient()
-  let result = await fetcher<HomepageQuery, unknown>(HomepageDocument)()
-  client.setQueryData(["Homepage", {}], result)
-  const personParams = fetchParams(0, result.homepage[0]?.id)
-  let person = await fetcher<HomepageQuery, unknown>(
-    HomepagePersonDocument,
-    personParams
-  )()
-  client.setQueryData(homepagePersonKey(0), { pages: [person] })
+  // let result = await fetcher<HomepageQuery, unknown>(HomepageDocument)()
+  // client.setQueryData(["Homepage", {}], result)
+  // const personParams = fetchParams(0, result.homepage[0]?.id)
+  // let person = await fetcher<HomepageQuery, unknown>(
+  //   HomepagePersonDocument,
+  //   personParams
+  // )()
+  // client.setQueryData(homepagePersonKey(0), { pages: [person] })
 
   const dehydratedState = dehydrate(client)
 

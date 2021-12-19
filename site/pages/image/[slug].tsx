@@ -11,7 +11,6 @@ import { useRouter } from "next/router"
 import { useOneImageQuery } from "@/lib/__generated__/graphql"
 import { ImageEditModal } from "@/components/image-edit-modal"
 import { prefetchQuery } from "@/lib/client-helpers"
-import { prisma } from "@/lib/db"
 import { wrapRequest } from "@/lib/data-fetching"
 import { Flex, Heading, Text } from "@chakra-ui/layout"
 import {
@@ -178,7 +177,7 @@ const Image = () => {
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
   const slug = ctx.params!.slug as string
-  prisma.image
+  ctx.req.prisma.image
     .update({
       where: { slug },
       data: {

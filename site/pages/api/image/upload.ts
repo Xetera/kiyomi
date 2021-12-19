@@ -10,9 +10,8 @@ import mimeType from "mime-types"
 import sizeOf from "image-size"
 import { MimeType, Person } from "@prisma/client"
 import idgen from "nanoid"
-import { sendImageToFaceRecognition } from "@/lib/amqp"
 import { backend, FaceData, ImageData } from "../../../../shared/sdk"
-import { UploadType } from "../../../../shared/backend"
+import type { UploadType } from "../../../../shared/backend"
 
 export const config = {
   api: {
@@ -44,7 +43,7 @@ export type PushToVerificationQueueOptions = {
 
 export default handle(
   withUser(
-    withFileUpload(async (_req, res, { upload, db, user, contextType }) => {
+    withFileUpload(async (req, res, { upload, db, user, contextType }) => {
       try {
         const { files, fields } = upload
         const [file] = files
@@ -204,14 +203,16 @@ export default handle(
             },
           ],
         })
-        sendImageToFaceRecognition(image.slug, {
-          ireneBotIdolId: ireneBotIdolId ? Number(ireneBotIdolId) : undefined,
-          ireneBotImageId: ireneBotImageId
-            ? Number(ireneBotImageId)
-            : undefined,
-        }).catch((err) => {
-          console.error(err)
-        })
+        req.services.amqp
+          .sendImageToFaceRecognition(image.slug, {
+            ireneBotIdolId: ireneBotIdolId ? Number(ireneBotIdolId) : undefined,
+            ireneBotImageId: ireneBotImageId
+              ? Number(ireneBotImageId)
+              : undefined,
+          })
+          .catch((err) => {
+            console.error(err)
+          })
         return res.json(result.image)
       } catch (err) {
         console.log(err)

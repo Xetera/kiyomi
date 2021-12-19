@@ -1,9 +1,9 @@
 import { PerceptualHashService } from "./perceptual-hash"
-import { AmqpConnection } from "../amqp"
+import { AmqpService } from "../amqp"
 import { JiuMessage, JiuMessageMetadata } from "./jiu-types"
-import { prisma } from "../db"
 import camelCaseKeys from "camelcase-keys"
 import { z } from "zod"
+import { PrismaClient } from "@prisma/client"
 
 type JiuMessageType = z.infer<typeof JiuMessage>
 
@@ -15,27 +15,18 @@ type JiuDiscoveryProvider = {
   name?: string
 }
 
-export type JiuService = {
-  handleJiuMessage(message: JiuMessageType): Promise<void>
-  providers(): Promise<JiuDiscoveryProvider[]>
-}
-
 type JiuServiceOptions = {
+  prisma: PrismaClient
   phash: PerceptualHashService
-  amqp: AmqpConnection
+  amqp: AmqpService
 }
 
 const DIRECT_QUEUE_NAME = "image_discovery"
 
-export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
-  console.log("Creating JiU")
-  const channel = await opts.amqp.createChannel()
-  // we only want to fetch 1 message at a time as they're quite expensive to process
-  await channel.prefetch(1)
-  await channel.assertQueue(DIRECT_QUEUE_NAME)
-
-  const methods: JiuService = {
-    async handleJiuMessage(message) {
+export function makeJiu(opts: JiuServiceOptions) {
+  const { prisma } = opts
+  const methods = {
+    async handleJiuMessage(message: JiuMessageType): Promise<void> {
       // reversing because we want to process the most recently discovered post last
       for (const post of message.posts.reverse()) {
         const hashes = await Promise.allSettled(
@@ -101,7 +92,7 @@ export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
         console.log(`Created a post for ${post.uniqueIdentifier}`)
       }
     },
-    async providers() {
+    async providers(): Promise<JiuDiscoveryProvider[]> {
       const data: any[] = await fetch(
         `${process.env.JIU_BASE_URL}/schedule`
       ).then((r) => r.json())
@@ -109,31 +100,44 @@ export async function makeJiu(opts: JiuServiceOptions): Promise<JiuService> {
     },
   }
 
-  channel.consume(DIRECT_QUEUE_NAME, async (message) => {
-    // TODO: DLX
-    if (message) {
-      try {
-        const rawData = camelCaseKeys(JSON.parse(message.content.toString()), {
-          deep: true,
-        })
-        let m: JiuMessageType
-        try {
-          m = await JiuMessage.parseAsync(rawData)
-        } catch (err) {
-          console.error("Got an unpredicted schema from Jiu")
-          console.error(err)
-          channel.nack(message, false, true)
-          // TODO: handle this unpredictable schema change somehow?
-          return
+  opts.amqp
+    .consumeWith(
+      DIRECT_QUEUE_NAME,
+      async (message, channel) => {
+        // TODO: DLX
+        if (message) {
+          try {
+            const rawData = camelCaseKeys(
+              JSON.parse(message.content.toString()),
+              {
+                deep: true,
+              }
+            )
+            let m: JiuMessageType
+            try {
+              m = await JiuMessage.parseAsync(rawData)
+            } catch (err) {
+              console.error("Got an unpredicted schema from Jiu")
+              console.error(err)
+              channel.nack(message, false, true)
+              // TODO: handle this unpredictable schema change somehow?
+              return
+            }
+            await methods.handleJiuMessage(m)
+            channel.ack(message)
+          } catch (err) {
+            console.log(err)
+            // TODO: error handle something here
+            channel.nack(message, false, true)
+          }
         }
-        await methods.handleJiuMessage(m)
-        channel.ack(message)
-      } catch (err) {
-        console.log(err)
-        // TODO: error handle something here
-        channel.nack(message, false, true)
-      }
-    }
-  })
+      },
+      { prefetch: 1, assertQueue: DIRECT_QUEUE_NAME }
+    )
+    .catch((err) => {
+      console.error("Error attaching listener to Jiu queue")
+    })
   return methods
 }
+
+export type JiuService = Awaited<ReturnType<typeof makeJiu>>

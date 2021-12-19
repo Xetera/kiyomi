@@ -1,0 +1,50 @@
+{
+  "extends": ".",
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "pretty": true,
+    "paths": {
+      "@/*": [
+        "*"
+      ],
+      "~shared": [
+        "../shared/*"
+      ]
+    },
+    "incremental": true,
+    "baseUrl": ".",
+    "typeRoots": ["./typings"],
+    "module": "commonjs"
+  },
+  "include": [
+    "typings",
+    "**/*.ts",
+    "**/*.tsx",
+    "colors.js",
+    "../shared",
+    "../shared/backend"
+  ],
+  "exclude": [
+    "node_modules",
+    "scripts"
+  ]
+}

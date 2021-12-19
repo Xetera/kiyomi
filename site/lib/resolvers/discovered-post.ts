@@ -74,7 +74,6 @@ export const Query = queryField((t) => {
         })
       }
 
-      console.log({ g: args.groupIds, p: args.peopleIds })
       return discovery.personalFeed({
         skip: args.skip ?? 0,
         take: args.take ?? DEFAULT_TAKE,

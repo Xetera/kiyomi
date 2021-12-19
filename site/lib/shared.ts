@@ -1,5 +1,9 @@
 import { User } from "next-auth"
 
+export function wait(ms: number) {
+  return new Promise((res) => setTimeout(res, ms))
+}
+
 export type PromiseReturnType<
   T extends (...args: any[]) => any
 > = ReturnType<T> extends Promise<infer R> ? R : never
