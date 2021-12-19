@@ -44,8 +44,6 @@ ENV NODE_ENV=production
 ENV TS_NODE_TRANSPILE_ONLY=true
 ENV TS_NODE_BASEURL=dist/site
 
-RUN yarn global add ts-node
-
 COPY site/package.json site/yarn.lock ./
 # Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
 COPY --from=build /opt/app/site/node_modules node_modules
@@ -56,4 +54,4 @@ COPY --from=build /opt/app/site/public public
 
 EXPOSE 3000
 
-CMD ["node", "-r", "dd-trace/init", "-r", "tsconfig-paths/register", "-r", "dotenv/config", "dist/site/index.js"]
+CMD ["node", "-r", "dd-trace/init", "-r", "dotenv/config", "dist/site/index.js"]
