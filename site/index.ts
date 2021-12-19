@@ -18,6 +18,7 @@ async function main() {
     amqp.gracefulExit()
     prisma.$disconnect()
     app.close()
+    process.exit(0)
   })
   createServer((req, res) => {
     if (!req.url) {

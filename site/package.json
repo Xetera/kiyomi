@@ -7,8 +7,8 @@
     "tf": "npm rebuild @tensorflow/tfjs-node build-addon-from-source",
     "generate": "prisma generate",
     "codegen": "SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node -P tsconfig.generator.json --transpile-only lib/schema.ts",
-    "build": "next build",
-    "start": "ts-node --files -r dd-trace/init -r tsconfig-paths/register -r dotenv/config -P tsconfig.server.json index.ts",
+    "build": "tsc -P tsconfig.server.json && next build",
+    "start": "TS_NODE_TRANSPILE_ONLY=true ts-node --files -r dd-trace/init -r tsconfig-paths/register -r dotenv/config -P tsconfig.server.json index.ts",
     "typecheck": "tsc --noEmit",
     "ts-node": "ts-node -r tsconfig-paths/register -P tsconfig.generator.json"
   },
