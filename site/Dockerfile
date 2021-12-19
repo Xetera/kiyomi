@@ -54,4 +54,4 @@ COPY --from=build /opt/app/site/public public
 
 EXPOSE 3000
 
-CMD ["node", "-r", "dd-trace/init", "-r", "dotenv/config", "dist/site/index.js"]
+CMD ["node", "-r", "dotenv/config", "dist/site/index.js"]
