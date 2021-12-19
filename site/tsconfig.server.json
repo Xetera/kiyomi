@@ -11,10 +11,11 @@
     "skipLibCheck": true,
     "strict": true,
     "noImplicitAny": false,
+    "outDir": "dist",
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "noUncheckedIndexedAccess": true,
-    "noEmit": true,
+    "noEmit": false,
     "strictNullChecks": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -45,6 +46,9 @@
   ],
   "exclude": [
     "node_modules",
-    "scripts"
+    "scripts",
+    "pages",
+    "hooks",
+    "components"
   ]
 }

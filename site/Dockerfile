@@ -27,6 +27,7 @@ COPY shared/ /opt/app/shared
 RUN yarn codegen
 
 RUN yarn build
+RUN yarn build:server
 
 RUN yarn cache clean
 
@@ -47,8 +48,9 @@ COPY site/package.json site/yarn.lock ./
 COPY --from=build /opt/app/site/node_modules node_modules
 COPY --from=build /opt/app/site/next.config.js next.config.js
 COPY --from=build /opt/app/site/.next .next
+COPY --from=build /opt/app/site/dist dist
 COPY --from=build /opt/app/site/public public
 
 EXPOSE 3000
 
-CMD ["node_modules/.bin/next", "start"]
+CMD ["node", "-r", "dd-trace/init", "-r", "tsconfig-paths/register", "-r", "dotenv/config", "dist/site/index.js"]
