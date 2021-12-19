@@ -1,7 +1,7 @@
 import amqplib from "amqplib"
 import amqp, { ConsumeMessage } from "amqplib"
 import { createClient } from "celery-node"
-import { wait } from "@/lib/shared"
+import { wait } from "./shared"
 
 const amqpConnectionUrl = process.env.AMQP_URL ?? "amqp://localhost:3333"
 

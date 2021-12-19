@@ -42,8 +42,7 @@ WORKDIR /opt/app
 
 ENV NODE_ENV=production
 ENV TS_NODE_TRANSPILE_ONLY=true
-ENV TS_NODE_BASEURL="dist/site"
-WORKDIR /opt/app
+ENV TS_NODE_BASEURL=dist/site
 
 RUN yarn global add ts-node
 

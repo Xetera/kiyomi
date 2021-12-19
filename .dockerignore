@@ -18,3 +18,4 @@ ansible
 **/.editorconfig
 **/.eslintignore
 **/.eslintrc.js
+site/dist

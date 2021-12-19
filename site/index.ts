@@ -1,9 +1,9 @@
 import { createServer } from "http"
 import { parse } from "url"
 import next from "next"
-import { getServices } from "@/lib/services"
+import { getServices } from "./lib/services"
 import { PrismaClient } from "@prisma/client"
-import { makeAmqp } from "@/lib/amqp"
+import { makeAmqp } from "./lib/amqp"
 
 const dev = process.env.NODE_ENV !== "production"
 const app = next({ dev })

@@ -1,7 +1,7 @@
 import { JiuService, makeJiu } from "./jiu"
 import { makePerceptualHash, PerceptualHashService } from "./perceptual-hash"
 import { AmqpService } from "../amqp"
-import { DiscoveryService, makeDiscovery } from "@/lib/services/discovery"
+import { DiscoveryService, makeDiscovery } from "./discovery"
 import { PrismaClient } from "@prisma/client"
 
 export type Services = {
