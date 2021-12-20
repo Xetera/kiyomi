@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { getSession } from "next-auth/client"
 import { WithNavbar } from "@/components/navbar"
 import {
@@ -33,7 +33,11 @@ const fetchParams = (skip: number, id: number = 1) => ({
   id,
 })
 
-const homepagePersonKey = (index: number) => ["HomepagePerson", index]
+const homepagePersonKey = (index: number, results: any[] = []) => [
+  "HomepagePerson",
+  index,
+  results,
+]
 
 function HomeContent() {
   const pageRef = React.useRef(null)
@@ -47,12 +51,13 @@ function HomeContent() {
     data,
     isFetching,
     fetchNextPage,
+    refetch,
   } = useInfiniteQuery<HomepagePersonQuery>(
-    homepagePersonKey(selected),
+    homepagePersonKey(selected, trending?.homepage ?? []),
     ({ pageParam = 0 }) => {
       if (!trending) {
         // not ready to fetch
-        throw Error
+        throw Error("not ready to fetch")
       }
       return fetcher<HomepagePersonQuery, unknown>(
         HomepagePersonDocument,
@@ -60,6 +65,7 @@ function HomeContent() {
       )()
     },
     {
+      enabled: Boolean(trending?.homepage),
       refetchOnMount: false,
       getNextPageParam: paginateBySkip(PER_PAGE),
     }

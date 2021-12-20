@@ -34,6 +34,12 @@ export const User = objectType({
           )
         },
       })
+    t.field("xp", {
+      type: "Int",
+      resolve(root, _, { prisma, xp }) {
+        return xp.userXp(root.id)
+      },
+    })
   },
 })
 

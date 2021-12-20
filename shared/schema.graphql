@@ -219,6 +219,7 @@ input DiscoveredImageVoteWhereInput {
   user: UserWhereInput
   userId: IntFilter
   verdict: StringFilter
+  xp: IntFilter
 }
 
 input DiscoveredImageVoteWhereUniqueInput {
@@ -697,6 +698,7 @@ input ImageOrderByInput {
   userId: SortOrder
   views: SortOrder
   width: SortOrder
+  xp: SortOrder
 }
 
 input ImageWhereInput {
@@ -738,6 +740,7 @@ input ImageWhereInput {
   userId: IntNullableFilter
   views: IntFilter
   width: IntFilter
+  xp: IntFilter
 }
 
 input ImageWhereUniqueInput {
@@ -973,6 +976,8 @@ input PersonWhereInput {
 }
 
 input PersonWhereUniqueInput {
+  avatarId: Int
+  bannerId: Int
   id: Int
   ireneBotId: Int
   preferredAliasId: Int
@@ -1122,6 +1127,7 @@ type User {
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
   roles: [Role!]!
+  xp: Int
 }
 
 input UserWhereInput {
