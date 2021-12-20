@@ -1,4 +1,19 @@
-import { objectType, queryField, intArg } from "nexus"
+import { objectType, queryField, intArg, nonNull, list, arg } from "nexus"
+
+export const LeaderboardUser = objectType({
+  name: "LeaderboardUser",
+  definition(t) {
+    t.field("rank", {
+      type: nonNull("Int"),
+    })
+    t.field("xp", {
+      type: nonNull("Int"),
+    })
+    t.field("user", {
+      type: nonNull("User"),
+    })
+  },
+})
 
 export const User = objectType({
   name: "User",
@@ -34,6 +49,7 @@ export const User = objectType({
           )
         },
       })
+      .createdAt()
     t.field("xp", {
       type: "Int",
       resolve(root, _, { prisma, xp }) {
@@ -64,6 +80,41 @@ export const Query = queryField((t) => {
         return null
       }
       return prisma.user.findUnique({ where: { id: user.id } })
+    },
+  })
+  t.field("discoveryLeaderboard", {
+    type: nonNull(list(nonNull(LeaderboardUser))),
+    args: {
+      take: arg({
+        type: "Int",
+        default: 10,
+      }),
+      skip: arg({
+        type: "Int",
+        default: 0,
+      }),
+    },
+    async resolve(t, { take, skip }, { prisma, xp }) {
+      const rows = await xp.leaderboard({
+        take: take ?? 10,
+        skip: skip ?? 0,
+      })
+      const userIds = rows.map((row) => row.userId)
+      const users = await prisma.user.findMany({
+        where: {
+          id: {
+            in: userIds,
+          },
+        },
+      })
+      return rows.map(({ userId, rank, xp }) => {
+        const user = users.find((user) => user.id === userId)
+        return {
+          user,
+          xp,
+          rank,
+        }
+      })
     },
   })
 })

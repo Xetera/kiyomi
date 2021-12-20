@@ -789,6 +789,11 @@ export interface NexusGenObjects {
     to: number; // Int!
     type?: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
   }
+  LeaderboardUser: { // root type
+    rank: number; // Int!
+    user: NexusGenRootTypes['User']; // User!
+    xp: number; // Int!
+  }
   Mutation: {};
   Person: PrismaClient.Person;
   Query: {};
@@ -981,6 +986,11 @@ export interface NexusGenFieldTypes {
     to: number; // Int!
     type: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
   }
+  LeaderboardUser: { // field return type
+    rank: number; // Int!
+    user: NexusGenRootTypes['User']; // User!
+    xp: number; // Int!
+  }
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
@@ -1011,6 +1021,7 @@ export interface NexusGenFieldTypes {
     discoveredPosts: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryFeed: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryHistory: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
+    discoveryLeaderboard: NexusGenRootTypes['LeaderboardUser'][]; // [LeaderboardUser!]!
     discoveryProviders: NexusGenRootTypes['DiscoveryProvider'][]; // [DiscoveryProvider!]!
     discoveryStats: NexusGenRootTypes['DiscoveryStatistic'][]; // [DiscoveryStatistic!]!
     group: NexusGenRootTypes['Group'] | null; // Group
@@ -1045,6 +1056,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     avatar: string | null; // String
     bot: boolean; // Boolean!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     name: string | null; // String
@@ -1219,6 +1231,11 @@ export interface NexusGenFieldTypeNames {
     to: 'Int'
     type: 'ImageConnectionEdge'
   }
+  LeaderboardUser: { // field return type name
+    rank: 'Int'
+    user: 'User'
+    xp: 'Int'
+  }
   Mutation: { // field return type name
     addAppearance: 'Appearance'
     discoveredImageVote: 'DiscoveredImageVote'
@@ -1249,6 +1266,7 @@ export interface NexusGenFieldTypeNames {
     discoveredPosts: 'DiscoveredPost'
     discoveryFeed: 'DiscoveredPost'
     discoveryHistory: 'DiscoveredPost'
+    discoveryLeaderboard: 'LeaderboardUser'
     discoveryProviders: 'DiscoveryProvider'
     discoveryStats: 'DiscoveryStatistic'
     group: 'Group'
@@ -1283,6 +1301,7 @@ export interface NexusGenFieldTypeNames {
   User: { // field return type name
     avatar: 'String'
     bot: 'Boolean'
+    createdAt: 'DateTime'
     id: 'Int'
     images: 'Image'
     name: 'String'
@@ -1426,6 +1445,10 @@ export interface NexusGenArgTypes {
       take?: number | null; // Int
     }
     discoveryHistory: { // args
+      skip?: number | null; // Int
+      take: number | null; // Int
+    }
+    discoveryLeaderboard: { // args
       skip?: number | null; // Int
       take: number | null; // Int
     }

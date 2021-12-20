@@ -779,6 +779,12 @@ input IntNullableListFilter {
   isEmpty: Boolean
 }
 
+type LeaderboardUser {
+  rank: Int!
+  user: User!
+  xp: Int!
+}
+
 enum MimeType {
   AVIF
   GIF
@@ -989,6 +995,7 @@ type Query {
   discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
   discoveryFeed(groupIds: [Int!]!, peopleIds: [Int!]!, skip: Int, take: Int): [DiscoveredPost!]!
   discoveryHistory(skip: Int = 0, take: Int = 10): [DiscoveredPost!]!
+  discoveryLeaderboard(skip: Int = 0, take: Int = 10): [LeaderboardUser!]!
   discoveryProviders: [DiscoveryProvider!]!
   discoveryStats: [DiscoveryStatistic!]!
   group(where: GroupWhereUniqueInput!): Group
@@ -1124,6 +1131,7 @@ enum UploadType {
 type User {
   avatar: String
   bot: Boolean!
+  createdAt: DateTime!
   id: Int!
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String

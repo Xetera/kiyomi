@@ -859,6 +859,13 @@ export type IntNullableListFilter = {
   isEmpty?: Maybe<Scalars['Boolean']>;
 };
 
+export type LeaderboardUser = {
+  __typename?: 'LeaderboardUser';
+  rank: Scalars['Int'];
+  user: User;
+  xp: Scalars['Int'];
+};
+
 export enum MimeType {
   Avif = 'AVIF',
   Gif = 'GIF',
@@ -1140,6 +1147,7 @@ export type Query = {
   discoveredPosts: Array<DiscoveredPost>;
   discoveryFeed: Array<DiscoveredPost>;
   discoveryHistory: Array<DiscoveredPost>;
+  discoveryLeaderboard: Array<LeaderboardUser>;
   discoveryProviders: Array<DiscoveryProvider>;
   discoveryStats: Array<DiscoveryStatistic>;
   group?: Maybe<Group>;
