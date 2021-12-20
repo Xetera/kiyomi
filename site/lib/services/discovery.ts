@@ -72,6 +72,24 @@ export function makeDiscovery({ prisma }: DiscoveryOptions) {
         count: _count.verdict,
       }))
     },
+    async history({ userId, skip, take }: HistoryInput) {
+      const rows = await prisma.$queryRaw`
+        WITH posts AS (
+            SELECT DISTINCT (dp.id) as id, MAX(div.created_at) as ca
+            FROM discovered_posts dp
+                     INNER JOIN discovered_images di on dp.id = di.post_id
+                     INNER JOIN discovered_image_votes div on di.id = div.discovered_image_id
+            WHERE user_id = ${userId}
+            GROUP BY dp.id
+        )
+        SELECT dp.* FROM discovered_posts dp
+            INNER JOIN posts p on p.id = dp.id
+        ORDER BY p.ca desc
+        OFFSET ${skip}
+        LIMIT ${take};
+      `
+      return rows.map(camelCaseKeys)
+    },
     async personalFeed({
       userId,
       skip = 0,
@@ -168,6 +186,12 @@ type DiscoveryPostVoteInput = PartialDiscoveryVote & {
 
 type DiscoveryImageVoteInput = PartialDiscoveryVote & {
   imageId: number
+}
+
+type HistoryInput = {
+  userId: number
+  take: number
+  skip: number
 }
 
 type PersonalFeedInput = {

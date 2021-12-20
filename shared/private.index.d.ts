@@ -5020,6 +5020,7 @@ export interface NexusGenFieldTypes {
     discoveredImages: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     discoveredPosts: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryFeed: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
+    discoveryHistory: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryProviders: NexusGenRootTypes['DiscoveryProvider'][]; // [DiscoveryProvider!]!
     discoveryStats: NexusGenRootTypes['DiscoveryStatistic'][]; // [DiscoveryStatistic!]!
     group: NexusGenRootTypes['Group'] | null; // Group
@@ -5267,6 +5268,7 @@ export interface NexusGenFieldTypeNames {
     discoveredImages: 'DiscoveredImage'
     discoveredPosts: 'DiscoveredPost'
     discoveryFeed: 'DiscoveredPost'
+    discoveryHistory: 'DiscoveredPost'
     discoveryProviders: 'DiscoveryProvider'
     discoveryStats: 'DiscoveryStatistic'
     group: 'Group'
@@ -5465,6 +5467,10 @@ export interface NexusGenArgTypes {
       peopleIds: number[]; // [Int!]!
       skip?: number | null; // Int
       take?: number | null; // Int
+    }
+    discoveryHistory: { // args
+      skip?: number | null; // Int
+      take: number | null; // Int
     }
     group: { // args
       where: NexusGenInputs['GroupWhereUniqueInput']; // GroupWhereUniqueInput!

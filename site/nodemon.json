@@ -1,0 +1,7 @@
+{
+  "verbose": true,
+  "ignore": ["node_modules", ".next"],
+  "watch": ["lib/services/*", "index.ts"],
+  "exec": "yarn dev",
+  "ext": "ts tsx json"
+}

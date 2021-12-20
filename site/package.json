@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
+    "nodemon": "nodemon",
     "dev": "TS_NODE_TRANSPILE_ONLY=true ts-node --files -r tsconfig-paths/register -r dotenv/config -P tsconfig.server.json index.ts",
     "tf": "npm rebuild @tensorflow/tfjs-node build-addon-from-source",
     "generate": "prisma generate",
@@ -94,6 +95,7 @@
     "@types/react-modal": "^3.13.1",
     "@types/sharp": "^0.27.3",
     "cross-env": "^7.0.3",
+    "nodemon": "^2.0.15",
     "null-loader": "^4.0.1",
     "prisma": "2.30.0",
     "ts-node": "^10.4.0",

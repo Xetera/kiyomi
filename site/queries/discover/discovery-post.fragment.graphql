@@ -1,0 +1,27 @@
+fragment DiscoveryPostListable on DiscoveredPost {
+    id
+    providerType
+    uniqueIdentifier
+    body
+    accountName
+    accountAvatarUrl
+    postUrl
+    createdAt
+    originalPostDate
+    referencingGroups {
+        id
+        name
+    }
+    images {
+        thumbnail
+        url
+        id
+        vote {
+            verdict
+        }
+        duplicateImage {
+            url
+            rawUrl
+        }
+    }
+}

@@ -1,8 +1,16 @@
-import { list, mutationField, nonNull, objectType, queryField } from "nexus"
+import {
+  arg,
+  list,
+  mutationField,
+  nonNull,
+  objectType,
+  queryField,
+} from "nexus"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 import { PrismaError } from "prisma-error-enum"
 import { GraphQLError } from "graphql"
-import { Context } from "@/lib/context-type"
+import { Context } from "../context-type"
+import { GraphqlAuth } from "../auth"
 
 export const DiscoveredPost = objectType({
   name: "DiscoveredPost",
@@ -57,6 +65,28 @@ export const DiscoveredPost = objectType({
 })
 
 export const Query = queryField((t) => {
+  t.field("discoveryHistory", {
+    type: nonNull(list(nonNull("DiscoveredPost"))),
+    args: {
+      take: arg({
+        type: "Int",
+        default: 10,
+      }),
+      skip: arg({
+        type: "Int",
+        default: 0,
+      }),
+    },
+    authorize: GraphqlAuth.isLoggedIn,
+    async resolve(_, args, { user, prisma, discovery }) {
+      const hist = await discovery.history({
+        userId: user!.id,
+        skip: args.skip!,
+        take: args.take!,
+      })
+      return hist
+    },
+  })
   t.field("discoveryFeed", {
     type: nonNull(list(nonNull("DiscoveredPost"))),
     args: {

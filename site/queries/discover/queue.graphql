@@ -1,29 +1,5 @@
 query DiscoveredPosts($skip: Int!, $take: Int!, $groupIds: [Int!]! = [], $peopleIds: [Int!]! = []) {
     discoveryFeed(skip: $skip, take: $take, groupIds: $groupIds, peopleIds: $peopleIds) {
-        id
-        providerType
-        uniqueIdentifier
-        body
-        accountName
-        accountAvatarUrl
-        postUrl
-        createdAt
-        originalPostDate
-        referencingGroups {
-            id
-            name
-        }
-        images {
-            thumbnail
-            url
-            id
-            vote {
-                verdict
-            }
-            duplicateImage {
-                url
-                rawUrl
-            }
-        }
+        ...DiscoveryPostListable
     }
 }

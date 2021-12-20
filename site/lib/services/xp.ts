@@ -4,6 +4,11 @@ type XpServiceProps = {
   prisma: PrismaClient
 }
 
+export type UserXpOptions = {
+  from?: Date
+  to?: Date
+}
+
 export const makeXp = ({ prisma }: XpServiceProps) => {
   return {
     async userXp(userId: number) {
@@ -17,7 +22,8 @@ export const makeXp = ({ prisma }: XpServiceProps) => {
       // UNION
       // SELECT SUM(xp) as xp FROM images
       //  WHERE user_id = ${userId}
-      return result[0].sum
+      console.log(result)
+      return result[0].sum ?? 0
     },
   }
 }

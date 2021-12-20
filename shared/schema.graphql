@@ -988,6 +988,7 @@ type Query {
   discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
   discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
   discoveryFeed(groupIds: [Int!]!, peopleIds: [Int!]!, skip: Int, take: Int): [DiscoveredPost!]!
+  discoveryHistory(skip: Int = 0, take: Int = 10): [DiscoveredPost!]!
   discoveryProviders: [DiscoveryProvider!]!
   discoveryStats: [DiscoveryStatistic!]!
   group(where: GroupWhereUniqueInput!): Group

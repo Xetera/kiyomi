@@ -1,14 +1,26 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/tabs"
-import { Flex, Grid, Spinner, Tag } from "@chakra-ui/react"
-import React from "react"
-import {
-  useDiscoveryProvidersQuery,
-  useDiscoveryStatsQuery,
-} from "@/lib/__generated__/graphql"
+import { Flex, forwardRef, Grid, Spinner, Tag } from "@chakra-ui/react"
+import React, { PropsWithChildren } from "react"
+import { useDiscoveryStatsQuery } from "@/lib/__generated__/graphql"
 import DiscoverSidebar from "@/components/discover/sidebar"
+
+const SidebarGrid = forwardRef<PropsWithChildren<any>, "main">((props, ref) => (
+  <Grid
+    as="main"
+    templateColumns={["1fr", null, null, "1fr 2fr"]}
+    templateRows={"auto"}
+    autoFlow={["row", null, null, "column"]}
+    gap={6}
+    {...props}
+    ref={ref}
+  >
+    {props.children}
+  </Grid>
+))
 
 type DiscoverTabsOptions = {
   queue: React.ReactElement
+  history: React.ReactElement
 }
 
 export default function DiscoverTabs(props: DiscoverTabsOptions) {
@@ -37,18 +49,21 @@ export default function DiscoverTabs(props: DiscoverTabsOptions) {
 
       <TabPanels>
         <TabPanel>
-          <Grid
-            as="main"
-            templateColumns={["1fr", null, null, "1fr 2fr"]}
-            templateRows={"auto"}
-            autoFlow={["row", null, null, "column"]}
-            gap={6}
-          >
+          <SidebarGrid>
             <DiscoverSidebar />
             <Grid zIndex={10} gap={4} autoFlow="row">
               {props.queue}
             </Grid>
-          </Grid>
+          </SidebarGrid>
+        </TabPanel>
+        <TabPanel />
+        <TabPanel>
+          <SidebarGrid>
+            <DiscoverSidebar />
+            <Grid zIndex={10} gap={4} autoFlow="row">
+              {props.history}
+            </Grid>
+          </SidebarGrid>
         </TabPanel>
       </TabPanels>
     </Tabs>

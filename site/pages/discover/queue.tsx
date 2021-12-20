@@ -9,12 +9,13 @@ import { DiscoveredPost } from "@/components/discover/discovered-post"
 import { Box, Image, Text, VStack } from "@chakra-ui/react"
 import { LargeBanner } from "@/components/large-banner"
 import DiscoverTabs from "@/components/discover/tabs"
-import React, { useState } from "react"
+import React from "react"
 import { useInfiniteQuery } from "react-query"
 import { Waypoint } from "react-waypoint"
 import { paginateBySkip } from "@/client/pagination"
 import { useSelector } from "react-redux"
 import { RootState } from "@/models/store"
+import { DiscoveryHistory } from "@/components/discover/discovery-history"
 
 const PER_PAGE = 10
 
@@ -91,7 +92,7 @@ export default function QueuePage() {
         objectPosition="50% 24%"
       />
       <VStack mx="auto" maxW="6xl" w="full">
-        <DiscoverTabs queue={<Queue />} />
+        <DiscoverTabs queue={<Queue />} history={<DiscoveryHistory />} />
       </VStack>
     </WithNavbar>
   )

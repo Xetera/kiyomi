@@ -6,6 +6,7 @@ import {
 } from "react-icons/ri"
 import {
   DiscoveredPostsQuery,
+  DiscoveryPostListableFragment,
   Maybe,
   useVoteDiscoveryImageMutation,
   useVoteDiscoveryPostMutation,
@@ -67,7 +68,7 @@ export function decideProvider(
   }
 }
 
-type DerivedPost = DiscoveredPostsQuery["discoveryFeed"][number]
+type DerivedPost = DiscoveryPostListableFragment
 
 export type DiscoveredPostProps = {
   post: DerivedPost
