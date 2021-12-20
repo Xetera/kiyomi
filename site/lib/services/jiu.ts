@@ -80,9 +80,10 @@ export function makeJiu(opts: JiuServiceOptions) {
                 }
                 return {
                   mediaType: image.type,
+                  referenceUrl: image.referenceUrl,
                   providerType: message.provider.type,
                   url: image.mediaUrl,
-                  duplicateImageId,
+                  duplicateImageId: duplicateImageId ?? null,
                   uniqueIdentifier: image.uniqueIdentifier,
                 }
               }),
