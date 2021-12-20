@@ -223,8 +223,9 @@ export function DiscoveredPost({ post }: DiscoveredPostProps) {
             )}
           </VStack>
           <Flex
-            w={12}
-            h={12}
+            w={9}
+            h={9}
+            overflow="hidden"
             marginInlineEnd={2}
             align="center"
             justify="center"
