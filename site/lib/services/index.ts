@@ -3,7 +3,7 @@ import { makePerceptualHash, PerceptualHashService } from "./perceptual-hash"
 import { AmqpService } from "../amqp"
 import { DiscoveryService, makeDiscovery } from "./discovery"
 import { PrismaClient } from "@prisma/client"
-import { makeXp, XpService } from "@/lib/services/xp"
+import { makeXp, XpService } from "./xp"
 
 export type Services = {
   prisma: PrismaClient
