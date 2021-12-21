@@ -8,6 +8,7 @@ import {
 } from "@/lib/__generated__/graphql"
 import { Box, Text } from "@chakra-ui/layout"
 import { Flex, Image, Tag } from "@chakra-ui/react"
+import { UserAttribute } from "@/components/user-attribute"
 
 export function User({
   user,
@@ -52,11 +53,7 @@ export function User({
               <RiShieldStarLine height="100%" size={16} />
             </Box>
           )}
-          {isBot && (
-            <Tag mr={2} fontSize="sm">
-              Bot
-            </Tag>
-          )}
+          {isBot && <UserAttribute name="Bot" />}
         </Flex>
         {bottom}
       </Flex>

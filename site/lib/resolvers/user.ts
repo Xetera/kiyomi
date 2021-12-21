@@ -1,4 +1,4 @@
-import { objectType, queryField, intArg, nonNull, list, arg } from "nexus"
+import { arg, intArg, list, nonNull, objectType, queryField } from "nexus"
 
 export const LeaderboardUser = objectType({
   name: "LeaderboardUser",
@@ -22,9 +22,7 @@ export const User = objectType({
       .id()
       .name()
       .roles({ pagination: false })
-      .image({
-        alias: "avatar",
-      })
+      .image()
       .bot()
       .images({
         pagination: true,

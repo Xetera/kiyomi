@@ -1201,6 +1201,12 @@ export type QueryDiscoveryHistoryArgs = {
 };
 
 
+export type QueryDiscoveryLeaderboardArgs = {
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+
 export type QueryGroupArgs = {
   where: GroupWhereUniqueInput;
 };
@@ -1374,9 +1380,10 @@ export enum UploadType {
 
 export type User = {
   __typename?: 'User';
-  avatar?: Maybe<Scalars['String']>;
   bot: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
   id: Scalars['Int'];
+  image?: Maybe<Scalars['String']>;
   images: Array<Image>;
   name?: Maybe<Scalars['String']>;
   roles: Array<Role>;
@@ -1418,6 +1425,21 @@ export type UserWhereInput = {
   updatedAt?: Maybe<DateTimeFilter>;
 };
 
+export type DiscoveryLeaderboardQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveryLeaderboardQuery = (
+  { __typename?: 'Query' }
+  & { discoveryLeaderboard: Array<(
+    { __typename?: 'LeaderboardUser' }
+    & Pick<LeaderboardUser, 'rank' | 'xp'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'image' | 'name' | 'bot'>
+    ) }
+  )> }
+);
+
 export type DiscoveryHistoryQueryVariables = Exact<{
   take: Scalars['Int'];
   skip?: Scalars['Int'];
@@ -1443,6 +1465,21 @@ export type AddToQueueMutation = (
     { __typename?: 'QueueInfo' }
     & Pick<QueueInfo, 'queueSize'>
   ) }
+);
+
+export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserDataQuery = (
+  { __typename?: 'Query' }
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name' | 'image' | 'xp' | 'createdAt'>
+    & { roles: Array<(
+      { __typename?: 'Role' }
+      & Pick<Role, 'name'>
+    )> }
+  )> }
 );
 
 export type OneImageQueryVariables = Exact<{
@@ -1845,7 +1882,8 @@ export type ToggleLikeMutation = (
 
 export type UserDataFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'name' | 'avatar' | 'bot'>
+  & Pick<User, 'id' | 'name' | 'bot'>
+  & { avatar: User['image'] }
 );
 
 export type UserRoleDataFragment = (
@@ -1965,7 +2003,7 @@ export const UserDataFragmentDoc = `
     fragment UserData on User {
   id
   name
-  avatar
+  avatar: image
   bot
 }
     `;
@@ -1974,6 +2012,32 @@ export const UserRoleDataFragmentDoc = `
   name
 }
     `;
+export const DiscoveryLeaderboardDocument = `
+    query DiscoveryLeaderboard {
+  discoveryLeaderboard {
+    rank
+    xp
+    user {
+      id
+      image
+      name
+      bot
+    }
+  }
+}
+    `;
+export const useDiscoveryLeaderboardQuery = <
+      TData = DiscoveryLeaderboardQuery,
+      TError = unknown
+    >(
+      variables?: DiscoveryLeaderboardQueryVariables, 
+      options?: UseQueryOptions<DiscoveryLeaderboardQuery, TError, TData>
+    ) => 
+    useQuery<DiscoveryLeaderboardQuery, TError, TData>(
+      ['DiscoveryLeaderboard', variables],
+      fetcher<DiscoveryLeaderboardQuery, DiscoveryLeaderboardQueryVariables>(DiscoveryLeaderboardDocument, variables),
+      options
+    );
 export const DiscoveryHistoryDocument = `
     query DiscoveryHistory($take: Int!, $skip: Int! = 0) {
   discoveryHistory(take: $take, skip: $skip) {
@@ -2006,6 +2070,32 @@ export const useAddToQueueMutation = <
     >(options?: UseMutationOptions<AddToQueueMutation, TError, AddToQueueMutationVariables, TContext>) => 
     useMutation<AddToQueueMutation, TError, AddToQueueMutationVariables, TContext>(
       (variables?: AddToQueueMutationVariables) => fetcher<AddToQueueMutation, AddToQueueMutationVariables>(AddToQueueDocument, variables)(),
+      options
+    );
+export const UserDataDocument = `
+    query UserData {
+  me {
+    id
+    name
+    image
+    xp
+    createdAt
+    roles {
+      name
+    }
+  }
+}
+    `;
+export const useUserDataQuery = <
+      TData = UserDataQuery,
+      TError = unknown
+    >(
+      variables?: UserDataQueryVariables, 
+      options?: UseQueryOptions<UserDataQuery, TError, TData>
+    ) => 
+    useQuery<UserDataQuery, TError, TData>(
+      ['UserData', variables],
+      fetcher<UserDataQuery, UserDataQueryVariables>(UserDataDocument, variables),
       options
     );
 export const OneImageDocument = `

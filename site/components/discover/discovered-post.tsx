@@ -86,7 +86,11 @@ function PostBody({ text, providerType }: PostBodyProps) {
       />
     )
   }
-  return <Text textStyle="text">{text}</Text>
+  return (
+    <Text textStyle="text" whiteSpace="pre-wrap">
+      {text}
+    </Text>
+  )
 }
 
 export const MAX_IMAGE_DISPLAY = 4

@@ -41,8 +41,7 @@ export const makeXp = ({ prisma }: XpServiceProps) => {
             GROUP BY user_id
         ),
         results AS (
-            SELECT COALESCE(SUM(xps.xp), 0) AS xp,
-                users.id                 AS user_id
+            SELECT COALESCE(SUM(xps.xp), 0) AS xp, users.id AS user_id
             FROM users
                   LEFT OUTER JOIN xps ON xps.user_id = users.id
             GROUP BY users.id, signup_date
@@ -66,13 +65,9 @@ export const makeXp = ({ prisma }: XpServiceProps) => {
           SELECT SUM(xp) as xp FROM discovered_image_votes
             WHERE user_id = ${userId}
         )
-        SELECT SUM(xp) as sum FROM xps
+        SELECT COALESCE(SUM(xp), 0) as sum FROM xps
       `
-      // UNION
-      // SELECT SUM(xp) as xp FROM images
-      //  WHERE user_id = ${userId}
-      console.log(result)
-      return result[0].sum ?? 0
+      return result[0].sum
     },
   }
 }

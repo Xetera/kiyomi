@@ -1,7 +1,7 @@
 fragment UserData on User {
   id
   name
-  avatar
+  avatar: image
   bot
 }
 

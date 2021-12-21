@@ -13,6 +13,8 @@ import { ChakraProvider } from "@chakra-ui/react"
 import theme from "@/client/theme"
 import { store } from "@/models/store"
 import { AppWrapper } from "@/components/app-wrapper"
+import { Head } from "@/components/head"
+import { UserData } from "@/components/user-data/user-data"
 
 const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
   const queryClientRef = React.useRef<QueryClient>()
@@ -35,7 +37,9 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
               >
                 {/* </GameServerGateway> */}
                 <AppWrapper>
+                  <Head />
                   <Component {...pageProps} />
+                  <UserData />
                 </AppWrapper>
                 {/* <GameServerGateway> */}
               </div>

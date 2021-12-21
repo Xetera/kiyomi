@@ -1,0 +1,12 @@
+query UserData {
+    me {
+        id
+        name
+        image
+        xp
+        createdAt
+        roles {
+            name
+        }
+    }
+}

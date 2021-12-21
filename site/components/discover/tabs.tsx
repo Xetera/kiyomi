@@ -3,6 +3,7 @@ import { Flex, forwardRef, Grid, Spinner, Tag } from "@chakra-ui/react"
 import React, { PropsWithChildren } from "react"
 import { useDiscoveryStatsQuery } from "@/lib/__generated__/graphql"
 import DiscoverSidebar from "@/components/discover/sidebar"
+import { DiscoveryHistorySidebar } from "@/components/discover/discovery-history-sidebar"
 
 const SidebarGrid = forwardRef<PropsWithChildren<any>, "main">((props, ref) => (
   <Grid
@@ -59,7 +60,7 @@ export default function DiscoverTabs(props: DiscoverTabsOptions) {
         <TabPanel />
         <TabPanel>
           <SidebarGrid>
-            <DiscoverSidebar />
+            <DiscoveryHistorySidebar />
             <Grid zIndex={10} gap={4} autoFlow="row">
               {props.history}
             </Grid>

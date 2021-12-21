@@ -1,4 +1,4 @@
-import { extendTheme } from "@chakra-ui/react"
+import { extendTheme, VStack } from "@chakra-ui/react"
 import { createBreakpoints } from "@chakra-ui/theme-tools"
 
 const fontFamily = `
@@ -21,6 +21,8 @@ const breakpoints = createBreakpoints({
   xl: "80em",
   "2xl": "96em",
 })
+
+VStack.defaultProps = { ...VStack.defaultProps, align: "start" }
 
 const theme = extendTheme({
   fonts: {
@@ -69,6 +71,11 @@ const theme = extendTheme({
     },
   },
   components: {
+    VStack: {
+      baseStyle: {
+        align: "start",
+      },
+    },
     Checkbox: {},
     NumberIncrementStepper: {
       baseStyle: {
