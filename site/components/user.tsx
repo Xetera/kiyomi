@@ -15,7 +15,7 @@ export function User({
   bottom,
 }: {
   user?: Maybe<
-    Pick<UserData, "bot" | "name" | "avatar"> & {
+    Pick<UserData, "bot" | "name" | "image"> & {
       roles: Array<Pick<Role, "name">>
     }
   >
@@ -27,9 +27,9 @@ export function User({
   return (
     <div className="flex flex-row align-top">
       <Box borderRadius="md" overflow="hidden" mr={4}>
-        {user?.avatar && (
+        {user?.image && (
           <Image
-            src={user.avatar}
+            src={user.image}
             width={imageDimensions}
             height={imageDimensions}
           />
