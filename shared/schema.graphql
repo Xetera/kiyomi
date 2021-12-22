@@ -3,10 +3,10 @@
 
 
 input AddProviderInput {
-  groups: [Int]!
+  groups: [Int!]!
   name: String!
   official: Boolean!
-  people: [Int]!
+  people: [Int!]!
   url: String!
 }
 

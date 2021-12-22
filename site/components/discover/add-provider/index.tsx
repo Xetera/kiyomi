@@ -250,24 +250,24 @@ export const AddProvider = () => {
                     </HStack>
                     <FormErrorMessage>{errors.url?.message}</FormErrorMessage>
                   </Grid>
-                  <SidebarSearch
-                    searchType="group"
-                    hits={groups}
-                    setHits={setGroups}
-                    filters={data}
-                    runSearch={(text) =>
-                      searchGroup(text).then((r) => r.hits ?? [])
-                    }
-                    addFilter={(data) => push(data)}
-                    removeFilter={(item) => {
-                      const index = data.findIndex(
-                        (tag) => tag.name === item.name && tag.id === item.id
-                      )
-                      if (index > -1) {
-                        removeAt(index)
-                      }
-                    }}
-                  />
+                  {/*<SidebarSearch*/}
+                  {/*  searchType="group"*/}
+                  {/*  hits={groups}*/}
+                  {/*  setHits={setGroups}*/}
+                  {/*  filters={data}*/}
+                  {/*  runSearch={(text) =>*/}
+                  {/*    searchGroup(text).then((r) => r.hits ?? [])*/}
+                  {/*  }*/}
+                  {/*  addFilter={(data) => push(data)}*/}
+                  {/*  removeFilter={(item) => {*/}
+                  {/*    const index = data.findIndex(*/}
+                  {/*      (tag) => tag.name === item.name && tag.id === item.id*/}
+                  {/*    )*/}
+                  {/*    if (index > -1) {*/}
+                  {/*      removeAt(index)*/}
+                  {/*    }*/}
+                  {/*  }}*/}
+                  {/*/>*/}
                   <Button type="submit">Submit</Button>
                 </VStack>
               </FormControl>

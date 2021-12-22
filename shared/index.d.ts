@@ -22,10 +22,10 @@ declare global {
 
 export interface NexusGenInputs {
   AddProviderInput: { // input type
-    groups: Array<number | null>; // [Int]!
+    groups: number[]; // [Int!]!
     name: string; // String!
     official: boolean; // Boolean!
-    people: Array<number | null>; // [Int]!
+    people: number[]; // [Int!]!
     url: string; // String!
   }
   AliasListRelationFilter: { // input type

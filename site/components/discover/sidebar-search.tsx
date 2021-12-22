@@ -22,13 +22,13 @@ import { useSelector } from "react-redux"
 export type GroupSearchResult = SearchResponseHit<SearchGroup>
 
 type SidebarSearchProps<T extends QuickSearchSectionKind> = {
-  searchType: T
+  searchType: "group"
   hits: GroupSearchResult[]
   setHits: (result: GroupSearchResult[]) => void
   filters: SearchTag[]
   addFilter: (tag: SearchTag) => void
   removeFilter: (tag: SearchTag) => void
-  deriveTag: (tag: SearchSectionMappings[T]) => SearchTag
+  // deriveTag: (tag: SearchSectionMappings[T]) => SearchTag
   runSearch: (input: string) => Promise<GroupSearchResult[]>
 }
 
@@ -91,9 +91,7 @@ export function SidebarSearch<T extends QuickSearchSectionKind>({
       {validGroups.length > 0 && search && (
         <QuickSearchSection
           type={searchType}
-          data={(searchType === "group"
-            ? groupsSearchToQuickSearchSection
-            : idolsSearchToQuickSearchSection)(validGroups, (group) => {
+          data={groupsSearchToQuickSearchSection(validGroups, (group) => {
             return {
               onClick() {
                 addFilter({

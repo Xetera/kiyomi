@@ -105,10 +105,10 @@ const AddProviderInput = inputObjectType({
     t.nonNull.string("url")
     t.nonNull.boolean("official")
     t.nonNull.field("people", {
-      type: nonNull(list("Int")),
+      type: nonNull(list(nonNull("Int"))),
     })
     t.nonNull.field("groups", {
-      type: nonNull(list("Int")),
+      type: nonNull(list(nonNull("Int"))),
     })
   },
 })
