@@ -4,6 +4,7 @@ import React, { PropsWithChildren } from "react"
 import { useDiscoveryStatsQuery } from "@/lib/__generated__/graphql"
 import DiscoverSidebar from "@/components/discover/sidebar"
 import { DiscoveryHistorySidebar } from "@/components/discover/discovery-history-sidebar"
+import { AddProvider } from "@/components/discover/add-provider"
 
 const SidebarGrid = forwardRef<PropsWithChildren<any>, "main">((props, ref) => (
   <Grid
@@ -31,7 +32,13 @@ export default function DiscoverTabs(props: DiscoverTabsOptions) {
     : undefined
   return (
     <Tabs w="full" zIndex={2} colorScheme="white">
-      <TabList borderColor="rgba(60, 60, 60, 0.4)" borderBottomWidth="1px">
+      <TabList
+        borderColor="rgba(60, 60, 60, 0.4)"
+        borderBottomWidth="1px"
+        overflowX="auto"
+        overflowY="hidden"
+        whiteSpace="nowrap"
+      >
         <Tab borderBottomWidth="1px">Feed</Tab>
         <Tab borderBottomWidth="1px">Verification Rules</Tab>
         <Tab borderBottomWidth="1px">
@@ -46,6 +53,7 @@ export default function DiscoverTabs(props: DiscoverTabsOptions) {
             </Tag>
           </Flex>
         </Tab>
+        <Tab>Social Media</Tab>
       </TabList>
 
       <TabPanels>
@@ -65,6 +73,9 @@ export default function DiscoverTabs(props: DiscoverTabsOptions) {
               {props.history}
             </Grid>
           </SidebarGrid>
+        </TabPanel>
+        <TabPanel>
+          <AddProvider />
         </TabPanel>
       </TabPanels>
     </Tabs>

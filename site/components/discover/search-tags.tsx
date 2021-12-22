@@ -6,7 +6,11 @@ export type SearchTagsProps = {
   onRemove: (tag: SearchTag) => void
 }
 
-export type SearchTag = { type: "group" | "person"; name: string; id: number }
+export type SearchTag = {
+  type: "group" | "person" | "tag"
+  name: string
+  id: number
+}
 
 export const SearchTags = forwardRef<SearchTagsProps, "div">((props, ref) => {
   const { onRemove, tags, ...rest } = props

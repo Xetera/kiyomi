@@ -316,6 +316,7 @@ model DiscoveredPost {
   referencingGroups Int[]             @map("referencing_groups")
   referencingPeople Int[]             @map("referencing_people")
   originalPostDate  DateTime?         @map("original_post_date")
+  official          Boolean           @default(false)
   discoveredImages  DiscoveredImage[]
 
   createdAt DateTime @default(now()) @map("created_at")

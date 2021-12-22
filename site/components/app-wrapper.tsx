@@ -8,9 +8,9 @@ export function AppWrapper({ children }) {
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.key === "/") {
-        toggleSearch()
-      }
+      // if (event.key === "/") {
+      //   toggleSearch()
+      // }
     }
     document.addEventListener("keydown", listener)
     return () => document.removeEventListener("keydown", listener)

@@ -10,12 +10,14 @@ export const DiscoveryHistorySidebar = () => {
 
   return (
     <VStack spacing={8}>
-      <UserPortrait
-        username={me?.name ?? undefined}
-        xp={me?.xp ?? undefined}
-        avatar={me?.image ?? undefined}
-        avatarSize={14}
-      />
+      {me && (
+        <UserPortrait
+          username={me?.name ?? undefined}
+          xp={me?.xp ?? undefined}
+          avatar={me?.image ?? undefined}
+          avatarSize={14}
+        />
+      )}
       <VStack spacing={4} w="full">
         <Text textStyle="heading">Leaderboard</Text>
         <VStack spacing={4} w="full">

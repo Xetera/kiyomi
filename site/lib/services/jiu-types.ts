@@ -4,6 +4,7 @@ export const JiuProvider = z.object({
   type: z.string(),
   id: z.string(),
   ephemeral: z.boolean(),
+  official: z.boolean().default(false),
 })
 
 export const JiuAccount = z.object({
@@ -42,4 +43,33 @@ export const JiuMessage = z.object({
   metadata: JiuMessageMetadata.nullable(),
 })
 
-// export type JiuMessageType = z.infer<typeof JiuMessage>
+export interface JiuStats {
+  name: string
+  destination: string
+  enabled: boolean
+  url: string
+  priority: number
+  tokens: number
+  createdAt: Date | null
+  defaultName: string | null
+  official: boolean
+  lastScrape: Date | null
+  lastPost: Date | null
+  discoveredImages: number
+  scrapeCount: number
+}
+
+const JiuAddProviderMetadata = z.object({
+  groups: z.array(z.number()),
+  people: z.array(z.number()),
+})
+
+const JiuAddProvider = z.object({
+  url: z.string().url(),
+  name: z.string(),
+  official: z.boolean(),
+  metadata: JiuAddProviderMetadata.nullish(),
+  add_to_amqp: z.boolean(),
+})
+
+export type JiuAddProvider = z.infer<typeof JiuAddProvider>

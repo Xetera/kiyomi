@@ -7,28 +7,51 @@ import { QuickSearchHeader } from "@/components/search/QuickSearchContainer"
 import { RiCloseLine } from "react-icons/ri"
 import {
   groupsSearchToQuickSearchSection,
+  idolsSearchToQuickSearchSection,
   QuickSearchSection,
+  QuickSearchSectionKind,
+  SearchSectionMappings,
 } from "@/components/search/QuickSearchSection"
-import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
+import {
+  SearchResponse,
+  SearchResponseHit,
+} from "typesense/lib/Typesense/Documents"
 import { RootState, store } from "@/models/store"
 import { useSelector } from "react-redux"
 
-type GroupResult = Array<SearchResponseHit<SearchGroup>>
+export type GroupSearchResult = SearchResponseHit<SearchGroup>
 
-export function SidebarSearch() {
+type SidebarSearchProps<T extends QuickSearchSectionKind> = {
+  searchType: T
+  hits: GroupSearchResult[]
+  setHits: (result: GroupSearchResult[]) => void
+  filters: SearchTag[]
+  addFilter: (tag: SearchTag) => void
+  removeFilter: (tag: SearchTag) => void
+  deriveTag: (tag: SearchSectionMappings[T]) => SearchTag
+  runSearch: (input: string) => Promise<GroupSearchResult[]>
+}
+
+export function SidebarSearch<T extends QuickSearchSectionKind>({
+  hits,
+  setHits,
+  filters,
+  addFilter,
+  runSearch,
+  removeFilter,
+  searchType,
+}: SidebarSearchProps<T>) {
   const [search, setSearch] = useState("")
-  const filter = useSelector((root: RootState) => root.discovery?.searchFilter)
-  const [hits, setHits] = useState<GroupResult>([])
 
   async function changeSearch(text: string) {
     setSearch(text)
-    const groups = await searchGroup(text)
-    setHits(groups.hits ?? [])
+    const groups = await runSearch(text)
+    setHits(groups ?? [])
   }
 
   const validGroups = hits.filter((hit) =>
-    filter
-      .filter((tag) => tag.type === "group")
+    filters
+      .filter((tag) => tag.type === searchType)
       .every((tag) => tag.id !== hit.document.groupId)
   )
   return (
@@ -58,21 +81,23 @@ export function SidebarSearch() {
         />
       </Flex>
       <SearchTags
-        tags={filter}
+        tags={filters}
         onRemove={(tag) => {
           if (tag.type === "group") {
-            store.dispatch.discovery.removeGroup(tag)
+            removeFilter(tag)
           }
         }}
       />
       {validGroups.length > 0 && search && (
         <QuickSearchSection
-          type="group"
-          data={groupsSearchToQuickSearchSection(validGroups, (group) => {
+          type={searchType}
+          data={(searchType === "group"
+            ? groupsSearchToQuickSearchSection
+            : idolsSearchToQuickSearchSection)(validGroups, (group) => {
             return {
               onClick() {
-                store.dispatch.discovery.addFilter({
-                  type: "group",
+                addFilter({
+                  type: searchType,
                   id: group.document.groupId,
                   name: group.document.name,
                 })

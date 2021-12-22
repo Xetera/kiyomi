@@ -1,4 +1,7 @@
-import { useDiscoveryProvidersQuery } from "@/lib/__generated__/graphql"
+import {
+  useDiscoveryProvidersQuery,
+  useDiscoveryScheduleQuery,
+} from "@/lib/__generated__/graphql"
 import {
   Accordion,
   AccordionButton,
@@ -15,22 +18,46 @@ import {
 import { decideProvider } from "@/components/discover/discovered-post"
 import groupBy from "lodash/groupBy"
 import { RiLink } from "react-icons/ri"
-import { SidebarSearch } from "@/components/discover/sidebar-search"
+import {
+  GroupSearchResult,
+  SidebarSearch,
+} from "@/components/discover/sidebar-search"
+import { HiBadgeCheck } from "react-icons/hi"
 import { useState } from "react"
+import { RootState, store } from "@/models/store"
+import { useSelector } from "react-redux"
+import { searchGroup } from "@/client/typesense"
+import { ProviderTag } from "@/components/discover/provider-tag"
 
 function isGraphQlError(error: any): error is { message: string } {
   return error && "message" in error
 }
 
+const DiscoverySidebarSearch = () => {
+  const filters = useSelector((root: RootState) => root.discovery?.searchFilter)
+  const [hits, setHits] = useState<GroupSearchResult[]>([])
+  return (
+    <SidebarSearch
+      searchType="group"
+      hits={hits}
+      setHits={setHits}
+      runSearch={(text) => searchGroup(text).then((r) => r.hits ?? [])}
+      filters={filters}
+      removeFilter={store.dispatch.discovery.removeGroup}
+      addFilter={store.dispatch.discovery.addFilter}
+    />
+  )
+}
+
 export default function DiscoverSidebar() {
-  const { data, isFetching, error, isLoading } = useDiscoveryProvidersQuery()
-  const providers = data?.discoveryProviders
+  const { data, isFetching, error, isLoading } = useDiscoveryScheduleQuery()
+  const providers = data?.discoverySchedule
   const groups = groupBy(providers ?? [], (e) => e.provider)
   return (
     <VStack align="flex-start" spacing={8}>
-      <SidebarSearch />
       {isLoading && <Spinner />}
-      {isGraphQlError(error) && (
+      <DiscoverySidebarSearch />
+      {!isLoading && isGraphQlError(error) && (
         <>
           <Text color="pink.300" fontWeight="regular">
             There was an error getting a response from the JiU server
@@ -60,10 +87,13 @@ export default function DiscoverSidebar() {
                         rel="noopener external"
                         target="_blank"
                       >
-                        <HStack align="flex-start" spacing={1}>
+                        <HStack spacing={1} align="center">
                           <Text textStyle="heading-sm" float="left">
                             {provider.name}
                           </Text>
+                          {provider.official && (
+                            <HiBadgeCheck title="Official source" />
+                          )}
                           <RiLink size={12} color="gray" />
                         </HStack>
                       </Link>
@@ -97,9 +127,11 @@ export default function DiscoverSidebar() {
                     </AccordionButton>
                     <AccordionPanel mb={-2}>
                       {providers.map((pr) => (
-                        <Tag mr={2} mb={2} key={pr.name}>
-                          {pr.name}
-                        </Tag>
+                        <ProviderTag
+                          {...pr}
+                          key={pr.name}
+                          defaultName={pr.name}
+                        />
                       ))}
                     </AccordionPanel>
                   </AccordionItem>

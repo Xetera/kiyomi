@@ -2,6 +2,14 @@
 ### Do not make changes to this file directly
 
 
+input AddProviderInput {
+  groups: [Int]!
+  name: String!
+  official: Boolean!
+  people: [Int]!
+  url: String!
+}
+
 type Alias {
   createdAt: DateTime!
   id: Int!
@@ -289,6 +297,7 @@ input DiscoveredPostOrderByInput {
   body: SortOrder
   createdAt: SortOrder
   id: SortOrder
+  official: SortOrder
   originalPostDate: SortOrder
   postUrl: SortOrder
   providerType: SortOrder
@@ -308,6 +317,7 @@ input DiscoveredPostWhereInput {
   createdAt: DateTimeFilter
   discoveredImages: DiscoveredImageListRelationFilter
   id: IntFilter
+  official: BoolFilter
   originalPostDate: DateTimeNullableFilter
   postUrl: StringNullableFilter
   providerType: StringFilter
@@ -322,10 +332,11 @@ input DiscoveredPostWhereUniqueInput {
   id: Int
 }
 
-"""The list of providers that supply images for the discover feed"""
+"""The list of providers that supply images for the discovery feed"""
 type DiscoveryProvider {
   destination: String!
   name: String
+  official: Boolean!
   provider: String!
   url: String!
 
@@ -799,6 +810,7 @@ enum MimeType {
 type Mutation {
   """Add an appearance relation on an image."""
   addAppearance(imageId: Int!, personId: Int!): Appearance!
+  addProvider(provider: AddProviderInput!): String!
   discoveredImageVote(imageId: Int!, reason: String, verdict: String!): DiscoveredImageVote!
 
   """Vote using the same verdict on all images in a post"""
@@ -989,6 +1001,23 @@ input PersonWhereUniqueInput {
   preferredAliasId: Int
 }
 
+"""Statistics associated with each provider"""
+type ProviderStatistic {
+  createdAt: DateTime
+  defaultName: String
+  destination: String!
+  discoveredImages: Int!
+  enabled: Boolean!
+  lastPost: DateTime
+  lastScrape: DateTime
+  name: String!
+  official: Boolean!
+  priority: Float!
+  scrapeCount: Int!
+  tokens: Float!
+  url: String!
+}
+
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
   discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
@@ -996,7 +1025,8 @@ type Query {
   discoveryFeed(groupIds: [Int!]!, peopleIds: [Int!]!, skip: Int, take: Int): [DiscoveredPost!]!
   discoveryHistory(skip: Int = 0, take: Int = 10): [DiscoveredPost!]!
   discoveryLeaderboard(skip: Int = 0, take: Int = 10): [LeaderboardUser!]!
-  discoveryProviders: [DiscoveryProvider!]!
+  discoveryProviders: [ProviderStatistic!]!
+  discoverySchedule: [DiscoveryProvider!]!
   discoveryStats: [DiscoveryStatistic!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!

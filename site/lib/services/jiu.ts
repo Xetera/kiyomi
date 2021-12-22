@@ -1,9 +1,15 @@
 import { PerceptualHashService } from "./perceptual-hash"
 import { AmqpService } from "../amqp"
-import { JiuMessage, JiuMessageMetadata } from "./jiu-types"
+import {
+  JiuAddProvider,
+  JiuMessage,
+  JiuMessageMetadata,
+  JiuStats,
+} from "./jiu-types"
 import camelCaseKeys from "camelcase-keys"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
+import { inspect } from "util"
 
 type JiuMessageType = z.infer<typeof JiuMessage>
 
@@ -13,6 +19,7 @@ type JiuDiscoveryProvider = {
   destination: string
   waitDays: number
   name?: string
+  official: boolean
 }
 
 type JiuServiceOptions = {
@@ -22,6 +29,9 @@ type JiuServiceOptions = {
 }
 
 const DIRECT_QUEUE_NAME = "image_discovery"
+
+const fetchJiu = (url: string, init?: RequestInit) =>
+  fetch(`${process.env.JIU_BASE_URL}${url}`, init)
 
 export function makeJiu(opts: JiuServiceOptions) {
   const { prisma } = opts
@@ -93,11 +103,24 @@ export function makeJiu(opts: JiuServiceOptions) {
         console.log(`Created a post for ${post.uniqueIdentifier}`)
       }
     },
-    async providers(): Promise<JiuDiscoveryProvider[]> {
-      const data: any[] = await fetch(
-        `${process.env.JIU_BASE_URL}/schedule`
-      ).then((r) => r.json())
+    async providers(): Promise<JiuStats[]> {
+      const response = await fetchJiu(`/v1/stats`).then((r) => r.json())
+      return response.stats.map(camelCaseKeys)
+    },
+    async schedule(): Promise<JiuDiscoveryProvider[]> {
+      const data: any[] = await fetchJiu(`/v1/schedule`).then((r) => r.json())
       return data.map((obj) => camelCaseKeys(obj))
+    },
+    async addProvider(body: JiuAddProvider): Promise<string> {
+      const result = await fetchJiu(`/v1/provider`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }).then((r) => r.text())
+      console.log(result)
+      return result
     },
   }
 

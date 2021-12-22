@@ -1,9 +1,10 @@
-query DiscoveryProviders {
-    discoveryProviders {
+query DiscoverySchedule {
+    discoverySchedule {
         destination
         name
         waitDays
         url
         provider
+        official
     }
 }

@@ -21,6 +21,13 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  AddProviderInput: { // input type
+    groups: Array<number | null>; // [Int]!
+    name: string; // String!
+    official: boolean; // Boolean!
+    people: Array<number | null>; // [Int]!
+    url: string; // String!
+  }
   AliasListRelationFilter: { // input type
     every?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
     none?: NexusGenInputs['AliasWhereInput'] | null; // AliasWhereInput
@@ -199,6 +206,7 @@ export interface NexusGenInputs {
     body?: NexusGenEnums['SortOrder'] | null; // SortOrder
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    official?: NexusGenEnums['SortOrder'] | null; // SortOrder
     originalPostDate?: NexusGenEnums['SortOrder'] | null; // SortOrder
     postUrl?: NexusGenEnums['SortOrder'] | null; // SortOrder
     providerType?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -217,6 +225,7 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     discoveredImages?: NexusGenInputs['DiscoveredImageListRelationFilter'] | null; // DiscoveredImageListRelationFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    official?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
     originalPostDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     postUrl?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     providerType?: NexusGenInputs['StringFilter'] | null; // StringFilter
@@ -756,6 +765,7 @@ export interface NexusGenObjects {
   DiscoveryProvider: { // root type
     destination: string; // String!
     name?: string | null; // String
+    official: boolean; // Boolean!
     provider: string; // String!
     url: string; // String!
     waitDays: number; // Int!
@@ -796,6 +806,21 @@ export interface NexusGenObjects {
   }
   Mutation: {};
   Person: PrismaClient.Person;
+  ProviderStatistic: { // root type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    defaultName?: string | null; // String
+    destination: string; // String!
+    discoveredImages: number; // Int!
+    enabled: boolean; // Boolean!
+    lastPost?: NexusGenScalars['DateTime'] | null; // DateTime
+    lastScrape?: NexusGenScalars['DateTime'] | null; // DateTime
+    name: string; // String!
+    official: boolean; // Boolean!
+    priority: number; // Float!
+    scrapeCount: number; // Int!
+    tokens: number; // Float!
+    url: string; // String!
+  }
   Query: {};
   QueueInfo: { // root type
     queueSize: number; // Int!
@@ -887,6 +912,7 @@ export interface NexusGenFieldTypes {
   DiscoveryProvider: { // field return type
     destination: string; // String!
     name: string | null; // String
+    official: boolean; // Boolean!
     provider: string; // String!
     url: string; // String!
     waitDays: number; // Int!
@@ -993,6 +1019,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    addProvider: string; // String!
     discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
     discoveredPostVote: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
@@ -1015,6 +1042,21 @@ export interface NexusGenFieldTypes {
     preferredMembership: NexusGenRootTypes['GroupMember'] | null; // GroupMember
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
+  ProviderStatistic: { // field return type
+    createdAt: NexusGenScalars['DateTime'] | null; // DateTime
+    defaultName: string | null; // String
+    destination: string; // String!
+    discoveredImages: number; // Int!
+    enabled: boolean; // Boolean!
+    lastPost: NexusGenScalars['DateTime'] | null; // DateTime
+    lastScrape: NexusGenScalars['DateTime'] | null; // DateTime
+    name: string; // String!
+    official: boolean; // Boolean!
+    priority: number; // Float!
+    scrapeCount: number; // Int!
+    tokens: number; // Float!
+    url: string; // String!
+  }
   Query: { // field return type
     countAppearances: NexusGenRootTypes['AppearanceCount'][]; // [AppearanceCount!]!
     discoveredImages: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
@@ -1022,7 +1064,8 @@ export interface NexusGenFieldTypes {
     discoveryFeed: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryHistory: NexusGenRootTypes['DiscoveredPost'][]; // [DiscoveredPost!]!
     discoveryLeaderboard: NexusGenRootTypes['LeaderboardUser'][]; // [LeaderboardUser!]!
-    discoveryProviders: NexusGenRootTypes['DiscoveryProvider'][]; // [DiscoveryProvider!]!
+    discoveryProviders: NexusGenRootTypes['ProviderStatistic'][]; // [ProviderStatistic!]!
+    discoverySchedule: NexusGenRootTypes['DiscoveryProvider'][]; // [DiscoveryProvider!]!
     discoveryStats: NexusGenRootTypes['DiscoveryStatistic'][]; // [DiscoveryStatistic!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
@@ -1132,6 +1175,7 @@ export interface NexusGenFieldTypeNames {
   DiscoveryProvider: { // field return type name
     destination: 'String'
     name: 'String'
+    official: 'Boolean'
     provider: 'String'
     url: 'String'
     waitDays: 'Int'
@@ -1238,6 +1282,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     addAppearance: 'Appearance'
+    addProvider: 'String'
     discoveredImageVote: 'DiscoveredImageVote'
     discoveredPostVote: 'DiscoveredImage'
     linkFace: 'Appearance'
@@ -1260,6 +1305,21 @@ export interface NexusGenFieldTypeNames {
     preferredMembership: 'GroupMember'
     updatedAt: 'DateTime'
   }
+  ProviderStatistic: { // field return type name
+    createdAt: 'DateTime'
+    defaultName: 'String'
+    destination: 'String'
+    discoveredImages: 'Int'
+    enabled: 'Boolean'
+    lastPost: 'DateTime'
+    lastScrape: 'DateTime'
+    name: 'String'
+    official: 'Boolean'
+    priority: 'Float'
+    scrapeCount: 'Int'
+    tokens: 'Float'
+    url: 'String'
+  }
   Query: { // field return type name
     countAppearances: 'AppearanceCount'
     discoveredImages: 'DiscoveredImage'
@@ -1267,7 +1327,8 @@ export interface NexusGenFieldTypeNames {
     discoveryFeed: 'DiscoveredPost'
     discoveryHistory: 'DiscoveredPost'
     discoveryLeaderboard: 'LeaderboardUser'
-    discoveryProviders: 'DiscoveryProvider'
+    discoveryProviders: 'ProviderStatistic'
+    discoverySchedule: 'DiscoveryProvider'
     discoveryStats: 'DiscoveryStatistic'
     group: 'Group'
     groups: 'Group'
@@ -1369,6 +1430,9 @@ export interface NexusGenArgTypes {
     addAppearance: { // args
       imageId: number; // Int!
       personId: number; // Int!
+    }
+    addProvider: { // args
+      provider: NexusGenInputs['AddProviderInput']; // AddProviderInput!
     }
     discoveredImageVote: { // args
       imageId: number; // Int!

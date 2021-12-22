@@ -20,28 +20,29 @@ type QuickSearchTag = {
 }
 
 type QuickSearchPerson = {
-  href: string
   name: string
   aliases: string[]
   image?: string
-}
+} & ({ onClick: () => void } | { href: string })
 
 type QuickSearchGroup = {
   name: string
 } & ({ onClick: () => void } | { href: string })
 
-type QuickSearchSection =
-  | {
-      type: "tag"
-      data: QuickSearchTag[]
-    }
-  | { type: "person"; data: QuickSearchPerson[] }
-  | {
-      type: "group"
-      data: QuickSearchGroup[]
-    }
+export type SearchSectionMappings = {
+  tag: QuickSearchTag[]
+  person: QuickSearchPerson[]
+  group: QuickSearchGroup[]
+}
 
-export type QuickSearchSectionKind = "tag" | "person" | "group"
+type QuickSearchSection = {
+  [Key in QuickSearchSectionKind]: {
+    type: Key
+    data: SearchSectionMappings[Key]
+  }
+}[QuickSearchSectionKind]
+
+export type QuickSearchSectionKind = keyof SearchSectionMappings
 
 const mapping: Record<QuickSearchSectionKind, string> = {
   tag: "tags",
@@ -63,10 +64,13 @@ function extractFieldOr(
 }
 
 export function idolsSearchToQuickSearchSection(
-  idols: Array<SearchResponseHit<SearchIdol>>
+  idols: Array<SearchResponseHit<SearchIdol>>,
+  destinationMapper: (
+    group: SearchResponseHit<SearchIdol>
+  ) => { href: string } | { onClick: () => void } = () => ({ href: "/" })
 ): QuickSearchPerson[] {
   return idols.map((idol) => ({
-    href: "/",
+    ...destinationMapper(idol),
     aliases: (extractFieldOr(idol, "aliases") ?? []) as string[],
     name: extractFieldOr(idol, "name") as string,
   }))
@@ -188,9 +192,10 @@ function QuickSearchSectionGroup(props: QuickSearchGroup) {
 }
 
 function QuickSearchSectionPerson(props: QuickSearchPerson) {
+  const p = "href" in props ? { href: props.href } : { onClick: props.onClick }
   return (
     <QuickSearchSectionGeneric
-      href={props.href}
+      {...p}
       left={
         <HorizontalElems>
           {props.image ? (
