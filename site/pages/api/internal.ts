@@ -2,6 +2,7 @@ import { ApolloServer } from "apollo-server-micro"
 import makeCors from "micro-cors"
 import { privateSchema } from "@/lib/schema"
 import { contextResolver } from "@/lib/context"
+import { IncomingMessage, ServerResponse } from "http"
 
 export const config = {
   api: {
@@ -17,8 +18,29 @@ const apolloServer = new ApolloServer({
   context: contextResolver,
 })
 
-const handler = apolloServer.createHandler({ path: "/api/internal" })
+let apolloServerHandler: (
+  req: IncomingMessage,
+  res: ServerResponse
+) => Promise<void>
 
-export default cors((req, res) => {
-  return req.method === "OPTIONS" ? res.end() : handler(req, res)
-})
+const getApolloServerHandler = async (server: ApolloServer) => {
+  if (!apolloServerHandler) {
+    apolloServerHandler = server.createHandler({
+      path: "/api/internal",
+    })
+  }
+  return apolloServerHandler
+}
+
+const promise = apolloServer.start()
+
+export default async (req, res) => {
+  if (req.method === "OPTIONS") {
+    return res.end()
+  }
+  await promise
+  const handler = await getApolloServerHandler(apolloServer)
+  return cors((req, res) => {
+    return handler(req, res)
+  })(req, res)
+}
