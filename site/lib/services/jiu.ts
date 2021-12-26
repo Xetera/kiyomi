@@ -9,7 +9,6 @@ import {
 import camelCaseKeys from "camelcase-keys"
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client"
-import { inspect } from "util"
 
 type JiuMessageType = z.infer<typeof JiuMessage>
 
@@ -41,7 +40,11 @@ export function makeJiu(opts: JiuServiceOptions) {
       for (const post of message.posts.reverse()) {
         const hashes = await Promise.allSettled(
           post.images.map((image) => {
-            return opts.phash.mostSimilarImage(image.mediaUrl)
+            return opts.phash.mostSimilarImage(image.mediaUrl).catch((err) => {
+              console.error(err)
+              // rethrowing to make sure it's not marked as settled
+              throw err
+            })
           })
         )
         const metadata = JiuMessageMetadata.safeParse(post.metadata)

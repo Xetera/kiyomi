@@ -18,7 +18,7 @@ export function makePerceptualHash() {
       })
     },
     async mostSimilarImage(url: string): Promise<SimilarImage | undefined> {
-      const hash: string = await getPerceptualHash.applyAsync([url]).get()
+      const hash: string = await getPerceptualHash.applyAsync([url]).get(6000)
       const cube = methods.hashStringToCube(hash)
       const similar = await similarImagesQuery(cube)
       return similar[0]
