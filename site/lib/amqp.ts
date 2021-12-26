@@ -59,7 +59,7 @@ type AmqpData = {
 }
 
 export const makeAmqp = (url = amqpConnectionUrl) => {
-  const queue: Map<string, AmqpData> = new Map()
+  const consumed = new Set<string>()
   // this allows `connect` to continuously retry for a connection
   let amqp: { connection?: amqp.Connection } = connect(url)
   return {
@@ -74,12 +74,30 @@ export const makeAmqp = (url = amqpConnectionUrl) => {
       ) => Promise<T> | T,
       opts: { prefetch: number; assertQueue: string }
     ) {
+      if (!amqp.connection) {
+        console.error(
+          `Tried to consume a channel ${id} when it's not available. Retrying in 20 seconds`
+        )
+        setTimeout(() => {
+          this.consumeWith(id, listener, opts)
+        }, 20000)
+        return
+      }
+
+      if (consumed.has(id)) {
+        console.error(
+          `Not adding a new listener to a queue (${id}) that's already handled`
+        )
+        return
+      }
+
       // this should have some reconnection logic or something
       const channel = await amqp.connection?.createChannel()
       // we only want to fetch 1 message at a time as they're quite expensive to process
       await channel?.prefetch(1)
       await channel?.assertQueue(opts.assertQueue)
       channel?.consume(id, (msg) => listener(msg, channel))
+      consumed.add(id)
     },
     async sendImageToFaceRecognition(
       slug: string,

@@ -147,6 +147,7 @@ export function makeJiu(opts: JiuServiceOptions) {
               // TODO: handle this unpredictable schema change somehow?
               return
             }
+            console.log(`Got a new post from Jiu [${m.provider.type}]`)
             await methods.handleJiuMessage(m)
             channel.ack(message)
           } catch (err) {
