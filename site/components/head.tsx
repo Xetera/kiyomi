@@ -5,6 +5,7 @@ export const Head = () => {
   return (
     <NextHead>
       <title>Kiyomi</title>
+      <link rel="shortcut icon" href="/favicon.png" />
     </NextHead>
   )
 }

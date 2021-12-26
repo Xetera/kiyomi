@@ -15,6 +15,7 @@ import {
   Flex,
   forwardRef,
   HStack,
+  Icon,
   Kbd,
   Link,
   Text,
@@ -22,8 +23,14 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import { RiSearchLine, RiStackLine } from "react-icons/ri"
+import {
+  RiDiscordFill,
+  RiDiscordLine,
+  RiSearchLine,
+  RiStackLine,
+} from "react-icons/ri"
 import { store } from "@/models/store"
+import { DISCORD_INVITE_URL } from "@/client/constants"
 
 type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
@@ -128,6 +135,12 @@ export function Navbar() {
     store.dispatch.search.toggleSearch()
   }
 
+  const discord = (
+    <NavLink hardLink href={DISCORD_INVITE_URL}>
+      Discord
+    </NavLink>
+  )
+
   return (
     <HStack
       as="nav"
@@ -147,20 +160,21 @@ export function Navbar() {
         flex={1}
       >
         <Box>
-          <HStack spacing={3} display={["none", null, "flex"]}>
+          <HStack spacing={3} display={["none", null, null, "flex"]}>
             <NavLink href="/">Home</NavLink>
             <NavLink href="/discover">Discover</NavLink>
             <NavLink href="/api/graphql" hardLink>
               API
             </NavLink>
+            {discord}
           </HStack>
         </Box>
-        <Flex display={["flex", null, "none"]}>
+        <Flex display={["flex", null, null, "none"]}>
           <Button onClick={onOpen}>
             <RiStackLine />
           </Button>
         </Flex>
-        <HStack spacing={3} display={["none", null, "flex"]}>
+        <HStack spacing={3} display={["none", null, null, "flex"]}>
           <HStack
             align="center"
             onClick={openSearch}
@@ -223,6 +237,7 @@ export function Navbar() {
                 <NavLink href="/api/graphql" w="full" hardLink>
                   API
                 </NavLink>
+                {discord}
               </VStack>
             </VStack>
           </DrawerBody>
@@ -247,7 +262,9 @@ export function Navbar() {
                   </NavbarClickable>
                 </>
               ) : (
-                <></>
+                <NavLink href="/api/auth/signin">
+                  <Text>Sign In</Text>
+                </NavLink>
               )}
             </VStack>
             {/*<Button variant="outline" mr={3} onClick={onClose}>*/}
