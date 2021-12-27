@@ -1,49 +1,106 @@
-FROM node:14-slim AS build
+## syntax=docker/dockerfile:1.3
+#FROM python:3.8 as build
+#
+#ENV PIP_NO_CACHE_DIR=1
+#
+#WORKDIR /app/labeler
+#
+#RUN --mount=type=cache,target=/var/cache/apt \
+#  apt update && apt-get install -y gcc build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev cmake libtool autoconf
+#
+#RUN pip install "poetry==1.1.12"
+#RUN python -m venv /venv
+#ENV VIRTUAL_ENV=/venv
+#ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+#
+#WORKDIR /app
+#
+#RUN touch /app/labeler/empty.py
+#COPY ["pyproject.toml", "poetry.lock", "/app/"]
+#RUN poetry config virtualenvs.in-project true && poetry install
+#COPY [".", "/app"]
+#
+#FROM python:3.8-alpine as final
+#ENV PATH="/app/.venv/bin:$PATH"
+#WORKDIR /app
+#
+#COPY --from=build /app /app
+#
+#CMD ["poetry", "run", "celery", "-A", "labeler.main", "worker"]
 
-WORKDIR /opt/app
-COPY package.json yarn.lock ./
-RUN yarn --frozen-lockfile
+# `python-base` sets up all our shared environment variables
+FROM python:3.8 as python-base
 
-WORKDIR /opt/app/labeler
-# tensorflow needs these binaries
-RUN apt-get update && \
-    apt-get install -y build-essential \
-    wget \
-    python3 \
-    make \
-    gcc \
-    libc6-dev \
-    libssl-dev
+    # python
+ENV PYTHONUNBUFFERED=1 \
+    # prevents python creating .pyc files
+    PYTHONDONTWRITEBYTECODE=1 \
+    \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    \
+    # poetry
+    # https://python-poetry.org/docs/configuration/#using-environment-variables
+    POETRY_VERSION=1.1.12 \
+    # make poetry install to this location
+    POETRY_HOME="/opt/poetry" \
+    # make poetry create the virtual environment in the project's root
+    # it gets named `.venv`
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    # do not ask any interactive question
+    POETRY_NO_INTERACTION=1 \
+    \
+    # paths
+    # this is where our requirements + virtual environment will live
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv"
 
-RUN apt-get install python python-pip build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev cmake libtool autoconf -y
-RUN yarn global add ts-node typescript
-COPY labeler/package.json labeler/yarn.lock ./
-RUN yarn --frozen-lockfile
-COPY shared /opt/app/shared
-COPY labeler/tsconfig.json tsconfig.json
-COPY labeler/src src
-RUN yarn typecheck
-RUN yarn build
-RUN yarn tf
 
-FROM nikolaik/python-nodejs:python3.8-nodejs14-slim as release
-RUN apt update && apt-get install -y --no-install-recommends libssl-dev build-essential && rm -rf /var/lib/apt/lists/*
+# prepend poetry and venv to path
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
-WORKDIR /opt/app/labeler
 
-ENV NODE_ENV=production
+# `builder-base` stage is used to build deps + create our virtual environment
+FROM python-base as builder-base
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        # deps for installing poetry
+        curl \
+        # deps for building python deps
+        build-essential gcc build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev cmake libtool autoconf
 
-COPY labeler/requirements.txt requirements.txt
-COPY labeler/package.json labeler/yarn.lock ./
-RUN yarn --production --frozen-lockfile
-RUN pip3 install -r requirements.txt
-RUN apt autoremove
-COPY --from=build /opt/app/labeler/dist dist
-COPY labeler/*.py ./
-# Rebuilding tensorflow dependencies for some reason because it causes weird bugs without it???
+# install poetry - respects $POETRY_VERSION & $POETRY_HOME
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
-COPY labeler/weights weights
+# copy project requirement files here to ensure they will be cached.
+WORKDIR $PYSETUP_PATH
+COPY poetry.lock pyproject.toml ./
 
-RUN yarn tf
+# install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
+COPY poetry.lock /
+RUN --mount=type=cache,target=/home/.cache/pypoetry/cache \
+    --mount=type=cache,target=/home/.cache/pypoetry/artifacts \
+    poetry install
 
-CMD ["node", "--enable-source-maps", "./dist/labeler/src/index.js"]
+# `production` image used for runtime
+FROM python-base as production
+
+RUN pip3 install opencv-contrib-python
+RUN apt update && apt-get install -y libatlas-base-dev libhdf5-dev libhdf5-serial-dev libatlas-base-dev
+COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
+COPY . /app/
+WORKDIR /app
+# Set user and group
+ARG user=worker
+ARG group=worker
+ARG uid=1000
+ARG gid=1000
+RUN groupadd -g ${gid} ${group}
+RUN useradd -u ${uid} -g ${group} -s /bin/sh -m ${user} # <--- the '-m' create a user home directory
+
+# Switch to user
+USER ${uid}:${gid}
+
+CMD ["celery", "-A", "labeler.main", "worker"]
