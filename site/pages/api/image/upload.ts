@@ -203,16 +203,16 @@ export default handle(
             },
           ],
         })
-        req.services.amqp
-          .sendImageToFaceRecognition(image.slug, {
-            ireneBotIdolId: ireneBotIdolId ? Number(ireneBotIdolId) : undefined,
-            ireneBotImageId: ireneBotImageId
-              ? Number(ireneBotImageId)
-              : undefined,
-          })
-          .catch((err) => {
-            console.error(err)
-          })
+        // req.services.amqp
+        //   .sendImageToFaceRecognition(image.slug, {
+        //     ireneBotIdolId: ireneBotIdolId ? Number(ireneBotIdolId) : undefined,
+        //     ireneBotImageId: ireneBotImageId
+        //       ? Number(ireneBotImageId)
+        //       : undefined,
+        //   })
+        //   .catch((err) => {
+        //     console.error(err)
+        //   })
         return res.json(result.image)
       } catch (err) {
         console.log(err)

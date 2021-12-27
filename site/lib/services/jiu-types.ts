@@ -17,7 +17,7 @@ export const JiuMedia = z.object({
   mediaUrl: z.string(),
   referenceUrl: z.string().nullish(),
   uniqueIdentifier: z.string(),
-  metadata: z.unknown(),
+  metadata: z.unknown().nullish().default({}),
 })
 
 export const JiuPost = z.object({
@@ -27,12 +27,12 @@ export const JiuPost = z.object({
   body: z.string().nullish(),
   url: z.string().nullish(),
   postDate: z.preprocess((arg) => new Date(arg as string), z.date()).nullish(),
-  metadata: z.unknown(),
+  metadata: z.unknown().nullish().default({}),
 })
 
 export const JiuMessageMetadata = z.object({
-  groups: z.array(z.number()).nullish(),
-  people: z.array(z.number()).nullish(),
+  groups: z.array(z.number()).nullish().default([]),
+  people: z.array(z.number()).nullish().default([]),
 })
 
 export const JiuMessage = z.object({
@@ -40,7 +40,7 @@ export const JiuMessage = z.object({
   retries: z.number().optional(),
   provider: JiuProvider,
   posts: z.array(JiuPost),
-  metadata: JiuMessageMetadata.nullable(),
+  metadata: JiuMessageMetadata.nullish().default({}),
 })
 
 export interface JiuStats {

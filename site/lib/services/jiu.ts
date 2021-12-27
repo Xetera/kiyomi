@@ -1,4 +1,3 @@
-import { PerceptualHashService } from "./perceptual-hash"
 import { AmqpService } from "../amqp"
 import {
   JiuAddProvider,
@@ -8,7 +7,8 @@ import {
 } from "./jiu-types"
 import camelCaseKeys from "camelcase-keys"
 import { z } from "zod"
-import { PrismaClient } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
+import { WendyService } from "@/lib/services/wendy"
 
 type JiuMessageType = z.infer<typeof JiuMessage>
 
@@ -23,11 +23,27 @@ type JiuDiscoveryProvider = {
 
 type JiuServiceOptions = {
   prisma: PrismaClient
-  phash: PerceptualHashService
+  wendy: WendyService
   amqp: AmqpService
 }
 
-const DIRECT_QUEUE_NAME = "image_discovery"
+const DIRECT_QUEUE_NAME =
+  process.env.NODE_ENV === "production"
+    ? "image_discovery"
+    : "image_discovery.dev"
+
+function convertProviderType(m: string) {
+  switch (m) {
+    case "twitter.timeline":
+      return "TwitterTimeline"
+    case "united_cube.artist_feed":
+      return "UnitedCubeArtistFeed"
+    case "weverse.artist_feed":
+      return "WeverseArtistFeed"
+    default:
+      return m
+  }
+}
 
 const fetchJiu = (url: string, init?: RequestInit) =>
   fetch(`${process.env.JIU_BASE_URL}${url}`, init)
@@ -39,16 +55,65 @@ export function makeJiu(opts: JiuServiceOptions) {
       // reversing because we want to process the most recently discovered post last
       for (const post of message.posts.reverse()) {
         const hashes = await Promise.allSettled(
-          post.images.map((image) => {
-            return opts.phash.mostSimilarImage(image.mediaUrl).catch((err) => {
-              console.error(err)
-              // rethrowing to make sure it's not marked as settled
-              throw err
-            })
+          post.images.map(async (image) => {
+            const result = await opts.wendy
+              .mostSimilarImage(image.mediaUrl)
+              .catch((err) => {
+                console.error(err)
+                // rethrowing to make sure it's not marked as settled
+                throw err
+              })
+            return {
+              ...result,
+              uniqueIdentifier: image.uniqueIdentifier,
+            }
           })
         )
         const metadata = JiuMessageMetadata.safeParse(post.metadata)
-        const providerType = message.provider.type
+        const providerType = convertProviderType(message.provider.type)
+        const discoveredImages = post.images.map(
+          (image, i): Prisma.DiscoveredImageCreateOrConnectWithoutPostInput => {
+            let duplicateImageId: number | undefined
+            let duplicateDiscoveredImageId: number | undefined
+            const t = hashes[i]
+            // we don't care if the request failed or the hash couldn't be computed
+            if (t) {
+              if (
+                t.status === "fulfilled" &&
+                t.value.result?.distance &&
+                opts.wendy.isNearPerfectMatch(t.value.result.distance)
+              ) {
+                if (t.value.result.type === "image") {
+                  duplicateImageId = t.value.result.id
+                } else {
+                  duplicateDiscoveredImageId = t.value.result.id
+                }
+              } else if (t.status === "rejected") {
+                console.error(`Could not get hash value for ${image.mediaUrl}`)
+                console.error(t.reason)
+              }
+            }
+            return {
+              where: {
+                providerIdentity: {
+                  providerType,
+                  uniqueIdentifier: image.uniqueIdentifier,
+                },
+              },
+              create: {
+                mediaType: image.type,
+                referenceUrl: image.referenceUrl,
+                providerType,
+                url: image.mediaUrl,
+                // kind of a gross way of doing it but the image can be duplicates of many things
+                duplicateImageId: duplicateImageId ?? null,
+                duplicateDiscoveredImageId: duplicateDiscoveredImageId ?? null,
+                uniqueIdentifier: image.uniqueIdentifier,
+                // pHash: pHash ? Array.from(pHash) : null,
+              },
+            }
+          }
+        )
         await prisma.discoveredPost.upsert({
           where: {
             discoveredProvider: {
@@ -57,7 +122,11 @@ export function makeJiu(opts: JiuServiceOptions) {
             },
           },
           // we don't need to update anything, this is just for idempotence
-          update: {},
+          update: {
+            discoveredImages: {
+              connectOrCreate: discoveredImages,
+            },
+          },
           create: {
             providerType,
             uniqueIdentifier: post.uniqueIdentifier,
@@ -73,36 +142,33 @@ export function makeJiu(opts: JiuServiceOptions) {
               : [],
             originalPostDate: post.postDate,
             discoveredImages: {
-              create: post.images.map((image, i) => {
-                let duplicateImageId: number | undefined
-                const t = hashes[i]
-                // we don't care if the request failed or the hash couldn't be computed
-                if (t) {
-                  if (
-                    t.status === "fulfilled" &&
-                    t.value?.distance &&
-                    opts.phash.isNearPerfectMatch(t.value.distance)
-                  ) {
-                    duplicateImageId = t.value?.id
-                  } else if (t.status === "rejected") {
-                    console.error(
-                      `Could not get hash value for ${image.mediaUrl}`
-                    )
-                    console.error(t.reason)
-                  }
-                }
-                return {
-                  mediaType: image.type,
-                  referenceUrl: image.referenceUrl,
-                  providerType: message.provider.type,
-                  url: image.mediaUrl,
-                  duplicateImageId: duplicateImageId ?? null,
-                  uniqueIdentifier: image.uniqueIdentifier,
-                }
-              }),
+              connectOrCreate: discoveredImages,
             },
           },
         })
+        for (const image of post.images) {
+          const hash = hashes.find(
+            (has) =>
+              has.status === "fulfilled" &&
+              has.value.uniqueIdentifier === image.uniqueIdentifier
+          )
+          if (!hash) {
+            console.log("no hash")
+            continue
+          }
+          const dd =
+            hash.status === "fulfilled" ? Array.from(hash.value.cube) : []
+          console.log(dd)
+          console.log(message.provider.type, image.uniqueIdentifier)
+          await prisma.$executeRaw(
+            `
+            UPDATE discovered_images SET p_hash = CUBE(ARRAY[${dd.join(",")}])
+                WHERE provider_type = $1 AND unique_identifier = $2
+          `,
+            convertProviderType(message.provider.type) ?? null,
+            image.uniqueIdentifier ?? null
+          )
+        }
         console.log(`Created a post for ${post.uniqueIdentifier}`)
       }
     },

@@ -19,7 +19,7 @@ export const Face = objectType({
       .addedBy()
       .appearance()
       .image()
-      .score()
+      .score({ deprecation: "No longer supported" })
       .createdAt()
       .source()
       .updatedAt()

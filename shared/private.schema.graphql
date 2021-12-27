@@ -543,8 +543,28 @@ type DiscoveredImage {
   votes(cursor: DiscoveredImageVoteWhereUniqueInput, skip: Int, take: Int, where: DiscoveredImageVoteWhereInput): [DiscoveredImageVote!]!
 }
 
+input DiscoveredImageCreateManyDuplicateDiscoveredImageInput {
+  createdAt: DateTime
+  duplicateImageId: Int
+  id: Int
+  imageId: Int
+  mediaType: String!
+  postId: Int
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+  url: String!
+}
+
+input DiscoveredImageCreateManyDuplicateDiscoveredImageInputEnvelope {
+  data: [DiscoveredImageCreateManyDuplicateDiscoveredImageInput!]
+  skipDuplicates: Boolean
+}
+
 input DiscoveredImageCreateManyDuplicateImageInput {
   createdAt: DateTime
+  duplicateDiscoveredImageId: Int
   id: Int
   imageId: Int
   mediaType: String!
@@ -561,11 +581,24 @@ input DiscoveredImageCreateManyDuplicateImageInputEnvelope {
   skipDuplicates: Boolean
 }
 
+input DiscoveredImageCreateNestedManyWithoutDuplicateDiscoveredImageInput {
+  connect: [DiscoveredImageWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageCreateOrConnectWithoutDuplicateDiscoveredImageInput!]
+  create: [DiscoveredImageCreateWithoutDuplicateDiscoveredImageInput!]
+  createMany: DiscoveredImageCreateManyDuplicateDiscoveredImageInputEnvelope
+}
+
 input DiscoveredImageCreateNestedManyWithoutDuplicateImageInput {
   connect: [DiscoveredImageWhereUniqueInput!]
   connectOrCreate: [DiscoveredImageCreateOrConnectWithoutDuplicateImageInput!]
   create: [DiscoveredImageCreateWithoutDuplicateImageInput!]
   createMany: DiscoveredImageCreateManyDuplicateImageInputEnvelope
+}
+
+input DiscoveredImageCreateNestedOneWithoutDuplicateDiscoveredImagesInput {
+  connect: DiscoveredImageWhereUniqueInput
+  connectOrCreate: DiscoveredImageCreateOrConnectWithoutDuplicateDiscoveredImagesInput
+  create: DiscoveredImageCreateWithoutDuplicateDiscoveredImagesInput
 }
 
 input DiscoveredImageCreateNestedOneWithoutImageInput {
@@ -578,6 +611,16 @@ input DiscoveredImageCreateNestedOneWithoutVotesInput {
   connect: DiscoveredImageWhereUniqueInput
   connectOrCreate: DiscoveredImageCreateOrConnectWithoutVotesInput
   create: DiscoveredImageCreateWithoutVotesInput
+}
+
+input DiscoveredImageCreateOrConnectWithoutDuplicateDiscoveredImageInput {
+  create: DiscoveredImageCreateWithoutDuplicateDiscoveredImageInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
+input DiscoveredImageCreateOrConnectWithoutDuplicateDiscoveredImagesInput {
+  create: DiscoveredImageCreateWithoutDuplicateDiscoveredImagesInput!
+  where: DiscoveredImageWhereUniqueInput!
 }
 
 input DiscoveredImageCreateOrConnectWithoutDuplicateImageInput {
@@ -595,8 +638,42 @@ input DiscoveredImageCreateOrConnectWithoutVotesInput {
   where: DiscoveredImageWhereUniqueInput!
 }
 
+input DiscoveredImageCreateWithoutDuplicateDiscoveredImageInput {
+  createdAt: DateTime
+  duplicateDiscoveredImages: DiscoveredImageCreateNestedManyWithoutDuplicateDiscoveredImageInput
+  duplicateImage: ImageCreateNestedOneWithoutPotentialDuplicatesInput
+  image: ImageCreateNestedOneWithoutDiscoverySourceInput
+  mediaType: String!
+  post: DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+  url: String!
+  verdict: DiscoveredImageVerdictCreateNestedManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteCreateNestedManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageCreateWithoutDuplicateDiscoveredImagesInput {
+  createdAt: DateTime
+  duplicateDiscoveredImage: DiscoveredImageCreateNestedOneWithoutDuplicateDiscoveredImagesInput
+  duplicateImage: ImageCreateNestedOneWithoutPotentialDuplicatesInput
+  image: ImageCreateNestedOneWithoutDiscoverySourceInput
+  mediaType: String!
+  post: DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput
+  providerType: String!
+  referenceUrl: String
+  uniqueIdentifier: String!
+  updatedAt: DateTime
+  url: String!
+  verdict: DiscoveredImageVerdictCreateNestedManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteCreateNestedManyWithoutDiscoveredImageInput
+}
+
 input DiscoveredImageCreateWithoutDuplicateImageInput {
   createdAt: DateTime
+  duplicateDiscoveredImage: DiscoveredImageCreateNestedOneWithoutDuplicateDiscoveredImagesInput
+  duplicateDiscoveredImages: DiscoveredImageCreateNestedManyWithoutDuplicateDiscoveredImageInput
   image: ImageCreateNestedOneWithoutDiscoverySourceInput
   mediaType: String!
   post: DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput
@@ -611,6 +688,8 @@ input DiscoveredImageCreateWithoutDuplicateImageInput {
 
 input DiscoveredImageCreateWithoutImageInput {
   createdAt: DateTime
+  duplicateDiscoveredImage: DiscoveredImageCreateNestedOneWithoutDuplicateDiscoveredImagesInput
+  duplicateDiscoveredImages: DiscoveredImageCreateNestedManyWithoutDuplicateDiscoveredImageInput
   duplicateImage: ImageCreateNestedOneWithoutPotentialDuplicatesInput
   mediaType: String!
   post: DiscoveredPostCreateNestedOneWithoutDiscoveredImagesInput
@@ -625,6 +704,8 @@ input DiscoveredImageCreateWithoutImageInput {
 
 input DiscoveredImageCreateWithoutVotesInput {
   createdAt: DateTime
+  duplicateDiscoveredImage: DiscoveredImageCreateNestedOneWithoutDuplicateDiscoveredImagesInput
+  duplicateDiscoveredImages: DiscoveredImageCreateNestedManyWithoutDuplicateDiscoveredImageInput
   duplicateImage: ImageCreateNestedOneWithoutPotentialDuplicatesInput
   image: ImageCreateNestedOneWithoutDiscoverySourceInput
   mediaType: String!
@@ -645,6 +726,7 @@ input DiscoveredImageListRelationFilter {
 
 input DiscoveredImageOrderByInput {
   createdAt: SortOrder
+  duplicateDiscoveredImageId: SortOrder
   duplicateImageId: SortOrder
   id: SortOrder
   imageId: SortOrder
@@ -657,11 +739,17 @@ input DiscoveredImageOrderByInput {
   url: SortOrder
 }
 
+input DiscoveredImageProviderIdentityCompoundUniqueInput {
+  providerType: String!
+  uniqueIdentifier: String!
+}
+
 input DiscoveredImageScalarWhereInput {
   AND: [DiscoveredImageScalarWhereInput!]
   NOT: [DiscoveredImageScalarWhereInput!]
   OR: [DiscoveredImageScalarWhereInput!]
   createdAt: DateTimeFilter
+  duplicateDiscoveredImageId: IntNullableFilter
   duplicateImageId: IntNullableFilter
   id: IntFilter
   imageId: IntNullableFilter
@@ -684,9 +772,28 @@ input DiscoveredImageUpdateManyMutationInput {
   url: StringFieldUpdateOperationsInput
 }
 
+input DiscoveredImageUpdateManyWithWhereWithoutDuplicateDiscoveredImageInput {
+  data: DiscoveredImageUpdateManyMutationInput!
+  where: DiscoveredImageScalarWhereInput!
+}
+
 input DiscoveredImageUpdateManyWithWhereWithoutDuplicateImageInput {
   data: DiscoveredImageUpdateManyMutationInput!
   where: DiscoveredImageScalarWhereInput!
+}
+
+input DiscoveredImageUpdateManyWithoutDuplicateDiscoveredImageInput {
+  connect: [DiscoveredImageWhereUniqueInput!]
+  connectOrCreate: [DiscoveredImageCreateOrConnectWithoutDuplicateDiscoveredImageInput!]
+  create: [DiscoveredImageCreateWithoutDuplicateDiscoveredImageInput!]
+  createMany: DiscoveredImageCreateManyDuplicateDiscoveredImageInputEnvelope
+  delete: [DiscoveredImageWhereUniqueInput!]
+  deleteMany: [DiscoveredImageScalarWhereInput!]
+  disconnect: [DiscoveredImageWhereUniqueInput!]
+  set: [DiscoveredImageWhereUniqueInput!]
+  update: [DiscoveredImageUpdateWithWhereUniqueWithoutDuplicateDiscoveredImageInput!]
+  updateMany: [DiscoveredImageUpdateManyWithWhereWithoutDuplicateDiscoveredImageInput!]
+  upsert: [DiscoveredImageUpsertWithWhereUniqueWithoutDuplicateDiscoveredImageInput!]
 }
 
 input DiscoveredImageUpdateManyWithoutDuplicateImageInput {
@@ -711,6 +818,16 @@ input DiscoveredImageUpdateOneRequiredWithoutVotesInput {
   upsert: DiscoveredImageUpsertWithoutVotesInput
 }
 
+input DiscoveredImageUpdateOneWithoutDuplicateDiscoveredImagesInput {
+  connect: DiscoveredImageWhereUniqueInput
+  connectOrCreate: DiscoveredImageCreateOrConnectWithoutDuplicateDiscoveredImagesInput
+  create: DiscoveredImageCreateWithoutDuplicateDiscoveredImagesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: DiscoveredImageUpdateWithoutDuplicateDiscoveredImagesInput
+  upsert: DiscoveredImageUpsertWithoutDuplicateDiscoveredImagesInput
+}
+
 input DiscoveredImageUpdateOneWithoutImageInput {
   connect: DiscoveredImageWhereUniqueInput
   connectOrCreate: DiscoveredImageCreateOrConnectWithoutImageInput
@@ -721,13 +838,52 @@ input DiscoveredImageUpdateOneWithoutImageInput {
   upsert: DiscoveredImageUpsertWithoutImageInput
 }
 
+input DiscoveredImageUpdateWithWhereUniqueWithoutDuplicateDiscoveredImageInput {
+  data: DiscoveredImageUpdateWithoutDuplicateDiscoveredImageInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
 input DiscoveredImageUpdateWithWhereUniqueWithoutDuplicateImageInput {
   data: DiscoveredImageUpdateWithoutDuplicateImageInput!
   where: DiscoveredImageWhereUniqueInput!
 }
 
+input DiscoveredImageUpdateWithoutDuplicateDiscoveredImageInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  duplicateDiscoveredImages: DiscoveredImageUpdateManyWithoutDuplicateDiscoveredImageInput
+  duplicateImage: ImageUpdateOneWithoutPotentialDuplicatesInput
+  image: ImageUpdateOneWithoutDiscoverySourceInput
+  mediaType: StringFieldUpdateOperationsInput
+  post: DiscoveredPostUpdateOneWithoutDiscoveredImagesInput
+  providerType: StringFieldUpdateOperationsInput
+  referenceUrl: NullableStringFieldUpdateOperationsInput
+  uniqueIdentifier: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+  verdict: DiscoveredImageVerdictUpdateManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteUpdateManyWithoutDiscoveredImageInput
+}
+
+input DiscoveredImageUpdateWithoutDuplicateDiscoveredImagesInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  duplicateDiscoveredImage: DiscoveredImageUpdateOneWithoutDuplicateDiscoveredImagesInput
+  duplicateImage: ImageUpdateOneWithoutPotentialDuplicatesInput
+  image: ImageUpdateOneWithoutDiscoverySourceInput
+  mediaType: StringFieldUpdateOperationsInput
+  post: DiscoveredPostUpdateOneWithoutDiscoveredImagesInput
+  providerType: StringFieldUpdateOperationsInput
+  referenceUrl: NullableStringFieldUpdateOperationsInput
+  uniqueIdentifier: StringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  url: StringFieldUpdateOperationsInput
+  verdict: DiscoveredImageVerdictUpdateManyWithoutDiscoveredImageInput
+  votes: DiscoveredImageVoteUpdateManyWithoutDiscoveredImageInput
+}
+
 input DiscoveredImageUpdateWithoutDuplicateImageInput {
   createdAt: DateTimeFieldUpdateOperationsInput
+  duplicateDiscoveredImage: DiscoveredImageUpdateOneWithoutDuplicateDiscoveredImagesInput
+  duplicateDiscoveredImages: DiscoveredImageUpdateManyWithoutDuplicateDiscoveredImageInput
   image: ImageUpdateOneWithoutDiscoverySourceInput
   mediaType: StringFieldUpdateOperationsInput
   post: DiscoveredPostUpdateOneWithoutDiscoveredImagesInput
@@ -742,6 +898,8 @@ input DiscoveredImageUpdateWithoutDuplicateImageInput {
 
 input DiscoveredImageUpdateWithoutImageInput {
   createdAt: DateTimeFieldUpdateOperationsInput
+  duplicateDiscoveredImage: DiscoveredImageUpdateOneWithoutDuplicateDiscoveredImagesInput
+  duplicateDiscoveredImages: DiscoveredImageUpdateManyWithoutDuplicateDiscoveredImageInput
   duplicateImage: ImageUpdateOneWithoutPotentialDuplicatesInput
   mediaType: StringFieldUpdateOperationsInput
   post: DiscoveredPostUpdateOneWithoutDiscoveredImagesInput
@@ -756,6 +914,8 @@ input DiscoveredImageUpdateWithoutImageInput {
 
 input DiscoveredImageUpdateWithoutVotesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
+  duplicateDiscoveredImage: DiscoveredImageUpdateOneWithoutDuplicateDiscoveredImagesInput
+  duplicateDiscoveredImages: DiscoveredImageUpdateManyWithoutDuplicateDiscoveredImageInput
   duplicateImage: ImageUpdateOneWithoutPotentialDuplicatesInput
   image: ImageUpdateOneWithoutDiscoverySourceInput
   mediaType: StringFieldUpdateOperationsInput
@@ -768,10 +928,21 @@ input DiscoveredImageUpdateWithoutVotesInput {
   verdict: DiscoveredImageVerdictUpdateManyWithoutDiscoveredImageInput
 }
 
+input DiscoveredImageUpsertWithWhereUniqueWithoutDuplicateDiscoveredImageInput {
+  create: DiscoveredImageCreateWithoutDuplicateDiscoveredImageInput!
+  update: DiscoveredImageUpdateWithoutDuplicateDiscoveredImageInput!
+  where: DiscoveredImageWhereUniqueInput!
+}
+
 input DiscoveredImageUpsertWithWhereUniqueWithoutDuplicateImageInput {
   create: DiscoveredImageCreateWithoutDuplicateImageInput!
   update: DiscoveredImageUpdateWithoutDuplicateImageInput!
   where: DiscoveredImageWhereUniqueInput!
+}
+
+input DiscoveredImageUpsertWithoutDuplicateDiscoveredImagesInput {
+  create: DiscoveredImageCreateWithoutDuplicateDiscoveredImagesInput!
+  update: DiscoveredImageUpdateWithoutDuplicateDiscoveredImagesInput!
 }
 
 input DiscoveredImageUpsertWithoutImageInput {
@@ -1115,6 +1286,9 @@ input DiscoveredImageWhereInput {
   NOT: [DiscoveredImageWhereInput!]
   OR: [DiscoveredImageWhereInput!]
   createdAt: DateTimeFilter
+  duplicateDiscoveredImage: DiscoveredImageWhereInput
+  duplicateDiscoveredImageId: IntNullableFilter
+  duplicateDiscoveredImages: DiscoveredImageListRelationFilter
   duplicateImage: ImageWhereInput
   duplicateImageId: IntNullableFilter
   id: IntFilter
@@ -1135,6 +1309,7 @@ input DiscoveredImageWhereInput {
 input DiscoveredImageWhereUniqueInput {
   id: Int
   imageId: Int
+  providerIdentity: DiscoveredImageProviderIdentityCompoundUniqueInput
 }
 
 type DiscoveredPost {
@@ -1351,7 +1526,7 @@ type Face {
   height: Float!
   id: Int!
   image: Image!
-  score: Float!
+  score: Float! @deprecated
   source: FaceSource!
   updatedAt: DateTime!
   width: Float!

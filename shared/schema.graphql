@@ -152,6 +152,7 @@ input DiscoveredImageListRelationFilter {
 
 input DiscoveredImageOrderByInput {
   createdAt: SortOrder
+  duplicateDiscoveredImageId: SortOrder
   duplicateImageId: SortOrder
   id: SortOrder
   imageId: SortOrder
@@ -162,6 +163,11 @@ input DiscoveredImageOrderByInput {
   uniqueIdentifier: SortOrder
   updatedAt: SortOrder
   url: SortOrder
+}
+
+input DiscoveredImageProviderIdentityCompoundUniqueInput {
+  providerType: String!
+  uniqueIdentifier: String!
 }
 
 type DiscoveredImageVerdict {
@@ -240,6 +246,9 @@ input DiscoveredImageWhereInput {
   NOT: [DiscoveredImageWhereInput!]
   OR: [DiscoveredImageWhereInput!]
   createdAt: DateTimeFilter
+  duplicateDiscoveredImage: DiscoveredImageWhereInput
+  duplicateDiscoveredImageId: IntNullableFilter
+  duplicateDiscoveredImages: DiscoveredImageListRelationFilter
   duplicateImage: ImageWhereInput
   duplicateImageId: IntNullableFilter
   id: IntFilter
@@ -260,6 +269,7 @@ input DiscoveredImageWhereInput {
 input DiscoveredImageWhereUniqueInput {
   id: Int
   imageId: Int
+  providerIdentity: DiscoveredImageProviderIdentityCompoundUniqueInput
 }
 
 type DiscoveredPost {
@@ -386,7 +396,7 @@ type Face {
   height: Float!
   id: Int!
   image: Image!
-  score: Float!
+  score: Float! @deprecated
   source: FaceSource!
   updatedAt: DateTime!
   width: Float!

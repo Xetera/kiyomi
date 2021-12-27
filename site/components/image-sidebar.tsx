@@ -18,6 +18,7 @@ import { useSession } from "next-auth/client"
 import { useToggleLikeMutation } from "@/lib/__generated__/graphql"
 import useQueue from "./queue-button"
 import { useRouter } from "next/router"
+import { useQueryClient } from "react-query"
 
 function SidebarSection({ title, children }) {
   return (
@@ -68,8 +69,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const toast = useToast()
   const image = React.useContext(ImageContext)
   const router = useRouter()
-  const { data, mutate, isLoading } = useToggleLikeMutation()
-  const [session] = useSession()
+  const { data, mutate } = useToggleLikeMutation()
   if (!image) {
     return null
   }
@@ -96,16 +96,26 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
     }
     mutate({ id: image.id })
   }
+  const client = useQueryClient()
   const liked = data?.toggleLike.liked ?? image.liked
   const uploadDate = new Date(image.createdAt)
-  const request = useQueue({ slug: router.query.slug as string })
+  const slug = router.query.slug as string
+  const request = useQueue({ slug })
+  async function handleScan() {
+    await request()
+    await client.invalidateQueries(["OneImage", { slug }])
+  }
   return (
     <Stack className="align-start text-sm rounded" maxWidth="600px" mx="auto">
       <CascadeChildren className="grid gap-4 text-sm">
         <Flex>
           <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
           <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
-          <Tag icon={<RiScan2Line />} text="Request scan" onClick={request} />
+          <Tag
+            icon={<RiScan2Line />}
+            text="Re-scan Image"
+            onClick={handleScan}
+          />
         </Flex>
         <Flex flexDirection="row" alignItems="top">
           <User
@@ -124,7 +134,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         <Grid
           gap={2}
           className="grid gap-2"
-          fontColor="gray.500"
+          color="gray.300"
           gridTemplateColumns="min-content 1fr"
         >
           <SidebarSection title={"Dimensions"}>

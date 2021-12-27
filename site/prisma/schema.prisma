@@ -77,9 +77,16 @@ model Person {
   banner                Image?        @relation(name: "person_banner", fields: [bannerId], references: [id])
   avatarId              Int?          @unique @map("avatar_id")
   avatar                Image?        @relation(name: "person_avatar", fields: [avatarId], references: [id])
+  gender                Gender?
 
   @@index([name], name: "person.name.index")
   @@map("persons")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NONBINARY
 }
 
 model Appearance {
@@ -326,30 +333,35 @@ model DiscoveredPost {
 }
 
 model DiscoveredImage {
-  id               Int                      @id @default(autoincrement())
-  mediaType        String                   @map("media_type")
+  id                         Int                      @id @default(autoincrement())
+  mediaType                  String                   @map("media_type")
   // Needs to be copied over to the image as
   // posts are deleted after approval
-  providerType     String                   @map("provider_type")
-  postId           Int?                     @map("post_id")
-  post             DiscoveredPost?          @relation(fields: [postId], references: [id])
+  providerType               String                   @map("provider_type")
+  postId                     Int?                     @map("post_id")
+  post                       DiscoveredPost?          @relation(fields: [postId], references: [id])
   // The relationship to a "promoted" image. This field is set after
   // an image is approved
-  imageId          Int?                     @unique @map("image_id")
-  image            Image?                   @relation(fields: [imageId], references: [id])
-  url              String
+  imageId                    Int?                     @unique @map("image_id")
+  image                      Image?                   @relation(fields: [imageId], references: [id])
+  url                        String
   // The place where the image comes from. Not necessary
-  referenceUrl     String?                  @map("reference_url")
+  referenceUrl               String?                  @map("reference_url")
   // This unique identifier is only unique to the provider it's attached to
-  uniqueIdentifier String                   @map("unique_identifier")
+  uniqueIdentifier           String                   @map("unique_identifier")
   // If the image is detected to be a potential duplicate of an existing one
-  duplicateImageId Int?                     @map("duplicate_image_id")
-  duplicateImage   Image?                   @relation("discovery_duplicate_image", fields: [duplicateImageId], references: [id])
-  verdict          DiscoveredImageVerdict[]
-  votes            DiscoveredImageVote[]
+  duplicateImageId           Int?                     @map("duplicate_image_id")
+  duplicateDiscoveredImageId Int?                     @map("duplicate_discovered_image_id")
+  duplicateImage             Image?                   @relation("discovery_duplicate_image", fields: [duplicateImageId], references: [id])
+  duplicateDiscoveredImage   DiscoveredImage?         @relation("discovery_duplicate_discovered_image", fields: [duplicateDiscoveredImageId], references: [id])
+  duplicateDiscoveredImages  DiscoveredImage[]        @relation("discovery_duplicate_discovered_image")
+  verdict                    DiscoveredImageVerdict[]
+  votes                      DiscoveredImageVote[]
+  pHash                      Unsupported("cube")?     @map("p_hash")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@unique([providerType, uniqueIdentifier], name: "providerIdentity")
   @@map("discovered_images")
 }
 

@@ -8,7 +8,7 @@ export type UserAttributeProps = {
 export const UserAttribute = forwardRef<UserAttributeProps, "div">(
   ({ name, ...rest }, ref) => {
     return (
-      <Tag mr={2} fontSize="sm" ref={ref} {...rest}>
+      <Tag mr={2} fontSize="sm" ref={ref} {...rest} lineHeight={1}>
         {name}
       </Tag>
     )

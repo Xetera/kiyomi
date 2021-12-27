@@ -21,44 +21,61 @@ type FaceProps = React.HTMLProps<HTMLDivElement> & {
   forceActive: boolean
 }
 
+const BoxAnimate = motion(Box)
+
 function Face({ appearance, face, style, forceActive }: FaceProps) {
   const { face: activeFace } = React.useContext(FaceContext)
   const motionId = appearance
     ? `appearance:${appearance.id}`
     : `face:${face.id}`
   const active = activeFace === motionId
+  const fontSize = face.width < 300 ? "11px" : "14px"
   return (
     <AnimatePresence>
       {(active || forceActive) && (
-        <motion.div
-          className="absolute z-2 rounded-t border-2"
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
+        <BoxAnimate
+          position="absolute"
+          zIndex={2}
+          borderRadius="md"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{
+            duration: 0.4,
+          }}
+          background="linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.25))"
+          boxShadow="inset 0px 0px 1px 1px rgba(255, 255, 255, 0.3)"
+          _hover={{
+            background: "red",
+          }}
           style={{
             ...style,
-            border: "2px solid rgba(26, 42, 56, 0.8)",
           }}
         >
-          <div className="w-full h-full absolute">
-            <p
-              className="absolute top-full w-full text-xs p-1"
-              style={{
-                background: "rgba(20, 17, 30, 0.8)",
-                minWidth: "80px",
+          <Box position="absolute" w="full" h="full">
+            <Text
+              _hover={{
+                color: "red",
               }}
+              position="absolute"
+              top="100%"
+              w="full"
+              display="flex"
+              justifyContent="center"
+              fontWeight="medium"
+              fontSize={fontSize}
+              p={1}
+              mt={1}
+              borderRadius="md"
+              bg="rgba(0, 0, 0, 0.8)"
+              minWidth="80px"
             >
-              {appearance ? (
-                appearance.person.name
-              ) : (
-                <i className="text-gray-500">Unknown</i>
-              )}
-              <div className="text-xs text-gray-400">
-                {(face.score * 100).toFixed(2)}%
-              </div>
-            </p>
-          </div>
-        </motion.div>
+              <Box color="gray.100" textAlign="center" maxW="full">
+                {appearance ? appearance.person.name : "Unknown"}
+              </Box>
+            </Text>
+          </Box>
+        </BoxAnimate>
       )}
     </AnimatePresence>
   )

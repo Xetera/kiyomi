@@ -2,24 +2,31 @@ import { prisma } from "./db"
 import { Prisma } from "@prisma/client"
 
 export type SimilarImage = {
-  slug: string
+  type: "image" | "discovered"
   id: number
   distance: /* float */ number
 }
 
-export const similarImagesQuery = (
+export const similarImagesQuery = async (
   hash: Uint8Array,
   limit = 5
 ): Promise<SimilarImage[]> => {
-  return prisma.$queryRaw`${Prisma.raw(`
+  const data = await prisma.$queryRaw`${Prisma.raw(`
     SELECT
-      slug,
+      'image' as type,
       id,
       p_hash_2 <-> CUBE(ARRAY[${hash.join(",")}]) as distance
     FROM images
+    UNION
+    SELECT
+      'discovered' as type,
+      id,
+      p_hash <-> CUBE(ARRAY[${hash.join(",")}]) as distance
+    FROM discovered_images
     ORDER BY distance asc nulls last
     LIMIT ${limit}
   `)}`
+  return data
 }
 
 export type HomepageRaw = { id: number }

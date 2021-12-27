@@ -3,10 +3,7 @@ import amqp, { ConsumeMessage } from "amqplib"
 import { createClient } from "celery-node"
 import { wait } from "./shared"
 
-const amqpConnectionUrl = process.env.AMQP_URL ?? "amqp://localhost:3333"
-
-export const celeryClient = createClient(amqpConnectionUrl, amqpConnectionUrl)
-
+export const amqpConnectionUrl = process.env.AMQP_URL ?? "amqp://localhost:3333"
 export type AmqpConnectionPromise = ReturnType<typeof amqplib.connect>
 export type AmqpConnection = Awaited<AmqpConnectionPromise>
 
@@ -80,7 +77,7 @@ export const makeAmqp = (url = amqpConnectionUrl) => {
         )
         setTimeout(() => {
           this.consumeWith(id, listener, opts)
-        }, 20000)
+        }, 5000)
         return
       }
 
@@ -98,24 +95,6 @@ export const makeAmqp = (url = amqpConnectionUrl) => {
       await channel?.assertQueue(opts.assertQueue)
       channel?.consume(id, (msg) => listener(msg, channel))
       consumed.add(id)
-    },
-    async sendImageToFaceRecognition(
-      slug: string,
-      opts: ImageRecognitionOptions
-    ): Promise<AmqpInteraction<unknown>> {
-      const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler"
-
-      if (!amqp.connection) {
-        return { status: "fail", reason: "connectionFail" }
-      }
-
-      const channel = await amqp.connection.createChannel()
-      await channel.assertQueue(queueName)
-      channel.sendToQueue(
-        queueName,
-        Buffer.from(JSON.stringify({ slug, ...opts }))
-      )
-      return { status: "success", data: undefined }
     },
     async sendToQueue<T extends object>(queueName: string, data: T) {
       if (!amqp.connection) {

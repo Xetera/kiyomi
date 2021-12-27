@@ -15,6 +15,7 @@ RUN apt-get update && \
     libc6-dev \
     libssl-dev
 
+RUN apt-get install python python-pip build-essential cmake pkg-config libx11-dev libatlas-base-dev libgtk-3-dev libboost-python-dev cmake libtool autoconf -y
 RUN yarn global add ts-node typescript
 COPY labeler/package.json labeler/yarn.lock ./
 RUN yarn --frozen-lockfile

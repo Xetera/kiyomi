@@ -357,7 +357,7 @@ export const Mutation = mutationField((t) => {
       // allowing any logged in user for now
       return true
     },
-    async resolve(_root, { slug }, { prisma, amqp }) {
+    async resolve(_root, { slug }, { prisma, amqp, wendy }) {
       const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler"
       if (!amqp) {
         throw Error("Could not establish AMQP connection")
@@ -394,19 +394,20 @@ export const Mutation = mutationField((t) => {
         )
       }
 
-      const { queueInfo } = await amqp.sendToQueue(queueName, { slug })
-      prisma.image
-        .update({
-          where: { slug },
-          data: { faceScanRequestDate: new Date() },
-        })
-        .catch((err) => {
-          console.error(`Couldn't set face recognition request date`)
-          console.error(err)
-        })
-      console.log(`Got an image queue request for ${slug}`)
+      await wendy.fullLabel(slug)
+      // const { queueInfo } = await amqp.sendToQueue(queueName, { slug })
+      // prisma.image
+      //   .update({
+      //     where: { slug },
+      //     data: { faceScanRequestDate: new Date() },
+      //   })
+      //   .catch((err) => {
+      //     console.error(`Couldn't set face recognition request date`)
+      //     console.error(err)
+      //   })
+      // console.log(`Got an image queue request for ${slug}`)
       return {
-        queueSize: queueInfo.messageCount ?? -1,
+        queueSize: 0, // queueInfo.messageCount ?? -1,
       }
     },
   })
@@ -546,7 +547,7 @@ export const PrivateMutation = mutationField((t) => {
         pHash,
         palette,
       },
-      { prisma, user, phash }
+      { prisma, user, wendy }
     ) {
       if (!user) {
         throw new Error("Unauthorized")
@@ -627,7 +628,7 @@ export const PrivateMutation = mutationField((t) => {
 
       // I know this is a very strange way to do this but prisma doesn't let us
       // update CUBE values any other way
-      const pHashArray = phash.hashStringToCube(pHash)
+      const pHashArray = wendy.hashStringToCube(pHash)
       prisma.$queryRaw`${Prisma.raw(`
         UPDATE images SET p_hash_2 = CUBE(ARRAY[${pHashArray.join(
           ","

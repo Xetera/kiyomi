@@ -10,12 +10,11 @@ export default function useQueue({ slug }: QueueButtonProps) {
   const toast = useToast()
   async function addToQueue() {
     try {
-      const result = await mutateAsync({ slug })
+      await mutateAsync({ slug })
       toast({
         status: "success",
-        title: "Image queued",
+        title: "Image scanned",
         position: "bottom-right",
-        description: `There are currently ${result.scanFaces.queueSize} images in queue ahead of this image.`,
       })
     } catch (err) {
       toast({

@@ -112,6 +112,7 @@ export interface NexusGenInputs {
   }
   DiscoveredImageOrderByInput: { // input type
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    duplicateDiscoveredImageId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     duplicateImageId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
     imageId?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -122,6 +123,10 @@ export interface NexusGenInputs {
     uniqueIdentifier?: NexusGenEnums['SortOrder'] | null; // SortOrder
     updatedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     url?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  DiscoveredImageProviderIdentityCompoundUniqueInput: { // input type
+    providerType: string; // String!
+    uniqueIdentifier: string; // String!
   }
   DiscoveredImageVerdictListRelationFilter: { // input type
     every?: NexusGenInputs['DiscoveredImageVerdictWhereInput'] | null; // DiscoveredImageVerdictWhereInput
@@ -176,6 +181,9 @@ export interface NexusGenInputs {
     NOT?: NexusGenInputs['DiscoveredImageWhereInput'][] | null; // [DiscoveredImageWhereInput!]
     OR?: NexusGenInputs['DiscoveredImageWhereInput'][] | null; // [DiscoveredImageWhereInput!]
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    duplicateDiscoveredImage?: NexusGenInputs['DiscoveredImageWhereInput'] | null; // DiscoveredImageWhereInput
+    duplicateDiscoveredImageId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    duplicateDiscoveredImages?: NexusGenInputs['DiscoveredImageListRelationFilter'] | null; // DiscoveredImageListRelationFilter
     duplicateImage?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     duplicateImageId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
@@ -195,6 +203,7 @@ export interface NexusGenInputs {
   DiscoveredImageWhereUniqueInput: { // input type
     id?: number | null; // Int
     imageId?: number | null; // Int
+    providerIdentity?: NexusGenInputs['DiscoveredImageProviderIdentityCompoundUniqueInput'] | null; // DiscoveredImageProviderIdentityCompoundUniqueInput
   }
   DiscoveredPostDiscoveredProviderCompoundUniqueInput: { // input type
     providerType: string; // String!
