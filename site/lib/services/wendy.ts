@@ -9,7 +9,7 @@ import {
 import { createClient } from "celery-node"
 import { rawUrl } from "./image"
 import chunk from "lodash/chunk"
-import { SimilarImage, similarImagesQuery } from "@/lib/db-queries"
+import { SimilarImage, similarImagesQuery } from "../db-queries"
 import { PERCEPTUAL_HASH_TASK_NAME } from "../../../shared/messageQueue"
 
 const VERY_GRACIOUS_WENDY_TIMEOUT = 1000 * 60 * 30
@@ -67,7 +67,7 @@ export function makeWendy({ prisma, amqp }: WendyOptions) {
         throw Error(`Image with slug ${slug} is not found`)
       }
 
-      const taskName = `${process.env.QUEUE_PREFIX}.full_label`
+      const taskName = `${process.env.LABELER_QUEUE_PREFIX}.full_label`
       const task = wendyCelery.createTask(taskName).applyAsync([rawUrl(image)])
       const result: FullLabelResult = await task.get(
         VERY_GRACIOUS_WENDY_TIMEOUT
