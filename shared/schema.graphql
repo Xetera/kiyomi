@@ -368,6 +368,13 @@ input EnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input EnumGenderNullableFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderNullableFilter
+  notIn: [Gender!]
+}
+
 input EnumMimeTypeFilter {
   equals: MimeType
   in: [MimeType!]
@@ -451,6 +458,12 @@ input FloatFilter {
   lte: Float
   not: NestedFloatFilter
   notIn: [Float!]
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  NONBINARY
 }
 
 type Group {
@@ -876,6 +889,13 @@ input NestedEnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input NestedEnumGenderNullableFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderNullableFilter
+  notIn: [Gender!]
+}
+
 input NestedEnumMimeTypeFilter {
   equals: MimeType
   in: [MimeType!]
@@ -992,6 +1012,7 @@ input PersonWhereInput {
   bannerId: IntNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
+  gender: EnumGenderNullableFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
   memberOf: GroupMemberListRelationFilter
@@ -1169,6 +1190,7 @@ enum UploadType {
 }
 
 type User {
+  avatar: Image
   bot: Boolean!
   createdAt: DateTime!
   id: Int!

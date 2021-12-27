@@ -36,10 +36,10 @@ export type Scalars = {
 };
 
 export type AddProviderInput = {
-  groups: Array<Maybe<Scalars['Int']>>;
+  groups: Array<Scalars['Int']>;
   name: Scalars['String'];
   official: Scalars['Boolean'];
-  people: Array<Maybe<Scalars['Int']>>;
+  people: Array<Scalars['Int']>;
   url: Scalars['String'];
 };
 
@@ -207,6 +207,7 @@ export type DiscoveredImageListRelationFilter = {
 
 export type DiscoveredImageOrderByInput = {
   createdAt?: Maybe<SortOrder>;
+  duplicateDiscoveredImageId?: Maybe<SortOrder>;
   duplicateImageId?: Maybe<SortOrder>;
   id?: Maybe<SortOrder>;
   imageId?: Maybe<SortOrder>;
@@ -217,6 +218,11 @@ export type DiscoveredImageOrderByInput = {
   uniqueIdentifier?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
   url?: Maybe<SortOrder>;
+};
+
+export type DiscoveredImageProviderIdentityCompoundUniqueInput = {
+  providerType: Scalars['String'];
+  uniqueIdentifier: Scalars['String'];
 };
 
 export type DiscoveredImageVerdict = {
@@ -297,6 +303,9 @@ export type DiscoveredImageWhereInput = {
   NOT?: Maybe<Array<DiscoveredImageWhereInput>>;
   OR?: Maybe<Array<DiscoveredImageWhereInput>>;
   createdAt?: Maybe<DateTimeFilter>;
+  duplicateDiscoveredImage?: Maybe<DiscoveredImageWhereInput>;
+  duplicateDiscoveredImageId?: Maybe<IntNullableFilter>;
+  duplicateDiscoveredImages?: Maybe<DiscoveredImageListRelationFilter>;
   duplicateImage?: Maybe<ImageWhereInput>;
   duplicateImageId?: Maybe<IntNullableFilter>;
   id?: Maybe<IntFilter>;
@@ -317,6 +326,7 @@ export type DiscoveredImageWhereInput = {
 export type DiscoveredImageWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
   imageId?: Maybe<Scalars['Int']>;
+  providerIdentity?: Maybe<DiscoveredImageProviderIdentityCompoundUniqueInput>;
 };
 
 export type DiscoveredPost = {
@@ -416,6 +426,13 @@ export type EnumFaceSourceFilter = {
   notIn?: Maybe<Array<FaceSource>>;
 };
 
+export type EnumGenderNullableFilter = {
+  equals?: Maybe<Gender>;
+  in?: Maybe<Array<Gender>>;
+  not?: Maybe<NestedEnumGenderNullableFilter>;
+  notIn?: Maybe<Array<Gender>>;
+};
+
 export type EnumMimeTypeFilter = {
   equals?: Maybe<MimeType>;
   in?: Maybe<Array<MimeType>>;
@@ -445,6 +462,7 @@ export type Face = {
   height: Scalars['Float'];
   id: Scalars['Int'];
   image: Image;
+  /** @deprecated Field no longer supported */
   score: Scalars['Float'];
   source: FaceSource;
   updatedAt: Scalars['DateTime'];
@@ -501,6 +519,12 @@ export type FloatFilter = {
   not?: Maybe<NestedFloatFilter>;
   notIn?: Maybe<Array<Scalars['Float']>>;
 };
+
+export enum Gender {
+  Female = 'FEMALE',
+  Male = 'MALE',
+  Nonbinary = 'NONBINARY'
+}
 
 export type Group = {
   __typename?: 'Group';
@@ -993,6 +1017,13 @@ export type NestedEnumFaceSourceFilter = {
   notIn?: Maybe<Array<FaceSource>>;
 };
 
+export type NestedEnumGenderNullableFilter = {
+  equals?: Maybe<Gender>;
+  in?: Maybe<Array<Gender>>;
+  not?: Maybe<NestedEnumGenderNullableFilter>;
+  notIn?: Maybe<Array<Gender>>;
+};
+
 export type NestedEnumMimeTypeFilter = {
   equals?: Maybe<MimeType>;
   in?: Maybe<Array<MimeType>>;
@@ -1138,6 +1169,7 @@ export type PersonWhereInput = {
   bannerId?: Maybe<IntNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   description?: Maybe<StringNullableFilter>;
+  gender?: Maybe<EnumGenderNullableFilter>;
   id?: Maybe<IntFilter>;
   ireneBotId?: Maybe<IntNullableFilter>;
   memberOf?: Maybe<GroupMemberListRelationFilter>;
@@ -1416,6 +1448,7 @@ export enum UploadType {
 
 export type User = {
   __typename?: 'User';
+  avatar?: Maybe<Image>;
   bot: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   id: Scalars['Int'];

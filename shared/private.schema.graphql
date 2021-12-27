@@ -1486,6 +1486,13 @@ input EnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input EnumGenderNullableFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderNullableFilter
+  notIn: [Gender!]
+}
+
 input EnumMimeTypeFieldUpdateOperationsInput {
   set: MimeType
 }
@@ -1780,6 +1787,12 @@ input FloatFilter {
   lte: Float
   not: NestedFloatFilter
   notIn: [Float!]
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  NONBINARY
 }
 
 type Group {
@@ -4210,6 +4223,13 @@ input NestedEnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input NestedEnumGenderNullableFilter {
+  equals: Gender
+  in: [Gender!]
+  not: NestedEnumGenderNullableFilter
+  notIn: [Gender!]
+}
+
 input NestedEnumMimeTypeFilter {
   equals: MimeType
   in: [MimeType!]
@@ -4296,6 +4316,10 @@ input NullableDateTimeFieldUpdateOperationsInput {
   set: DateTime
 }
 
+input NullableEnumGenderFieldUpdateOperationsInput {
+  set: Gender
+}
+
 input NullableIntFieldUpdateOperationsInput {
   decrement: Int
   divide: Int
@@ -4331,6 +4355,7 @@ input PersonCreateInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4344,6 +4369,7 @@ input PersonCreateManyPreferredMembershipInput {
   bannerId: Int
   createdAt: DateTime
   description: String
+  gender: Gender
   id: Int
   ireneBotId: Int
   name: String!
@@ -4446,6 +4472,7 @@ input PersonCreateWithoutAliasesInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4461,6 +4488,7 @@ input PersonCreateWithoutAppearancesInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4476,6 +4504,7 @@ input PersonCreateWithoutAppearsInInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4491,6 +4520,7 @@ input PersonCreateWithoutAvatarInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4506,6 +4536,7 @@ input PersonCreateWithoutBannerInput {
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4522,6 +4553,7 @@ input PersonCreateWithoutMemberOfInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   name: String!
   preferredAlias: AliasCreateNestedOneWithoutPreferredAliasOfInput
@@ -4537,6 +4569,7 @@ input PersonCreateWithoutPreferredAliasInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4552,6 +4585,7 @@ input PersonCreateWithoutPreferredMembershipInput {
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
   createdAt: DateTime
   description: String
+  gender: Gender
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -4573,6 +4607,7 @@ input PersonScalarWhereInput {
   bannerId: IntNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
+  gender: EnumGenderNullableFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
   name: StringFilter
@@ -4589,6 +4624,7 @@ input PersonUpdateInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4600,6 +4636,7 @@ input PersonUpdateInput {
 input PersonUpdateManyMutationInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
@@ -4700,6 +4737,7 @@ input PersonUpdateWithoutAliasesInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4715,6 +4753,7 @@ input PersonUpdateWithoutAppearancesInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4730,6 +4769,7 @@ input PersonUpdateWithoutAppearsInInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4745,6 +4785,7 @@ input PersonUpdateWithoutAvatarInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4760,6 +4801,7 @@ input PersonUpdateWithoutBannerInput {
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4776,6 +4818,7 @@ input PersonUpdateWithoutMemberOfInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   preferredAlias: AliasUpdateOneWithoutPreferredAliasOfInput
@@ -4791,6 +4834,7 @@ input PersonUpdateWithoutPreferredAliasInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4806,6 +4850,7 @@ input PersonUpdateWithoutPreferredMembershipInput {
   banner: ImageUpdateOneWithoutPersonBannerOfInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -4867,6 +4912,7 @@ input PersonWhereInput {
   bannerId: IntNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
+  gender: EnumGenderNullableFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
   memberOf: GroupMemberListRelationFilter
@@ -5306,6 +5352,7 @@ enum UploadType {
 }
 
 type User {
+  avatar: Image
   bot: Boolean!
   createdAt: DateTime!
   id: Int!

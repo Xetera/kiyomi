@@ -1229,6 +1229,12 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumFaceSourceFilter'] | null; // NestedEnumFaceSourceFilter
     notIn?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
   }
+  EnumGenderNullableFilter: { // input type
+    equals?: NexusGenEnums['Gender'] | null; // Gender
+    in?: NexusGenEnums['Gender'][] | null; // [Gender!]
+    not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
+    notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
+  }
   EnumMimeTypeFieldUpdateOperationsInput: { // input type
     set?: NexusGenEnums['MimeType'] | null; // MimeType
   }
@@ -3519,6 +3525,12 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumFaceSourceFilter'] | null; // NestedEnumFaceSourceFilter
     notIn?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
   }
+  NestedEnumGenderNullableFilter: { // input type
+    equals?: NexusGenEnums['Gender'] | null; // Gender
+    in?: NexusGenEnums['Gender'][] | null; // [Gender!]
+    not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
+    notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
+  }
   NestedEnumMimeTypeFilter: { // input type
     equals?: NexusGenEnums['MimeType'] | null; // MimeType
     in?: NexusGenEnums['MimeType'][] | null; // [MimeType!]
@@ -3596,6 +3608,9 @@ export interface NexusGenInputs {
   NullableDateTimeFieldUpdateOperationsInput: { // input type
     set?: NexusGenScalars['DateTime'] | null; // DateTime
   }
+  NullableEnumGenderFieldUpdateOperationsInput: { // input type
+    set?: NexusGenEnums['Gender'] | null; // Gender
+  }
   NullableIntFieldUpdateOperationsInput: { // input type
     decrement?: number | null; // Int
     divide?: number | null; // Int
@@ -3614,6 +3629,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3626,6 +3642,7 @@ export interface NexusGenInputs {
     bannerId?: number | null; // Int
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     id?: number | null; // Int
     ireneBotId?: number | null; // Int
     name: string; // String!
@@ -3711,6 +3728,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3725,6 +3743,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3739,6 +3758,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3753,6 +3773,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3767,6 +3788,7 @@ export interface NexusGenInputs {
     avatar?: NexusGenInputs['ImageCreateNestedOneWithoutPersonAvatarOfInput'] | null; // ImageCreateNestedOneWithoutPersonAvatarOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3782,6 +3804,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     name: string; // String!
     preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
@@ -3796,6 +3819,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3810,6 +3834,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -3829,6 +3854,7 @@ export interface NexusGenInputs {
     bannerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     description?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    gender?: NexusGenInputs['EnumGenderNullableFilter'] | null; // EnumGenderNullableFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
@@ -3844,6 +3870,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -3854,6 +3881,7 @@ export interface NexusGenInputs {
   PersonUpdateManyMutationInput: { // input type
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
@@ -3943,6 +3971,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -3957,6 +3986,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -3971,6 +4001,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -3985,6 +4016,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -3999,6 +4031,7 @@ export interface NexusGenInputs {
     avatar?: NexusGenInputs['ImageUpdateOneWithoutPersonAvatarOfInput'] | null; // ImageUpdateOneWithoutPersonAvatarOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -4014,6 +4047,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
@@ -4028,6 +4062,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -4042,6 +4077,7 @@ export interface NexusGenInputs {
     banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -4094,6 +4130,7 @@ export interface NexusGenInputs {
     bannerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     description?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    gender?: NexusGenInputs['EnumGenderNullableFilter'] | null; // EnumGenderNullableFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     memberOf?: NexusGenInputs['GroupMemberListRelationFilter'] | null; // GroupMemberListRelationFilter
@@ -4890,6 +4927,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   FaceSource: PrismaClient.FaceSource
+  Gender: PrismaClient.Gender
   ImageConnectionEdge: "IMAGE_TO_PERSON" | "PERSON_TO_IMAGE"
   MimeType: PrismaClient.MimeType
   QueryMode: PrismaClient.QueryMode
@@ -5268,6 +5306,7 @@ export interface NexusGenFieldTypes {
     small: string; // String!
   }
   User: { // field return type
+    avatar: NexusGenRootTypes['Image'] | null; // Image
     bot: boolean; // Boolean!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
@@ -5541,6 +5580,7 @@ export interface NexusGenFieldTypeNames {
     small: 'String'
   }
   User: { // field return type name
+    avatar: 'Image'
     bot: 'Boolean'
     createdAt: 'DateTime'
     id: 'Int'

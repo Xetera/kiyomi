@@ -3,7 +3,6 @@ query UserData {
         id
         name
         image
-        avatar
         xp
         createdAt
         roles {

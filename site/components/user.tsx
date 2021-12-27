@@ -15,7 +15,7 @@ export function User({
   bottom,
 }: {
   user?: Maybe<
-    Pick<UserData, "bot" | "name" | "avatar"> & {
+    Pick<UserData, "bot" | "name" | "image"> & {
       roles: Array<Pick<Role, "name">>
     }
   >
@@ -27,9 +27,9 @@ export function User({
   return (
     <HStack align="top" flexFlow="row" spacing={8}>
       <Box borderRadius="md" overflow="hidden">
-        {user?.avatar && (
+        {user?.image && (
           <Image
-            src={user.avatar}
+            src={user.image}
             width={imageDimensions}
             height={imageDimensions}
           />
