@@ -19,7 +19,6 @@ def download_image(url: str) -> Image:
 def label_image(image_url: str) -> LabeledImage:
     with download_image(image_url) as image:
         pending = PendingImage(image)
-        print(pending.image)
         colors = extract_palette(pending.image)
         hashed = calculate_phash(pending.image)
         faces = extract_faces(pending)

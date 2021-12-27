@@ -3,7 +3,7 @@ import { AmqpService } from "../amqp"
 import { DiscoveryService, makeDiscovery } from "./discovery"
 import { PrismaClient } from "@prisma/client"
 import { makeXp, XpService } from "./xp"
-import { makeWendy, WendyService } from "@/lib/services/wendy"
+import { makeWendy, WendyService } from "./wendy"
 
 export type Services = {
   prisma: PrismaClient

@@ -8,7 +8,7 @@ import {
 import camelCaseKeys from "camelcase-keys"
 import { z } from "zod"
 import { Prisma, PrismaClient } from "@prisma/client"
-import { WendyService } from "@/lib/services/wendy"
+import { WendyService } from "./wendy"
 
 type JiuMessageType = z.infer<typeof JiuMessage>
 
