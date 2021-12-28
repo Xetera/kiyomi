@@ -39,7 +39,7 @@ export const Query = queryField((t) => {
       const result: Array<{
         id: number
         count: number
-      }> = await prisma.$queryRaw(
+      }> = await prisma.$queryRawUnsafe(
         `
         SELECT g.id, COUNT(*) as count
         FROM images

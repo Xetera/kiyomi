@@ -57,6 +57,20 @@ export type AliasListRelationFilter = {
   some?: Maybe<AliasWhereInput>;
 };
 
+export type AliasOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type AliasOrderByWithRelationInput = {
+  createdAt?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  name?: Maybe<SortOrder>;
+  person?: Maybe<PersonOrderByWithRelationInput>;
+  personId?: Maybe<SortOrder>;
+  preferredAliasOf?: Maybe<PersonOrderByWithRelationInput>;
+  updatedAt?: Maybe<SortOrder>;
+};
+
 export type AliasPersonAliasCompoundUniqueInput = {
   name: Scalars['String'];
   personId: Scalars['Int'];
@@ -113,6 +127,10 @@ export type AppearanceListRelationFilter = {
   every?: Maybe<AppearanceWhereInput>;
   none?: Maybe<AppearanceWhereInput>;
   some?: Maybe<AppearanceWhereInput>;
+};
+
+export type AppearanceOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
 };
 
 export type AppearanceWhereInput = {
@@ -205,19 +223,30 @@ export type DiscoveredImageListRelationFilter = {
   some?: Maybe<DiscoveredImageWhereInput>;
 };
 
-export type DiscoveredImageOrderByInput = {
+export type DiscoveredImageOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type DiscoveredImageOrderByWithRelationInput = {
   createdAt?: Maybe<SortOrder>;
+  duplicateDiscoveredImage?: Maybe<DiscoveredImageOrderByWithRelationInput>;
   duplicateDiscoveredImageId?: Maybe<SortOrder>;
+  duplicateDiscoveredImages?: Maybe<DiscoveredImageOrderByRelationAggregateInput>;
+  duplicateImage?: Maybe<ImageOrderByWithRelationInput>;
   duplicateImageId?: Maybe<SortOrder>;
   id?: Maybe<SortOrder>;
+  image?: Maybe<ImageOrderByWithRelationInput>;
   imageId?: Maybe<SortOrder>;
   mediaType?: Maybe<SortOrder>;
+  post?: Maybe<DiscoveredPostOrderByWithRelationInput>;
   postId?: Maybe<SortOrder>;
   providerType?: Maybe<SortOrder>;
   referenceUrl?: Maybe<SortOrder>;
   uniqueIdentifier?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
   url?: Maybe<SortOrder>;
+  verdict?: Maybe<DiscoveredImageVerdictOrderByRelationAggregateInput>;
+  votes?: Maybe<DiscoveredImageVoteOrderByRelationAggregateInput>;
 };
 
 export type DiscoveredImageProviderIdentityCompoundUniqueInput = {
@@ -237,6 +266,10 @@ export type DiscoveredImageVerdictListRelationFilter = {
   every?: Maybe<DiscoveredImageVerdictWhereInput>;
   none?: Maybe<DiscoveredImageVerdictWhereInput>;
   some?: Maybe<DiscoveredImageVerdictWhereInput>;
+};
+
+export type DiscoveredImageVerdictOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
 };
 
 export type DiscoveredImageVerdictWhereInput = {
@@ -270,6 +303,10 @@ export type DiscoveredImageVoteListRelationFilter = {
   every?: Maybe<DiscoveredImageVoteWhereInput>;
   none?: Maybe<DiscoveredImageVoteWhereInput>;
   some?: Maybe<DiscoveredImageVoteWhereInput>;
+};
+
+export type DiscoveredImageVoteOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
 };
 
 export type DiscoveredImageVoteUserVoteCompoundUniqueInput = {
@@ -360,11 +397,12 @@ export type DiscoveredPostDiscoveredProviderCompoundUniqueInput = {
   uniqueIdentifier: Scalars['String'];
 };
 
-export type DiscoveredPostOrderByInput = {
+export type DiscoveredPostOrderByWithRelationInput = {
   accountAvatarUrl?: Maybe<SortOrder>;
   accountName?: Maybe<SortOrder>;
   body?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
+  discoveredImages?: Maybe<DiscoveredImageOrderByRelationAggregateInput>;
   id?: Maybe<SortOrder>;
   official?: Maybe<SortOrder>;
   originalPostDate?: Maybe<SortOrder>;
@@ -477,6 +515,10 @@ export type FaceListRelationFilter = {
   some?: Maybe<FaceWhereInput>;
 };
 
+export type FaceOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
 export enum FaceSource {
   Manual = 'Manual',
   Scan = 'Scan'
@@ -566,6 +608,10 @@ export type GroupAliasListRelationFilter = {
   some?: Maybe<GroupAliasWhereInput>;
 };
 
+export type GroupAliasOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
 export type GroupAliasWhereInput = {
   AND?: Maybe<Array<GroupAliasWhereInput>>;
   NOT?: Maybe<Array<GroupAliasWhereInput>>;
@@ -604,6 +650,23 @@ export type GroupMemberMemberCompoundUniqueInput = {
   personId: Scalars['Int'];
 };
 
+export type GroupMemberOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type GroupMemberOrderByWithRelationInput = {
+  createdAt?: Maybe<SortOrder>;
+  endDate?: Maybe<SortOrder>;
+  group?: Maybe<GroupOrderByWithRelationInput>;
+  groupId?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  person?: Maybe<PersonOrderByWithRelationInput>;
+  personId?: Maybe<SortOrder>;
+  preferredMemberships_?: Maybe<PersonOrderByRelationAggregateInput>;
+  startDate?: Maybe<SortOrder>;
+  updatedAt?: Maybe<SortOrder>;
+};
+
 export type GroupMemberWhereInput = {
   AND?: Maybe<Array<GroupMemberWhereInput>>;
   NOT?: Maybe<Array<GroupMemberWhereInput>>;
@@ -625,12 +688,16 @@ export type GroupMemberWhereUniqueInput = {
   member?: Maybe<GroupMemberMemberCompoundUniqueInput>;
 };
 
-export type GroupOrderByInput = {
+export type GroupOrderByWithRelationInput = {
+  aliases?: Maybe<GroupAliasOrderByRelationAggregateInput>;
+  avatar?: Maybe<ImageOrderByWithRelationInput>;
   avatarId?: Maybe<SortOrder>;
+  banner?: Maybe<ImageOrderByWithRelationInput>;
   bannerId?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
   id?: Maybe<SortOrder>;
   ireneBotId?: Maybe<SortOrder>;
+  members?: Maybe<GroupMemberOrderByRelationAggregateInput>;
   name?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
 };
@@ -771,6 +838,10 @@ export type ImageLikeListRelationFilter = {
   some?: Maybe<ImageLikeWhereInput>;
 };
 
+export type ImageLikeOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
 export type ImageLikeWhereInput = {
   AND?: Maybe<Array<ImageLikeWhereInput>>;
   NOT?: Maybe<Array<ImageLikeWhereInput>>;
@@ -790,26 +861,43 @@ export type ImageListRelationFilter = {
   some?: Maybe<ImageWhereInput>;
 };
 
-export type ImageOrderByInput = {
+export type ImageOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type ImageOrderByWithRelationInput = {
+  appearances?: Maybe<AppearanceOrderByRelationAggregateInput>;
   bytes?: Maybe<SortOrder>;
   caption?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
+  discoverySource?: Maybe<DiscoveredImageOrderByWithRelationInput>;
   faceScanDate?: Maybe<SortOrder>;
   faceScanRequestDate?: Maybe<SortOrder>;
+  faces?: Maybe<FaceOrderByRelationAggregateInput>;
   fileName?: Maybe<SortOrder>;
+  groupAvatarOf?: Maybe<GroupOrderByWithRelationInput>;
+  groupBannerOf?: Maybe<GroupOrderByWithRelationInput>;
   hash?: Maybe<SortOrder>;
   height?: Maybe<SortOrder>;
   id?: Maybe<SortOrder>;
   ireneBotId?: Maybe<SortOrder>;
   isNsfw?: Maybe<SortOrder>;
+  likes?: Maybe<ImageLikeOrderByRelationAggregateInput>;
   mimetype?: Maybe<SortOrder>;
   pHash?: Maybe<SortOrder>;
   palette?: Maybe<SortOrder>;
+  personAvatarOf?: Maybe<PersonOrderByWithRelationInput>;
+  personBannerOf?: Maybe<PersonOrderByWithRelationInput>;
+  potentialDuplicates?: Maybe<DiscoveredImageOrderByRelationAggregateInput>;
   public?: Maybe<SortOrder>;
   slug?: Maybe<SortOrder>;
   source?: Maybe<SortOrder>;
+  tags?: Maybe<TagOrderByRelationAggregateInput>;
   updatedAt?: Maybe<SortOrder>;
   uploadType?: Maybe<SortOrder>;
+  user?: Maybe<UserOrderByWithRelationInput>;
+  userAvatarOf?: Maybe<UserOrderByWithRelationInput>;
+  userBannerOf?: Maybe<UserOrderByWithRelationInput>;
   userId?: Maybe<SortOrder>;
   views?: Maybe<SortOrder>;
   width?: Maybe<SortOrder>;
@@ -1156,6 +1244,32 @@ export type PersonListRelationFilter = {
   some?: Maybe<PersonWhereInput>;
 };
 
+export type PersonOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type PersonOrderByWithRelationInput = {
+  aliases?: Maybe<AliasOrderByRelationAggregateInput>;
+  appearances?: Maybe<AppearanceOrderByRelationAggregateInput>;
+  appearsIn?: Maybe<FaceOrderByRelationAggregateInput>;
+  avatar?: Maybe<ImageOrderByWithRelationInput>;
+  avatarId?: Maybe<SortOrder>;
+  banner?: Maybe<ImageOrderByWithRelationInput>;
+  bannerId?: Maybe<SortOrder>;
+  createdAt?: Maybe<SortOrder>;
+  description?: Maybe<SortOrder>;
+  gender?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  ireneBotId?: Maybe<SortOrder>;
+  memberOf?: Maybe<GroupMemberOrderByRelationAggregateInput>;
+  name?: Maybe<SortOrder>;
+  preferredAlias?: Maybe<AliasOrderByWithRelationInput>;
+  preferredAliasId?: Maybe<SortOrder>;
+  preferredMembership?: Maybe<GroupMemberOrderByWithRelationInput>;
+  preferredMembershipId?: Maybe<SortOrder>;
+  updatedAt?: Maybe<SortOrder>;
+};
+
 export type PersonWhereInput = {
   AND?: Maybe<Array<PersonWhereInput>>;
   NOT?: Maybe<Array<PersonWhereInput>>;
@@ -1239,7 +1353,7 @@ export type QueryCountAppearancesArgs = {
 
 export type QueryDiscoveredImagesArgs = {
   cursor?: Maybe<DiscoveredImageWhereUniqueInput>;
-  orderBy?: Maybe<Array<DiscoveredImageOrderByInput>>;
+  orderBy?: Maybe<Array<DiscoveredImageOrderByWithRelationInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<DiscoveredImageWhereInput>;
@@ -1248,7 +1362,7 @@ export type QueryDiscoveredImagesArgs = {
 
 export type QueryDiscoveredPostsArgs = {
   cursor?: Maybe<DiscoveredPostWhereUniqueInput>;
-  orderBy?: Maybe<Array<DiscoveredPostOrderByInput>>;
+  orderBy?: Maybe<Array<DiscoveredPostOrderByWithRelationInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<DiscoveredPostWhereInput>;
@@ -1282,7 +1396,7 @@ export type QueryGroupArgs = {
 
 export type QueryGroupsArgs = {
   cursor?: Maybe<GroupWhereUniqueInput>;
-  orderBy?: Maybe<Array<GroupOrderByInput>>;
+  orderBy?: Maybe<Array<GroupOrderByWithRelationInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<GroupWhereInput>;
@@ -1302,7 +1416,7 @@ export type QueryImageConnectionsArgs = {
 
 export type QueryImagesArgs = {
   cursor?: Maybe<ImageWhereUniqueInput>;
-  orderBy?: Maybe<Array<ImageOrderByInput>>;
+  orderBy?: Maybe<Array<ImageOrderByWithRelationInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
@@ -1346,6 +1460,10 @@ export type RoleListRelationFilter = {
   every?: Maybe<RoleWhereInput>;
   none?: Maybe<RoleWhereInput>;
   some?: Maybe<RoleWhereInput>;
+};
+
+export type RoleOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
 };
 
 export type RoleWhereInput = {
@@ -1409,6 +1527,10 @@ export type TagListRelationFilter = {
   some?: Maybe<TagWhereInput>;
 };
 
+export type TagOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
 export enum TagSource {
   User = 'USER'
 }
@@ -1462,10 +1584,33 @@ export type User = {
 
 export type UserImagesArgs = {
   cursor?: Maybe<ImageWhereUniqueInput>;
-  orderBy?: Maybe<Array<ImageOrderByInput>>;
+  orderBy?: Maybe<Array<ImageOrderByWithRelationInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<ImageWhereInput>;
+};
+
+export type UserOrderByWithRelationInput = {
+  DiscoveredImageVote?: Maybe<DiscoveredImageVoteOrderByRelationAggregateInput>;
+  avatar?: Maybe<ImageOrderByWithRelationInput>;
+  avatarId?: Maybe<SortOrder>;
+  banner?: Maybe<ImageOrderByWithRelationInput>;
+  bannerId?: Maybe<SortOrder>;
+  bot?: Maybe<SortOrder>;
+  cratedTags?: Maybe<TagOrderByRelationAggregateInput>;
+  createdAt?: Maybe<SortOrder>;
+  email?: Maybe<SortOrder>;
+  emailVerified?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  image?: Maybe<SortOrder>;
+  imageLikes?: Maybe<ImageLikeOrderByRelationAggregateInput>;
+  images?: Maybe<ImageOrderByRelationAggregateInput>;
+  markedFaces?: Maybe<FaceOrderByRelationAggregateInput>;
+  name?: Maybe<SortOrder>;
+  roles?: Maybe<RoleOrderByRelationAggregateInput>;
+  taggedAppearances?: Maybe<AppearanceOrderByRelationAggregateInput>;
+  token?: Maybe<SortOrder>;
+  updatedAt?: Maybe<SortOrder>;
 };
 
 export type UserWhereInput = {

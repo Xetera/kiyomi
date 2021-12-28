@@ -132,7 +132,6 @@ export function makeWendy({ prisma, amqp }: WendyOptions) {
       // I know this is a very strange way to do this but prisma doesn't let us
       // update CUBE values any other way
       const pHashArray = methods.hashStringToCube(hash)
-      console.log({ pHashArray })
       prisma.$queryRaw`${Prisma.raw(`
         UPDATE images SET p_hash_2 = CUBE(ARRAY[${pHashArray.join(
           ","

@@ -23,7 +23,21 @@ input AliasListRelationFilter {
   some: AliasWhereInput
 }
 
-input AliasPersonAliasCompoundUniqueInput {
+input AliasOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AliasOrderByWithRelationInput {
+  createdAt: SortOrder
+  id: SortOrder
+  name: SortOrder
+  person: PersonOrderByWithRelationInput
+  personId: SortOrder
+  preferredAliasOf: PersonOrderByWithRelationInput
+  updatedAt: SortOrder
+}
+
+input AliasPersonIdNameCompoundUniqueInput {
   name: String!
   personId: Int!
 }
@@ -43,22 +57,17 @@ input AliasWhereInput {
 
 input AliasWhereUniqueInput {
   id: Int
-  personAlias: AliasPersonAliasCompoundUniqueInput
+  personId_name: AliasPersonIdNameCompoundUniqueInput
 }
 
 type Appearance {
-  addedBy: User!
+  addedBy: User
   createdAt: DateTime!
   faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
   image: Image!
   person: Person!
   updatedAt: DateTime!
-}
-
-input AppearanceAppearanceCompoundUniqueInput {
-  imageId: Int!
-  personId: Int!
 }
 
 type AppearanceCount {
@@ -72,12 +81,21 @@ input AppearanceListRelationFilter {
   some: AppearanceWhereInput
 }
 
+input AppearanceOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AppearancePersonIdImageIdCompoundUniqueInput {
+  imageId: Int!
+  personId: Int!
+}
+
 input AppearanceWhereInput {
   AND: [AppearanceWhereInput!]
   NOT: [AppearanceWhereInput!]
   OR: [AppearanceWhereInput!]
   addedBy: UserWhereInput
-  addedById: IntFilter
+  addedById: IntNullableFilter
   createdAt: DateTimeFilter
   faces: FaceListRelationFilter
   id: IntFilter
@@ -89,8 +107,8 @@ input AppearanceWhereInput {
 }
 
 input AppearanceWhereUniqueInput {
-  appearance: AppearanceAppearanceCompoundUniqueInput
   id: Int
+  personId_imageId: AppearancePersonIdImageIdCompoundUniqueInput
 }
 
 input BoolFilter {
@@ -135,7 +153,7 @@ type DiscoveredImage {
   uniqueIdentifier: String!
   updatedAt: DateTime!
   url: String!
-  verdict(cursor: DiscoveredImageVerdictWhereUniqueInput, skip: Int, take: Int): [DiscoveredImageVerdict!]!
+  verdict: DiscoveredImageVerdict
 
   """The vote cast by the currently logged in user"""
   vote: DiscoveredImageVote
@@ -150,22 +168,33 @@ input DiscoveredImageListRelationFilter {
   some: DiscoveredImageWhereInput
 }
 
-input DiscoveredImageOrderByInput {
+input DiscoveredImageOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input DiscoveredImageOrderByWithRelationInput {
   createdAt: SortOrder
+  duplicateDiscoveredImage: DiscoveredImageOrderByWithRelationInput
   duplicateDiscoveredImageId: SortOrder
+  duplicateDiscoveredImages: DiscoveredImageOrderByRelationAggregateInput
+  duplicateImage: ImageOrderByWithRelationInput
   duplicateImageId: SortOrder
   id: SortOrder
+  image: ImageOrderByWithRelationInput
   imageId: SortOrder
   mediaType: SortOrder
+  post: DiscoveredPostOrderByWithRelationInput
   postId: SortOrder
   providerType: SortOrder
   referenceUrl: SortOrder
   uniqueIdentifier: SortOrder
   updatedAt: SortOrder
   url: SortOrder
+  verdict: DiscoveredImageVerdictOrderByWithRelationInput
+  votes: DiscoveredImageVoteOrderByRelationAggregateInput
 }
 
-input DiscoveredImageProviderIdentityCompoundUniqueInput {
+input DiscoveredImageProviderTypeUniqueIdentifierCompoundUniqueInput {
   providerType: String!
   uniqueIdentifier: String!
 }
@@ -177,10 +206,13 @@ type DiscoveredImageVerdict {
   verdict: String!
 }
 
-input DiscoveredImageVerdictListRelationFilter {
-  every: DiscoveredImageVerdictWhereInput
-  none: DiscoveredImageVerdictWhereInput
-  some: DiscoveredImageVerdictWhereInput
+input DiscoveredImageVerdictOrderByWithRelationInput {
+  createdAt: SortOrder
+  discoveredImage: DiscoveredImageOrderByWithRelationInput
+  discoveredImageId: SortOrder
+  id: SortOrder
+  reason: SortOrder
+  verdict: SortOrder
 }
 
 input DiscoveredImageVerdictWhereInput {
@@ -193,11 +225,6 @@ input DiscoveredImageVerdictWhereInput {
   id: IntFilter
   reason: StringNullableFilter
   verdict: StringFilter
-}
-
-input DiscoveredImageVerdictWhereUniqueInput {
-  discoveredImageId: Int
-  id: Int
 }
 
 type DiscoveredImageVote {
@@ -213,6 +240,10 @@ input DiscoveredImageVoteListRelationFilter {
   every: DiscoveredImageVoteWhereInput
   none: DiscoveredImageVoteWhereInput
   some: DiscoveredImageVoteWhereInput
+}
+
+input DiscoveredImageVoteOrderByRelationAggregateInput {
+  _count: SortOrder
 }
 
 input DiscoveredImageVoteUserVoteCompoundUniqueInput {
@@ -262,14 +293,14 @@ input DiscoveredImageWhereInput {
   uniqueIdentifier: StringFilter
   updatedAt: DateTimeFilter
   url: StringFilter
-  verdict: DiscoveredImageVerdictListRelationFilter
+  verdict: DiscoveredImageVerdictWhereInput
   votes: DiscoveredImageVoteListRelationFilter
 }
 
 input DiscoveredImageWhereUniqueInput {
   id: Int
   imageId: Int
-  providerIdentity: DiscoveredImageProviderIdentityCompoundUniqueInput
+  providerType_uniqueIdentifier: DiscoveredImageProviderTypeUniqueIdentifierCompoundUniqueInput
 }
 
 type DiscoveredPost {
@@ -296,16 +327,12 @@ type DiscoveredPost {
   updatedAt: DateTime!
 }
 
-input DiscoveredPostDiscoveredProviderCompoundUniqueInput {
-  providerType: String!
-  uniqueIdentifier: String!
-}
-
-input DiscoveredPostOrderByInput {
+input DiscoveredPostOrderByWithRelationInput {
   accountAvatarUrl: SortOrder
   accountName: SortOrder
   body: SortOrder
   createdAt: SortOrder
+  discoveredImages: DiscoveredImageOrderByRelationAggregateInput
   id: SortOrder
   official: SortOrder
   originalPostDate: SortOrder
@@ -315,6 +342,11 @@ input DiscoveredPostOrderByInput {
   referencingPeople: SortOrder
   uniqueIdentifier: SortOrder
   updatedAt: SortOrder
+}
+
+input DiscoveredPostProviderTypeUniqueIdentifierCompoundUniqueInput {
+  providerType: String!
+  uniqueIdentifier: String!
 }
 
 input DiscoveredPostWhereInput {
@@ -338,8 +370,8 @@ input DiscoveredPostWhereInput {
 }
 
 input DiscoveredPostWhereUniqueInput {
-  discoveredProvider: DiscoveredPostDiscoveredProviderCompoundUniqueInput
   id: Int
+  providerType_uniqueIdentifier: DiscoveredPostProviderTypeUniqueIdentifierCompoundUniqueInput
 }
 
 """The list of providers that supply images for the discovery feed"""
@@ -417,6 +449,10 @@ input FaceListRelationFilter {
   some: FaceWhereInput
 }
 
+input FaceOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 enum FaceSource {
   Manual
   Scan
@@ -490,6 +526,10 @@ input GroupAliasListRelationFilter {
   some: GroupAliasWhereInput
 }
 
+input GroupAliasOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input GroupAliasWhereInput {
   AND: [GroupAliasWhereInput!]
   NOT: [GroupAliasWhereInput!]
@@ -516,15 +556,32 @@ type GroupMember {
   updatedAt: DateTime!
 }
 
+input GroupMemberGroupIdPersonIdCompoundUniqueInput {
+  groupId: Int!
+  personId: Int!
+}
+
 input GroupMemberListRelationFilter {
   every: GroupMemberWhereInput
   none: GroupMemberWhereInput
   some: GroupMemberWhereInput
 }
 
-input GroupMemberMemberCompoundUniqueInput {
-  groupId: Int!
-  personId: Int!
+input GroupMemberOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GroupMemberOrderByWithRelationInput {
+  createdAt: SortOrder
+  endDate: SortOrder
+  group: GroupOrderByWithRelationInput
+  groupId: SortOrder
+  id: SortOrder
+  person: PersonOrderByWithRelationInput
+  personId: SortOrder
+  preferredMemberships_: PersonOrderByRelationAggregateInput
+  startDate: SortOrder
+  updatedAt: SortOrder
 }
 
 input GroupMemberWhereInput {
@@ -544,16 +601,20 @@ input GroupMemberWhereInput {
 }
 
 input GroupMemberWhereUniqueInput {
+  groupId_personId: GroupMemberGroupIdPersonIdCompoundUniqueInput
   id: Int
-  member: GroupMemberMemberCompoundUniqueInput
 }
 
-input GroupOrderByInput {
+input GroupOrderByWithRelationInput {
+  aliases: GroupAliasOrderByRelationAggregateInput
+  avatar: ImageOrderByWithRelationInput
   avatarId: SortOrder
+  banner: ImageOrderByWithRelationInput
   bannerId: SortOrder
   createdAt: SortOrder
   id: SortOrder
   ireneBotId: SortOrder
+  members: GroupMemberOrderByRelationAggregateInput
   name: SortOrder
   updatedAt: SortOrder
 }
@@ -690,6 +751,10 @@ input ImageLikeListRelationFilter {
   some: ImageLikeWhereInput
 }
 
+input ImageLikeOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input ImageLikeWhereInput {
   AND: [ImageLikeWhereInput!]
   NOT: [ImageLikeWhereInput!]
@@ -709,26 +774,43 @@ input ImageListRelationFilter {
   some: ImageWhereInput
 }
 
-input ImageOrderByInput {
+input ImageOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input ImageOrderByWithRelationInput {
+  appearances: AppearanceOrderByRelationAggregateInput
   bytes: SortOrder
   caption: SortOrder
   createdAt: SortOrder
+  discoverySource: DiscoveredImageOrderByWithRelationInput
   faceScanDate: SortOrder
   faceScanRequestDate: SortOrder
+  faces: FaceOrderByRelationAggregateInput
   fileName: SortOrder
+  groupAvatarOf: GroupOrderByWithRelationInput
+  groupBannerOf: GroupOrderByWithRelationInput
   hash: SortOrder
   height: SortOrder
   id: SortOrder
   ireneBotId: SortOrder
   isNsfw: SortOrder
+  likes: ImageLikeOrderByRelationAggregateInput
   mimetype: SortOrder
   pHash: SortOrder
   palette: SortOrder
+  personAvatarOf: PersonOrderByWithRelationInput
+  personBannerOf: PersonOrderByWithRelationInput
+  potentialDuplicates: DiscoveredImageOrderByRelationAggregateInput
   public: SortOrder
   slug: SortOrder
   source: SortOrder
+  tags: TagOrderByRelationAggregateInput
   updatedAt: SortOrder
   uploadType: SortOrder
+  user: UserOrderByWithRelationInput
+  userAvatarOf: UserOrderByWithRelationInput
+  userBannerOf: UserOrderByWithRelationInput
   userId: SortOrder
   views: SortOrder
   width: SortOrder
@@ -999,6 +1081,32 @@ input PersonListRelationFilter {
   some: PersonWhereInput
 }
 
+input PersonOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input PersonOrderByWithRelationInput {
+  aliases: AliasOrderByRelationAggregateInput
+  appearances: AppearanceOrderByRelationAggregateInput
+  appearsIn: FaceOrderByRelationAggregateInput
+  avatar: ImageOrderByWithRelationInput
+  avatarId: SortOrder
+  banner: ImageOrderByWithRelationInput
+  bannerId: SortOrder
+  createdAt: SortOrder
+  description: SortOrder
+  gender: SortOrder
+  id: SortOrder
+  ireneBotId: SortOrder
+  memberOf: GroupMemberOrderByRelationAggregateInput
+  name: SortOrder
+  preferredAlias: AliasOrderByWithRelationInput
+  preferredAliasId: SortOrder
+  preferredMembership: GroupMemberOrderByWithRelationInput
+  preferredMembershipId: SortOrder
+  updatedAt: SortOrder
+}
+
 input PersonWhereInput {
   AND: [PersonWhereInput!]
   NOT: [PersonWhereInput!]
@@ -1051,8 +1159,8 @@ type ProviderStatistic {
 
 type Query {
   countAppearances(groups: [Int!]!): [AppearanceCount!]!
-  discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
-  discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
+  discoveredImages(cursor: DiscoveredImageWhereUniqueInput, orderBy: [DiscoveredImageOrderByWithRelationInput!], skip: Int, take: Int, where: DiscoveredImageWhereInput): [DiscoveredImage!]!
+  discoveredPosts(cursor: DiscoveredPostWhereUniqueInput, orderBy: [DiscoveredPostOrderByWithRelationInput!], skip: Int, take: Int, where: DiscoveredPostWhereInput): [DiscoveredPost!]!
   discoveryFeed(groupIds: [Int!]!, peopleIds: [Int!]!, skip: Int, take: Int): [DiscoveredPost!]!
   discoveryHistory(skip: Int = 0, take: Int = 10): [DiscoveredPost!]!
   discoveryLeaderboard(skip: Int = 0, take: Int = 10): [LeaderboardUser!]!
@@ -1060,13 +1168,13 @@ type Query {
   discoverySchedule: [DiscoveryProvider!]!
   discoveryStats: [DiscoveryStatistic!]!
   group(where: GroupWhereUniqueInput!): Group
-  groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
+  groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByWithRelationInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
   homepage: [Person!]!
 
   """Find a single image by its slug."""
   image(slug: String!): Image
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
-  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
   people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   person(where: PersonWhereUniqueInput!): Person
@@ -1091,6 +1199,10 @@ input RoleListRelationFilter {
   every: RoleWhereInput
   none: RoleWhereInput
   some: RoleWhereInput
+}
+
+input RoleOrderByRelationAggregateInput {
+  _count: SortOrder
 }
 
 input RoleWhereInput {
@@ -1153,6 +1265,10 @@ input TagListRelationFilter {
   some: TagWhereInput
 }
 
+input TagOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 enum TagSource {
   USER
 }
@@ -1195,10 +1311,33 @@ type User {
   createdAt: DateTime!
   id: Int!
   image: String
-  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
+  images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
   roles: [Role!]!
   xp: Int
+}
+
+input UserOrderByWithRelationInput {
+  DiscoveredImageVote: DiscoveredImageVoteOrderByRelationAggregateInput
+  avatar: ImageOrderByWithRelationInput
+  avatarId: SortOrder
+  banner: ImageOrderByWithRelationInput
+  bannerId: SortOrder
+  bot: SortOrder
+  cratedTags: TagOrderByRelationAggregateInput
+  createdAt: SortOrder
+  email: SortOrder
+  emailVerified: SortOrder
+  id: SortOrder
+  image: SortOrder
+  imageLikes: ImageLikeOrderByRelationAggregateInput
+  images: ImageOrderByRelationAggregateInput
+  markedFaces: FaceOrderByRelationAggregateInput
+  name: SortOrder
+  roles: RoleOrderByRelationAggregateInput
+  taggedAppearances: AppearanceOrderByRelationAggregateInput
+  token: SortOrder
+  updatedAt: SortOrder
 }
 
 input UserWhereInput {

@@ -73,7 +73,8 @@ export function makeDiscovery({ prisma }: DiscoveryOptions) {
       }))
     },
     async history({ userId, skip, take }: HistoryInput) {
-      const rows = await prisma.$queryRaw`
+      type Response = { ca: string; id: number }
+      const rows: Response[] = await prisma.$queryRaw`
         WITH posts AS (
             SELECT DISTINCT (dp.id) as id, MAX(div.created_at) as ca
             FROM discovered_posts dp
@@ -88,7 +89,7 @@ export function makeDiscovery({ prisma }: DiscoveryOptions) {
         OFFSET ${skip}
         LIMIT ${take};
       `
-      return rows.map(camelCaseKeys)
+      return rows.map((obj) => camelCaseKeys(obj))
     },
     async personalFeed({
       userId,
@@ -97,7 +98,9 @@ export function makeDiscovery({ prisma }: DiscoveryOptions) {
       groupIds = [],
       peopleIds = [],
     }: PersonalFeedInput): Promise<Array<DiscoveredPost>> {
-      const results = await prisma.$queryRaw(
+      // this isn't _totally_ accurate but it's okay
+      type Result = DiscoveredPost
+      const results: Result[] = await prisma.$queryRawUnsafe(
         `
       SELECT dp.*
       FROM discovered_posts dp
@@ -132,7 +135,7 @@ export function makeDiscovery({ prisma }: DiscoveryOptions) {
         skip,
         take
       )
-      return results.map(camelCaseKeys)
+      return results.map((obj) => camelCaseKeys(obj))
     },
     async votePost(args: DiscoveryPostVoteInput): Promise<number> {
       const images = await prisma.discoveredImage.findMany({

@@ -11,7 +11,7 @@ export const similarImagesQuery = async (
   hash: Uint8Array,
   limit = 5
 ): Promise<SimilarImage[]> => {
-  const data = await prisma.$queryRaw`${Prisma.raw(`
+  const data: SimilarImage[] = await prisma.$queryRaw`${Prisma.raw(`
     SELECT
       'image' as type,
       id,

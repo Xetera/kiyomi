@@ -31,7 +31,8 @@ export const makeXp = ({ prisma }: XpServiceProps) => {
     }: DateRange & Pagination): Promise<LeaderboardRow[]> {
       // TODO: turn this reused xps CTE into a materialized view
       // we're using signup date as an XP tiebreaker
-      const results = await prisma.$queryRaw(
+      type Result = LeaderboardRow
+      const results: Result[] = await prisma.$queryRawUnsafe(
         `
         WITH xps AS (
             SELECT SUM(xp) AS xp, user_id, MAX(created_at) AS signup_date
@@ -57,17 +58,18 @@ export const makeXp = ({ prisma }: XpServiceProps) => {
         skip,
         take
       )
-      return results.map(camelCaseKeys)
+      return results.map((obj) => camelCaseKeys(obj))
     },
     async userXp(userId: number) {
-      const result = await prisma.$queryRaw`
+      type Result = { sum: number }
+      const result: Result[] = await prisma.$queryRaw`
         WITH xps AS (
           SELECT SUM(xp) as xp FROM discovered_image_votes
             WHERE user_id = ${userId}
         )
         SELECT COALESCE(SUM(xp), 0) as sum FROM xps
       `
-      return result[0].sum
+      return result[0]?.sum ?? 0
     },
   }
 }

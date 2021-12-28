@@ -13,7 +13,7 @@ import {
   queryField,
   stringArg,
 } from "nexus"
-import { Role } from "../permissions"
+import { hasRole, Role } from "../permissions"
 import { Appearance, FaceSource, Person, Prisma } from "@prisma/client"
 import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
@@ -142,7 +142,7 @@ export const Image = objectType({
         return prisma.imageLike
           .findUnique({
             where: {
-              likedImage: {
+              userId_imageId: {
                 userId: user.id,
                 imageId: image.id,
               },
@@ -357,7 +357,7 @@ export const Mutation = mutationField((t) => {
       // allowing any logged in user for now
       return true
     },
-    async resolve(_root, { slug }, { prisma, amqp, wendy }) {
+    async resolve(_root, { slug }, { user, prisma, amqp, wendy }) {
       const queueName = process.env.FACE_RECOGNITION_QUEUE ?? "labeler"
       if (!amqp) {
         throw Error("Could not establish AMQP connection")
@@ -384,28 +384,33 @@ export const Mutation = mutationField((t) => {
         faceScanRequestDate > faceScanDate
 
       if (tooSoon && !scannedAfterRequest) {
-        const duration = intervalToDuration({
-          start: faceScanRequestDate!,
-          end: new Date(),
+        const roles = await prisma.role.findMany({
+          where: { userId: user?.id },
         })
-        const durationString = formatDuration(duration)
-        throw Error(
-          `This image was already queued for scanning ${durationString} ago.`
-        )
+        if (!hasRole(roles, Role.Editor)) {
+          const duration = intervalToDuration({
+            start: faceScanRequestDate!,
+            end: new Date(),
+          })
+          const durationString = formatDuration(duration)
+          throw Error(
+            `This image was already queued for scanning ${durationString} ago.`
+          )
+        }
       }
 
+      prisma.image
+        .update({
+          where: { slug },
+          data: { faceScanRequestDate: new Date() },
+        })
+        .catch((err) => {
+          console.error(`Couldn't set face recognition request date`)
+          console.error(err)
+        })
+
       await wendy.fullLabel(slug)
-      // const { queueInfo } = await amqp.sendToQueue(queueName, { slug })
-      // prisma.image
-      //   .update({
-      //     where: { slug },
-      //     data: { faceScanRequestDate: new Date() },
-      //   })
-      //   .catch((err) => {
-      //     console.error(`Couldn't set face recognition request date`)
-      //     console.error(err)
-      //   })
-      // console.log(`Got an image queue request for ${slug}`)
+
       return {
         queueSize: 0, // queueInfo.messageCount ?? -1,
       }
@@ -423,11 +428,11 @@ export const Mutation = mutationField((t) => {
       const likedImage = { userId: user!.id, imageId }
       const exists = await prisma.imageLike.findUnique({
         select: { id: true },
-        where: { likedImage },
+        where: { userId_imageId: likedImage },
       })
       if (exists) {
         const result = await prisma.imageLike.delete({
-          where: { likedImage },
+          where: { userId_imageId: likedImage },
           include: { image: true },
         })
         return result.image
@@ -479,7 +484,7 @@ export const PrivateQuery = queryField((t) => {
     },
     async resolve(_, args, { prisma }) {
       type Response = { face: object; person: object; image: object }
-      const response = await prisma.$queryRaw(
+      const response: Response[] = await prisma.$queryRawUnsafe(
         `
         select row_to_json(p.*) as person,
         row_to_json(f.*) as face,
