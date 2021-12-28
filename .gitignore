@@ -45,3 +45,4 @@ labeler/**/*.gif
 labeler/**/*.webp
 **/.idea
 game/dist
+**/__pycache__
