@@ -1,0 +1,3 @@
+replica:
+  # we don't need 3 replicas lol
+  replicaCount: 1
