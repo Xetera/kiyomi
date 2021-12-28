@@ -672,7 +672,9 @@ type Image {
   """Human readable file size. Use `bytes` for a number representation."""
   fileSize: String!
 
-  """The center of focus for the image"""
+  """
+  The center of focus for the image. Calculated based on the position of the faces in the image.
+  """
   focus: ImageCoordinate!
 
   """SHA256 checksum of the image."""
@@ -682,8 +684,6 @@ type Image {
   height: Int!
   id: Int!
   ireneBotId: Int
-
-  """( ͡° ͜ʖ ͡°)"""
   isNsfw: Boolean!
 
   """False if not logged in"""
@@ -711,6 +711,8 @@ type Image {
   tags(cursor: TagWhereUniqueInput, skip: Int, take: Int): [Tag!]!
   thumbnail: Thumbnail!
   unknownFaces: [Face!]!
+
+  """The source method that was used to upload the image"""
   uploadType: UploadType!
   uploadedBy: User
 

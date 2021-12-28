@@ -53,7 +53,9 @@ export const Image = objectType({
       .height({
         description: "Height of the image in pixels.",
       })
-      .uploadType()
+      .uploadType({
+        description: "The source method that was used to upload the image",
+      })
       .hash({
         description: "SHA256 checksum of the image.",
       })
@@ -65,7 +67,7 @@ export const Image = objectType({
           "Dominant colors in the image in decimal format, sorted by frequency.",
       })
       .isNsfw({
-        description: "( ͡° ͜ʖ ͡°)",
+        deprecated: "Unused field, there are no NSFW images on the site",
       })
       .source({
         description:
@@ -153,7 +155,8 @@ export const Image = objectType({
     })
     t.field("focus", {
       type: nonNull(ImageCoordinate),
-      description: "The center of focus for the image",
+      description:
+        "The center of focus for the image. Calculated based on the position of the faces in the image.",
       async resolve(image, _, { prisma }) {
         const faces = await prisma.face.findMany({
           where: { imageId: image.id },
@@ -164,6 +167,7 @@ export const Image = objectType({
             y: Math.floor(image.height / 2),
           }
         }
+        // TODO: focus only one face if faces in the image are too far apart relative to the size of the image
         try {
           const coordinates = points(
             faces.map((f) => [
@@ -508,156 +512,6 @@ export const PrivateQuery = queryField((t) => {
         image: replace(res.image),
         person: replace(res.person),
       }))
-    },
-  })
-})
-
-export const PrivateMutation = mutationField((t) => {
-  t.field("labelImage", {
-    type: "Image",
-    description:
-      "Add metadata labels to an existing image. Only available to bot accounts",
-    args: {
-      slug: nonNull(stringArg()),
-      personName: "String",
-      ireneBotId: "Int",
-      replacePreviousScan: "Boolean",
-      faces: nonNull(list(nonNull(PrivateFaceInput))),
-      pHash: "String",
-      palette: nonNull(list(nonNull("Int"))),
-    },
-    async authorize(_, args, { prisma, user }) {
-      if (!user) {
-        return false
-      }
-      // indexed query
-      const role = await prisma.role.findUnique({
-        where: {
-          userRole: {
-            userId: user.id,
-            name: Role.Editor,
-          },
-        },
-      })
-      return Boolean(role)
-    },
-    async resolve(
-      _root,
-      {
-        slug,
-        faces,
-        personName,
-        ireneBotId,
-        replacePreviousScan,
-        pHash,
-        palette,
-      },
-      { prisma, user, wendy }
-    ) {
-      if (!user) {
-        throw new Error("Unauthorized")
-      }
-      const image = await prisma.image.findUnique({
-        where: { slug },
-        include: { faces: true, appearances: true },
-      })
-      if (!image) {
-        throw Error("Invalid image slug")
-      }
-      if (replacePreviousScan) {
-        await prisma.face.deleteMany({
-          where: {
-            id: {
-              in: image.faces
-                .filter((face) => face.source === "Scan")
-                .map((face) => face.id),
-            },
-          },
-        })
-      }
-
-      let existingAppearance: Appearance | undefined
-      const shouldLinkWithExistingAppearance = image.appearances.length === 1
-      if (shouldLinkWithExistingAppearance) {
-        existingAppearance = image.appearances[0]
-      }
-      let existingPerson: Person | undefined = existingAppearance?.personId
-        ? (await prisma.person.findUnique({
-            where: { ireneBotId: existingAppearance.personId },
-          })) ?? undefined
-        : undefined
-
-      if (faces.length === 1 && personName && !existingPerson) {
-        existingPerson = await prisma.person.create({
-          data: {
-            ireneBotId: ireneBotId,
-            name: personName,
-          },
-        })
-      }
-
-      if (existingPerson && !existingAppearance) {
-        existingAppearance = await prisma.appearance.create({
-          data: {
-            image: {
-              connect: {
-                id: image.id,
-              },
-            },
-            person: {
-              connect: {
-                id: existingPerson.id,
-              },
-            },
-            addedBy: {
-              connect: {
-                id: user.id,
-              },
-            },
-          },
-        })
-      }
-      prisma.image
-        .update({
-          where: {
-            slug,
-          },
-          data: {
-            faceScanDate: new Date(),
-            palette,
-          },
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-
-      // I know this is a very strange way to do this but prisma doesn't let us
-      // update CUBE values any other way
-      const pHashArray = wendy.hashStringToCube(pHash)
-      prisma.$queryRaw`${Prisma.raw(`
-        UPDATE images SET p_hash_2 = CUBE(ARRAY[${pHashArray.join(
-          ","
-        )}]) WHERE slug = '${slug}'
-      `)}`.catch((err) => {
-        console.error(err)
-      })
-
-      const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, added_by_id, appearance_id, source) VALUES`
-      const templatedString = faces
-        .map(({ x, y, height, width, descriptor, certainty }: any) => {
-          const cube = descriptor.join(",")
-          const userId = user.id
-          const linkedPerson = existingAppearance?.id ?? "NULL"
-          const source = user.bot ? FaceSource.Scan : FaceSource.Manual
-          const data = `(${image.id}, ${certainty}, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${userId}, ${linkedPerson}, '${source}')`
-          return data
-        })
-        .join(",")
-
-      if (faces.length > 0) {
-        await prisma.$executeRaw`${Prisma.raw(BASE_STRING + templatedString)}`
-      }
-      return image
     },
   })
 })

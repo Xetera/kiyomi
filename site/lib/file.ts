@@ -133,7 +133,6 @@ export async function convertImage(
   readable.push(null)
 
   async function convertWebp(b: Buffer): Promise<ConversionResult> {
-    console.log("converting image to webp")
     return withMetadata(sharp(b).webp({ quality: 80 }))
   }
 

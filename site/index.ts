@@ -1,7 +1,7 @@
 import { createServer } from "http"
 import { parse } from "url"
 import next from "next"
-import { getServices } from "./lib/services"
+import { createServices } from "./lib/services"
 import { PrismaClient } from "@prisma/client"
 import { makeAmqp } from "./lib/amqp"
 
@@ -13,7 +13,7 @@ async function main() {
   await app.prepare()
   const amqp = makeAmqp()
   const prisma = new PrismaClient()
-  const services = getServices(prisma, amqp)
+  const services = createServices(prisma, amqp)
   process.on("SIGINT", () => {
     amqp.gracefulExit()
     prisma.$disconnect()

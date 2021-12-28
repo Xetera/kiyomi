@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.4",
+    "@aws-sdk/client-s3": "^3.45.0",
     "@chakra-ui/react": "^1.7.2",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
@@ -32,7 +33,6 @@
     "apollo-server-core": "^3.5.0",
     "apollo-server-micro": "^3.5.0",
     "autoprefixer": "^10.2.5",
-    "aws-sdk": "^2.815.0",
     "camelcase-keys": "^7.0.1",
     "celery-node": "^0.5.8",
     "create-hmac": "^1.1.7",
