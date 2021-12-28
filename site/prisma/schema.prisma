@@ -302,7 +302,7 @@ model DiscoveredPost {
   official          Boolean           @default(false)
   discoveredImages  DiscoveredImage[]
 
-  @@unique([providerType, uniqueIdentifier], map: "discoveredProvider")
+  @@unique([providerType, uniqueIdentifier], map: "discoveredProvider", name: "discoveredProvider")
   @@map("discovered_posts")
 }
 

@@ -95,7 +95,7 @@ export function makeJiu(opts: JiuServiceOptions) {
             }
             return {
               where: {
-                providerIdentity: {
+                providerType_uniqueIdentifier: {
                   providerType,
                   uniqueIdentifier: image.uniqueIdentifier,
                 },
@@ -160,7 +160,7 @@ export function makeJiu(opts: JiuServiceOptions) {
             hash.status === "fulfilled" ? Array.from(hash.value.cube) : []
           console.log(dd)
           console.log(message.provider.type, image.uniqueIdentifier)
-          await prisma.$executeRaw(
+          await prisma.$executeRawUnsafe(
             `
             UPDATE discovered_images SET p_hash = CUBE(ARRAY[${dd.join(",")}])
                 WHERE provider_type = $1 AND unique_identifier = $2

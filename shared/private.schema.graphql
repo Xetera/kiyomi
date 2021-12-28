@@ -1361,6 +1361,11 @@ input DiscoveredPostCreatereferencingPeopleInput {
   set: [Int!]
 }
 
+input DiscoveredPostDiscoveredProviderCompoundUniqueInput {
+  providerType: String!
+  uniqueIdentifier: String!
+}
+
 input DiscoveredPostOrderByWithRelationInput {
   accountAvatarUrl: SortOrder
   accountName: SortOrder
@@ -1376,11 +1381,6 @@ input DiscoveredPostOrderByWithRelationInput {
   referencingPeople: SortOrder
   uniqueIdentifier: SortOrder
   updatedAt: SortOrder
-}
-
-input DiscoveredPostProviderTypeUniqueIdentifierCompoundUniqueInput {
-  providerType: String!
-  uniqueIdentifier: String!
 }
 
 input DiscoveredPostUpdateOneWithoutDiscoveredImagesInput {
@@ -1444,8 +1444,8 @@ input DiscoveredPostWhereInput {
 }
 
 input DiscoveredPostWhereUniqueInput {
+  discoveredProvider: DiscoveredPostDiscoveredProviderCompoundUniqueInput
   id: Int
-  providerType_uniqueIdentifier: DiscoveredPostProviderTypeUniqueIdentifierCompoundUniqueInput
 }
 
 """The list of providers that supply images for the discovery feed"""

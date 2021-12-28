@@ -232,6 +232,10 @@ export interface NexusGenInputs {
     imageId?: number | null; // Int
     providerType_uniqueIdentifier?: NexusGenInputs['DiscoveredImageProviderTypeUniqueIdentifierCompoundUniqueInput'] | null; // DiscoveredImageProviderTypeUniqueIdentifierCompoundUniqueInput
   }
+  DiscoveredPostDiscoveredProviderCompoundUniqueInput: { // input type
+    providerType: string; // String!
+    uniqueIdentifier: string; // String!
+  }
   DiscoveredPostOrderByWithRelationInput: { // input type
     accountAvatarUrl?: NexusGenEnums['SortOrder'] | null; // SortOrder
     accountName?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -247,10 +251,6 @@ export interface NexusGenInputs {
     referencingPeople?: NexusGenEnums['SortOrder'] | null; // SortOrder
     uniqueIdentifier?: NexusGenEnums['SortOrder'] | null; // SortOrder
     updatedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
-  }
-  DiscoveredPostProviderTypeUniqueIdentifierCompoundUniqueInput: { // input type
-    providerType: string; // String!
-    uniqueIdentifier: string; // String!
   }
   DiscoveredPostWhereInput: { // input type
     AND?: NexusGenInputs['DiscoveredPostWhereInput'][] | null; // [DiscoveredPostWhereInput!]
@@ -272,8 +272,8 @@ export interface NexusGenInputs {
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   DiscoveredPostWhereUniqueInput: { // input type
+    discoveredProvider?: NexusGenInputs['DiscoveredPostDiscoveredProviderCompoundUniqueInput'] | null; // DiscoveredPostDiscoveredProviderCompoundUniqueInput
     id?: number | null; // Int
-    providerType_uniqueIdentifier?: NexusGenInputs['DiscoveredPostProviderTypeUniqueIdentifierCompoundUniqueInput'] | null; // DiscoveredPostProviderTypeUniqueIdentifierCompoundUniqueInput
   }
   EnumFaceSourceFilter: { // input type
     equals?: NexusGenEnums['FaceSource'] | null; // FaceSource
