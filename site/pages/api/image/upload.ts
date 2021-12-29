@@ -14,6 +14,7 @@ const UploadSchema = z.object({
   public: z.boolean().default(false),
   // only available if no file
   url: z.string().nullish(),
+  source: z.string().nullish(),
   ireneBotId: z.number().nullish(),
   ireneBotIdolId: z.number().nullish(),
   ireneBotIdolName: z.string().nullish(),

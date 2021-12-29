@@ -3,7 +3,15 @@ import { objectType, intArg, mutationField, nonNull, booleanArg } from "nexus"
 export const Appearance = objectType({
   name: "Appearance",
   definition(t) {
-    t.model.id().person().addedBy().faces().image().createdAt().updatedAt()
+    t.model
+      .id()
+      .person()
+      .tags()
+      .addedBy()
+      .faces()
+      .image()
+      .createdAt()
+      .updatedAt()
   },
 })
 

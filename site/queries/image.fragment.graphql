@@ -13,8 +13,10 @@ fragment ImageData on Image {
   bytes
   mimetype
   palette
-  tags {
-    name
+  imageTags {
+    tag {
+      name
+    }
   }
 }
 

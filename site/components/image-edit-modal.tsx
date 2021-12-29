@@ -20,6 +20,7 @@ import flatMap from "lodash/flatMap"
 import { DropResult } from "react-beautiful-dnd"
 import { RiDeleteBin2Fill } from "react-icons/ri"
 import useOnClickOutside from "@/hooks/useOnClickOutside"
+import { forwardRef } from "@chakra-ui/react"
 
 const DragDropContext = dynamic(
   () => {
@@ -50,18 +51,20 @@ export type ImageEditModalProps = {
 type DraggablePersonProps = {
   src: string
   face: FaceDataFragment
+  smaller?: boolean
+  maxPortraitHeight?: number
 }
-const DraggableFace = React.forwardRef(
-  ({ src, face, ...rest }: DraggablePersonProps, ref) => {
+export const DraggableFace = forwardRef<DraggablePersonProps, "div">(
+  ({ src, maxPortraitHeight: maxPortraitHeightLocal, face, ...rest }, ref) => {
     const faceSlice = useImageSlice({
       src,
-      height: maxPortraitHeight,
+      height: maxPortraitHeightLocal ?? maxPortraitHeight,
       face,
     })
     if (!faceSlice) return null
     return (
       // @ts-ignore
-      <div {...rest} ref={ref}>
+      <Box {...rest} ref={ref}>
         <canvas
           className="overflow-hidden"
           width={`${faceSlice.widthScale}px`}
@@ -72,7 +75,7 @@ const DraggableFace = React.forwardRef(
           }}
           ref={(r) => (faceSlice.ref.current = r)}
         />
-      </div>
+      </Box>
     )
   }
 )
@@ -84,6 +87,8 @@ function ModalHeading({ children }) {
     </Heading>
   )
 }
+
+export function ImageEditEditor(props: ImageEditModalProps) {}
 
 export function ImageEditModal(props: ImageEditModalProps) {
   const appearanceMap = mapValues(

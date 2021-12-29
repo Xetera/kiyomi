@@ -106,8 +106,8 @@ export function makeUploader({ prisma, wasabi, wendy }: UploaderOptions) {
           hash: hash as string,
           public: opts.public,
           bytes: buffer.byteLength,
-          // TODO: reference tracking
-          // source,
+          // TODO: proper reference tracking
+          source: opts.source,
           // TODO: deprecate NSFW
           isNsfw: false,
           slug,
@@ -192,6 +192,7 @@ export type UploadOptions = {
   uploadType: UploadType
   buffer: Buffer
   fileName?: string
+  source?: string
   public: boolean
   irene?: IreneBotUploadOptions
 }

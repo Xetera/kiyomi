@@ -7955,10 +7955,10 @@ typescript@^4.5.2:
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.5.2.tgz#8ac1fba9f52256fdb06fb89e4122fa6a346c2998"
   integrity sha512-5BlMof9H1yGt0P8/WF+wPNw6GfctgGjXp5hkblpyT+8rkASSmkUKMXrxR0Xg8ThVCi/JnHQiKXeBaEwCeQwMFw==
 
-typesense@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/typesense/-/typesense-1.0.2.tgz#aba7ad4b6e8b183558bc595be98c712032b7bb43"
-  integrity sha512-eMg+yUVejnyEBwSHX4bo8ascFhg6RWLur14hd4oQNdmINbDHwYBpZe+HcFyL2WgcSr8rWlYEblHdF8R9blcjng==
+typesense@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/typesense/-/typesense-1.1.2.tgz#f3357889247a56b33e047115e15ccbd87c185cc5"
+  integrity sha512-H5SmXCWhesL71YLqKg3i6yRfklsvlV3RQOCvdvMlkD84Na0te8k6oESE/ct3YMfurTYYR3cU9qnMmmBalOKZig==
   dependencies:
     axios "^0.21.1"
     loglevel "^1.7.1"

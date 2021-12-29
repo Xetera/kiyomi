@@ -165,8 +165,8 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
             </p>
           </SidebarSection>
         </Grid>
-        {image.tags?.length > 0 ? (
-          <Tags tags={image.tags.map((tag) => tag.name)} />
+        {image.imageTags?.length > 0 ? (
+          <Tags tags={image.imageTags.map(({ tag }) => tag.name)} />
         ) : (
           <div />
         )}

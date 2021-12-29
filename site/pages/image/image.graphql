@@ -12,6 +12,11 @@ query OneImage($slug: String!) {
         id
         name
       }
+      tags {
+        tag {
+          name
+        }
+      }
       faces {
         ...FaceData
       }

@@ -64,9 +64,9 @@ let _queue = Promise.resolve()
 
 const uploadFile = async (url, person, imageId) => {
   const form = new FormData()
-  form.append("file", url)
+  form.append("url", url)
   form.append("source", "Irenebot (https://github.com/MujyKun/IreneBot)")
-  form.append("ireneBotImageId", imageId)
+  form.append("ireneBotId", imageId)
   form.append("ireneBotIdolId", person.id)
   form.append("ireneBotIdolName", person.fullname)
   const response = await fetch(
@@ -76,9 +76,7 @@ const uploadFile = async (url, person, imageId) => {
     {
       method: "POST",
       headers: {
-        Authorization: production
-          ? "SIMP_123327eb205d16f2bd1f73ff32615e5b9fca7ac9520d2ff1f7ad57e9f93ce7bb"
-          : "SIMP_3e237d76bfd6d4afe2987ba80b6636e91e6920e0fff3d8de12eb8773d41ca9b2",
+        Authorization: process.env.AUTHORIZATION,
       },
       body: form,
     }
@@ -135,16 +133,17 @@ const target = 162
 const imagesOfIdol = (t) => require(`./members/${t}.json`)
 
 parallelMap(
-  [YOOHYEON].flatMap((d) =>
+  [DAMI].flatMap((d) =>
     imagesOfIdol(d)
-      .slice(0, 1000)
+      .slice(0, 1)
       .map((image) => ({
         imageId: image.id,
         personId: d,
       }))
   ),
   async ({ imageId, personId }) => {
-    const person = members.find((member) => member.id === personId)
+    console.log(members)
+    const person = members[personId]
     await memes(imageId, person)
     // production download delay
     await sleep(2000)

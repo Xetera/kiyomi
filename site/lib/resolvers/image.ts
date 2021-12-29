@@ -53,9 +53,7 @@ export const Image = objectType({
       .height({
         description: "Height of the image in pixels.",
       })
-      .uploadType({
-        description: "The source method that was used to upload the image",
-      })
+      .uploadType()
       .hash({
         description: "SHA256 checksum of the image.",
       })
@@ -66,9 +64,7 @@ export const Image = objectType({
         description:
           "Dominant colors in the image in decimal format, sorted by frequency.",
       })
-      .isNsfw({
-        deprecated: "Unused field, there are no NSFW images on the site",
-      })
+      .isNsfw()
       .source({
         description:
           "The url the image was taken from (if applicable). Not guaranteed to be a direct image url.",
@@ -76,7 +72,8 @@ export const Image = objectType({
       .user({
         alias: "uploadedBy",
       })
-      .tags()
+      .imageTags()
+      .appearanceTags()
       .slug({
         description: "The unique url identifier of the image.",
       })

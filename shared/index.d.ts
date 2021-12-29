@@ -45,7 +45,7 @@ export interface NexusGenInputs {
     preferredAliasOf?: NexusGenInputs['PersonOrderByWithRelationInput'] | null; // PersonOrderByWithRelationInput
     updatedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
-  AliasPersonIdNameCompoundUniqueInput: { // input type
+  AliasPersonAliasCompoundUniqueInput: { // input type
     name: string; // String!
     personId: number; // Int!
   }
@@ -63,7 +63,7 @@ export interface NexusGenInputs {
   }
   AliasWhereUniqueInput: { // input type
     id?: number | null; // Int
-    personId_name?: NexusGenInputs['AliasPersonIdNameCompoundUniqueInput'] | null; // AliasPersonIdNameCompoundUniqueInput
+    personAlias?: NexusGenInputs['AliasPersonAliasCompoundUniqueInput'] | null; // AliasPersonAliasCompoundUniqueInput
   }
   AppearanceListRelationFilter: { // input type
     every?: NexusGenInputs['AppearanceWhereInput'] | null; // AppearanceWhereInput
@@ -76,6 +76,38 @@ export interface NexusGenInputs {
   AppearancePersonIdImageIdCompoundUniqueInput: { // input type
     imageId: number; // Int!
     personId: number; // Int!
+  }
+  AppearanceTagAppearanceTagCompoundUniqueInput: { // input type
+    appearanceId: number; // Int!
+    tagId: number; // Int!
+  }
+  AppearanceTagListRelationFilter: { // input type
+    every?: NexusGenInputs['AppearanceTagWhereInput'] | null; // AppearanceTagWhereInput
+    none?: NexusGenInputs['AppearanceTagWhereInput'] | null; // AppearanceTagWhereInput
+    some?: NexusGenInputs['AppearanceTagWhereInput'] | null; // AppearanceTagWhereInput
+  }
+  AppearanceTagOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  AppearanceTagWhereInput: { // input type
+    AND?: NexusGenInputs['AppearanceTagWhereInput'][] | null; // [AppearanceTagWhereInput!]
+    Image?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    NOT?: NexusGenInputs['AppearanceTagWhereInput'][] | null; // [AppearanceTagWhereInput!]
+    OR?: NexusGenInputs['AppearanceTagWhereInput'][] | null; // [AppearanceTagWhereInput!]
+    addedBy?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    addedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    appearance?: NexusGenInputs['AppearanceWhereInput'] | null; // AppearanceWhereInput
+    appearanceId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    imageId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    tag?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
+    tagId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  AppearanceTagWhereUniqueInput: { // input type
+    appearanceTag?: NexusGenInputs['AppearanceTagAppearanceTagCompoundUniqueInput'] | null; // AppearanceTagAppearanceTagCompoundUniqueInput
+    id?: number | null; // Int
   }
   AppearanceWhereInput: { // input type
     AND?: NexusGenInputs['AppearanceWhereInput'][] | null; // [AppearanceWhereInput!]
@@ -90,6 +122,7 @@ export interface NexusGenInputs {
     imageId?: NexusGenInputs['IntFilter'] | null; // IntFilter
     person?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
     personId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    tags?: NexusGenInputs['AppearanceTagListRelationFilter'] | null; // AppearanceTagListRelationFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   AppearanceWhereUniqueInput: { // input type
@@ -477,6 +510,7 @@ export interface NexusGenInputs {
     _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
   ImageOrderByWithRelationInput: { // input type
+    appearanceTags?: NexusGenInputs['AppearanceTagOrderByRelationAggregateInput'] | null; // AppearanceTagOrderByRelationAggregateInput
     appearances?: NexusGenInputs['AppearanceOrderByRelationAggregateInput'] | null; // AppearanceOrderByRelationAggregateInput
     bytes?: NexusGenEnums['SortOrder'] | null; // SortOrder
     caption?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -491,6 +525,7 @@ export interface NexusGenInputs {
     hash?: NexusGenEnums['SortOrder'] | null; // SortOrder
     height?: NexusGenEnums['SortOrder'] | null; // SortOrder
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    imageTags?: NexusGenInputs['ImageTagOrderByRelationAggregateInput'] | null; // ImageTagOrderByRelationAggregateInput
     ireneBotId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     isNsfw?: NexusGenEnums['SortOrder'] | null; // SortOrder
     likes?: NexusGenInputs['ImageLikeOrderByRelationAggregateInput'] | null; // ImageLikeOrderByRelationAggregateInput
@@ -503,7 +538,6 @@ export interface NexusGenInputs {
     public?: NexusGenEnums['SortOrder'] | null; // SortOrder
     slug?: NexusGenEnums['SortOrder'] | null; // SortOrder
     source?: NexusGenEnums['SortOrder'] | null; // SortOrder
-    tags?: NexusGenInputs['TagOrderByRelationAggregateInput'] | null; // TagOrderByRelationAggregateInput
     updatedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     uploadType?: NexusGenEnums['SortOrder'] | null; // SortOrder
     user?: NexusGenInputs['UserOrderByWithRelationInput'] | null; // UserOrderByWithRelationInput
@@ -514,10 +548,41 @@ export interface NexusGenInputs {
     width?: NexusGenEnums['SortOrder'] | null; // SortOrder
     xp?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
+  ImageTagImageTagCompoundUniqueInput: { // input type
+    imageId: number; // Int!
+    tagId: number; // Int!
+  }
+  ImageTagListRelationFilter: { // input type
+    every?: NexusGenInputs['ImageTagWhereInput'] | null; // ImageTagWhereInput
+    none?: NexusGenInputs['ImageTagWhereInput'] | null; // ImageTagWhereInput
+    some?: NexusGenInputs['ImageTagWhereInput'] | null; // ImageTagWhereInput
+  }
+  ImageTagOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  ImageTagWhereInput: { // input type
+    AND?: NexusGenInputs['ImageTagWhereInput'][] | null; // [ImageTagWhereInput!]
+    NOT?: NexusGenInputs['ImageTagWhereInput'][] | null; // [ImageTagWhereInput!]
+    OR?: NexusGenInputs['ImageTagWhereInput'][] | null; // [ImageTagWhereInput!]
+    addedBy?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    addedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    image?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
+    imageId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    tag?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
+    tagId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  ImageTagWhereUniqueInput: { // input type
+    id?: number | null; // Int
+    imageTag?: NexusGenInputs['ImageTagImageTagCompoundUniqueInput'] | null; // ImageTagImageTagCompoundUniqueInput
+  }
   ImageWhereInput: { // input type
     AND?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
     NOT?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
     OR?: NexusGenInputs['ImageWhereInput'][] | null; // [ImageWhereInput!]
+    appearanceTags?: NexusGenInputs['AppearanceTagListRelationFilter'] | null; // AppearanceTagListRelationFilter
     appearances?: NexusGenInputs['AppearanceListRelationFilter'] | null; // AppearanceListRelationFilter
     bytes?: NexusGenInputs['IntFilter'] | null; // IntFilter
     caption?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
@@ -532,6 +597,7 @@ export interface NexusGenInputs {
     hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
     height?: NexusGenInputs['IntFilter'] | null; // IntFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    imageTags?: NexusGenInputs['ImageTagListRelationFilter'] | null; // ImageTagListRelationFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     isNsfw?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
     likes?: NexusGenInputs['ImageLikeListRelationFilter'] | null; // ImageLikeListRelationFilter
@@ -544,7 +610,6 @@ export interface NexusGenInputs {
     public?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
     slug?: NexusGenInputs['StringFilter'] | null; // StringFilter
     source?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
-    tags?: NexusGenInputs['TagListRelationFilter'] | null; // TagListRelationFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     uploadType?: NexusGenInputs['EnumUploadTypeFilter'] | null; // EnumUploadTypeFilter
     user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
@@ -804,6 +869,55 @@ export interface NexusGenInputs {
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
+  TagAliasAliasTagCompoundUniqueInput: { // input type
+    name: string; // String!
+    tagId: number; // Int!
+  }
+  TagAliasListRelationFilter: { // input type
+    every?: NexusGenInputs['TagAliasWhereInput'] | null; // TagAliasWhereInput
+    none?: NexusGenInputs['TagAliasWhereInput'] | null; // TagAliasWhereInput
+    some?: NexusGenInputs['TagAliasWhereInput'] | null; // TagAliasWhereInput
+  }
+  TagAliasOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  TagAliasWhereInput: { // input type
+    AND?: NexusGenInputs['TagAliasWhereInput'][] | null; // [TagAliasWhereInput!]
+    NOT?: NexusGenInputs['TagAliasWhereInput'][] | null; // [TagAliasWhereInput!]
+    OR?: NexusGenInputs['TagAliasWhereInput'][] | null; // [TagAliasWhereInput!]
+    addedBy?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    addedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    tag?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
+    tagId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  TagAliasWhereUniqueInput: { // input type
+    aliasTag?: NexusGenInputs['TagAliasAliasTagCompoundUniqueInput'] | null; // TagAliasAliasTagCompoundUniqueInput
+    id?: number | null; // Int
+  }
+  TagCategoryListRelationFilter: { // input type
+    every?: NexusGenInputs['TagCategoryWhereInput'] | null; // TagCategoryWhereInput
+    none?: NexusGenInputs['TagCategoryWhereInput'] | null; // TagCategoryWhereInput
+    some?: NexusGenInputs['TagCategoryWhereInput'] | null; // TagCategoryWhereInput
+  }
+  TagCategoryOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  TagCategoryWhereInput: { // input type
+    AND?: NexusGenInputs['TagCategoryWhereInput'][] | null; // [TagCategoryWhereInput!]
+    NOT?: NexusGenInputs['TagCategoryWhereInput'][] | null; // [TagCategoryWhereInput!]
+    OR?: NexusGenInputs['TagCategoryWhereInput'][] | null; // [TagCategoryWhereInput!]
+    addedBy?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    addedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    tags?: NexusGenInputs['TagListRelationFilter'] | null; // TagListRelationFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
   TagListRelationFilter: { // input type
     every?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
     none?: NexusGenInputs['TagWhereInput'] | null; // TagWhereInput
@@ -818,19 +932,20 @@ export interface NexusGenInputs {
     OR?: NexusGenInputs['TagWhereInput'][] | null; // [TagWhereInput!]
     addedBy?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     addedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    aliases?: NexusGenInputs['TagAliasListRelationFilter'] | null; // TagAliasListRelationFilter
+    appearances?: NexusGenInputs['AppearanceTagListRelationFilter'] | null; // AppearanceTagListRelationFilter
+    category?: NexusGenInputs['TagCategoryWhereInput'] | null; // TagCategoryWhereInput
+    categoryId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    image?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
-    imageId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    images?: NexusGenInputs['ImageTagListRelationFilter'] | null; // ImageTagListRelationFilter
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
     source?: NexusGenInputs['EnumTagSourceFilter'] | null; // EnumTagSourceFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
-  TagWhereUniqueInput: { // input type
-    id?: number | null; // Int
-  }
   UserOrderByWithRelationInput: { // input type
     DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteOrderByRelationAggregateInput'] | null; // DiscoveredImageVoteOrderByRelationAggregateInput
+    appearanceTags?: NexusGenInputs['AppearanceTagOrderByRelationAggregateInput'] | null; // AppearanceTagOrderByRelationAggregateInput
     avatar?: NexusGenInputs['ImageOrderByWithRelationInput'] | null; // ImageOrderByWithRelationInput
     avatarId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     banner?: NexusGenInputs['ImageOrderByWithRelationInput'] | null; // ImageOrderByWithRelationInput
@@ -843,10 +958,13 @@ export interface NexusGenInputs {
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
     image?: NexusGenEnums['SortOrder'] | null; // SortOrder
     imageLikes?: NexusGenInputs['ImageLikeOrderByRelationAggregateInput'] | null; // ImageLikeOrderByRelationAggregateInput
+    imageTags?: NexusGenInputs['ImageTagOrderByRelationAggregateInput'] | null; // ImageTagOrderByRelationAggregateInput
     images?: NexusGenInputs['ImageOrderByRelationAggregateInput'] | null; // ImageOrderByRelationAggregateInput
     markedFaces?: NexusGenInputs['FaceOrderByRelationAggregateInput'] | null; // FaceOrderByRelationAggregateInput
     name?: NexusGenEnums['SortOrder'] | null; // SortOrder
     roles?: NexusGenInputs['RoleOrderByRelationAggregateInput'] | null; // RoleOrderByRelationAggregateInput
+    tagAliases?: NexusGenInputs['TagAliasOrderByRelationAggregateInput'] | null; // TagAliasOrderByRelationAggregateInput
+    tagCategories?: NexusGenInputs['TagCategoryOrderByRelationAggregateInput'] | null; // TagCategoryOrderByRelationAggregateInput
     taggedAppearances?: NexusGenInputs['AppearanceOrderByRelationAggregateInput'] | null; // AppearanceOrderByRelationAggregateInput
     token?: NexusGenEnums['SortOrder'] | null; // SortOrder
     updatedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -856,6 +974,7 @@ export interface NexusGenInputs {
     DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteListRelationFilter'] | null; // DiscoveredImageVoteListRelationFilter
     NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    appearanceTags?: NexusGenInputs['AppearanceTagListRelationFilter'] | null; // AppearanceTagListRelationFilter
     avatar?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     avatarId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     banner?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
@@ -868,10 +987,13 @@ export interface NexusGenInputs {
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     image?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     imageLikes?: NexusGenInputs['ImageLikeListRelationFilter'] | null; // ImageLikeListRelationFilter
+    imageTags?: NexusGenInputs['ImageTagListRelationFilter'] | null; // ImageTagListRelationFilter
     images?: NexusGenInputs['ImageListRelationFilter'] | null; // ImageListRelationFilter
     markedFaces?: NexusGenInputs['FaceListRelationFilter'] | null; // FaceListRelationFilter
     name?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     roles?: NexusGenInputs['RoleListRelationFilter'] | null; // RoleListRelationFilter
+    tagAliases?: NexusGenInputs['TagAliasListRelationFilter'] | null; // TagAliasListRelationFilter
+    tagCategories?: NexusGenInputs['TagCategoryListRelationFilter'] | null; // TagCategoryListRelationFilter
     taggedAppearances?: NexusGenInputs['AppearanceListRelationFilter'] | null; // AppearanceListRelationFilter
     token?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
@@ -905,6 +1027,7 @@ export interface NexusGenObjects {
     count: number; // Int!
     group: NexusGenRootTypes['Group']; // Group!
   }
+  AppearanceTag: PrismaClient.AppearanceTag;
   DiscoveredImage: PrismaClient.DiscoveredImage;
   DiscoveredImageVerdict: PrismaClient.DiscoveredImageVerdict;
   DiscoveredImageVote: PrismaClient.DiscoveredImageVote;
@@ -946,6 +1069,7 @@ export interface NexusGenObjects {
     to: number; // Int!
     type?: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
   }
+  ImageTag: PrismaClient.ImageTag;
   LeaderboardUser: { // root type
     rank: number; // Int!
     user: NexusGenRootTypes['User']; // User!
@@ -974,6 +1098,8 @@ export interface NexusGenObjects {
   }
   Role: PrismaClient.Role;
   Tag: PrismaClient.Tag;
+  TagAlias: PrismaClient.TagAlias;
+  TagCategory: PrismaClient.TagCategory;
   Thumbnail: { // root type
     large: string; // String!
     medium: string; // String!
@@ -1006,11 +1132,19 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     image: NexusGenRootTypes['Image']; // Image!
     person: NexusGenRootTypes['Person']; // Person!
+    tags: NexusGenRootTypes['AppearanceTag'][]; // [AppearanceTag!]!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   AppearanceCount: { // field return type
     count: number; // Int!
     group: NexusGenRootTypes['Group']; // Group!
+  }
+  AppearanceTag: { // field return type
+    addedBy: NexusGenRootTypes['User'] | null; // User
+    appearance: NexusGenRootTypes['Appearance']; // Appearance!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    tag: NexusGenRootTypes['Tag']; // Tag!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   DiscoveredImage: { // field return type
     approvedImage: NexusGenRootTypes['Image'] | null; // Image
@@ -1114,6 +1248,7 @@ export interface NexusGenFieldTypes {
     person: NexusGenRootTypes['Person']; // Person!
   }
   Image: { // field return type
+    appearanceTags: NexusGenRootTypes['AppearanceTag'][]; // [AppearanceTag!]!
     appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
     aspectRatio: number; // Float!
     bytes: number; // Int!
@@ -1127,6 +1262,7 @@ export interface NexusGenFieldTypes {
     hash: string; // String!
     height: number; // Int!
     id: number; // Int!
+    imageTags: NexusGenRootTypes['ImageTag'][]; // [ImageTag!]!
     ireneBotId: number | null; // Int
     isNsfw: boolean; // Boolean!
     liked: boolean | null; // Boolean
@@ -1136,7 +1272,6 @@ export interface NexusGenFieldTypes {
     rawUrl: string; // String!
     slug: string; // String!
     source: string | null; // String
-    tags: NexusGenRootTypes['Tag'][]; // [Tag!]!
     thumbnail: NexusGenRootTypes['Thumbnail']; // Thumbnail!
     unknownFaces: NexusGenRootTypes['Face'][]; // [Face!]!
     uploadType: NexusGenEnums['UploadType']; // UploadType!
@@ -1158,6 +1293,13 @@ export interface NexusGenFieldTypes {
     from: number; // Int!
     to: number; // Int!
     type: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
+  }
+  ImageTag: { // field return type
+    addedBy: NexusGenRootTypes['User'] | null; // User
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    image: NexusGenRootTypes['Image']; // Image!
+    tag: NexusGenRootTypes['Tag']; // Tag!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   LeaderboardUser: { // field return type
     rank: number; // Int!
@@ -1234,9 +1376,24 @@ export interface NexusGenFieldTypes {
   }
   Tag: { // field return type
     addedBy: NexusGenRootTypes['User'] | null; // User
+    aliases: NexusGenRootTypes['TagAlias'][]; // [TagAlias!]!
+    category: NexusGenRootTypes['TagCategory'] | null; // TagCategory
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     name: string; // String!
     source: NexusGenEnums['TagSource']; // TagSource!
+  }
+  TagAlias: { // field return type
+    addedBy: NexusGenRootTypes['User'] | null; // User
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    name: string; // String!
+    tag: NexusGenRootTypes['Tag']; // Tag!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
+  TagCategory: { // field return type
+    addedBy: NexusGenRootTypes['User'] | null; // User
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    name: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Thumbnail: { // field return type
     large: string; // String!
@@ -1270,11 +1427,19 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     image: 'Image'
     person: 'Person'
+    tags: 'AppearanceTag'
     updatedAt: 'DateTime'
   }
   AppearanceCount: { // field return type name
     count: 'Int'
     group: 'Group'
+  }
+  AppearanceTag: { // field return type name
+    addedBy: 'User'
+    appearance: 'Appearance'
+    createdAt: 'DateTime'
+    tag: 'Tag'
+    updatedAt: 'DateTime'
   }
   DiscoveredImage: { // field return type name
     approvedImage: 'Image'
@@ -1378,6 +1543,7 @@ export interface NexusGenFieldTypeNames {
     person: 'Person'
   }
   Image: { // field return type name
+    appearanceTags: 'AppearanceTag'
     appearances: 'Appearance'
     aspectRatio: 'Float'
     bytes: 'Int'
@@ -1391,6 +1557,7 @@ export interface NexusGenFieldTypeNames {
     hash: 'String'
     height: 'Int'
     id: 'Int'
+    imageTags: 'ImageTag'
     ireneBotId: 'Int'
     isNsfw: 'Boolean'
     liked: 'Boolean'
@@ -1400,7 +1567,6 @@ export interface NexusGenFieldTypeNames {
     rawUrl: 'String'
     slug: 'String'
     source: 'String'
-    tags: 'Tag'
     thumbnail: 'Thumbnail'
     unknownFaces: 'Face'
     uploadType: 'UploadType'
@@ -1422,6 +1588,13 @@ export interface NexusGenFieldTypeNames {
     from: 'Int'
     to: 'Int'
     type: 'ImageConnectionEdge'
+  }
+  ImageTag: { // field return type name
+    addedBy: 'User'
+    createdAt: 'DateTime'
+    image: 'Image'
+    tag: 'Tag'
+    updatedAt: 'DateTime'
   }
   LeaderboardUser: { // field return type name
     rank: 'Int'
@@ -1498,9 +1671,24 @@ export interface NexusGenFieldTypeNames {
   }
   Tag: { // field return type name
     addedBy: 'User'
+    aliases: 'TagAlias'
+    category: 'TagCategory'
     createdAt: 'DateTime'
     name: 'String'
     source: 'TagSource'
+  }
+  TagAlias: { // field return type name
+    addedBy: 'User'
+    createdAt: 'DateTime'
+    name: 'String'
+    tag: 'Tag'
+    updatedAt: 'DateTime'
+  }
+  TagCategory: { // field return type name
+    addedBy: 'User'
+    createdAt: 'DateTime'
+    name: 'String'
+    updatedAt: 'DateTime'
   }
   Thumbnail: { // field return type name
     large: 'String'
@@ -1524,6 +1712,11 @@ export interface NexusGenArgTypes {
   Appearance: {
     faces: { // args
       cursor?: NexusGenInputs['FaceWhereUniqueInput'] | null; // FaceWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
+    tags: { // args
+      cursor?: NexusGenInputs['AppearanceTagWhereUniqueInput'] | null; // AppearanceTagWhereUniqueInput
       skip?: number | null; // Int
       take?: number | null; // Int
     }
@@ -1556,6 +1749,11 @@ export interface NexusGenArgTypes {
     }
   }
   Image: {
+    appearanceTags: { // args
+      cursor?: NexusGenInputs['AppearanceTagWhereUniqueInput'] | null; // AppearanceTagWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
+    }
     appearances: { // args
       cursor?: NexusGenInputs['AppearanceWhereUniqueInput'] | null; // AppearanceWhereUniqueInput
       skip?: number | null; // Int
@@ -1564,8 +1762,8 @@ export interface NexusGenArgTypes {
     connections: { // args
       depth: number; // Int!
     }
-    tags: { // args
-      cursor?: NexusGenInputs['TagWhereUniqueInput'] | null; // TagWhereUniqueInput
+    imageTags: { // args
+      cursor?: NexusGenInputs['ImageTagWhereUniqueInput'] | null; // ImageTagWhereUniqueInput
       skip?: number | null; // Int
       take?: number | null; // Int
     }
@@ -1695,6 +1893,13 @@ export interface NexusGenArgTypes {
     }
     user: { // args
       id?: number | null; // Int
+    }
+  }
+  Tag: {
+    aliases: { // args
+      cursor?: NexusGenInputs['TagAliasWhereUniqueInput'] | null; // TagAliasWhereUniqueInput
+      skip?: number | null; // Int
+      take?: number | null; // Int
     }
   }
   User: {

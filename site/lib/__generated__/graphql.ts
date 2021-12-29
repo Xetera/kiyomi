@@ -96,12 +96,13 @@ export type AliasWhereUniqueInput = {
 
 export type Appearance = {
   __typename?: 'Appearance';
-  addedBy: User;
+  addedBy?: Maybe<User>;
   createdAt: Scalars['DateTime'];
   faces: Array<Face>;
   id: Scalars['Int'];
   image: Image;
   person: Person;
+  tags: Array<AppearanceTag>;
   updatedAt: Scalars['DateTime'];
 };
 
@@ -112,9 +113,11 @@ export type AppearanceFacesArgs = {
   take?: Maybe<Scalars['Int']>;
 };
 
-export type AppearanceAppearanceCompoundUniqueInput = {
-  imageId: Scalars['Int'];
-  personId: Scalars['Int'];
+
+export type AppearanceTagsArgs = {
+  cursor?: Maybe<AppearanceTagWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
 };
 
 export type AppearanceCount = {
@@ -133,12 +136,63 @@ export type AppearanceOrderByRelationAggregateInput = {
   _count?: Maybe<SortOrder>;
 };
 
+export type AppearancePersonIdImageIdCompoundUniqueInput = {
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+};
+
+export type AppearanceTag = {
+  __typename?: 'AppearanceTag';
+  addedBy?: Maybe<User>;
+  appearance: Appearance;
+  createdAt: Scalars['DateTime'];
+  tag: Tag;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type AppearanceTagAppearanceTagCompoundUniqueInput = {
+  appearanceId: Scalars['Int'];
+  tagId: Scalars['Int'];
+};
+
+export type AppearanceTagListRelationFilter = {
+  every?: Maybe<AppearanceTagWhereInput>;
+  none?: Maybe<AppearanceTagWhereInput>;
+  some?: Maybe<AppearanceTagWhereInput>;
+};
+
+export type AppearanceTagOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type AppearanceTagWhereInput = {
+  AND?: Maybe<Array<AppearanceTagWhereInput>>;
+  Image?: Maybe<ImageWhereInput>;
+  NOT?: Maybe<Array<AppearanceTagWhereInput>>;
+  OR?: Maybe<Array<AppearanceTagWhereInput>>;
+  addedBy?: Maybe<UserWhereInput>;
+  addedById?: Maybe<IntNullableFilter>;
+  appearance?: Maybe<AppearanceWhereInput>;
+  appearanceId?: Maybe<IntFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  imageId?: Maybe<IntNullableFilter>;
+  tag?: Maybe<TagWhereInput>;
+  tagId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type AppearanceTagWhereUniqueInput = {
+  appearanceTag?: Maybe<AppearanceTagAppearanceTagCompoundUniqueInput>;
+  id?: Maybe<Scalars['Int']>;
+};
+
 export type AppearanceWhereInput = {
   AND?: Maybe<Array<AppearanceWhereInput>>;
   NOT?: Maybe<Array<AppearanceWhereInput>>;
   OR?: Maybe<Array<AppearanceWhereInput>>;
   addedBy?: Maybe<UserWhereInput>;
-  addedById?: Maybe<IntFilter>;
+  addedById?: Maybe<IntNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   faces?: Maybe<FaceListRelationFilter>;
   id?: Maybe<IntFilter>;
@@ -146,12 +200,13 @@ export type AppearanceWhereInput = {
   imageId?: Maybe<IntFilter>;
   person?: Maybe<PersonWhereInput>;
   personId?: Maybe<IntFilter>;
+  tags?: Maybe<AppearanceTagListRelationFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
 };
 
 export type AppearanceWhereUniqueInput = {
-  appearance?: Maybe<AppearanceAppearanceCompoundUniqueInput>;
   id?: Maybe<Scalars['Int']>;
+  personId_imageId?: Maybe<AppearancePersonIdImageIdCompoundUniqueInput>;
 };
 
 export type BoolFilter = {
@@ -195,18 +250,11 @@ export type DiscoveredImage = {
   uniqueIdentifier: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   url: Scalars['String'];
-  verdict: Array<DiscoveredImageVerdict>;
+  verdict?: Maybe<DiscoveredImageVerdict>;
   /** The vote cast by the currently logged in user */
   vote?: Maybe<DiscoveredImageVote>;
   /** Votes cast by all users */
   votes: Array<DiscoveredImageVote>;
-};
-
-
-export type DiscoveredImageVerdictArgs = {
-  cursor?: Maybe<DiscoveredImageVerdictWhereUniqueInput>;
-  skip?: Maybe<Scalars['Int']>;
-  take?: Maybe<Scalars['Int']>;
 };
 
 
@@ -245,11 +293,11 @@ export type DiscoveredImageOrderByWithRelationInput = {
   uniqueIdentifier?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
   url?: Maybe<SortOrder>;
-  verdict?: Maybe<DiscoveredImageVerdictOrderByRelationAggregateInput>;
+  verdict?: Maybe<DiscoveredImageVerdictOrderByWithRelationInput>;
   votes?: Maybe<DiscoveredImageVoteOrderByRelationAggregateInput>;
 };
 
-export type DiscoveredImageProviderIdentityCompoundUniqueInput = {
+export type DiscoveredImageProviderTypeUniqueIdentifierCompoundUniqueInput = {
   providerType: Scalars['String'];
   uniqueIdentifier: Scalars['String'];
 };
@@ -262,14 +310,13 @@ export type DiscoveredImageVerdict = {
   verdict: Scalars['String'];
 };
 
-export type DiscoveredImageVerdictListRelationFilter = {
-  every?: Maybe<DiscoveredImageVerdictWhereInput>;
-  none?: Maybe<DiscoveredImageVerdictWhereInput>;
-  some?: Maybe<DiscoveredImageVerdictWhereInput>;
-};
-
-export type DiscoveredImageVerdictOrderByRelationAggregateInput = {
-  _count?: Maybe<SortOrder>;
+export type DiscoveredImageVerdictOrderByWithRelationInput = {
+  createdAt?: Maybe<SortOrder>;
+  discoveredImage?: Maybe<DiscoveredImageOrderByWithRelationInput>;
+  discoveredImageId?: Maybe<SortOrder>;
+  id?: Maybe<SortOrder>;
+  reason?: Maybe<SortOrder>;
+  verdict?: Maybe<SortOrder>;
 };
 
 export type DiscoveredImageVerdictWhereInput = {
@@ -282,11 +329,6 @@ export type DiscoveredImageVerdictWhereInput = {
   id?: Maybe<IntFilter>;
   reason?: Maybe<StringNullableFilter>;
   verdict?: Maybe<StringFilter>;
-};
-
-export type DiscoveredImageVerdictWhereUniqueInput = {
-  discoveredImageId?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
 };
 
 export type DiscoveredImageVote = {
@@ -356,14 +398,14 @@ export type DiscoveredImageWhereInput = {
   uniqueIdentifier?: Maybe<StringFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
   url?: Maybe<StringFilter>;
-  verdict?: Maybe<DiscoveredImageVerdictListRelationFilter>;
+  verdict?: Maybe<DiscoveredImageVerdictWhereInput>;
   votes?: Maybe<DiscoveredImageVoteListRelationFilter>;
 };
 
 export type DiscoveredImageWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
   imageId?: Maybe<Scalars['Int']>;
-  providerIdentity?: Maybe<DiscoveredImageProviderIdentityCompoundUniqueInput>;
+  providerType_uniqueIdentifier?: Maybe<DiscoveredImageProviderTypeUniqueIdentifierCompoundUniqueInput>;
 };
 
 export type DiscoveredPost = {
@@ -639,15 +681,15 @@ export type GroupMember = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type GroupMemberGroupIdPersonIdCompoundUniqueInput = {
+  groupId: Scalars['Int'];
+  personId: Scalars['Int'];
+};
+
 export type GroupMemberListRelationFilter = {
   every?: Maybe<GroupMemberWhereInput>;
   none?: Maybe<GroupMemberWhereInput>;
   some?: Maybe<GroupMemberWhereInput>;
-};
-
-export type GroupMemberMemberCompoundUniqueInput = {
-  groupId: Scalars['Int'];
-  personId: Scalars['Int'];
 };
 
 export type GroupMemberOrderByRelationAggregateInput = {
@@ -684,8 +726,8 @@ export type GroupMemberWhereInput = {
 };
 
 export type GroupMemberWhereUniqueInput = {
+  groupId_personId?: Maybe<GroupMemberGroupIdPersonIdCompoundUniqueInput>;
   id?: Maybe<Scalars['Int']>;
-  member?: Maybe<GroupMemberMemberCompoundUniqueInput>;
 };
 
 export type GroupOrderByWithRelationInput = {
@@ -738,6 +780,7 @@ export type HomepageTrendingPerson = {
 
 export type Image = {
   __typename?: 'Image';
+  appearanceTags: Array<AppearanceTag>;
   appearances: Array<Appearance>;
   /** The aspect ratio of the image */
   aspectRatio: Scalars['Float'];
@@ -751,15 +794,15 @@ export type Image = {
   fileName?: Maybe<Scalars['String']>;
   /** Human readable file size. Use `bytes` for a number representation. */
   fileSize: Scalars['String'];
-  /** The center of focus for the image */
+  /** The center of focus for the image. Calculated based on the position of the faces in the image. */
   focus: ImageCoordinate;
   /** SHA256 checksum of the image. */
   hash: Scalars['String'];
   /** Height of the image in pixels. */
   height: Scalars['Int'];
   id: Scalars['Int'];
+  imageTags: Array<ImageTag>;
   ireneBotId?: Maybe<Scalars['Int']>;
-  /** ( ͡° ͜ʖ ͡°) */
   isNsfw: Scalars['Boolean'];
   /** False if not logged in */
   liked?: Maybe<Scalars['Boolean']>;
@@ -775,7 +818,6 @@ export type Image = {
   slug: Scalars['String'];
   /** The url the image was taken from (if applicable). Not guaranteed to be a direct image url. */
   source?: Maybe<Scalars['String']>;
-  tags: Array<Tag>;
   thumbnail: Thumbnail;
   unknownFaces: Array<Face>;
   uploadType: UploadType;
@@ -785,6 +827,13 @@ export type Image = {
   views: Scalars['Int'];
   /** Width of the image in pixels. */
   width: Scalars['Int'];
+};
+
+
+export type ImageAppearanceTagsArgs = {
+  cursor?: Maybe<AppearanceTagWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
 };
 
 
@@ -800,8 +849,8 @@ export type ImageConnectionsArgs = {
 };
 
 
-export type ImageTagsArgs = {
-  cursor?: Maybe<TagWhereUniqueInput>;
+export type ImageImageTagsArgs = {
+  cursor?: Maybe<ImageTagWhereUniqueInput>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
 };
@@ -866,6 +915,7 @@ export type ImageOrderByRelationAggregateInput = {
 };
 
 export type ImageOrderByWithRelationInput = {
+  appearanceTags?: Maybe<AppearanceTagOrderByRelationAggregateInput>;
   appearances?: Maybe<AppearanceOrderByRelationAggregateInput>;
   bytes?: Maybe<SortOrder>;
   caption?: Maybe<SortOrder>;
@@ -880,6 +930,7 @@ export type ImageOrderByWithRelationInput = {
   hash?: Maybe<SortOrder>;
   height?: Maybe<SortOrder>;
   id?: Maybe<SortOrder>;
+  imageTags?: Maybe<ImageTagOrderByRelationAggregateInput>;
   ireneBotId?: Maybe<SortOrder>;
   isNsfw?: Maybe<SortOrder>;
   likes?: Maybe<ImageLikeOrderByRelationAggregateInput>;
@@ -892,7 +943,6 @@ export type ImageOrderByWithRelationInput = {
   public?: Maybe<SortOrder>;
   slug?: Maybe<SortOrder>;
   source?: Maybe<SortOrder>;
-  tags?: Maybe<TagOrderByRelationAggregateInput>;
   updatedAt?: Maybe<SortOrder>;
   uploadType?: Maybe<SortOrder>;
   user?: Maybe<UserOrderByWithRelationInput>;
@@ -904,10 +954,55 @@ export type ImageOrderByWithRelationInput = {
   xp?: Maybe<SortOrder>;
 };
 
+export type ImageTag = {
+  __typename?: 'ImageTag';
+  addedBy?: Maybe<User>;
+  createdAt: Scalars['DateTime'];
+  image: Image;
+  tag: Tag;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type ImageTagImageTagCompoundUniqueInput = {
+  imageId: Scalars['Int'];
+  tagId: Scalars['Int'];
+};
+
+export type ImageTagListRelationFilter = {
+  every?: Maybe<ImageTagWhereInput>;
+  none?: Maybe<ImageTagWhereInput>;
+  some?: Maybe<ImageTagWhereInput>;
+};
+
+export type ImageTagOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type ImageTagWhereInput = {
+  AND?: Maybe<Array<ImageTagWhereInput>>;
+  NOT?: Maybe<Array<ImageTagWhereInput>>;
+  OR?: Maybe<Array<ImageTagWhereInput>>;
+  addedBy?: Maybe<UserWhereInput>;
+  addedById?: Maybe<IntNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  image?: Maybe<ImageWhereInput>;
+  imageId?: Maybe<IntFilter>;
+  tag?: Maybe<TagWhereInput>;
+  tagId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type ImageTagWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+  imageTag?: Maybe<ImageTagImageTagCompoundUniqueInput>;
+};
+
 export type ImageWhereInput = {
   AND?: Maybe<Array<ImageWhereInput>>;
   NOT?: Maybe<Array<ImageWhereInput>>;
   OR?: Maybe<Array<ImageWhereInput>>;
+  appearanceTags?: Maybe<AppearanceTagListRelationFilter>;
   appearances?: Maybe<AppearanceListRelationFilter>;
   bytes?: Maybe<IntFilter>;
   caption?: Maybe<StringNullableFilter>;
@@ -922,6 +1017,7 @@ export type ImageWhereInput = {
   hash?: Maybe<StringFilter>;
   height?: Maybe<IntFilter>;
   id?: Maybe<IntFilter>;
+  imageTags?: Maybe<ImageTagListRelationFilter>;
   ireneBotId?: Maybe<IntNullableFilter>;
   isNsfw?: Maybe<BoolFilter>;
   likes?: Maybe<ImageLikeListRelationFilter>;
@@ -934,7 +1030,6 @@ export type ImageWhereInput = {
   public?: Maybe<BoolFilter>;
   slug?: Maybe<StringFilter>;
   source?: Maybe<StringNullableFilter>;
-  tags?: Maybe<TagListRelationFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
   uploadType?: Maybe<EnumUploadTypeFilter>;
   user?: Maybe<UserWhereInput>;
@@ -1516,9 +1611,92 @@ export type StringNullableFilter = {
 export type Tag = {
   __typename?: 'Tag';
   addedBy?: Maybe<User>;
+  aliases: Array<TagAlias>;
+  category?: Maybe<TagCategory>;
   createdAt: Scalars['DateTime'];
   name: Scalars['String'];
   source: TagSource;
+};
+
+
+export type TagAliasesArgs = {
+  cursor?: Maybe<TagAliasWhereUniqueInput>;
+  skip?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+};
+
+export type TagAlias = {
+  __typename?: 'TagAlias';
+  addedBy?: Maybe<User>;
+  createdAt: Scalars['DateTime'];
+  name: Scalars['String'];
+  tag: Tag;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type TagAliasAliasTagCompoundUniqueInput = {
+  name: Scalars['String'];
+  tagId: Scalars['Int'];
+};
+
+export type TagAliasListRelationFilter = {
+  every?: Maybe<TagAliasWhereInput>;
+  none?: Maybe<TagAliasWhereInput>;
+  some?: Maybe<TagAliasWhereInput>;
+};
+
+export type TagAliasOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type TagAliasWhereInput = {
+  AND?: Maybe<Array<TagAliasWhereInput>>;
+  NOT?: Maybe<Array<TagAliasWhereInput>>;
+  OR?: Maybe<Array<TagAliasWhereInput>>;
+  addedBy?: Maybe<UserWhereInput>;
+  addedById?: Maybe<IntNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  name?: Maybe<StringFilter>;
+  tag?: Maybe<TagWhereInput>;
+  tagId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type TagAliasWhereUniqueInput = {
+  aliasTag?: Maybe<TagAliasAliasTagCompoundUniqueInput>;
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type TagCategory = {
+  __typename?: 'TagCategory';
+  addedBy?: Maybe<User>;
+  createdAt: Scalars['DateTime'];
+  name: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type TagCategoryListRelationFilter = {
+  every?: Maybe<TagCategoryWhereInput>;
+  none?: Maybe<TagCategoryWhereInput>;
+  some?: Maybe<TagCategoryWhereInput>;
+};
+
+export type TagCategoryOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type TagCategoryWhereInput = {
+  AND?: Maybe<Array<TagCategoryWhereInput>>;
+  NOT?: Maybe<Array<TagCategoryWhereInput>>;
+  OR?: Maybe<Array<TagCategoryWhereInput>>;
+  addedBy?: Maybe<UserWhereInput>;
+  addedById?: Maybe<IntNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  name?: Maybe<StringFilter>;
+  tags?: Maybe<TagListRelationFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
 };
 
 export type TagListRelationFilter = {
@@ -1541,17 +1719,16 @@ export type TagWhereInput = {
   OR?: Maybe<Array<TagWhereInput>>;
   addedBy?: Maybe<UserWhereInput>;
   addedById?: Maybe<IntNullableFilter>;
+  aliases?: Maybe<TagAliasListRelationFilter>;
+  appearances?: Maybe<AppearanceTagListRelationFilter>;
+  category?: Maybe<TagCategoryWhereInput>;
+  categoryId?: Maybe<IntNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   id?: Maybe<IntFilter>;
-  image?: Maybe<ImageWhereInput>;
-  imageId?: Maybe<IntFilter>;
+  images?: Maybe<ImageTagListRelationFilter>;
   name?: Maybe<StringFilter>;
   source?: Maybe<EnumTagSourceFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
-};
-
-export type TagWhereUniqueInput = {
-  id?: Maybe<Scalars['Int']>;
 };
 
 /** Preview urls of an image */
@@ -1592,6 +1769,7 @@ export type UserImagesArgs = {
 
 export type UserOrderByWithRelationInput = {
   DiscoveredImageVote?: Maybe<DiscoveredImageVoteOrderByRelationAggregateInput>;
+  appearanceTags?: Maybe<AppearanceTagOrderByRelationAggregateInput>;
   avatar?: Maybe<ImageOrderByWithRelationInput>;
   avatarId?: Maybe<SortOrder>;
   banner?: Maybe<ImageOrderByWithRelationInput>;
@@ -1604,10 +1782,13 @@ export type UserOrderByWithRelationInput = {
   id?: Maybe<SortOrder>;
   image?: Maybe<SortOrder>;
   imageLikes?: Maybe<ImageLikeOrderByRelationAggregateInput>;
+  imageTags?: Maybe<ImageTagOrderByRelationAggregateInput>;
   images?: Maybe<ImageOrderByRelationAggregateInput>;
   markedFaces?: Maybe<FaceOrderByRelationAggregateInput>;
   name?: Maybe<SortOrder>;
   roles?: Maybe<RoleOrderByRelationAggregateInput>;
+  tagAliases?: Maybe<TagAliasOrderByRelationAggregateInput>;
+  tagCategories?: Maybe<TagCategoryOrderByRelationAggregateInput>;
   taggedAppearances?: Maybe<AppearanceOrderByRelationAggregateInput>;
   token?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
@@ -1618,6 +1799,7 @@ export type UserWhereInput = {
   DiscoveredImageVote?: Maybe<DiscoveredImageVoteListRelationFilter>;
   NOT?: Maybe<Array<UserWhereInput>>;
   OR?: Maybe<Array<UserWhereInput>>;
+  appearanceTags?: Maybe<AppearanceTagListRelationFilter>;
   avatar?: Maybe<ImageWhereInput>;
   avatarId?: Maybe<IntNullableFilter>;
   banner?: Maybe<ImageWhereInput>;
@@ -1630,10 +1812,13 @@ export type UserWhereInput = {
   id?: Maybe<IntFilter>;
   image?: Maybe<StringNullableFilter>;
   imageLikes?: Maybe<ImageLikeListRelationFilter>;
+  imageTags?: Maybe<ImageTagListRelationFilter>;
   images?: Maybe<ImageListRelationFilter>;
   markedFaces?: Maybe<FaceListRelationFilter>;
   name?: Maybe<StringNullableFilter>;
   roles?: Maybe<RoleListRelationFilter>;
+  tagAliases?: Maybe<TagAliasListRelationFilter>;
+  tagCategories?: Maybe<TagCategoryListRelationFilter>;
   taggedAppearances?: Maybe<AppearanceListRelationFilter>;
   token?: Maybe<StringNullableFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
@@ -1740,7 +1925,13 @@ export type OneImageQuery = (
       & { person: (
         { __typename?: 'Person' }
         & Pick<Person, 'id' | 'name'>
-      ), faces: Array<(
+      ), tags: Array<(
+        { __typename?: 'AppearanceTag' }
+        & { tag: (
+          { __typename?: 'Tag' }
+          & Pick<Tag, 'name'>
+        ) }
+      )>, faces: Array<(
         { __typename?: 'Face' }
         & FaceDataFragment
       )> }
@@ -1967,9 +2158,12 @@ export type HomepageQuery = (
 export type ImageDataFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette'>
-  & { tags: Array<(
-    { __typename?: 'Tag' }
-    & Pick<Tag, 'name'>
+  & { imageTags: Array<(
+    { __typename?: 'ImageTag' }
+    & { tag: (
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    ) }
   )> }
 );
 
@@ -2180,8 +2374,10 @@ export const ImageDataFragmentDoc = `
   bytes
   mimetype
   palette
-  tags {
-    name
+  imageTags {
+    tag {
+      name
+    }
   }
 }
     `;
@@ -2389,6 +2585,11 @@ export const OneImageDocument = `
       person {
         id
         name
+      }
+      tags {
+        tag {
+          name
+        }
       }
       faces {
         ...FaceData

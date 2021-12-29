@@ -25,7 +25,7 @@ type PortraitProps = React.HTMLProps<HTMLDivElement> & {
   prediction?: any // PredictionResponse[0]["matches"][0];
 }
 
-export const maxPortraitHeight = 140
+export const maxPortraitHeight = 100
 
 export function PersonPortrait({
   src,

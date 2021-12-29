@@ -37,7 +37,7 @@ input AliasOrderByWithRelationInput {
   updatedAt: SortOrder
 }
 
-input AliasPersonIdNameCompoundUniqueInput {
+input AliasPersonAliasCompoundUniqueInput {
   name: String!
   personId: Int!
 }
@@ -57,7 +57,7 @@ input AliasWhereInput {
 
 input AliasWhereUniqueInput {
   id: Int
-  personId_name: AliasPersonIdNameCompoundUniqueInput
+  personAlias: AliasPersonAliasCompoundUniqueInput
 }
 
 type Appearance {
@@ -67,6 +67,7 @@ type Appearance {
   id: Int!
   image: Image!
   person: Person!
+  tags(cursor: AppearanceTagWhereUniqueInput, skip: Int, take: Int): [AppearanceTag!]!
   updatedAt: DateTime!
 }
 
@@ -90,6 +91,51 @@ input AppearancePersonIdImageIdCompoundUniqueInput {
   personId: Int!
 }
 
+type AppearanceTag {
+  addedBy: User
+  appearance: Appearance!
+  createdAt: DateTime!
+  tag: Tag!
+  updatedAt: DateTime!
+}
+
+input AppearanceTagAppearanceTagCompoundUniqueInput {
+  appearanceId: Int!
+  tagId: Int!
+}
+
+input AppearanceTagListRelationFilter {
+  every: AppearanceTagWhereInput
+  none: AppearanceTagWhereInput
+  some: AppearanceTagWhereInput
+}
+
+input AppearanceTagOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AppearanceTagWhereInput {
+  AND: [AppearanceTagWhereInput!]
+  Image: ImageWhereInput
+  NOT: [AppearanceTagWhereInput!]
+  OR: [AppearanceTagWhereInput!]
+  addedBy: UserWhereInput
+  addedById: IntNullableFilter
+  appearance: AppearanceWhereInput
+  appearanceId: IntFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  imageId: IntNullableFilter
+  tag: TagWhereInput
+  tagId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input AppearanceTagWhereUniqueInput {
+  appearanceTag: AppearanceTagAppearanceTagCompoundUniqueInput
+  id: Int
+}
+
 input AppearanceWhereInput {
   AND: [AppearanceWhereInput!]
   NOT: [AppearanceWhereInput!]
@@ -103,6 +149,7 @@ input AppearanceWhereInput {
   imageId: IntFilter
   person: PersonWhereInput
   personId: IntFilter
+  tags: AppearanceTagListRelationFilter
   updatedAt: DateTimeFilter
 }
 
@@ -652,6 +699,7 @@ type HomepageTrendingPerson {
 }
 
 type Image {
+  appearanceTags(cursor: AppearanceTagWhereUniqueInput, skip: Int, take: Int): [AppearanceTag!]!
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
 
   """The aspect ratio of the image"""
@@ -683,6 +731,7 @@ type Image {
   """Height of the image in pixels."""
   height: Int!
   id: Int!
+  imageTags(cursor: ImageTagWhereUniqueInput, skip: Int, take: Int): [ImageTag!]!
   ireneBotId: Int
   isNsfw: Boolean!
 
@@ -708,11 +757,8 @@ type Image {
   The url the image was taken from (if applicable). Not guaranteed to be a direct image url.
   """
   source: String
-  tags(cursor: TagWhereUniqueInput, skip: Int, take: Int): [Tag!]!
   thumbnail: Thumbnail!
   unknownFaces: [Face!]!
-
-  """The source method that was used to upload the image"""
   uploadType: UploadType!
   uploadedBy: User
 
@@ -781,6 +827,7 @@ input ImageOrderByRelationAggregateInput {
 }
 
 input ImageOrderByWithRelationInput {
+  appearanceTags: AppearanceTagOrderByRelationAggregateInput
   appearances: AppearanceOrderByRelationAggregateInput
   bytes: SortOrder
   caption: SortOrder
@@ -795,6 +842,7 @@ input ImageOrderByWithRelationInput {
   hash: SortOrder
   height: SortOrder
   id: SortOrder
+  imageTags: ImageTagOrderByRelationAggregateInput
   ireneBotId: SortOrder
   isNsfw: SortOrder
   likes: ImageLikeOrderByRelationAggregateInput
@@ -807,7 +855,6 @@ input ImageOrderByWithRelationInput {
   public: SortOrder
   slug: SortOrder
   source: SortOrder
-  tags: TagOrderByRelationAggregateInput
   updatedAt: SortOrder
   uploadType: SortOrder
   user: UserOrderByWithRelationInput
@@ -819,10 +866,54 @@ input ImageOrderByWithRelationInput {
   xp: SortOrder
 }
 
+type ImageTag {
+  addedBy: User
+  createdAt: DateTime!
+  image: Image!
+  tag: Tag!
+  updatedAt: DateTime!
+}
+
+input ImageTagImageTagCompoundUniqueInput {
+  imageId: Int!
+  tagId: Int!
+}
+
+input ImageTagListRelationFilter {
+  every: ImageTagWhereInput
+  none: ImageTagWhereInput
+  some: ImageTagWhereInput
+}
+
+input ImageTagOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input ImageTagWhereInput {
+  AND: [ImageTagWhereInput!]
+  NOT: [ImageTagWhereInput!]
+  OR: [ImageTagWhereInput!]
+  addedBy: UserWhereInput
+  addedById: IntNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  image: ImageWhereInput
+  imageId: IntFilter
+  tag: TagWhereInput
+  tagId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input ImageTagWhereUniqueInput {
+  id: Int
+  imageTag: ImageTagImageTagCompoundUniqueInput
+}
+
 input ImageWhereInput {
   AND: [ImageWhereInput!]
   NOT: [ImageWhereInput!]
   OR: [ImageWhereInput!]
+  appearanceTags: AppearanceTagListRelationFilter
   appearances: AppearanceListRelationFilter
   bytes: IntFilter
   caption: StringNullableFilter
@@ -837,6 +928,7 @@ input ImageWhereInput {
   hash: StringFilter
   height: IntFilter
   id: IntFilter
+  imageTags: ImageTagListRelationFilter
   ireneBotId: IntNullableFilter
   isNsfw: BoolFilter
   likes: ImageLikeListRelationFilter
@@ -849,7 +941,6 @@ input ImageWhereInput {
   public: BoolFilter
   slug: StringFilter
   source: StringNullableFilter
-  tags: TagListRelationFilter
   updatedAt: DateTimeFilter
   uploadType: EnumUploadTypeFilter
   user: UserWhereInput
@@ -1256,9 +1347,83 @@ input StringNullableFilter {
 
 type Tag {
   addedBy: User
+  aliases(cursor: TagAliasWhereUniqueInput, skip: Int, take: Int): [TagAlias!]!
+  category: TagCategory
   createdAt: DateTime!
   name: String!
   source: TagSource!
+}
+
+type TagAlias {
+  addedBy: User
+  createdAt: DateTime!
+  name: String!
+  tag: Tag!
+  updatedAt: DateTime!
+}
+
+input TagAliasAliasTagCompoundUniqueInput {
+  name: String!
+  tagId: Int!
+}
+
+input TagAliasListRelationFilter {
+  every: TagAliasWhereInput
+  none: TagAliasWhereInput
+  some: TagAliasWhereInput
+}
+
+input TagAliasOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input TagAliasWhereInput {
+  AND: [TagAliasWhereInput!]
+  NOT: [TagAliasWhereInput!]
+  OR: [TagAliasWhereInput!]
+  addedBy: UserWhereInput
+  addedById: IntNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  name: StringFilter
+  tag: TagWhereInput
+  tagId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input TagAliasWhereUniqueInput {
+  aliasTag: TagAliasAliasTagCompoundUniqueInput
+  id: Int
+}
+
+type TagCategory {
+  addedBy: User
+  createdAt: DateTime!
+  name: String!
+  updatedAt: DateTime!
+}
+
+input TagCategoryListRelationFilter {
+  every: TagCategoryWhereInput
+  none: TagCategoryWhereInput
+  some: TagCategoryWhereInput
+}
+
+input TagCategoryOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input TagCategoryWhereInput {
+  AND: [TagCategoryWhereInput!]
+  NOT: [TagCategoryWhereInput!]
+  OR: [TagCategoryWhereInput!]
+  addedBy: UserWhereInput
+  addedById: IntNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  name: StringFilter
+  tags: TagListRelationFilter
+  updatedAt: DateTimeFilter
 }
 
 input TagListRelationFilter {
@@ -1281,17 +1446,16 @@ input TagWhereInput {
   OR: [TagWhereInput!]
   addedBy: UserWhereInput
   addedById: IntNullableFilter
+  aliases: TagAliasListRelationFilter
+  appearances: AppearanceTagListRelationFilter
+  category: TagCategoryWhereInput
+  categoryId: IntNullableFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  image: ImageWhereInput
-  imageId: IntFilter
+  images: ImageTagListRelationFilter
   name: StringFilter
   source: EnumTagSourceFilter
   updatedAt: DateTimeFilter
-}
-
-input TagWhereUniqueInput {
-  id: Int
 }
 
 """Preview urls of an image"""
@@ -1321,6 +1485,7 @@ type User {
 
 input UserOrderByWithRelationInput {
   DiscoveredImageVote: DiscoveredImageVoteOrderByRelationAggregateInput
+  appearanceTags: AppearanceTagOrderByRelationAggregateInput
   avatar: ImageOrderByWithRelationInput
   avatarId: SortOrder
   banner: ImageOrderByWithRelationInput
@@ -1333,10 +1498,13 @@ input UserOrderByWithRelationInput {
   id: SortOrder
   image: SortOrder
   imageLikes: ImageLikeOrderByRelationAggregateInput
+  imageTags: ImageTagOrderByRelationAggregateInput
   images: ImageOrderByRelationAggregateInput
   markedFaces: FaceOrderByRelationAggregateInput
   name: SortOrder
   roles: RoleOrderByRelationAggregateInput
+  tagAliases: TagAliasOrderByRelationAggregateInput
+  tagCategories: TagCategoryOrderByRelationAggregateInput
   taggedAppearances: AppearanceOrderByRelationAggregateInput
   token: SortOrder
   updatedAt: SortOrder
@@ -1347,6 +1515,7 @@ input UserWhereInput {
   DiscoveredImageVote: DiscoveredImageVoteListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  appearanceTags: AppearanceTagListRelationFilter
   avatar: ImageWhereInput
   avatarId: IntNullableFilter
   banner: ImageWhereInput
@@ -1359,10 +1528,13 @@ input UserWhereInput {
   id: IntFilter
   image: StringNullableFilter
   imageLikes: ImageLikeListRelationFilter
+  imageTags: ImageTagListRelationFilter
   images: ImageListRelationFilter
   markedFaces: FaceListRelationFilter
   name: StringNullableFilter
   roles: RoleListRelationFilter
+  tagAliases: TagAliasListRelationFilter
+  tagCategories: TagCategoryListRelationFilter
   taggedAppearances: AppearanceListRelationFilter
   token: StringNullableFilter
   updatedAt: DateTimeFilter

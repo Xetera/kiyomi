@@ -1,4 +1,12 @@
-import { forwardRef, HStack, Image, Link, Text, VStack } from "@chakra-ui/react"
+import {
+  Button,
+  forwardRef,
+  HStack,
+  Image,
+  Link,
+  Text,
+  VStack,
+} from "@chakra-ui/react"
 import { IoPricetag } from "react-icons/io5"
 import { Box, Flex } from "@chakra-ui/layout"
 import NextLink from "next/link"
@@ -12,20 +20,20 @@ import { intersperse } from "@/client/jsx-helpers"
 import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 import { SearchGroup, SearchIdol } from "@/client/typesense"
 
-type QuickSearchTag = {
+export type QuickSearchTag = {
   href: string
   tagName: string
   tagCategory?: string
   amount?: number
 }
 
-type QuickSearchPerson = {
+export type QuickSearchPerson = {
   name: string
   aliases: string[]
   image?: string
 } & ({ onClick: () => void } | { href: string })
 
-type QuickSearchGroup = {
+export type QuickSearchGroup = {
   name: string
 } & ({ onClick: () => void } | { href: string })
 
@@ -102,20 +110,18 @@ function QuickSearchSectionGeneric(props) {
     <Flex
       display="flex"
       justify="space-between"
-      px={3}
-      py={2}
       w="full"
+      maxW="full"
       borderColor="transparent"
       borderWidth="1px"
-      _hover={{ borderColor: "hsla(228,26%,16%,0.7)" }}
       transition="all 0.2s ease-in-out"
       borderRadius="md"
-      tabindex="0"
+      overflow="hidden"
       align="center"
     >
-      {props.left}
+      <Flex flex="1 0 auto">{props.left}</Flex>
       {hovering ? (
-        <Flex align="center" color="gray.500">
+        <Flex align="center" color="gray.500" flex="1">
           <Text fontSize="14px" fontWeight="medium">
             Select
           </Text>
@@ -136,14 +142,24 @@ function QuickSearchSectionGeneric(props) {
   )
   if ("onClick" in props) {
     return (
-      <Box
+      <Button
+        appearance="none"
+        bg="transparent"
+        px={3}
+        py={2}
+        h="full"
         className="highlight-em"
         w="full"
-        _hover={{ textDecoration: "none" }}
+        _hover={{
+          textDecoration: "none",
+          borderColor: "hsla(228,26%,16%,0.7)",
+        }}
         onClick={props.onClick}
+        onFocusCapture={() => isHovering(true)}
+        onBlur={() => isHovering(false)}
       >
         {component}
-      </Box>
+      </Button>
     )
   }
   return (
@@ -151,7 +167,11 @@ function QuickSearchSectionGeneric(props) {
       <Link
         className="highlight-em"
         w="full"
-        _hover={{ textDecoration: "none" }}
+        cursor="pointer"
+        _hover={{
+          textDecoration: "none",
+          borderColor: "hsla(228,26%,16%,0.7)",
+        }}
         onFocusCapture={() => isHovering(true)}
         onBlur={() => isHovering(false)}
       >

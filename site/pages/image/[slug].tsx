@@ -18,12 +18,19 @@ import {
   SidebarItem,
   WithSidebar,
 } from "@/components/context-sidebar"
-import { Box } from "@chakra-ui/react"
+import {
+  Box,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+} from "@chakra-ui/react"
 import { FaceAppearance } from "@/components/face-appearance"
 import { GraphDisplay } from "@/components/graph-display"
+import { ImageEditContainer } from "@/components/data-entry/image-edit/image-edit-container"
 
 const Image = () => {
-  const [isEditOpen, setEditOpen] = React.useState(false)
+  const [isEditOpen, setEditOpen] = React.useState(true)
   const router = useRouter()
   const slug = router.query.slug as string
   const [face, setFace] = React.useState("")
@@ -155,20 +162,28 @@ const Image = () => {
             </Flex>
           </WithSidebar>
           <Footer />
-          <ReactModal
+          <Modal
             isOpen={isEditOpen}
-            overlayClassName="ReactModal__Overlay flex fixed h-full w-full"
-            style={{
-              overlay: {
-                inset: "0px",
-                backgroundColor: "rgba(6, 12, 14, 0.75)",
-              },
-            }}
-            className="bg-theme h-3/4 w-full max-w-7xl m-auto border-theme-alt border-1 outline-none"
-            onRequestClose={closeModal}
+            closeOnEsc
+            closeOnOverlayClick
+            // overlayClassName="ReactModal__Overlay flex fixed h-full w-full"
+            // style={{
+            //   overlay: {
+            //     inset: "0px",
+            //     backgroundColor: "rgba(6, 12, 14, 0.75)",
+            //   },
+            // }}
+            // className="bg-theme h-3/4 w-full max-w-7xl m-auto border-theme-alt border-1 outline-none"
+            onClose={closeModal}
           >
-            <ImageEditModal image={image} />
-          </ReactModal>
+            <ModalOverlay />
+            <ModalContent maxW="8xl" bg="inherit" boxShadow="none" minH="80vh">
+              <ModalBody>
+                <ImageEditContainer />
+              </ModalBody>
+            </ModalContent>
+            {/*<ImageEditModal image={image} />*/}
+          </Modal>
         </WithNavbar>
       </ImageContext.Provider>
     </FaceContext.Provider>
