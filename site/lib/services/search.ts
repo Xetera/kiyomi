@@ -11,6 +11,7 @@ export type IndexedTag = {
   name: string
   aliases: string[]
   category?: string
+  count: number
 }
 
 export type IndexableTag = Tag & {
@@ -35,6 +36,7 @@ export function makeSearch({ prisma }: SearchOptions) {
         name: tag.name,
         category: tag.category?.name,
         aliases: tag.aliases.map((al) => al.name),
+        count: tag.count,
       }
     },
     async updateTag(tag: IndexableTag) {
@@ -42,6 +44,8 @@ export function makeSearch({ prisma }: SearchOptions) {
         .collections("tags")
         .documents()
         .upsert(methods.toIndexedTag(tag))
+        .then(console.log)
+        .catch(console.error)
     },
   }
   return methods

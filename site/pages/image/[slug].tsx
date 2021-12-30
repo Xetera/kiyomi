@@ -92,17 +92,21 @@ const Image = () => {
                     <SidebarItem title="In this Image">
                       {image.appearances.map((app) => (
                         <FaceAppearance
+                          appearance={{
+                            ...app,
+                            face: app.faces[0],
+                          }}
                           image={image}
-                          face={app.faces[0]}
                           key={app.id}
-                          person={app.person}
                         />
                       ))}
                       {image.unknownFaces.map((face) => (
                         <FaceAppearance
+                          appearance={{
+                            face: face,
+                          }}
                           key={face.id}
                           image={image}
-                          face={face}
                         />
                       ))}
                     </SidebarItem>,
@@ -144,9 +148,7 @@ const Image = () => {
                         )}
                         <ImageDisplay />
                       </Flex>
-                      <div className="h-[min-content] min-w-[250px]">
-                        <ImageSidebar onEdit={() => setEditOpen(true)} />
-                      </div>
+                      <ImageSidebar onEdit={() => setEditOpen(true)} />
                       <Flex maxWidth="600px" mx="auto" width="100%">
                         <Heading fontSize="sm">Image Graph</Heading>
                       </Flex>

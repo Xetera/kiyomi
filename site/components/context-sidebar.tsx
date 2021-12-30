@@ -1,6 +1,6 @@
 import { Heading, Stack } from "@chakra-ui/layout"
 import { useBreakpoint, useBreakpointValue } from "@chakra-ui/media-query"
-import { Flex, Box, forwardRef } from "@chakra-ui/react"
+import { Flex, Box, forwardRef, VStack } from "@chakra-ui/react"
 import React, { ComponentProps, PropsWithChildren } from "react"
 
 export type ContextSidebarProps = {
@@ -10,7 +10,13 @@ export type ContextSidebarProps = {
 export const ContextSidebar: React.FC<ContextSidebarProps> = forwardRef(
   ({ items, ...rest }, ref) => {
     return (
-      <Stack height="100%" spacing={[2, 2, 4]} {...rest} ref={ref}>
+      <Stack
+        height="100%"
+        spacing={[2, 2, 4]}
+        {...rest}
+        ref={ref}
+        direction="column"
+      >
         {items}
       </Stack>
     )
@@ -30,7 +36,9 @@ export const SidebarItem = forwardRef<SidebarItemProps, "div">((opts, ref) => {
           {opts.title}
         </Heading>
       </Flex>
-      {opts.children}
+      <VStack py={[2, 3]} px={[3, 4, 5]} spacing={8}>
+        {opts.children}
+      </VStack>
     </Flex>
   )
 })

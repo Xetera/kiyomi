@@ -2,6 +2,7 @@ import { ImageContext } from "@/models/contexts"
 import React, { memo, useCallback, useContext, useMemo, useState } from "react"
 import {
   Box,
+  Button,
   Flex,
   HStack,
   Image,
@@ -19,10 +20,10 @@ import {
 } from "@/components/search/QuickSearchSection"
 import { useBoolean, useMap } from "react-use"
 import {
-  AppearanceTag,
   FaceDataFragment,
   useAddAppearanceMutation,
   useAddAppearanceTagMutation,
+  useDeleteAppearanceTagMutation,
   useLinkFaceMutation,
   useRemoveAppearanceMutation,
   useUnlinkFaceMutation,
@@ -37,15 +38,16 @@ import {
 import flatMap from "lodash/flatMap"
 import keyBy from "lodash/keyBy"
 import mapValues from "lodash/mapValues"
-import Hr from "@/components/hr"
-import { RiCloseCircleFill } from "react-icons/ri"
-import { EditableTag } from "../editable-tag"
+import { RiCloseCircleFill, RiScan2Line } from "react-icons/ri"
 import { TagSelect, useTagSelect } from "@/components/data-entry/tag-select"
+import useQueue from "@/components/queue-button"
+import Hr from "@/components/hr"
 
 const SearchBar = memo(
   ({ addPerson }: { addPerson: (num: number) => void }) => {
+    const image = useContext(ImageContext)
     const [search, setSearch] = useState("")
-    // const [groups, setGroups] = useState<QuickSearchGroup[]>([])
+    const scanImage = useQueue({ slug: image?.slug ?? "" })
     const [idols, setIdols] = useState<QuickSearchPerson[]>([])
     const [searching, toggleSearching] = useBoolean(false)
 
@@ -69,29 +71,45 @@ const SearchBar = memo(
     }
 
     return (
-      <VStack
-        flexDirection="column"
-        bg="bgSecondary"
+      <Flex
+        justify="space-between"
         overflow="hidden"
         h="full"
-        spacing={5}
+        direction="column"
+        bg="bgSecondary"
       >
-        <Box px={5} pt={5}>
-          <Search
-            search={search}
-            searching={searching}
-            setSearchString={setSearch}
-            onSearch={performSearch}
-            placeholder="Search people"
-            debounce={50}
-          />
-        </Box>
-        <VStack overflow="auto" w="full" px={5} spacing={3} pb={5}>
-          {idols.length > 0 && (
-            <QuickSearchSection type="person" data={idols} />
-          )}
+        <VStack flexDirection="column" h="full" spacing={5}>
+          <Box px={5} pt={5}>
+            <Search
+              search={search}
+              searching={searching}
+              setSearchString={setSearch}
+              onSearch={performSearch}
+              placeholder="Search people"
+              debounce={50}
+            />
+          </Box>
+          <VStack overflow="auto" w="full" px={5} spacing={3} pb={5}>
+            {idols.length > 0 && (
+              <QuickSearchSection type="person" data={idols} />
+            )}
+          </VStack>
         </VStack>
-      </VStack>
+        <Hr w="full" h="2px" />
+        <HStack p={5}>
+          <Button
+            appearance="none"
+            bg="inherit"
+            _hover={{ bg: "bg" }}
+            onClick={scanImage}
+          >
+            <HStack align="center">
+              <RiScan2Line />
+              <Text textStyle="heading-sm">Scan Image</Text>
+            </HStack>
+          </Button>
+        </HStack>
+      </Flex>
     )
   }
 )
@@ -107,9 +125,18 @@ const AppearanceColumn = ({
   const image = useContext(ImageContext)
   const select = useTagSelect(tags.map((tag) => tag.tag.name))
   const { mutateAsync: addAppearanceTag } = useAddAppearanceTagMutation()
+  const { mutateAsync: deleteAppearanceTag } = useDeleteAppearanceTagMutation()
+
   async function onCreate(name: string) {
     const result = await addAppearanceTag({ appearanceId: id, name })
+    console.log(result)
   }
+
+  async function onDelete(name: string) {
+    const result = await deleteAppearanceTag({ appearanceId: id, name })
+    console.log(result)
+  }
+
   return (
     <VStack spacing={4} w="200px" minW="200px" key={id} position="relative">
       <Flex justifyContent="space-between" align="center" w="full">
@@ -179,7 +206,12 @@ const AppearanceColumn = ({
         </Droppable>
       </Flex>
       <Text textStyle="heading-sm">Tags</Text>
-      <TagSelect {...select} />
+      <TagSelect
+        {...select}
+        onCreate={onCreate}
+        onAdd={onCreate}
+        onDelete={onDelete}
+      />
     </VStack>
   )
 }
@@ -207,15 +239,15 @@ const ImageSelf = ({
       overflow="auto"
     >
       <VStack h="full" w="full" as="section" overflow="auto">
-        <VStack spacing={3} p={5}>
-          <Text textStyle="heading-sm">Image Tags</Text>
-          <HStack spacing={2}>
-            <EditableTag>Test</EditableTag>
-            <EditableTag>Tag</EditableTag>
-            <EditableTag opacity="0.5">+</EditableTag>
-          </HStack>
-        </VStack>
-        <Hr w="full" />
+        {/*<VStack spacing={3} p={5}>*/}
+        {/*  <Text textStyle="heading-sm">Image Tags</Text>*/}
+        {/*  <HStack spacing={2}>*/}
+        {/*    <EditableTag>Test</EditableTag>*/}
+        {/*    <EditableTag>Tag</EditableTag>*/}
+        {/*    <EditableTag opacity="0.5">+</EditableTag>*/}
+        {/*  </HStack>*/}
+        {/*</VStack>*/}
+        {/*<Hr w="full" />*/}
         <Flex w="full" h="full">
           <Stack
             direction={["column", null, null, "row"]}
@@ -302,7 +334,9 @@ type AppearanceItem = {
   person: { name: string }
   preferredAlias?: string
   faces: FaceDataFragment[]
-  tags: AppearanceTag[]
+  tags: Array<{
+    tag: { name: string }
+  }>
 }
 
 type AppearanceMap = Record<number, AppearanceItem>
@@ -316,7 +350,7 @@ export const ImageEditEditor = () => {
   const { mutateAsync: linkFace } = useLinkFaceMutation()
   const { mutateAsync: unlinkFace } = useUnlinkFaceMutation()
   const { mutateAsync: addAppearance } = useAddAppearanceMutation()
-  const appearanceMap = mapValues(
+  const appearanceMap: Record<number, AppearanceItem> = mapValues(
     keyBy(image.appearances, (f) => f.id),
     (f) => ({
       id: f.id,
@@ -448,14 +482,16 @@ export const ImageEditContainer = () => {
   return (
     <VStack spacing={8} alignItems="center" position="relative">
       <Grid
-        gridTemplateColumns={["1fr", null, null, "250px auto"]}
+        gridTemplateColumns={["1fr", null, null, "300px auto"]}
+        maxW="100%"
+        w="full"
         h="full"
         overflow="hidden"
         borderRadius="md"
         flex="1"
         minH="85vh"
       >
-        <ModalCloseButton position="absolute" top={3} right={3} />
+        <ModalCloseButton position="absolute" top={3} right={5} />
         <ImageEditEditor />
       </Grid>
       <Image

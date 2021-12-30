@@ -1,5 +1,6 @@
-import { PrismaClient, Tag, User } from "@prisma/client"
+import { Prisma, PrismaClient, User } from "@prisma/client"
 import { IndexableTag, SearchService } from "./search"
+import { PrismaError } from "prisma-error-enum"
 
 type TagOptions = {
   prisma: PrismaClient
@@ -8,11 +9,23 @@ type TagOptions = {
 
 export function makeTag({ prisma, search }: TagOptions) {
   async function findOrCreateTag(opts: UpsertTagOptions) {
-    let tag = await prisma.tag.findUnique({ where: { name: opts.tagName } })
-    if (!tag) {
-      tag = await methods.upsertTag(opts)
-    }
+    let tag = await methods.upsertTag(opts)
     return tag
+  }
+
+  const tryDelete = async <T>(f: Promise<T>): Promise<T | undefined> => {
+    try {
+      return await f
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === PrismaError.InterpretationError
+      ) {
+        return undefined
+      } else {
+        throw err
+      }
+    }
   }
 
   async function findTag(name: string) {
@@ -22,53 +35,87 @@ export function makeTag({ prisma, search }: TagOptions) {
     }
     return tag
   }
+
   const methods = {
     async addAppearanceTag(opts: UpsertTagOptions & { appearanceId: number }) {
       const tag = await findOrCreateTag(opts)
-      return await prisma.appearanceTag.create({
-        data: {
-          tagId: tag.id,
-          appearanceId: opts.appearanceId,
+      const appearanceTag = {
+        tagId: tag.id,
+        appearanceId: opts.appearanceId,
+      } as const
+      return await prisma.appearanceTag.upsert({
+        include: {
+          tag: true,
+        },
+        where: {
+          appearanceTag,
+        },
+        update: {},
+        create: {
+          ...appearanceTag,
           addedById: opts.user.id,
         },
       })
     },
-    async deleteAppearanceTag(opts: { tagName: string; appearanceId: number }) {
-      const tag = await findTag(opts.tagName)
-      return prisma.appearanceTag.delete({
-        where: {
-          appearanceTag: {
-            tagId: tag.id,
-            appearanceId: opts.appearanceId,
+    async deleteAppearanceTag(
+      opts: UpsertTagOptions & { appearanceId: number }
+    ) {
+      const tag = await findOrCreateTag(opts)
+      return tryDelete(
+        prisma.appearanceTag.delete({
+          include: {
+            tag: true,
           },
-        },
-      })
+          where: {
+            appearanceTag: {
+              tagId: tag.id,
+              appearanceId: opts.appearanceId,
+            },
+          },
+        })
+      )
     },
     async addImageTag(opts: UpsertTagOptions & { imageId: number }) {
       const tag = await findOrCreateTag(opts)
-      return await prisma.imageTag.create({
-        data: {
-          tagId: tag.id,
-          imageId: opts.imageId,
+      const imageTag = {
+        tagId: tag.id,
+        imageId: opts.imageId,
+      }
+      return await prisma.imageTag.upsert({
+        include: {
+          tag: true,
+        },
+        where: {
+          imageTag,
+        },
+        update: {},
+        create: {
+          ...imageTag,
           addedById: opts.user.id,
         },
       })
     },
-    async deleteImageTag(opts: { tagName: string; imageId: number }) {
-      const tag = await findTag(opts.tagName)
-      return prisma.imageTag.delete({
-        where: {
-          imageTag: {
-            tagId: tag.id,
-            imageId: opts.imageId,
+    async deleteImageTag(opts: UpsertTagOptions & { imageId: number }) {
+      const tag = await findOrCreateTag(opts)
+      return tryDelete(
+        prisma.imageTag.delete({
+          include: {
+            tag: true,
           },
-        },
-      })
+          where: {
+            imageTag: {
+              tagId: tag.id,
+              imageId: opts.imageId,
+            },
+          },
+        })
+      )
     },
     async upsertTag(opts: UpsertTagOptions): Promise<IndexableTag> {
+      const tagName = opts.tagName.trim()
       const data = {
         addedById: opts.user.id,
-        name: opts.tagName,
+        name: tagName,
       }
       const tag = await prisma.tag.upsert({
         include: {
@@ -76,7 +123,7 @@ export function makeTag({ prisma, search }: TagOptions) {
           aliases: true,
         },
         where: {
-          name: opts.tagName,
+          name: tagName,
         },
         update: data,
         create: {

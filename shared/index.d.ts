@@ -1312,8 +1312,8 @@ export interface NexusGenFieldTypes {
     createAppearanceTag: NexusGenRootTypes['AppearanceTag']; // AppearanceTag!
     createImageTag: NexusGenRootTypes['ImageTag']; // ImageTag!
     createTag: NexusGenRootTypes['Tag']; // Tag!
-    deleteAppearanceTag: NexusGenRootTypes['AppearanceTag']; // AppearanceTag!
-    deleteImageTag: NexusGenRootTypes['ImageTag']; // ImageTag!
+    deleteAppearanceTag: NexusGenRootTypes['AppearanceTag'] | null; // AppearanceTag
+    deleteImageTag: NexusGenRootTypes['ImageTag'] | null; // ImageTag
     discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
     discoveredPostVote: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!

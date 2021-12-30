@@ -1,5 +1,5 @@
 import { useBoolean, useList } from "react-use"
-import { ChangeEventHandler, useCallback, useState } from "react"
+import { ChangeEventHandler, useCallback, useRef, useState } from "react"
 import { SearchTag, searchTag as typesenseSearchTag } from "@/client/typesense"
 import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 import {
@@ -15,6 +15,7 @@ import {
 import { EditableTag } from "@/components/data-entry/editable-tag"
 import { RiAddLine, RiArrowRightLine } from "react-icons/ri"
 import Hr from "@/components/hr"
+import useToast from "@/hooks/useToast"
 
 export const useTagSelect = (defaultTags: string[]) => {
   const [tags, t] = useList(defaultTags)
@@ -38,11 +39,12 @@ export const useTagSelect = (defaultTags: string[]) => {
 export type UseTagSelect = ReturnType<typeof useTagSelect>
 
 type TagHandling = {
-  onCreate(tagName: string): void
+  onCreate(tagName: string): Promise<void>
+  onDelete(tagName: string): Promise<void>
   onAdd(tagName: string): void
 }
 
-export type TagHintsProps = TagHandling & {
+export type TagHintsProps = Omit<TagHandling, "onDelete"> & {
   hints: Array<SearchResponseHit<SearchTag>>
   searchText: string
 }
@@ -73,7 +75,7 @@ const TagHints = forwardRef<TagHintsProps, "div">(
         onClick={() => onCreate(searchText)}
       >
         <RiAddLine />
-        <Text textStyle="heading-sm" ml={2}>
+        <Text textStyle="heading-sm" ml={2} fontSize="12px">
           Add
           <Box as="span" color="brand.300" mx={1}>
             {searchText}
@@ -90,7 +92,7 @@ const TagHints = forwardRef<TagHintsProps, "div">(
             hint.document.name.toLowerCase(),
           ])
         )
-        .includes(searchText.toLowerCase())
+        .includes(searchText.trim().toLowerCase())
 
     if (searchText === "") {
       return null
@@ -98,6 +100,7 @@ const TagHints = forwardRef<TagHintsProps, "div">(
 
     return (
       <Flex
+        zIndex={3}
         w="full"
         ref={ref}
         p={2}
@@ -164,9 +167,9 @@ const TagHints = forwardRef<TagHintsProps, "div">(
   }
 )
 
-export type TagInputProps = TagHandling
+export type TagInputProps = Omit<TagHandling, "onDelete">
 
-export const TagInput = (p: TagInputProps) => {
+export const TagInput = forwardRef<TagInputProps, "input">((p, ref) => {
   const [newTagText, setNewTagText] = useState("")
   const [tagHints, h] = useList<SearchResponseHit<SearchTag>>([])
   const [showHints, setShowHints] = useBoolean(false)
@@ -186,6 +189,13 @@ export const TagInput = (p: TagInputProps) => {
     [h]
   )
 
+  function withTextReset<T>(f: (name: string) => T) {
+    return (name: string) => {
+      setNewTagText("")
+      return f(name)
+    }
+  }
+
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const search = e.target.value
     setNewTagText(search)
@@ -195,8 +205,11 @@ export const TagInput = (p: TagInputProps) => {
   return (
     <VStack position="relative" spacing={4}>
       <Input
+        ref={ref}
         onChange={onChange}
         value={newTagText}
+        fontSize="14px"
+        placeholder="Add a tag"
         onFocus={() => setShowHints(true)}
         // onBlur={() => setShowHints(false)}
       />
@@ -210,23 +223,62 @@ export const TagInput = (p: TagInputProps) => {
           maxW="180%"
           hints={tagHints}
           searchText={newTagText}
-          onAdd={p.onAdd}
-          onCreate={p.onCreate}
+          onAdd={withTextReset(p.onAdd)}
+          onCreate={withTextReset(p.onCreate)}
         />
       )}
     </VStack>
   )
-}
+})
 
 export const TagSelect = (props: UseTagSelect & TagHandling) => {
+  const [tags, t] = useList(props.tags)
+  const ref = useRef<HTMLInputElement>(null)
+  const toast = useToast("error")
+
+  function tryWith<T>(f: () => Promise<T>): Promise<T> {
+    return f().catch((err) => {
+      toast({
+        description: err.message,
+      })
+      throw err
+    })
+  }
+
+  async function onDelete(name: string) {
+    const index = tags.indexOf(name)
+    if (index > -1) {
+      t.removeAt(index)
+      return tryWith(() => props.onDelete(name)).catch(() => {
+        t.insertAt(index, name)
+      })
+    }
+  }
+
+  async function onAdd(name: string) {
+    t.push(name)
+    ref.current?.focus()
+    tryWith(() => props.onCreate(name)).catch(() => {
+      t.filter((tag) => tag !== name)
+    })
+  }
+
   return (
-    <Flex>
-      {props.tags.map((tag) => (
-        <EditableTag name={tag} key={tag}>
-          {tag}
-        </EditableTag>
-      ))}
-      <TagInput onAdd={props.onAdd} onCreate={props.onCreate} />
-    </Flex>
+    <VStack spacing={3}>
+      <TagInput onAdd={onAdd} onCreate={onAdd} ref={ref} />
+      <Flex flexFlow="row wrap">
+        {tags.map((tag) => (
+          <EditableTag
+            name={tag}
+            key={tag}
+            mr={2}
+            mb={2}
+            onClose={() => onDelete(tag)}
+          >
+            {tag}
+          </EditableTag>
+        ))}
+      </Flex>
+    </VStack>
   )
 }

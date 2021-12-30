@@ -1,22 +1,22 @@
 import { useImageSliceCanvas } from "@/hooks/useImageSlice"
-import {
-  Face,
-  Image,
-  Person,
-  FaceDataFragment,
-} from "@/lib/__generated__/graphql"
+import { FaceDataFragment, Image, Person } from "@/lib/__generated__/graphql"
 import { Flex, Text } from "@chakra-ui/layout"
-import { Box, Grid, Spinner, useBreakpointValue } from "@chakra-ui/react"
+import { Grid, useBreakpointValue, VStack } from "@chakra-ui/react"
 import React from "react"
+import { EditableTag } from "@/components/data-entry/editable-tag"
 
 export type FaceAppearance = {
   // image on the side
-  face?: FaceDataFragment
-  person?: Pick<Person, "name">
+  appearance: {
+    face?: FaceDataFragment
+    person?: Pick<Person, "name">
+    tags?: Array<{ tag: { name: string } }>
+  }
   image: Pick<Image, "rawUrl">
 }
 
-export function FaceAppearance({ face, person, image }: FaceAppearance) {
+export function FaceAppearance({ appearance, image }: FaceAppearance) {
+  const { face, person } = appearance
   const height = useBreakpointValue([90, 90, 90, 120])
   const canvas = useImageSliceCanvas({
     src: image.rawUrl,
@@ -27,29 +27,34 @@ export function FaceAppearance({ face, person, image }: FaceAppearance) {
     },
   })
   return (
-    <Grid
-      gridAutoFlow="column"
-      gridTemplateColumns={["70px auto", "70px auto", "70px auto", "70px auto"]}
-      gap={2}
-    >
-      <Flex
-        borderRadius="sm"
-        overflow="hidden"
-        objectPosition="center"
-        objectFit="cover"
-        alignItems="flex-start"
-      >
-        {canvas}
-      </Flex>
-      <Flex height="100%" justifyContent="center" flexDirection="column">
-        <Text fontSize="sm" color={person ? "gray.100" : "gray.400"}>
-          {person?.name ?? <i>Unknown Person</i>}
-        </Text>
-        <Text fontSize="xs" color="gray.500" display="flex" alignItems="center">
-          Prediction
-          <Spinner size="xs" ml={2} />
-        </Text>
-      </Flex>
-    </Grid>
+    <VStack spacing={3} w="full" mb={-2}>
+      <Grid gridAutoFlow="column" gridTemplateColumns={["50px auto"]} gap={2}>
+        <Flex
+          borderRadius="md"
+          overflow="hidden"
+          objectPosition="center"
+          objectFit="cover"
+          alignItems="flex-start"
+          width="50px"
+          height="50px"
+        >
+          {canvas}
+        </Flex>
+        <Flex height="100%" justifyContent="center" flexDirection="column">
+          <Text fontSize="sm" color={person ? "gray.100" : "gray.400"}>
+            {person?.name ?? <i>Unknown Person</i>}
+          </Text>
+        </Flex>
+      </Grid>
+      {appearance.tags && (
+        <Flex flexFlow="row wrap">
+          {appearance.tags.map(({ tag }) => (
+            <EditableTag key={tag.name} mr={2} mb={2}>
+              {tag.name}
+            </EditableTag>
+          ))}
+        </Flex>
+      )}
+    </VStack>
   )
 }

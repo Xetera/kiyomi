@@ -242,6 +242,7 @@ function QuickSearchSectionPerson(props: QuickSearchPerson) {
                     .slice(0, 3)
                     .map((alias) => (
                       <Text
+                        key={alias}
                         fontSize="xs"
                         color="gray.500"
                         dangerouslySetInnerHTML={{ __html: alias }}

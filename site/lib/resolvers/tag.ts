@@ -63,15 +63,19 @@ export const Mutation = mutationField((t) => {
   })
   // TODO: better authorization
   t.field("deleteAppearanceTag", {
-    type: nonNull("AppearanceTag"),
+    type: "AppearanceTag",
     args: {
       name: nonNull("String"),
       appearanceId: nonNull("Int"),
     },
     resolve(t, args, { tag, user }) {
+      if (!user) {
+        throw Error("Unauthorized")
+      }
       return tag.deleteAppearanceTag({
         tagName: args.name,
         appearanceId: args.appearanceId,
+        user,
       })
     },
   })
@@ -93,15 +97,19 @@ export const Mutation = mutationField((t) => {
     },
   })
   t.field("deleteImageTag", {
-    type: nonNull("ImageTag"),
+    type: "ImageTag",
     args: {
       name: nonNull("String"),
       imageId: nonNull("Int"),
     },
     resolve(t, args, { tag, user }) {
+      if (!user) {
+        throw Error("Unauthorized")
+      }
       return tag.deleteImageTag({
         tagName: args.name,
         imageId: args.imageId,
+        user,
       })
     },
   })

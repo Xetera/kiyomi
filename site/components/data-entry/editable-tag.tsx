@@ -1,6 +1,10 @@
-import { forwardRef, Tag } from "@chakra-ui/react"
+import { forwardRef, Tag, TagCloseButton } from "@chakra-ui/react"
 
-export const EditableTag = forwardRef<{}, "div">((props, ref) => {
+export type EditableTagProps = {
+  onClose?(): void
+}
+
+export const EditableTag = forwardRef<EditableTagProps, "div">((props, ref) => {
   return (
     <Tag
       bg="backgroundSecondary"
@@ -9,6 +13,7 @@ export const EditableTag = forwardRef<{}, "div">((props, ref) => {
       borderWidth="1px"
     >
       {props.children}
+      {props.onClose && <TagCloseButton onClick={props.onClose} />}
     </Tag>
   )
 })

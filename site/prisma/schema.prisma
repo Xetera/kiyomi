@@ -56,7 +56,7 @@ model TagAlias {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@unique([tagId, name], map: "alias_tag", name: "aliasTag")
-  @@map("tag_alias")
+  @@map("tag_aliases")
 }
 
 model TagCategory {

@@ -64,7 +64,7 @@ export const DraggableFace = forwardRef<DraggablePersonProps, "div">(
     if (!faceSlice) return null
     return (
       // @ts-ignore
-      <Box {...rest} ref={ref}>
+      <Box {...rest} ref={ref} tabIndex={-1}>
         <canvas
           className="overflow-hidden"
           width={`${faceSlice.widthScale}px`}

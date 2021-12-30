@@ -29,7 +29,7 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
     ? `appearance:${appearance.id}`
     : `face:${face.id}`
   const active = activeFace === motionId
-  const fontSize = face.width < 300 ? "11px" : "14px"
+  const fontSize = face.width < 200 ? "11px" : "14px"
   return (
     <AnimatePresence>
       {(active || forceActive) && (
@@ -152,6 +152,7 @@ export default function ImageDisplay() {
   ) {
     return faces.map((face) => (
       <Face
+        key={face.id}
         forceActive={active}
         appearance={appearance}
         face={face}

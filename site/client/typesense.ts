@@ -1,6 +1,7 @@
 import { SearchClient } from "typesense"
 import type { NodeConfiguration } from "typesense/lib/Typesense/Configuration"
 import type {
+  SearchOptions,
   SearchParams,
   SearchResponse,
 } from "typesense/lib/Typesense/Documents"
@@ -42,7 +43,11 @@ type SearchInput = Omit<SearchParams<any>, "q" | "group_by"> & {
   collection: string
 }
 
-const queryFieldsBy = <T>({ collection, ...opts }: SearchInput) => async (
+const queryFieldsBy = <T>({
+  collection,
+  options = { cacheSearchResultsForSeconds: 30 },
+  ...opts
+}: SearchInput & { options?: SearchOptions }) => async (
   query: string
 ): Promise<SearchResponse<T>> => {
   return (await typesense
@@ -53,7 +58,7 @@ const queryFieldsBy = <T>({ collection, ...opts }: SearchInput) => async (
         q: query,
         ...opts,
       },
-      { cacheSearchResultsForSeconds: 30 }
+      options
     )) as any
 }
 
@@ -75,6 +80,11 @@ export const searchTag = queryFieldsBy<SearchTag>({
   collection: "tags",
   query_by: "aliases,name",
   per_page: PER_PAGE,
+  options: {
+    // tagging search happens very quickly
+    // we don't want it to be cached
+    cacheSearchResultsForSeconds: 0,
+  },
 })
 
 export const searchGeneric = async (

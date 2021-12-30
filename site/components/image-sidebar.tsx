@@ -100,33 +100,27 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const liked = data?.toggleLike.liked ?? image.liked
   const uploadDate = new Date(image.createdAt)
   const slug = router.query.slug as string
-  const request = useQueue({ slug })
-  async function handleScan() {
-    await request()
-    await client.invalidateQueries(["OneImage", { slug }])
-  }
+  const reScan = useQueue({ slug })
   return (
     <Stack className="align-start text-sm rounded" maxWidth="600px" mx="auto">
       <CascadeChildren className="grid gap-4 text-sm">
         <Flex>
           <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
           <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
-          <Tag
-            icon={<RiScan2Line />}
-            text="Re-scan Image"
-            onClick={handleScan}
-          />
+          <Tag icon={<RiScan2Line />} text="Re-scan Image" onClick={reScan} />
         </Flex>
         <Flex flexDirection="row" alignItems="top">
           <User
+            // @ts-ignore
             user={image.uploadedBy}
             bottom={
-              <time
-                className="text-gray-500"
+              <Box
+                as="time"
+                color="gray.300"
                 dateTime={image.createdAt.toString()}
               >
                 {format(uploadDate, "MMMM dd, yyyy HH:mm")}
-              </time>
+              </Box>
             }
           />
         </Flex>
