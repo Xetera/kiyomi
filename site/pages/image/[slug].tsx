@@ -6,10 +6,8 @@ import { Footer } from "@/components/footer"
 import { WithNavbar } from "@/components/navbar"
 import NextHead from "next/head"
 import { RiSpyLine } from "react-icons/ri"
-import ReactModal from "react-modal"
 import { useRouter } from "next/router"
 import { useOneImageQuery } from "@/lib/__generated__/graphql"
-import { ImageEditModal } from "@/components/image-edit-modal"
 import { prefetchQuery } from "@/lib/client-helpers"
 import { wrapRequest } from "@/lib/data-fetching"
 import { Flex, Heading, Text } from "@chakra-ui/layout"
@@ -30,14 +28,14 @@ import { GraphDisplay } from "@/components/graph-display"
 import { ImageEditContainer } from "@/components/data-entry/image-edit/image-edit-container"
 
 const Image = () => {
-  const [isEditOpen, setEditOpen] = React.useState(true)
+  const [isEditOpen, setEditOpen] = React.useState(false)
   const router = useRouter()
   const slug = router.query.slug as string
   const [face, setFace] = React.useState("")
   // best approximation for width
   const [containerWidth, setContainerWidth] = React.useState(600)
   const containerRef = useRef<HTMLDivElement>(null)
-  const { data, isFetching, refetch } = useOneImageQuery({ slug })
+  const { data, refetch } = useOneImageQuery({ slug })
 
   function closeModal() {
     refetch()
@@ -168,14 +166,6 @@ const Image = () => {
             isOpen={isEditOpen}
             closeOnEsc
             closeOnOverlayClick
-            // overlayClassName="ReactModal__Overlay flex fixed h-full w-full"
-            // style={{
-            //   overlay: {
-            //     inset: "0px",
-            //     backgroundColor: "rgba(6, 12, 14, 0.75)",
-            //   },
-            // }}
-            // className="bg-theme h-3/4 w-full max-w-7xl m-auto border-theme-alt border-1 outline-none"
             onClose={closeModal}
           >
             <ModalOverlay />
@@ -184,7 +174,6 @@ const Image = () => {
                 <ImageEditContainer />
               </ModalBody>
             </ModalContent>
-            {/*<ImageEditModal image={image} />*/}
           </Modal>
         </WithNavbar>
       </ImageContext.Provider>
