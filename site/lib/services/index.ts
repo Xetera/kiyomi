@@ -5,7 +5,9 @@ import { PrismaClient } from "@prisma/client"
 import { makeXp, XpService } from "./xp"
 import { makeWendy, WendyService } from "./wendy"
 import { makeUploader, UploaderService } from "./uploader"
-import { makeWasabi, WasabiService } from "@/lib/services/wasabi"
+import { makeWasabi, WasabiService } from "./wasabi"
+import { makeSearch, SearchService } from "./search"
+import { makeTag, TagService } from "@/lib/services/tag"
 
 export type Services = {
   prisma: PrismaClient
@@ -16,6 +18,8 @@ export type Services = {
   wendy: WendyService
   uploader: UploaderService
   wasabi: WasabiService
+  search: SearchService
+  tag: TagService
 }
 
 export function createServices(
@@ -24,15 +28,18 @@ export function createServices(
 ): Services {
   const wendy = makeWendy({ prisma, amqp })
   const wasabi = makeWasabi()
+  const search = makeSearch({ prisma })
 
   return {
     prisma,
     amqp,
     wendy,
     wasabi,
+    search,
     discovery: makeDiscovery({ prisma }),
     jiu: makeJiu({ amqp, prisma, wendy }),
     xp: makeXp({ prisma }),
     uploader: makeUploader({ prisma, wasabi, wendy }),
+    tag: makeTag({ prisma, search }),
   }
 }

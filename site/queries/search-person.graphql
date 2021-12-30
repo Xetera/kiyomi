@@ -4,7 +4,15 @@ fragment AppearanceWithFaces on Appearance {
     ...FaceData
   }
   person {
+    preferredAlias {
+      name
+    }
     name
+  }
+  tags {
+    tag {
+      name
+    }
   }
 }
 

@@ -1309,6 +1309,11 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     addProvider: string; // String!
+    createAppearanceTag: NexusGenRootTypes['AppearanceTag']; // AppearanceTag!
+    createImageTag: NexusGenRootTypes['ImageTag']; // ImageTag!
+    createTag: NexusGenRootTypes['Tag']; // Tag!
+    deleteAppearanceTag: NexusGenRootTypes['AppearanceTag']; // AppearanceTag!
+    deleteImageTag: NexusGenRootTypes['ImageTag']; // ImageTag!
     discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
     discoveredPostVote: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
@@ -1604,6 +1609,11 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     addAppearance: 'Appearance'
     addProvider: 'String'
+    createAppearanceTag: 'AppearanceTag'
+    createImageTag: 'ImageTag'
+    createTag: 'Tag'
+    deleteAppearanceTag: 'AppearanceTag'
+    deleteImageTag: 'ImageTag'
     discoveredImageVote: 'DiscoveredImageVote'
     discoveredPostVote: 'DiscoveredImage'
     linkFace: 'Appearance'
@@ -1775,6 +1785,25 @@ export interface NexusGenArgTypes {
     }
     addProvider: { // args
       provider: NexusGenInputs['AddProviderInput']; // AddProviderInput!
+    }
+    createAppearanceTag: { // args
+      appearanceId: number; // Int!
+      name: string; // String!
+    }
+    createImageTag: { // args
+      imageId: number; // Int!
+      name: string; // String!
+    }
+    createTag: { // args
+      name: string; // String!
+    }
+    deleteAppearanceTag: { // args
+      appearanceId: number; // Int!
+      name: string; // String!
+    }
+    deleteImageTag: { // args
+      imageId: number; // Int!
+      name: string; // String!
     }
     discoveredImageVote: { // args
       imageId: number; // Int!

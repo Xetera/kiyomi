@@ -1100,6 +1100,11 @@ export type Mutation = {
   /** Add an appearance relation on an image. */
   addAppearance: Appearance;
   addProvider: Scalars['String'];
+  createAppearanceTag: AppearanceTag;
+  createImageTag: ImageTag;
+  createTag: Tag;
+  deleteAppearanceTag: AppearanceTag;
+  deleteImageTag: ImageTag;
   discoveredImageVote: DiscoveredImageVote;
   /** Vote using the same verdict on all images in a post */
   discoveredPostVote: Array<DiscoveredImage>;
@@ -1123,6 +1128,35 @@ export type MutationAddAppearanceArgs = {
 
 export type MutationAddProviderArgs = {
   provider: AddProviderInput;
+};
+
+
+export type MutationCreateAppearanceTagArgs = {
+  appearanceId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+
+export type MutationCreateImageTagArgs = {
+  imageId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+
+export type MutationCreateTagArgs = {
+  name: Scalars['String'];
+};
+
+
+export type MutationDeleteAppearanceTagArgs = {
+  appearanceId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+
+export type MutationDeleteImageTagArgs = {
+  imageId: Scalars['Int'];
+  name: Scalars['String'];
 };
 
 
@@ -1824,6 +1858,40 @@ export type UserWhereInput = {
   updatedAt?: Maybe<DateTimeFilter>;
 };
 
+export type AddAppearanceTagMutationVariables = Exact<{
+  name: Scalars['String'];
+  appearanceId: Scalars['Int'];
+}>;
+
+
+export type AddAppearanceTagMutation = (
+  { __typename?: 'Mutation' }
+  & { createAppearanceTag: (
+    { __typename?: 'AppearanceTag' }
+    & { tag: (
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    ) }
+  ) }
+);
+
+export type DeleteAppearanceTagMutationVariables = Exact<{
+  name: Scalars['String'];
+  appearanceId: Scalars['Int'];
+}>;
+
+
+export type DeleteAppearanceTagMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteAppearanceTag: (
+    { __typename?: 'AppearanceTag' }
+    & { tag: (
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    ) }
+  ) }
+);
+
 export type AddProviderMutationVariables = Exact<{
   provider: AddProviderInput;
 }>;
@@ -1925,6 +1993,10 @@ export type OneImageQuery = (
       & { person: (
         { __typename?: 'Person' }
         & Pick<Person, 'id' | 'name'>
+        & { preferredAlias?: Maybe<(
+          { __typename?: 'Alias' }
+          & Pick<Alias, 'name'>
+        )> }
       ), tags: Array<(
         { __typename?: 'AppearanceTag' }
         & { tag: (
@@ -2198,7 +2270,17 @@ export type AppearanceWithFacesFragment = (
   )>, person: (
     { __typename?: 'Person' }
     & Pick<Person, 'name'>
-  ) }
+    & { preferredAlias?: Maybe<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )> }
+  ), tags: Array<(
+    { __typename?: 'AppearanceTag' }
+    & { tag: (
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'name'>
+    ) }
+  )> }
 );
 
 export type AddAppearanceMutationVariables = Exact<{
@@ -2426,7 +2508,15 @@ export const AppearanceWithFacesFragmentDoc = `
     ...FaceData
   }
   person {
+    preferredAlias {
+      name
+    }
     name
+  }
+  tags {
+    tag {
+      name
+    }
   }
 }
     ${FaceDataFragmentDoc}`;
@@ -2443,6 +2533,40 @@ export const UserRoleDataFragmentDoc = `
   name
 }
     `;
+export const AddAppearanceTagDocument = `
+    mutation AddAppearanceTag($name: String!, $appearanceId: Int!) {
+  createAppearanceTag(name: $name, appearanceId: $appearanceId) {
+    tag {
+      name
+    }
+  }
+}
+    `;
+export const useAddAppearanceTagMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<AddAppearanceTagMutation, TError, AddAppearanceTagMutationVariables, TContext>) => 
+    useMutation<AddAppearanceTagMutation, TError, AddAppearanceTagMutationVariables, TContext>(
+      (variables?: AddAppearanceTagMutationVariables) => fetcher<AddAppearanceTagMutation, AddAppearanceTagMutationVariables>(AddAppearanceTagDocument, variables)(),
+      options
+    );
+export const DeleteAppearanceTagDocument = `
+    mutation DeleteAppearanceTag($name: String!, $appearanceId: Int!) {
+  deleteAppearanceTag(name: $name, appearanceId: $appearanceId) {
+    tag {
+      name
+    }
+  }
+}
+    `;
+export const useDeleteAppearanceTagMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAppearanceTagMutation, TError, DeleteAppearanceTagMutationVariables, TContext>) => 
+    useMutation<DeleteAppearanceTagMutation, TError, DeleteAppearanceTagMutationVariables, TContext>(
+      (variables?: DeleteAppearanceTagMutationVariables) => fetcher<DeleteAppearanceTagMutation, DeleteAppearanceTagMutationVariables>(DeleteAppearanceTagDocument, variables)(),
+      options
+    );
 export const AddProviderDocument = `
     mutation AddProvider($provider: AddProviderInput!) {
   addProvider(provider: $provider)
@@ -2585,6 +2709,9 @@ export const OneImageDocument = `
       person {
         id
         name
+        preferredAlias {
+          name
+        }
       }
       tags {
         tag {

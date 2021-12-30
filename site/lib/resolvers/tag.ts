@@ -1,4 +1,5 @@
-import { objectType } from "nexus"
+import { mutationField, nonNull, objectType } from "nexus"
+import { GraphqlAuth } from "../auth"
 
 export const Tag = objectType({
   name: "Tag",
@@ -40,4 +41,86 @@ export const TagAlias = objectType({
   definition(t) {
     t.model.name().tag().addedBy().createdAt().updatedAt()
   },
+})
+
+export const Mutation = mutationField((t) => {
+  t.field("createAppearanceTag", {
+    type: nonNull("AppearanceTag"),
+    args: {
+      name: nonNull("String"),
+      appearanceId: nonNull("Int"),
+    },
+    resolve(_, args, { tag, user }) {
+      if (!user) {
+        throw Error("Unauthorized")
+      }
+      return tag.addAppearanceTag({
+        user,
+        tagName: args.name,
+        appearanceId: args.appearanceId,
+      })
+    },
+  })
+  // TODO: better authorization
+  t.field("deleteAppearanceTag", {
+    type: nonNull("AppearanceTag"),
+    args: {
+      name: nonNull("String"),
+      appearanceId: nonNull("Int"),
+    },
+    resolve(t, args, { tag, user }) {
+      return tag.deleteAppearanceTag({
+        tagName: args.name,
+        appearanceId: args.appearanceId,
+      })
+    },
+  })
+  t.field("createImageTag", {
+    type: nonNull("ImageTag"),
+    args: {
+      name: nonNull("String"),
+      imageId: nonNull("Int"),
+    },
+    resolve(t, args, { tag, user }) {
+      if (!user) {
+        throw Error("Unauthorized")
+      }
+      return tag.addImageTag({
+        tagName: args.name,
+        imageId: args.imageId,
+        user,
+      })
+    },
+  })
+  t.field("deleteImageTag", {
+    type: nonNull("ImageTag"),
+    args: {
+      name: nonNull("String"),
+      imageId: nonNull("Int"),
+    },
+    resolve(t, args, { tag, user }) {
+      return tag.deleteImageTag({
+        tagName: args.name,
+        imageId: args.imageId,
+      })
+    },
+  })
+
+  t.field("createTag", {
+    type: nonNull("Tag"),
+    args: {
+      name: nonNull("String"),
+    },
+    authorize: GraphqlAuth.isLoggedIn,
+    async resolve(root, args, { tag, user, prisma }) {
+      if (!user) {
+        throw Error("Unauthorized")
+      }
+      const indexable = await tag.upsertTag({
+        user,
+        tagName: args.name,
+      })
+      return prisma.tag.findUnique({ where: { name: indexable.name } })
+    },
+  })
 })

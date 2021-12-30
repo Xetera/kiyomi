@@ -7,7 +7,7 @@ export type SearchOptions = {
 }
 
 export type IndexedTag = {
-  tagId: number
+  id: string
   name: string
   aliases: string[]
   category?: string
@@ -16,6 +16,7 @@ export type IndexedTag = {
 export type IndexableTag = Tag & {
   category: TagCategory | null
   aliases: TagAlias[]
+  count: number
 }
 
 export function makeSearch({ prisma }: SearchOptions) {
@@ -30,7 +31,7 @@ export function makeSearch({ prisma }: SearchOptions) {
   const methods = {
     toIndexedTag(tag: IndexableTag): IndexedTag {
       return {
-        tagId: tag.id,
+        id: String(tag.id),
         name: tag.name,
         category: tag.category?.name,
         aliases: tag.aliases.map((al) => al.name),
@@ -46,4 +47,4 @@ export function makeSearch({ prisma }: SearchOptions) {
   return methods
 }
 
-export type SearchClient = ReturnType<typeof makeSearch>
+export type SearchService = ReturnType<typeof makeSearch>

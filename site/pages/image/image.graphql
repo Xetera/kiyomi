@@ -11,6 +11,9 @@ query OneImage($slug: String!) {
       person {
         id
         name
+        preferredAlias {
+          name
+        }
       }
       tags {
         tag {

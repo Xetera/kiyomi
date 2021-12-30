@@ -5001,7 +5001,12 @@ type Mutation {
   """Add an appearance relation on an image."""
   addAppearance(imageId: Int!, personId: Int!): Appearance!
   addProvider(provider: AddProviderInput!): String!
+  createAppearanceTag(appearanceId: Int!, name: String!): AppearanceTag!
+  createImageTag(imageId: Int!, name: String!): ImageTag!
   createOnePerson(data: PersonCreateInput!): Person!
+  createTag(name: String!): Tag!
+  deleteAppearanceTag(appearanceId: Int!, name: String!): AppearanceTag!
+  deleteImageTag(imageId: Int!, name: String!): ImageTag!
   discoveredImageVote(imageId: Int!, reason: String, verdict: String!): DiscoveredImageVote!
 
   """Vote using the same verdict on all images in a post"""

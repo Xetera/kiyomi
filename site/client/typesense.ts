@@ -29,6 +29,14 @@ export type SearchIdol = {
   aliases: string[]
 }
 
+export type SearchTag = {
+  id: string
+  name: string
+  aliases?: string[]
+  category: string
+  count: number
+}
+
 // not sure why group_by causes issues here
 type SearchInput = Omit<SearchParams<any>, "q" | "group_by"> & {
   collection: string
@@ -59,6 +67,12 @@ export const searchIdol = queryFieldsBy<SearchIdol>({
 
 export const searchGroup = queryFieldsBy<SearchGroup>({
   collection: "groups",
+  query_by: "aliases,name",
+  per_page: PER_PAGE,
+})
+
+export const searchTag = queryFieldsBy<SearchTag>({
+  collection: "tags",
   query_by: "aliases,name",
   per_page: PER_PAGE,
 })

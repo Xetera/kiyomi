@@ -6,7 +6,6 @@ import {
   HStack,
   Image,
   ModalCloseButton,
-  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react"
@@ -20,8 +19,10 @@ import {
 } from "@/components/search/QuickSearchSection"
 import { useBoolean, useMap } from "react-use"
 import {
+  AppearanceTag,
   FaceDataFragment,
   useAddAppearanceMutation,
+  useAddAppearanceTagMutation,
   useLinkFaceMutation,
   useRemoveAppearanceMutation,
   useUnlinkFaceMutation,
@@ -39,6 +40,7 @@ import mapValues from "lodash/mapValues"
 import Hr from "@/components/hr"
 import { RiCloseCircleFill } from "react-icons/ri"
 import { EditableTag } from "../editable-tag"
+import { TagSelect, useTagSelect } from "@/components/data-entry/tag-select"
 
 const SearchBar = memo(
   ({ addPerson }: { addPerson: (num: number) => void }) => {
@@ -94,11 +96,100 @@ const SearchBar = memo(
   }
 )
 
+const AppearanceColumn = ({
+  id,
+  person,
+  preferredAlias,
+  faces,
+  tags,
+  removeAppearance,
+}: AppearanceItem & { removeAppearance: (id: number) => void }) => {
+  const image = useContext(ImageContext)
+  const select = useTagSelect(tags.map((tag) => tag.tag.name))
+  const { mutateAsync: addAppearanceTag } = useAddAppearanceTagMutation()
+  async function onCreate(name: string) {
+    const result = await addAppearanceTag({ appearanceId: id, name })
+  }
+  return (
+    <VStack spacing={4} w="200px" minW="200px" key={id} position="relative">
+      <Flex justifyContent="space-between" align="center" w="full">
+        {preferredAlias ? (
+          <Text textStyle="heading-sm">{preferredAlias}</Text>
+        ) : (
+          <Text textStyle="heading-sm">{person.name}</Text>
+        )}
+        <Box
+          onClick={() => removeAppearance(id)}
+          transition="all 0.2s"
+          cursor="pointer"
+          color="#eb6c6c80"
+          ml={2}
+          _hover={{ color: "#eb6c6c" }}
+        >
+          <RiCloseCircleFill size={20} />
+        </Box>
+      </Flex>
+      <Text textStyle="heading-sm">Faces</Text>
+      <Flex
+        borderColor="gray.900"
+        borderWidth="1px"
+        borderRadius="md"
+        w="full"
+        flex="0 1 auto"
+        minH="60px"
+        p={2}
+        alignItems="flex-start"
+      >
+        <Droppable droppableId={id.toString()} direction="horizontal">
+          {(provided, i) => (
+            <Flex
+              flexFlow="row wrap"
+              mb={-2}
+              mr={-2}
+              w="full"
+              h="full"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {faces.map((face, i) => (
+                <Draggable
+                  draggableId={face.id.toString()}
+                  index={i}
+                  key={face.id.toString()}
+                >
+                  {(provided, i) => (
+                    <DraggableFace
+                      src={image?.rawUrl ?? "/"}
+                      maxPortraitHeight={80}
+                      borderRadius="lg"
+                      overflow="hidden"
+                      mb={2}
+                      mr={2}
+                      ref={provided.innerRef}
+                      face={face}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    />
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </Flex>
+          )}
+        </Droppable>
+      </Flex>
+      <Text textStyle="heading-sm">Tags</Text>
+      <TagSelect {...select} />
+    </VStack>
+  )
+}
+
 type ImageSelfProps = {
   appearances: AppearanceItem[]
   unknownFaces: any[]
   removeAppearance(id: number): void
 }
+
 const ImageSelf = ({
   appearances,
   unknownFaces,
@@ -113,9 +204,9 @@ const ImageSelf = ({
       w="full"
       justifyContent="space-between"
       flexFlow="column"
-      overflow="hidden"
+      overflow="auto"
     >
-      <VStack h="full" w="full" as="section">
+      <VStack h="full" w="full" as="section" overflow="auto">
         <VStack spacing={3} p={5}>
           <Text textStyle="heading-sm">Image Tags</Text>
           <HStack spacing={2}>
@@ -125,121 +216,32 @@ const ImageSelf = ({
           </HStack>
         </VStack>
         <Hr w="full" />
-        <Stack
-          direction={["column", null, null, "row"]}
-          alignItems="top"
-          maxH="full"
-          p={5}
-          spacing={5}
-          overflow="auto"
-          as="section"
-        >
-          {appearances.map((val, i) => (
-            <VStack spacing={4} maxW="200px" key={val.id} position="relative">
-              <HStack spacing={4} justify="flex-start" align="center">
-                {/*<Image*/}
-                {/*  src="https://placewaifu.com/image/30"*/}
-                {/*  w="40px"*/}
-                {/*  borderRadius="full"*/}
-                {/*/>*/}
-                <Text textStyle="heading-sm">{val.person.name}</Text>
-                <Box
-                  onClick={() => removeAppearance(val.id)}
-                  transition="all 0.2s"
-                  cursor="pointer"
-                  color="#eb6c6c80"
-                  _hover={{ color: "#eb6c6c" }}
-                >
-                  <RiCloseCircleFill size={22} />
-                </Box>
-              </HStack>
-              <Text textStyle="heading-sm">Faces</Text>
-              <Flex
-                borderColor="gray.900"
-                borderWidth="1px"
-                borderRadius="md"
-                w="full"
-                h="full"
-                minH="60px"
-                p={2}
-                alignItems="flex-start"
-              >
-                <Droppable
-                  droppableId={val.id.toString()}
-                  direction="horizontal"
-                >
-                  {(provided, i) => (
-                    <Flex
-                      flexFlow="row wrap"
-                      mb={-2}
-                      mr={-2}
-                      w="full"
-                      h="full"
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                    >
-                      {/*{val.faces.length === 0 && !i.isDraggingOver && (*/}
-                      {/*  <Text*/}
-                      {/*    w="full"*/}
-                      {/*    textAlign="center"*/}
-                      {/*    justifySelf="center"*/}
-                      {/*    alignSelf="center"*/}
-                      {/*  >*/}
-                      {/*    Drop faces here*/}
-                      {/*  </Text>*/}
-                      {/*)}*/}
-                      {val.faces.map((face, i) => (
-                        <Draggable
-                          draggableId={face.id.toString()}
-                          index={i}
-                          key={face.id.toString()}
-                        >
-                          {(provided, i) => (
-                            <DraggableFace
-                              src={image?.rawUrl}
-                              maxPortraitHeight={80}
-                              borderRadius="lg"
-                              overflow="hidden"
-                              mb={2}
-                              mr={2}
-                              ref={provided.innerRef}
-                              face={face}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            />
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </Flex>
-                  )}
-                </Droppable>
-              </Flex>
-              <Text textStyle="heading-sm">Tags</Text>
-              <Flex whiteSpace="nowrap" flexFlow="row wrap">
-                <EditableTag mb={2} mr={2}>
-                  Test
-                </EditableTag>
-                <EditableTag mb={2} mr={2}>
-                  Tag
-                </EditableTag>
-                <EditableTag mb={2} mr={2}>
-                  Long Tag
-                </EditableTag>
-                <EditableTag mb={2} mr={2} opacity="0.5">
-                  +
-                </EditableTag>
-              </Flex>
-            </VStack>
-          ))}
-          {appearances.length === 0 && (
-            <VStack w="full">
-              <Text color="gray.300" fontWeight="medium">
-                Nobody here! Search for someone you recognize on the sidebar
-              </Text>
-            </VStack>
-          )}
-        </Stack>
+        <Flex w="full" h="full">
+          <Stack
+            direction={["column", null, null, "row"]}
+            alignItems="top"
+            h="full"
+            p={5}
+            flex="1"
+            spacing={5}
+            as="section"
+          >
+            {appearances.map((appearance, i) => (
+              <AppearanceColumn
+                {...appearance}
+                key={appearance.id}
+                removeAppearance={removeAppearance}
+              />
+            ))}
+            {appearances.length === 0 && unknownFaces.length > 0 && (
+              <VStack w="full">
+                <Text color="gray.300" fontWeight="medium">
+                  Nobody here! Search for someone you recognize on the sidebar
+                </Text>
+              </VStack>
+            )}
+          </Stack>
+        </Flex>
       </VStack>
       <VStack
         justifySelf="flex-end"
@@ -298,7 +300,9 @@ const ImageSelf = ({
 type AppearanceItem = {
   id: number
   person: { name: string }
+  preferredAlias?: string
   faces: FaceDataFragment[]
+  tags: AppearanceTag[]
 }
 
 type AppearanceMap = Record<number, AppearanceItem>
@@ -317,7 +321,9 @@ export const ImageEditEditor = () => {
     (f) => ({
       id: f.id,
       person: { name: f.person.name },
+      preferredAlias: f.person.preferredAlias?.name,
       faces: f.faces,
+      tags: f.tags,
     })
   )
 
@@ -335,7 +341,20 @@ export const ImageEditEditor = () => {
 
   async function removeAppearance_(appearanceId: number) {
     await removeAppearance({ appearanceId })
+    const appearance = appearanceAction.get(appearanceId)
+    // TODO: check here?
     appearanceAction.remove(appearanceId)
+    if (appearance.faces.length > 0) {
+      setUnknownFaces((prev) => {
+        const rest = Object.fromEntries(
+          appearance.faces.map((face) => [face.id, face])
+        )
+        return {
+          ...prev,
+          ...rest,
+        }
+      })
+    }
   }
 
   async function linkFace_(faceId: number, appearanceId: number) {
@@ -429,7 +448,7 @@ export const ImageEditContainer = () => {
   return (
     <VStack spacing={8} alignItems="center" position="relative">
       <Grid
-        gridTemplateColumns={["1fr", null, null, "2fr 6fr"]}
+        gridTemplateColumns={["1fr", null, null, "250px auto"]}
         h="full"
         overflow="hidden"
         borderRadius="md"

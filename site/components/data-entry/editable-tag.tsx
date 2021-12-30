@@ -1,6 +1,6 @@
 import { forwardRef, Tag } from "@chakra-ui/react"
 
-export const EditableTag = forwardRef((props, ref) => {
+export const EditableTag = forwardRef<{}, "div">((props, ref) => {
   return (
     <Tag
       bg="backgroundSecondary"
