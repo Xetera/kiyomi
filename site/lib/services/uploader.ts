@@ -7,10 +7,10 @@ import {
   mimetypeMappings,
   parseExtension,
   sha256Hash,
-} from "@/lib/file"
+} from "../file"
 import idgen from "nanoid"
 import mimeType from "mime-types"
-import { WendyService } from "@/lib/services/wendy"
+import { WendyService } from "./wendy"
 
 export type UploaderOptions = {
   prisma: PrismaClient
