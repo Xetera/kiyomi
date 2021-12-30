@@ -28,18 +28,18 @@ model Account {
 }
 
 model Tag {
-  id            Int             @id @default(autoincrement())
-  categoryId    Int?            @map("category")
-  category      TagCategory?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  name          String          @unique
-  source        TagSource       @default(USER)
-  addedById     Int?            @map("added_by_id")
-  addedBy       User?           @relation(fields: [addedById], references: [id])
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at")
-  appearances   AppearanceTag[]
-  images        ImageTag[]
-  aliases       TagAlias[]
+  id          Int             @id @default(autoincrement())
+  categoryId  Int?            @map("category_id")
+  category    TagCategory?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  name        String          @unique
+  source      TagSource       @default(USER)
+  addedById   Int?            @map("added_by_id")
+  addedBy     User?           @relation(fields: [addedById], references: [id])
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at")
+  appearances AppearanceTag[]
+  images      ImageTag[]
+  aliases     TagAlias[]
 
   @@index([addedById], map: "tag_added_by")
   @@map("tags")
@@ -142,17 +142,17 @@ model Person {
 }
 
 model Appearance {
-  id        Int      @id @default(autoincrement())
-  personId  Int      @map("person_id")
-  addedById Int?     @map("added_by_id")
-  imageId   Int      @map("image_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-  addedBy   User?    @relation(fields: [addedById], references: [id], onDelete: SetNull)
-  image     Image    @relation("image_appearances", fields: [imageId], references: [id], onDelete: Cascade)
-  person    Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
-  faces     Face[]   @relation("apperance_face")
-  tags AppearanceTag[]
+  id        Int             @id @default(autoincrement())
+  personId  Int             @map("person_id")
+  addedById Int?            @map("added_by_id")
+  imageId   Int             @map("image_id")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @default(now()) @updatedAt @map("updated_at")
+  addedBy   User?           @relation(fields: [addedById], references: [id], onDelete: SetNull)
+  image     Image           @relation("image_appearances", fields: [imageId], references: [id], onDelete: Cascade)
+  person    Person          @relation(fields: [personId], references: [id], onDelete: Cascade)
+  faces     Face[]          @relation("apperance_face")
+  tags      AppearanceTag[]
 
   @@unique([personId, imageId], map: "appearance")
   @@map("appearances")
@@ -395,6 +395,7 @@ model DiscoveredImage {
   duplicateDiscoveredImages  DiscoveredImage[]       @relation("discovery_duplicate_discovered_image")
 
   @@unique([providerType, uniqueIdentifier], map: "providerIdentity")
+  @@index([postId], map: "providerImagePost")
   @@map("discovered_images")
 }
 
@@ -423,6 +424,7 @@ model DiscoveredImageVote {
   user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, discoveredImageId], map: "userVote", name: "userVote")
+  @@index([discoveredImageId], map: "discoveredImageVotesImage")
   @@index([userId], map: "discovered_image_votes.user")
   @@map("discovered_image_votes")
 }

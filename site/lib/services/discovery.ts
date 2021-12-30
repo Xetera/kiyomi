@@ -107,10 +107,8 @@ export function makeDiscovery({ prisma }: DiscoveryOptions) {
       WHERE (
         WITH liked_images AS (
             SELECT di.id FROM discovered_images di
-              WHERE dp.id = di.post_id
-            INTERSECT
-            SELECT div.discovered_image_id FROM discovered_image_votes div
-              WHERE div.user_id = $1
+            INNER JOIN discovered_image_votes div on di.id = div.discovered_image_id
+            WHERE dp.id = di.post_id AND div.user_id = $1
         ),
          all_images AS (
              SELECT di.id

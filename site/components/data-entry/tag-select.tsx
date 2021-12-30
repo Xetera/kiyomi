@@ -135,7 +135,7 @@ const TagHints = forwardRef<TagHintsProps, "div">(
                         dangerouslySetInnerHTML={{ __html: snippets[0] ?? "" }}
                       />
                       <RiArrowRightLine />
-                      <Text fontSize="14px">{h.document.name}</Text>
+                      <Text>{h.document.name}</Text>
                     </HStack>
                   ) : (
                     <Text dangerouslySetInnerHTML={{ __html: snippet ?? "" }} />
