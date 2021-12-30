@@ -74,12 +74,15 @@ export function makeWendy({ prisma, amqp }: WendyOptions) {
       )
 
       const { faces, colors, hash } = result
-
       let existingAppearance: Appearance | undefined
-      const shouldLinkWithExistingAppearance = image.appearances.length === 1
+
+      const shouldLinkWithExistingAppearance =
+        image.appearances.length === 1 && result.faces.length === 1
+
       if (shouldLinkWithExistingAppearance) {
         existingAppearance = image.appearances[0]
       }
+
       if (faces.length > 0) {
         // TODO: do this more intelligently
         await prisma.face.deleteMany({
