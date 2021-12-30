@@ -21,6 +21,7 @@ export type UploaderOptions = {
 export class UploadError extends Error {
   constructor(message: string, public status: number = 400) {
     super(message)
+    Object.setPrototypeOf(this, UploadError.prototype)
   }
 }
 

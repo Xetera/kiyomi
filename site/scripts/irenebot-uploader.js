@@ -1,11 +1,10 @@
 const fetch = require("node-fetch")
 const fs = require("fs")
-const jiu = require("./members/160.json")
 const path = require("path")
 const FormData = require("form-data")
 const members = require("./members.json")
 
-const production = true
+const production = false
 
 const JIU = 157
 const SUA = 158
@@ -62,13 +61,29 @@ const imageSize = (url) =>
 
 let _queue = Promise.resolve()
 
+const getIrene = (url, opts) =>
+  fetch(`https://api.irenebot.com/${url}/`, {
+    headers: {
+      "content-type": "application/json",
+    },
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.TOKEN}`,
+      "User-Agent": "simp.pics crawler",
+    },
+    redirect: "manual",
+    ...opts,
+  })
+
 const uploadFile = async (url, person, imageId) => {
   const form = new FormData()
-  form.append("url", url)
+  form.append("file", url)
+  console.log(url)
+  form.append("public", "true")
   form.append("source", "Irenebot (https://github.com/MujyKun/IreneBot)")
   form.append("ireneBotId", imageId)
   form.append("ireneBotIdolId", person.id)
-  form.append("ireneBotIdolName", person.fullname)
+  form.append("ireneBotIdolName", person.full_name)
   const response = await fetch(
     production
       ? "https://kiyomi.io/api/image/upload"
@@ -88,15 +103,7 @@ const DC = [JIU, SUA, SIYEON, HANDONG, YOOHYEON, DAMI, GAHYEON]
 
 async function memes(id, person) {
   try {
-    const res = await fetch(`https://api.irenebot.com/file/${id}/`, {
-      headers: {
-        "content-type": "application/json",
-      },
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.TOKEN}`,
-        "User-Agent": "simp.pics crawler",
-      },
+    const res = await getIrene(`/file/${id}`, {
       redirect: "manual",
     })
     if (res.status === 500) {
@@ -129,35 +136,61 @@ async function memes(id, person) {
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms))
 
-const target = 162
-const imagesOfIdol = (t) => require(`./members/${t}.json`)
+const imagesOfIdol = async (t) => {
+  const get = () => require(`./members/${t}.json`).ids.slice(0, 5)
+  try {
+    return get()
+  } catch (err) {
+    console.log(err)
+    await syncMemberImages(t)
+    return get()
+  }
+}
 
-parallelMap(
-  [DAMI].flatMap((d) =>
-    imagesOfIdol(d)
-      .slice(0, 1)
-      .map((image) => ({
-        imageId: image.id,
-        personId: d,
-      }))
-  ),
-  async ({ imageId, personId }) => {
-    console.log(members)
-    const person = members[personId]
-    await memes(imageId, person)
-    // production download delay
+async function downloadImages() {
+  const idolIds = [1, 2, 3, 4]
+  const getImages = async (d) =>
+    (await imagesOfIdol(d)).slice(0, 5).map((image) => ({
+      imageId: image,
+      personId: d,
+    }))
+  const inputs = (await Promise.all(idolIds.map(getImages))).flat()
+  parallelMap(
+    inputs,
+    async ({ imageId, personId }) => {
+      const person = members[personId]
+      await memes(imageId, { ...person, id: personId })
+      // production download delay
+      await sleep(2000)
+    },
+    5
+  ).then((r) => {
+    console.log("done!")
+    // process.exit(0);
+  })
+}
+
+async function syncMemberImages(id) {
+  const result = await getIrene(`/photos/${id}/list`, {
+    method: "GET",
+  }).then((r) => r.buffer())
+  await fs.promises.writeFile(`./members/${id}.json`, result)
+}
+
+async function syncImages() {
+  const mems = Object.entries(members).slice(0, 5)
+  await parallelMap(mems, async ([id, person]) => {
+    syncMemberImages(id)
     await sleep(2000)
-  },
-  5
-).then((r) => {
-  console.log("done!")
-  // process.exit(0);
-})
+  })
+  process.exit(0)
+}
 
 function pleaseDontExit() {
   setTimeout(pleaseDontExit, 1000)
 }
 
+downloadImages()
 pleaseDontExit()
 
 // }

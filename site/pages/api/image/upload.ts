@@ -10,13 +10,19 @@ export const config = {
   },
 }
 
+const numeric = z.string().regex(/^\d+$/).transform(Number)
+const boolic = z
+  .string()
+  .regex(/(true|false)/)
+  .transform((f) => f === "true")
+
 const UploadSchema = z.object({
-  public: z.boolean().default(false),
+  public: boolic,
   // only available if no file
   url: z.string().nullish(),
   source: z.string().nullish(),
-  ireneBotId: z.number().nullish(),
-  ireneBotIdolId: z.number().nullish(),
+  ireneBotId: numeric,
+  ireneBotIdolId: numeric,
   ireneBotIdolName: z.string().nullish(),
 })
 
@@ -81,14 +87,18 @@ export default handle(
               uploadType: contextType,
             })
           } catch (err) {
+            console.log(err)
             if (err instanceof UploadError) {
+              console.log("is upload error")
               res.status(err.status).json({ error: err.message })
               return
-            } else {
-              console.error(err)
+            } else if (err instanceof Error) {
+              console.log("is not upload error")
               res.status(500).json({ error: "Internal server error" })
               return
             }
+            res.status(500).json({ error: "wtf?" })
+            return
           }
 
           return res.json(image)

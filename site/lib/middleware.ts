@@ -114,7 +114,11 @@ export function handle(f: Middleware<BaseContext>): NextApiHandler {
     } catch (error) {
       res.statusCode = 500
       console.log(error)
-      res.json({ error })
+      if (error instanceof Error) {
+        res.json({ error: error.message })
+      } else {
+        res.json({ error: "Internal Server Error" })
+      }
     }
   }
 }

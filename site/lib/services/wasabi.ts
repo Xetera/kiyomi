@@ -11,13 +11,14 @@ export type UploadableImage = {
 export function makeWasabi() {
   const config = {
     bucketName: process.env.WASABI_BUCKET_NAME!,
-    region: "eu-east-1",
+    region: "us-east-1",
     accessKeyId: process.env.WASABI_ACCESS_KEY!,
     secretAccessKey: process.env.WASABI_SECRET!,
   }
 
   const wasabi = new S3({
     endpoint: "https://s3.wasabisys.com",
+    region: config.region,
     credentials: config,
   })
 
