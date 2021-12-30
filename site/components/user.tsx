@@ -24,7 +24,6 @@ export function User({
   const imageDimensions = ["64px", "96px"]
   const isAdmin = user?.roles.find((role) => role.name === "ADMINISTRATOR")
   const isBot = Boolean(user?.bot)
-  console.log({ user })
   return (
     <HStack align="top" flexFlow="row" spacing={8} w="full">
       <Box borderRadius="md" overflow="hidden">

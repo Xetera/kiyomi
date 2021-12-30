@@ -68,7 +68,6 @@ const getFormattedJson = (input: any) => {
 
 const ProviderList = () => {
   const { data: providers } = useDiscoveryProvidersQuery()
-  console.log({ providers })
   if (!providers) {
     return <Spinner />
   }
@@ -153,9 +152,7 @@ export const AddProvider = () => {
   const { errors } = formState
 
   async function onSubmit(form: AddProviderInput) {
-    console.log({ form })
     const result = await mutateAsync({ provider: form })
-    console.log({ result })
     setResponse(result.addProvider)
     client.invalidateQueries(["DiscoveryProviders"])
   }

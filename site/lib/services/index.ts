@@ -7,7 +7,7 @@ import { makeWendy, WendyService } from "./wendy"
 import { makeUploader, UploaderService } from "./uploader"
 import { makeWasabi, WasabiService } from "./wasabi"
 import { makeSearch, SearchService } from "./search"
-import { makeTag, TagService } from "@/lib/services/tag"
+import { makeTag, TagService } from "./tag"
 
 export type Services = {
   prisma: PrismaClient

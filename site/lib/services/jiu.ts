@@ -158,8 +158,6 @@ export function makeJiu(opts: JiuServiceOptions) {
           }
           const dd =
             hash.status === "fulfilled" ? Array.from(hash.value.cube) : []
-          console.log(dd)
-          console.log(message.provider.type, image.uniqueIdentifier)
           await prisma.$executeRawUnsafe(
             `
             UPDATE discovered_images SET p_hash = CUBE(ARRAY[${dd.join(",")}])

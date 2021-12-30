@@ -50,7 +50,6 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
     (a) => searchIdol(name),
     { enabled: false }
   )
-  console.log(data)
   useDebounce(
     () => {
       if (name !== "") {
