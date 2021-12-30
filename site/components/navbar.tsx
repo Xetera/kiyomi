@@ -162,6 +162,7 @@ export function Navbar() {
         <Box>
           <HStack spacing={3} display={["none", null, null, "flex"]}>
             <NavLink href="/">Home</NavLink>
+            <NavLink href="/browse">Browse</NavLink>
             <NavLink href="/discover">Discover</NavLink>
             <NavLink href="/api/graphql" hardLink>
               API
@@ -186,9 +187,6 @@ export function Navbar() {
             {...navSpacing}
           >
             <RiSearchLine />
-            <Text display={{ base: "none", lg: "block" }}>
-              Press <Kbd>/</Kbd> to search
-            </Text>
           </HStack>
           {session?.user ? (
             <>

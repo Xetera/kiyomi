@@ -26,7 +26,6 @@ query OneImage($slug: String!) {
     }
     liked
     uploadedBy {
-      avatar
       ...UserData
       roles {
         ...UserRoleData
