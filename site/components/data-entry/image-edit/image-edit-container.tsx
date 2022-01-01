@@ -236,7 +236,7 @@ const ImageSelf = ({
       w="full"
       justifyContent="space-between"
       flexFlow="column"
-      overflow="auto"
+      overflow="hidden"
     >
       <VStack h="full" w="full" as="section" overflow="auto">
         {/*<VStack spacing={3} p={5}>*/}
@@ -465,7 +465,7 @@ export const ImageEditEditor = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <SearchBar addPerson={addAppearance_} />
-      <VStack bg="#0d0f16">
+      <VStack bg="#0d0f16" overflow="hidden">
         <ImageSelf
           appearances={Object.values(appearances)}
           removeAppearance={removeAppearance_}

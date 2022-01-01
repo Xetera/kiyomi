@@ -1554,6 +1554,7 @@ export type QueryImagesArgs = {
 
 export type QueryPeopleArgs = {
   cursor?: Maybe<PersonWhereUniqueInput>;
+  orderBy?: Maybe<Array<PersonOrderByWithRelationInput>>;
   skip?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
   where?: Maybe<PersonWhereInput>;
@@ -1858,6 +1859,56 @@ export type UserWhereInput = {
   updatedAt?: Maybe<DateTimeFilter>;
 };
 
+export type PersonGridDataFragment = (
+  { __typename?: 'Person' }
+  & Pick<Person, 'id' | 'name'>
+  & { avatar?: Maybe<(
+    { __typename?: 'Image' }
+    & { thumbnail: (
+      { __typename?: 'Thumbnail' }
+      & Pick<Thumbnail, 'medium'>
+    ) }
+  )>, preferredMembership?: Maybe<(
+    { __typename?: 'GroupMember' }
+    & { group: (
+      { __typename?: 'Group' }
+      & Pick<Group, 'name'>
+    ) }
+  )>, preferredAlias?: Maybe<(
+    { __typename?: 'Alias' }
+    & Pick<Alias, 'name'>
+  )> }
+);
+
+export type BrowsePageIdolsWithFilterQueryVariables = Exact<{
+  skip: Scalars['Int'];
+  take: Scalars['Int'];
+  groups: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type BrowsePageIdolsWithFilterQuery = (
+  { __typename?: 'Query' }
+  & { people: Array<(
+    { __typename?: 'Person' }
+    & PersonGridDataFragment
+  )> }
+);
+
+export type BrowsePageIdolsQueryVariables = Exact<{
+  skip: Scalars['Int'];
+  take: Scalars['Int'];
+}>;
+
+
+export type BrowsePageIdolsQuery = (
+  { __typename?: 'Query' }
+  & { people: Array<(
+    { __typename?: 'Person' }
+    & PersonGridDataFragment
+  )> }
+);
+
 export type BrowsePageQueryVariables = Exact<{
   take: Scalars['Int'];
   skip?: Maybe<Scalars['Int']>;
@@ -2070,6 +2121,10 @@ export type AppearanceDataFragment = (
   & { person: (
     { __typename?: 'Person' }
     & Pick<Person, 'id' | 'name'>
+    & { preferredAlias?: Maybe<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )> }
   ) }
 );
 
@@ -2275,6 +2330,21 @@ export type GridImageFragment = (
   )> }
 );
 
+export type PersonGridImageFragment = (
+  { __typename?: 'Person' }
+  & Pick<Person, 'id' | 'name'>
+  & { preferredAlias?: Maybe<(
+    { __typename?: 'Alias' }
+    & Pick<Alias, 'name'>
+  )>, avatar?: Maybe<(
+    { __typename?: 'Image' }
+    & { thumbnail: (
+      { __typename?: 'Thumbnail' }
+      & Pick<Thumbnail, 'medium'>
+    ) }
+  )> }
+);
+
 export type AppearanceWithFacesFragment = (
   { __typename?: 'Appearance' }
   & Pick<Appearance, 'id'>
@@ -2416,12 +2486,34 @@ export type UserRoleDataFragment = (
   & Pick<Role, 'name'>
 );
 
+export const PersonGridDataFragmentDoc = `
+    fragment PersonGridData on Person {
+  id
+  avatar {
+    thumbnail {
+      medium
+    }
+  }
+  name
+  preferredMembership {
+    group {
+      name
+    }
+  }
+  preferredAlias {
+    name
+  }
+}
+    `;
 export const AppearanceDataFragmentDoc = `
     fragment AppearanceData on Appearance {
   id
   person {
     id
     name
+    preferredAlias {
+      name
+    }
   }
 }
     `;
@@ -2505,6 +2597,20 @@ export const GridImageFragmentDoc = `
   createdAt
 }
     `;
+export const PersonGridImageFragmentDoc = `
+    fragment PersonGridImage on Person {
+  id
+  name
+  preferredAlias {
+    name
+  }
+  avatar {
+    thumbnail {
+      medium
+    }
+  }
+}
+    `;
 export const FaceDataFragmentDoc = `
     fragment FaceData on Face {
   id
@@ -2547,6 +2653,49 @@ export const UserRoleDataFragmentDoc = `
   name
 }
     `;
+export const BrowsePageIdolsWithFilterDocument = `
+    query BrowsePageIdolsWithFilter($skip: Int!, $take: Int!, $groups: [Int!]!) {
+  people(
+    skip: $skip
+    take: $take
+    orderBy: [{updatedAt: asc}]
+    where: {memberOf: {some: {group: {id: {in: $groups}}}}}
+  ) {
+    ...PersonGridData
+  }
+}
+    ${PersonGridDataFragmentDoc}`;
+export const useBrowsePageIdolsWithFilterQuery = <
+      TData = BrowsePageIdolsWithFilterQuery,
+      TError = unknown
+    >(
+      variables: BrowsePageIdolsWithFilterQueryVariables, 
+      options?: UseQueryOptions<BrowsePageIdolsWithFilterQuery, TError, TData>
+    ) => 
+    useQuery<BrowsePageIdolsWithFilterQuery, TError, TData>(
+      ['BrowsePageIdolsWithFilter', variables],
+      fetcher<BrowsePageIdolsWithFilterQuery, BrowsePageIdolsWithFilterQueryVariables>(BrowsePageIdolsWithFilterDocument, variables),
+      options
+    );
+export const BrowsePageIdolsDocument = `
+    query BrowsePageIdols($skip: Int!, $take: Int!) {
+  people(skip: $skip, take: $take, orderBy: [{updatedAt: asc}]) {
+    ...PersonGridData
+  }
+}
+    ${PersonGridDataFragmentDoc}`;
+export const useBrowsePageIdolsQuery = <
+      TData = BrowsePageIdolsQuery,
+      TError = unknown
+    >(
+      variables: BrowsePageIdolsQueryVariables, 
+      options?: UseQueryOptions<BrowsePageIdolsQuery, TError, TData>
+    ) => 
+    useQuery<BrowsePageIdolsQuery, TError, TData>(
+      ['BrowsePageIdols', variables],
+      fetcher<BrowsePageIdolsQuery, BrowsePageIdolsQueryVariables>(BrowsePageIdolsDocument, variables),
+      options
+    );
 export const BrowsePageDocument = `
     query BrowsePage($take: Int!, $skip: Int) {
   images(orderBy: [{createdAt: desc}], take: $take, skip: $skip) {

@@ -1,5 +1,5 @@
 import { Box, forwardRef, Image } from "@chakra-ui/react"
-import { focusToObjectPosition } from "@/components/image-grid-element"
+import { focusToObjectPosition } from "@/components/data-grids/generic-grid-element"
 import React from "react"
 
 const magicGradient =

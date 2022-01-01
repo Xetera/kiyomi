@@ -54,21 +54,20 @@ export function makeJiu(opts: JiuServiceOptions) {
     async handleJiuMessage(message: JiuMessageType): Promise<void> {
       // reversing because we want to process the most recently discovered post last
       for (const post of message.posts.reverse()) {
-        const hashes = await Promise.allSettled(
-          post.images.map(async (image) => {
-            const result = await opts.wendy
-              .mostSimilarImage(image.mediaUrl)
-              .catch((err) => {
-                console.error(err)
-                // rethrowing to make sure it's not marked as settled
-                throw err
-              })
-            return {
-              ...result,
-              uniqueIdentifier: image.uniqueIdentifier,
-            }
-          })
-        )
+        const promises = post.images.map(async (image) => {
+          const result = await opts.wendy
+            .mostSimilarImage(image.mediaUrl)
+            .catch((err) => {
+              console.error(err)
+              // rethrowing to make sure it's not marked as settled
+              throw err
+            })
+          return {
+            ...result,
+            uniqueIdentifier: image.uniqueIdentifier,
+          }
+        })
+        const hashes = await Promise.allSettled(promises)
         const metadata = JiuMessageMetadata.safeParse(post.metadata)
         const providerType = convertProviderType(message.provider.type)
         const discoveredImages = post.images.map(
@@ -186,7 +185,6 @@ export function makeJiu(opts: JiuServiceOptions) {
         },
         body: JSON.stringify(body),
       }).then((r) => r.text())
-      console.log(result)
       return result
     },
   }

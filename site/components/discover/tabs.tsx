@@ -6,19 +6,21 @@ import DiscoverSidebar from "@/components/discover/sidebar"
 import { DiscoveryHistorySidebar } from "@/components/discover/discovery-history-sidebar"
 import { AddProvider } from "@/components/discover/add-provider"
 
-const SidebarGrid = forwardRef<PropsWithChildren<any>, "main">((props, ref) => (
-  <Grid
-    as="main"
-    templateColumns={["1fr", null, null, "1fr 2fr"]}
-    templateRows={"auto"}
-    autoFlow={["row", null, null, "column"]}
-    gap={6}
-    {...props}
-    ref={ref}
-  >
-    {props.children}
-  </Grid>
-))
+export const SidebarGrid = forwardRef<PropsWithChildren<any>, "main">(
+  (props, ref) => (
+    <Grid
+      as="main"
+      templateColumns={["1fr", null, null, "1fr 2fr"]}
+      templateRows={"auto"}
+      autoFlow={["row", null, null, "column"]}
+      gap={6}
+      {...props}
+      ref={ref}
+    >
+      {props.children}
+    </Grid>
+  )
+)
 
 type DiscoverTabsOptions = {
   queue: React.ReactElement

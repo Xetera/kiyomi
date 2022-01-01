@@ -4,7 +4,7 @@ import React from "react"
 import { useMeQuery } from "@/lib/__generated__/graphql"
 import { GetServerSideProps } from "next"
 import { prefetchQuery } from "@/lib/client-helpers"
-import ImageGrid from "@/components/image-grid"
+import ImageGrid from "@/components/data-grids/image-grid"
 
 function Image() {
   const { data } = useMeQuery()

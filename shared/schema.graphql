@@ -1274,7 +1274,7 @@ type Query {
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
-  people(cursor: PersonWhereUniqueInput, skip: Int, take: Int, where: PersonWhereInput): [Person!]!
+  people(cursor: PersonWhereUniqueInput, orderBy: [PersonOrderByWithRelationInput!], skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   person(where: PersonWhereUniqueInput!): Person
   user(id: Int): User
 }

@@ -3,5 +3,8 @@ fragment AppearanceData on Appearance {
   person {
     id
     name
+    preferredAlias {
+      name
+    }
   }
 }

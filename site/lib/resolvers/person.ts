@@ -20,7 +20,7 @@ export const Person = objectType({
 })
 
 export const Query = queryField((t) => {
-  t.crud.people({ pagination: true, filtering: true })
+  t.crud.people({ pagination: true, filtering: true, ordering: true })
   t.crud.person()
 })
 

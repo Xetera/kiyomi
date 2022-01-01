@@ -43,7 +43,7 @@ const DiscoverySidebarSearch = () => {
       setHits={setHits}
       runSearch={(text) => searchGroup(text).then((r) => r.hits ?? [])}
       filters={filters}
-      removeFilter={store.dispatch.discovery.removeGroup}
+      removeFilter={store.dispatch.discovery.removeFilter}
       addFilter={store.dispatch.discovery.addFilter}
     />
   )

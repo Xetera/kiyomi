@@ -71,7 +71,10 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
               minWidth="80px"
             >
               <Box color="gray.100" textAlign="center" maxW="full">
-                {appearance ? appearance.person.name : "Unknown"}
+                {appearance
+                  ? appearance.person.preferredAlias?.name ??
+                    appearance.person.name
+                  : "Unknown"}
               </Box>
             </Text>
           </Box>

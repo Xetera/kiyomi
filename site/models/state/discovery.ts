@@ -22,7 +22,7 @@ export const discoveryModel = createModel<RootModel>()({
       state.query = query
       return state
     },
-    removeGroup(state, tag: SearchTag) {
+    removeFilter(state, tag: SearchTag) {
       const index = state.searchFilter.findIndex(
         (f) => f.type === tag.type && f.id === tag.id
       )

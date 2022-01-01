@@ -4,7 +4,7 @@ const path = require("path")
 const FormData = require("form-data")
 const members = require("./members.json")
 
-const production = false
+const production = true
 
 const JIU = 157
 const SUA = 158
@@ -141,27 +141,31 @@ const imagesOfIdol = async (t) => {
   try {
     return get()
   } catch (err) {
-    console.log(err)
+    console.log(`fetching ${t} images for the first time`)
     await syncMemberImages(t)
     return get()
   }
 }
 
 async function downloadImages() {
-  const idolIds = [1, 2, 3, 4]
+  const idolIds = Array(100)
+    .fill(0)
+    .map((_, i) => i + 1)
   const getImages = async (d) =>
     (await imagesOfIdol(d)).slice(0, 5).map((image) => ({
       imageId: image,
       personId: d,
     }))
-  const inputs = (await Promise.all(idolIds.map(getImages))).flat()
+  const inputs = (
+    await parallelMap(idolIds, (image) => getImages(image), 5)
+  ).flat()
   parallelMap(
     inputs,
     async ({ imageId, personId }) => {
       const person = members[personId]
       await memes(imageId, { ...person, id: personId })
       // production download delay
-      await sleep(2000)
+      await sleep(10000)
     },
     5
   ).then((r) => {

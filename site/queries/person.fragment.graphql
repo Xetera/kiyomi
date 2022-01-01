@@ -1,0 +1,12 @@
+fragment PersonGridImage on Person {
+    id
+    name
+    preferredAlias {
+        name
+    }
+    avatar {
+        thumbnail {
+            medium
+        }
+    }
+}

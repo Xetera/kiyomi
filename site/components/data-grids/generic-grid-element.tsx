@@ -9,7 +9,8 @@ import React, { useEffect, useRef, useState } from "react"
 import format from "date-fns/format"
 import { AnimatePresence, motion } from "framer-motion"
 
-export type FocusableImage = Pick<ImageData, "focus" | "width" | "height">
+export type FocusableImage = Pick<ImageData, "focus"> &
+  Pick<ImageData, "width" | "height">
 
 export type ImageGridElementProps = {
   forceSmall?: boolean
@@ -39,18 +40,27 @@ export const focusToObjectPosition = (image: FocusableImage) => {
 
 const ImageDisplay = ({ objectPosition, thumbnail }) => {
   const [loaded, setLoaded] = useState(false)
+  const [src, setSrc] = useState(thumbnail)
   const ref = useRef<HTMLImageElement | null>(null)
   useEffect(() => {
     if (ref.current?.complete) {
       setLoaded(true)
     }
   }, [])
+  function onError() {
+    // making sure we don't recursively call the same error handler if the fallback value errors
+    if (ref.current) {
+      ref.current.onerror = () => {}
+    }
+    setSrc(undefined)
+  }
   return (
     <Skeleton
       isLoaded={loaded}
       height="100%"
       startColor="bgPrimary"
       endColor="bgSecondary"
+      w="full"
     >
       <Image
         objectPosition={objectPosition}
@@ -58,26 +68,37 @@ const ImageDisplay = ({ objectPosition, thumbnail }) => {
         width="100%"
         height="100%"
         loading="lazy"
+        onError={onError}
         onLoad={() => setLoaded(true)}
         ref={ref}
-        src={thumbnail}
+        src={src}
       />
     </Skeleton>
   )
 }
 
-export function ImageGridElement(props: ImageGridElementProps) {
+export type GenericGridElement = {
+  href: string
+  src: string
+  focus?: FocusableImage
+  bottom?: React.ReactElement
+}
+
+export function GenericGridElement(
+  props: GenericGridElement /* ImageGridElementProps */
+) {
   const [hovering, setHovering] = useState(false)
-  const { image } = props
-  const objectPosition = image ? focusToObjectPosition(image) : ""
+  const { focus, bottom, src, href } = props
+  const objectPosition = focus ? focusToObjectPosition(focus) : ""
 
   return (
-    <Link href={image.url} key={image.id} passHref>
+    <Link href={href} passHref>
       <Flex
         onMouseOver={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
         height="100%"
         as="a"
+        w="full"
         flexDirection="column"
         objectFit="cover"
         background="gray.900"
@@ -85,54 +106,36 @@ export function ImageGridElement(props: ImageGridElementProps) {
         position="relative"
         overflow="hidden"
       >
-        <ImageDisplay
-          objectPosition={objectPosition}
-          thumbnail={image.thumbnail.small}
-        />
-        <AnimatePresence>
-          {hovering && (
-            <MotionBox
-              initial={{ "--opacity": 0.1 }}
-              exit={{ "--gradient": 0.1 }}
-              animate={{ "--gradient": 0.8 }}
-              transition="all"
-              transitionDuration="0.04s"
-              display="flex"
-              background="linear-gradient(to bottom, transparent, rgba(0, 0, 0, var(--gradient)))"
-              sx={{
-                "--gradient": 0.1,
-              }}
-              justifyContent="space-between"
-              p={2}
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              height="20%"
-              flexDirection="row"
-              alignItems="flex-end"
-            >
-              {image.appearances?.[0] && (
-                <Text
-                  fontSize="xs"
-                  color="white"
-                  zIndex="1000000"
-                  opacity="var(--gradient)"
-                >
-                  {image.appearances[0]?.person.name ?? "Unknown"}
-                </Text>
-              )}
-              <Text
-                as="time"
-                dateTime={image.createdAt}
-                fontSize="xs"
-                opacity="var(--gradient)"
+        <ImageDisplay objectPosition={objectPosition} thumbnail={src} />
+        {bottom && (
+          <AnimatePresence>
+            {hovering && (
+              <MotionBox
+                initial={{ "--opacity": 0.1 }}
+                exit={{ "--gradient": 0.1 }}
+                animate={{ "--gradient": 0.8 }}
+                transition="all"
+                transitionDuration="0.04s"
+                display="flex"
+                background="linear-gradient(to bottom, transparent, rgba(0, 0, 0, var(--gradient)))"
+                sx={{
+                  "--gradient": 0.1,
+                }}
+                justifyContent="space-between"
+                p={2}
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                height="20%"
+                flexDirection="row"
+                alignItems="flex-end"
               >
-                {format(new Date(image.createdAt), "MMMM yyyy")}
-              </Text>
-            </MotionBox>
-          )}
-        </AnimatePresence>
+                {bottom}
+              </MotionBox>
+            )}
+          </AnimatePresence>
+        )}
       </Flex>
     </Link> //
   )

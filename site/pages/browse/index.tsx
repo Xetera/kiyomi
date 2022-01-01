@@ -1,11 +1,16 @@
-import { WithNavbar } from "@/components/navbar"
-import { BrowsePage } from "@/components/browse/browse-page"
+import { BrowseImages } from "@/components/browse/images/browse-images"
+import BrowseBasePage, {
+  WithBrowsePageSidebar,
+} from "@/components/browse/browse-base"
 
 const Browse = () => {
   return (
-    <WithNavbar>
-      <BrowsePage />
-    </WithNavbar>
+    <BrowseBasePage>
+      <WithBrowsePageSidebar>
+        <div />
+        <BrowseImages />
+      </WithBrowsePageSidebar>
+    </BrowseBasePage>
   )
 }
 

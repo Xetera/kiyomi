@@ -1913,6 +1913,7 @@ export interface NexusGenArgTypes {
     }
     people: { // args
       cursor?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+      orderBy?: NexusGenInputs['PersonOrderByWithRelationInput'][] | null; // [PersonOrderByWithRelationInput!]
       skip?: number | null; // Int
       take?: number | null; // Int
       where?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
