@@ -38,7 +38,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     <>
       <LargeBanner
         height="80vh"
-        src={data?.person?.banner?.rawUrl ?? ":"}
+        src={data?.person?.banner?.rawUrl ?? "/"}
         gradient={magicGradientDark}
       />
       <Flex

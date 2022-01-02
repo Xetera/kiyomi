@@ -16,8 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!params?.id) {
     throw Error("Invalid page")
   }
-  const idStr = decodeUriFriendly(params.id as string)
-  const id = Number(idStr)
+  const id = decodeUriFriendly(params.id as string)
   const dehydratedState = await prefetchQuery("OnePerson", { id })
   return {
     props: {
