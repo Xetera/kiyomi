@@ -3,8 +3,16 @@ import {
   Person,
   Thumbnail,
 } from "@/lib/__generated__/graphql"
-import Link from "next/link"
-import { Box, Flex, Image, ImageProps, Skeleton, Text } from "@chakra-ui/react"
+import NextLink from "next/link"
+import {
+  Box,
+  Flex,
+  Image,
+  ImageProps,
+  Skeleton,
+  Text,
+  Link,
+} from "@chakra-ui/react"
 import React, { useEffect, useRef, useState } from "react"
 import format from "date-fns/format"
 import { AnimatePresence, motion } from "framer-motion"
@@ -112,12 +120,11 @@ export function GenericGridElement(
   const { focus, bottom, src, href } = props
 
   return (
-    <Link href={href} passHref>
-      <Flex
+    <NextLink href={href} passHref>
+      <Link
         onMouseOver={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
         height="100%"
-        as="a"
         w="full"
         flexDirection="column"
         objectFit="cover"
@@ -156,7 +163,7 @@ export function GenericGridElement(
             )}
           </AnimatePresence>
         )}
-      </Flex>
-    </Link> //
+      </Link>
+    </NextLink>
   )
 }

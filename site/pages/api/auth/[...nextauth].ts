@@ -4,18 +4,11 @@ import Adapters from "next-auth/adapters"
 import { prisma } from "@/lib/db"
 import { NextApiRequest, NextApiResponse } from "next"
 import { generateUserToken } from "@/lib/auth"
-import { Role } from "@/lib/permissions"
+import { filterValidRoles, Role } from "@/lib/permissions"
 import { JWT } from "next-auth/jwt"
 
 if (!process.env.JWT_SECRET) {
   throw new Error("Missing JWT_SECRET")
-}
-
-type Token = {
-  name: string
-  sub: string
-  email: string
-  picture: string
 }
 
 const options: NextAuthOptions = {
@@ -53,12 +46,19 @@ const options: NextAuthOptions = {
       algorithms: ["HS256"],
     },
   },
-  // database: process.env.DATABASE_URL,
   callbacks: {
+    async jwt(token, user) {
+      if (!user) {
+        return token
+      }
+      const roles = await prisma.role.findMany({ where: { userId: user.id } })
+      token.roles = filterValidRoles(roles.map((role) => role.name))
+      return token
+    },
     session: (session, user: JWT) => {
       const userId = Number(user.sub)
-      // @ts-ignore
       session.user.id = userId
+      session.user.roles = user.roles
       return Promise.resolve({
         ...session,
         id: userId,
@@ -86,7 +86,7 @@ const options: NextAuthOptions = {
       console.log(`Created new token for user ${user.name}`)
     },
   },
-  debug: true,
+  debug: process.env.NODE_ENV !== "production",
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

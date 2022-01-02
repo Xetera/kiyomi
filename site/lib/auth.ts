@@ -1,6 +1,7 @@
 import { PrismaClient, User } from "@prisma/client"
 import { randomBytes } from "crypto"
 import { Context } from "@/lib/context-type"
+import { GetServerSidePropsResult } from "next"
 
 const TOKEN_PREFIX = "KIYOMI_"
 
@@ -24,3 +25,7 @@ export const GraphqlAuth = {
     return Boolean(user)
   },
 }
+
+export const withAuthorizedUser = async (
+  f: (user: User) => Promise<GetServerSidePropsResult>
+): Promise<GetServerSidePropsResult> => {}

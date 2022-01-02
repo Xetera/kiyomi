@@ -128,7 +128,7 @@ export function Navbar() {
   const btnRef = useRef(null)
 
   function logout() {
-    signOut().then(console.log)
+    signOut()
   }
 
   function openSearch() {
