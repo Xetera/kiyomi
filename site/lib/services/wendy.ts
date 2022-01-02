@@ -7,10 +7,10 @@ import {
   PrismaClient,
 } from "@prisma/client"
 import { createClient } from "celery-node"
-import { rawUrl } from "./image"
 import chunk from "lodash/chunk"
 import { SimilarImage, similarImagesQuery } from "../db-queries"
 import { PERCEPTUAL_HASH_TASK_NAME } from "../../../shared/messageQueue"
+import { Routing } from "@/client/routing"
 
 const VERY_GRACIOUS_WENDY_TIMEOUT = 1000 * 60 * 30
 
@@ -68,7 +68,9 @@ export function makeWendy({ prisma, amqp }: WendyOptions) {
       }
 
       const taskName = `${process.env.LABELER_QUEUE_PREFIX}.full_label`
-      const task = wendyCelery.createTask(taskName).applyAsync([rawUrl(image)])
+      const task = wendyCelery
+        .createTask(taskName)
+        .applyAsync([Routing.toRawImage(image)])
       const result: FullLabelResult = await task.get(
         VERY_GRACIOUS_WENDY_TIMEOUT
       )

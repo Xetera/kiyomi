@@ -102,7 +102,13 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const slug = router.query.slug as string
   const reScan = useQueue({ slug })
   return (
-    <Stack className="align-start text-sm rounded" maxWidth="600px" mx="auto">
+    <Stack
+      alignItems="flex-start"
+      fontSize="sm"
+      borderRadius="md"
+      maxWidth="600px"
+      mx="auto"
+    >
       <CascadeChildren className="grid gap-4 text-sm">
         <Flex>
           <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />

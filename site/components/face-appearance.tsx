@@ -1,15 +1,20 @@
 import { useImageSliceCanvas } from "@/hooks/useImageSlice"
 import { FaceDataFragment, Image, Person } from "@/lib/__generated__/graphql"
 import { Flex, Text } from "@chakra-ui/layout"
-import { Grid, useBreakpointValue, VStack } from "@chakra-ui/react"
+import { Grid, Link, useBreakpointValue, VStack } from "@chakra-ui/react"
 import React from "react"
 import { EditableTag } from "@/components/data-entry/editable-tag"
+import { personPreferredName } from "@/client/data"
+import { Routing } from "@/client/routing"
+import NextLink from "next/link"
+
+type PartialPerson = Pick<Person, "name" | "id">
 
 export type FaceAppearance = {
   // image on the side
   appearance: {
     face?: FaceDataFragment
-    person?: Pick<Person, "name">
+    person?: PartialPerson
     tags?: Array<{ tag: { name: string } }>
   }
   image: Pick<Image, "rawUrl">
@@ -26,6 +31,11 @@ export function FaceAppearance({ appearance, image }: FaceAppearance) {
       objectFit: "cover",
     },
   })
+  const personName = (
+    <Text fontSize="sm" color={person ? "gray.100" : "gray.400"}>
+      {person ? personPreferredName(person) : <i>Unknown Person</i>}
+    </Text>
+  )
   return (
     <VStack spacing={3} w="full" mb={-2}>
       <Grid gridAutoFlow="column" gridTemplateColumns={["50px auto"]} gap={2}>
@@ -40,11 +50,23 @@ export function FaceAppearance({ appearance, image }: FaceAppearance) {
         >
           {canvas}
         </Flex>
-        <Flex height="100%" justifyContent="center" flexDirection="column">
-          <Text fontSize="sm" color={person ? "gray.100" : "gray.400"}>
-            {person?.name ?? <i>Unknown Person</i>}
-          </Text>
-        </Flex>
+        {person ? (
+          <NextLink
+            href={Routing.toPerson(person.id, personPreferredName(person))}
+            passHref
+          >
+            <Link
+              display="flex"
+              height="100%"
+              justifyContent="center"
+              flexDirection="column"
+            >
+              {personName}
+            </Link>
+          </NextLink>
+        ) : (
+          personName
+        )}
       </Grid>
       {appearance.tags && (
         <Flex flexFlow="row wrap">

@@ -4,10 +4,11 @@ import {
   Thumbnail,
 } from "@/lib/__generated__/graphql"
 import Link from "next/link"
-import { Box, Flex, Image, Skeleton, Text } from "@chakra-ui/react"
+import { Box, Flex, Image, ImageProps, Skeleton, Text } from "@chakra-ui/react"
 import React, { useEffect, useRef, useState } from "react"
 import format from "date-fns/format"
 import { AnimatePresence, motion } from "framer-motion"
+import { magicGradient } from "@/client/jsx-helpers"
 
 export type FocusableImage = Pick<ImageData, "focus"> &
   Pick<ImageData, "width" | "height">
@@ -38,41 +39,61 @@ export const focusToObjectPosition = (image: FocusableImage) => {
   )}`
 }
 
-const ImageDisplay = ({ objectPosition, thumbnail }) => {
+export type ImageDisplayProps = {
+  src: string
+  focus?: FocusableImage
+}
+
+export const ImageLoader = ({
+  focus,
+  src: srcDefault,
+  ...rest
+}: ImageDisplayProps & ImageProps) => {
   const [loaded, setLoaded] = useState(false)
-  const [src, setSrc] = useState(thumbnail)
+  const [src, setSrc] = useState(srcDefault)
+  const [errored, setErrored] = useState(false)
   const ref = useRef<HTMLImageElement | null>(null)
+  const objectPosition = focus ? focusToObjectPosition(focus) : ""
   useEffect(() => {
     if (ref.current?.complete) {
       setLoaded(true)
     }
   }, [])
-  function onError() {
+
+  function onError(err: any) {
+    console.log(src, srcDefault)
+    console.log(err)
     // making sure we don't recursively call the same error handler if the fallback value errors
     if (ref.current) {
       ref.current.onerror = () => {}
     }
-    setSrc(undefined)
+    setErrored(true)
   }
+
   return (
     <Skeleton
       isLoaded={loaded}
+      overflow="hidden"
       height="100%"
       startColor="bgPrimary"
       endColor="bgSecondary"
       w="full"
+      background="black"
     >
-      <Image
-        objectPosition={objectPosition}
-        objectFit="cover"
-        width="100%"
-        height="100%"
-        loading="lazy"
-        onError={onError}
-        onLoad={() => setLoaded(true)}
-        ref={ref}
-        src={src}
-      />
+      {!errored && (
+        <Image
+          objectPosition={objectPosition}
+          objectFit="cover"
+          width="100%"
+          height="100%"
+          loading="lazy"
+          onError={onError}
+          onLoad={() => setLoaded(true)}
+          ref={ref}
+          {...rest}
+          src={src}
+        />
+      )}
     </Skeleton>
   )
 }
@@ -89,7 +110,6 @@ export function GenericGridElement(
 ) {
   const [hovering, setHovering] = useState(false)
   const { focus, bottom, src, href } = props
-  const objectPosition = focus ? focusToObjectPosition(focus) : ""
 
   return (
     <Link href={href} passHref>
@@ -106,7 +126,7 @@ export function GenericGridElement(
         position="relative"
         overflow="hidden"
       >
-        <ImageDisplay objectPosition={objectPosition} thumbnail={src} />
+        <ImageLoader focus={focus} src={src} />
         {bottom && (
           <AnimatePresence>
             {hovering && (

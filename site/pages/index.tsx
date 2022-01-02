@@ -18,6 +18,7 @@ import { focusToObjectPosition } from "@/components/data-grids/generic-grid-elem
 import { AnimatePresence, motion } from "framer-motion"
 import { paginateBySkip } from "@/client/pagination"
 import { OgImage } from "@/components/og-image"
+import { Portrait } from "@/components/portrait"
 
 const AnimatedImage = motion(Image)
 
@@ -176,46 +177,18 @@ function HomeContent() {
           {trending?.homepage.map((trend, i) => {
             const opacity = i === selected ? "100%" : "40%"
             return (
-              <Flex
-                flexDir="column"
-                transition="all 0.4s ease-in-out"
-                opacity={opacity}
-                _hover={{
-                  opacity: "100%",
-                }}
-                key={trend.id}
-              >
-                <Box
-                  mx="auto"
-                  width="180px"
-                  height="320px"
-                  mb={3}
-                  key={trend.id}
-                  zIndex={1}
-                  borderRadius={"lg"}
-                  overflow="hidden"
-                  cursor="pointer"
-                  background="black"
-                  onClick={() => setSelected(i)}
-                >
-                  <Image
-                    objectFit="cover"
-                    h="full"
-                    src={
-                      trend.avatar
-                        ? trend.avatar.thumbnail.small
-                        : "https://placewaifu.com/image/200/320"
-                    }
-                  />
-                </Box>
-                <Text
-                  textStyle="heading-sm"
-                  color="text.100"
-                  textAlign="center"
-                >
-                  {trend.name}
-                </Text>
-              </Flex>
+              <Portrait
+                opacity={100}
+                height="320px"
+                width="180px"
+                onClick={() => setSelected(i)}
+                src={
+                  trend.avatar
+                    ? trend.avatar.thumbnail.small
+                    : "https://placewaifu.com/image/200/320"
+                }
+                name={trend.name}
+              />
             )
           })}
         </Grid>

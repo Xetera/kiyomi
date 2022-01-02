@@ -17,6 +17,7 @@ generates:
       - typescript-operations
       - typescript-react-query
     config:
+      dedupeFragments: true
       fetcher:
         endpoint: "`${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`"
         fetchParams:

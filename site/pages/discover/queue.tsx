@@ -87,7 +87,7 @@ export default function QueuePage() {
   return (
     <WithNavbar>
       <LargeBanner
-        url={`${process.env.NEXT_PUBLIC_BASE_URL_CDN}/fKgpCdJxphzlsWqy.webp`}
+        src={`${process.env.NEXT_PUBLIC_BASE_URL_CDN}/fKgpCdJxphzlsWqy.webp`}
         height={["14vh", "20vh", "20vh"]}
         objectPosition="50% 24%"
       />

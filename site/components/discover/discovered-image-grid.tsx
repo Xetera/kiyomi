@@ -30,7 +30,7 @@ import NextLink from "next/link"
 import { useMemo, useState } from "react"
 import { Verdict } from "@/lib/shared"
 import { Maybe } from "@/lib/__generated__/graphql"
-import { downloadDiscoveredImageUrl } from "@/lib/services/image"
+import { Routing } from "@/client/routing"
 
 type Images = DiscoveredPostProps["post"]["images"]
 
@@ -106,7 +106,7 @@ const DiscoveredImage = ({ image }: DiscoveredImageProps) => {
           <RiFullscreenLine />
         </Button>
         <Link
-          href={downloadDiscoveredImageUrl(image.id)}
+          href={Routing.toDiscoveredImageDownload(image.id)}
           {...hoverableButtonLike}
           target="_blank"
           display="flex"

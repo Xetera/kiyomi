@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import { rawUrl } from "@/lib/services/image"
 import fetch from "node-fetch"
+import { Routing } from "@/client/routing"
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, discoveredImageId } = req.query
@@ -27,7 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (!image) {
       return res.status(400).end()
     }
-    imageUrl = rawUrl(image)
+    imageUrl = Routing.toRawImage(image)
   }
   res.setHeader("Content-Disposition", `attachment;`)
   const imageBytes = await fetch(imageUrl)

@@ -1,7 +1,5 @@
 import React from "react"
-import { PersonPortrait } from "./person-preview"
 import { FaceContext, ImageContext } from "@/models/contexts"
-import { CascadeChildren } from "./animations/cascade-children"
 import { AnimatePresence, motion } from "framer-motion"
 import { useToggle } from "react-use"
 import { FaExpand, FaCompress } from "react-icons/fa"
@@ -11,8 +9,11 @@ import {
   ImageDataFragment,
 } from "@/lib/__generated__/graphql"
 import Hr from "./hr"
-import { Box, Button, Flex } from "@chakra-ui/react"
+import { Box, Link, Button, Image, Flex } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/layout"
+import { Routing } from "@/client/routing"
+import NextLink from "next/link"
+import { personPreferredName } from "@/client/data"
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
   image: ImageDataFragment
@@ -45,9 +46,6 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
           }}
           background="linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.25))"
           boxShadow="inset 0px 0px 1px 1px rgba(255, 255, 255, 0.3)"
-          _hover={{
-            background: "red",
-          }}
           style={{
             ...style,
           }}
@@ -153,22 +151,38 @@ export default function ImageDisplay() {
     faces: FaceDataFragment[],
     appearance?: AppearanceDataFragment
   ) {
-    return faces.map((face) => (
-      <Face
-        key={face.id}
-        forceActive={active}
-        appearance={appearance}
-        face={face}
-        image={image!}
-        style={{
-          left: (face.x * imageSize.width) / (image?.width ?? 1),
-          top: (face.y * imageSize.height) / (image?.height ?? 1),
-          width: (face.width * imageSize.width) / (image?.width ?? 1),
-          height: (face.height * imageSize.height) / (image?.height ?? 1),
-          pointerEvents: "none",
-        }}
-      />
-    ))
+    return faces.map((face) => {
+      const faceComponent = (
+        <Face
+          key={face.id}
+          forceActive={active}
+          appearance={appearance}
+          face={face}
+          image={image!}
+          style={{
+            pointerEvents: "visible",
+            left: (face.x * imageSize.width) / (image?.width ?? 1),
+            top: (face.y * imageSize.height) / (image?.height ?? 1),
+            width: (face.width * imageSize.width) / (image?.width ?? 1),
+            height: (face.height * imageSize.height) / (image?.height ?? 1),
+          }}
+        />
+      )
+      if (!appearance?.person) {
+        return faceComponent
+      }
+      return (
+        <NextLink
+          passHref
+          href={Routing.toPerson(
+            appearance?.person.id,
+            personPreferredName(appearance.person)
+          )}
+        >
+          <Link target="_blank">{faceComponent}</Link>
+        </NextLink>
+      )
+    })
   }
 
   const MAX_WIDTH = 1200
@@ -186,39 +200,49 @@ export default function ImageDisplay() {
       maxWidth={MAX_WIDTH}
       flexBasis={MAX_WIDTH}
     >
-      <div
+      <Box
+        position="relative"
+        borderRadius="md"
         className="relative rounded"
+        maxHeight={imageMaxHeight!}
         ref={(r) => (parentRef.current = r)}
-        style={{
-          maxHeight: imageMaxHeight!,
-        }}
+        onMouseEnter={(_) => setActive(true)}
+        onMouseLeave={(_) => setActive(false)}
       >
         {shouldBeExpandable && (
-          <div
-            className="absolute right-full height-full mr-2 xl:block hidden rounded cursor-pointer"
+          <Box
+            position="absolute"
+            right="full"
+            h="full"
+            mr={2}
+            display={{ base: "hidden", xl: "block" }}
+            cursor="pointer"
+            borderRadius="full"
             title="Toggle expanded view"
             onClick={(e) => toggleExpanded()}
           >
             <div className="sticky top-0 p-1">
               {expanded ? <FaCompress /> : <FaExpand />}
             </div>
-          </div>
+          </Box>
         )}
-        <div
-          className="left-0 right-0 absolute mx-auto pointer-events-none top-0"
-          style={{
-            maxWidth: image!.width! <= 1200 ? image.width! : "100%",
-            width: imageRef.current?.width,
-            maxHeight: imageMaxHeight!,
-          }}
+        <Box
+          left={0}
+          right={0}
+          position="absolute"
+          mx="auto"
+          top={0}
+          maxWidth={image!.width! <= 1200 ? image.width! : "100%"}
+          width={imageRef.current?.width}
+          maxHeight={imageMaxHeight}
         >
           {renderFaces(image.unknownFaces)}
           {image.appearances.flatMap((appearance, i) =>
             renderFaces(appearance.faces, appearance)
           )}
-        </div>
+        </Box>
         {/* @ts-ignore */}
-        <img
+        <Image
           ref={(input) => {
             imageRef.current = input
             // onLoad replacement for SSR
@@ -240,62 +264,17 @@ export default function ImageDisplay() {
             }
           }}
           src={image.rawUrl}
-          onMouseEnter={(_) => setActive(true)}
-          onMouseLeave={(_) => setActive(false)}
           {...(loaded ? {} : { width: image.width })}
           height={image.height!}
-          style={{
-            flexBasis: image.width! <= 1200 ? image.width! : "100%",
-            maxHeight: image.height! <= 800 ? image.height! : "100%",
-          }}
-          className="flex object-contain overflow-hidden m-auto rounded"
+          flexBasis={image.width! <= 1200 ? image.width! : "100%"}
+          maxHeight={image.height! <= 800 ? image.height! : "100%"}
+          display="flex"
+          objectFit="contain"
+          overflow="hidden"
+          m="auto"
+          borderRadius="md"
         />
-      </div>
-      {/* <div className="flex items-center w-full mt-4">
-        <a
-          href={image.rawUrl}
-          rel="external nofollower noopener"
-          target="_blank"
-          className="hover:underline text-sm mr-3 text-gray-400"
-        >
-          View Original
-        </a>
-        <Hr className="flex-1" />
-      </div> */}
-      {/* {(image.appearances?.length > 0 || image.unknownFaces?.length > 0) && (
-        <section className="mt-5">
-          <Flex mb={3} justifyContent="space-between" flexFlow="row">
-            <Flex flexDirection="column">
-              <h2 className="text-lg font-semibold">Appearing in this image</h2>
-              {image.unknownFaces.length > 0 && (
-                <p className="text-xs text-gray-500 mt-1 font-semibold">
-                  Unverified faces are faces that have not been linked to a
-                  known person.
-                </p>
-              )}
-            </Flex>
-          </Flex>
-          <CascadeChildren className="grid faces-grid flex-row gap-4">
-            {image.unknownFaces?.map((face) => {
-              return <PersonPortrait src={image.rawUrl} face={face} />;
-            })}
-            {image.appearances?.map((appearance) => {
-              const [face] = appearance.faces;
-              return (
-                <PersonPortrait
-                  src={image.rawUrl}
-                  appearance={appearance}
-                  face={face}
-                  prediction={
-                    face &&
-                    facePredictions?.find((f) => f.face === face.id)?.matches[0]
-                  }
-                />
-              );
-            })}
-          </CascadeChildren>
-        </section>
-      )} */}
+      </Box>
     </Flex>
   )
 }

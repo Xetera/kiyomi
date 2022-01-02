@@ -6,18 +6,24 @@ import {
   ImageGridProps,
 } from "@/components/data-grids/image-grid"
 import { PersonGridImageFragment } from "@/lib/__generated__/graphql"
-import { personPreferredName } from "@/client/data"
+import { personPreferredName, encodeUriFriendly } from "@/client/data"
+import { Routing } from "@/client/routing"
 
 const IdolGrid = forwardRef<{ people: PersonGridImageFragment[] }, "div">(
   ({ people, ...rest }, ref) => {
     return (
       <GenericAutoTiledGrid w="full">
-        {people.map((person) => (
-          <VStack maxHeight="385px" key={person.id}>
-            <GenericGridElement src={person.name} href="#" />
-            <Text>{personPreferredName(person)}</Text>
-          </VStack>
-        ))}
+        {people.map((person) => {
+          return (
+            <VStack maxHeight="385px" key={person.id}>
+              <GenericGridElement
+                src={person.avatar?.thumbnail.medium ?? ""}
+                href={Routing.toPerson(person.id, personPreferredName(person))}
+              />
+              <Text>{personPreferredName(person)}</Text>
+            </VStack>
+          )
+        })}
       </GenericAutoTiledGrid>
     )
   }

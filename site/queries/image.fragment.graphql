@@ -1,3 +1,12 @@
+fragment Focus on Image {
+  width
+  height
+  focus {
+    x
+    y
+  }
+}
+
 fragment ImageData on Image {
   id
   height

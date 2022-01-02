@@ -2007,6 +2007,75 @@ export type DiscoveryHistoryQuery = (
   )> }
 );
 
+export type OnePersonRelationshipImageFragment = (
+  { __typename?: 'Image' }
+  & { thumbnail: (
+    { __typename?: 'Thumbnail' }
+    & Pick<Thumbnail, 'small'>
+  ) }
+);
+
+export type OnePersonRelationshipMembershipFragment = (
+  { __typename?: 'GroupMember' }
+  & Pick<GroupMember, 'id' | 'startDate'>
+  & { group: (
+    { __typename?: 'Group' }
+    & Pick<Group, 'id' | 'name'>
+    & { avatar?: Maybe<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'width' | 'height'>
+      & { focus: (
+        { __typename?: 'ImageCoordinate' }
+        & Pick<ImageCoordinate, 'x' | 'y'>
+      ), thumbnail: (
+        { __typename?: 'Thumbnail' }
+        & Pick<Thumbnail, 'small'>
+      ) }
+    )> }
+  ) }
+);
+
+export type OnePersonQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type OnePersonQuery = (
+  { __typename?: 'Query' }
+  & { person?: Maybe<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'id' | 'name'>
+    & { appearances: Array<(
+      { __typename?: 'Appearance' }
+      & Pick<Appearance, 'id'>
+      & { image: (
+        { __typename?: 'Image' }
+        & GridImageFragment
+      ) }
+    )>, memberOf: Array<(
+      { __typename?: 'GroupMember' }
+      & OnePersonRelationshipMembershipFragment
+    )>, preferredMembership?: Maybe<(
+      { __typename?: 'GroupMember' }
+      & OnePersonRelationshipMembershipFragment
+    )>, aliases: Array<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )>, avatar?: Maybe<(
+      { __typename?: 'Image' }
+      & FocusFragment
+      & OnePersonRelationshipImageFragment
+    )>, preferredAlias?: Maybe<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )>, banner?: Maybe<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'rawUrl'>
+      & FocusFragment
+    )> }
+  )> }
+);
+
 export type AddToQueueMutationVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -2296,6 +2365,15 @@ export type HomepageQuery = (
   )> }
 );
 
+export type FocusFragment = (
+  { __typename?: 'Image' }
+  & Pick<Image, 'width' | 'height'>
+  & { focus: (
+    { __typename?: 'ImageCoordinate' }
+    & Pick<ImageCoordinate, 'x' | 'y'>
+  ) }
+);
+
 export type ImageDataFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette'>
@@ -2505,6 +2583,34 @@ export const PersonGridDataFragmentDoc = `
   }
 }
     `;
+export const OnePersonRelationshipImageFragmentDoc = `
+    fragment OnePersonRelationshipImage on Image {
+  thumbnail {
+    small
+  }
+}
+    `;
+export const OnePersonRelationshipMembershipFragmentDoc = `
+    fragment OnePersonRelationshipMembership on GroupMember {
+  id
+  startDate
+  group {
+    id
+    avatar {
+      width
+      height
+      focus {
+        x
+        y
+      }
+      thumbnail {
+        small
+      }
+    }
+    name
+  }
+}
+    `;
 export const AppearanceDataFragmentDoc = `
     fragment AppearanceData on Appearance {
   id
@@ -2543,6 +2649,16 @@ export const DiscoveryPostListableFragmentDoc = `
       url
       rawUrl
     }
+  }
+}
+    `;
+export const FocusFragmentDoc = `
+    fragment Focus on Image {
+  width
+  height
+  focus {
+    x
+    y
   }
 }
     `;
@@ -2834,6 +2950,55 @@ export const useDiscoveryHistoryQuery = <
     useQuery<DiscoveryHistoryQuery, TError, TData>(
       ['DiscoveryHistory', variables],
       fetcher<DiscoveryHistoryQuery, DiscoveryHistoryQueryVariables>(DiscoveryHistoryDocument, variables),
+      options
+    );
+export const OnePersonDocument = `
+    query OnePerson($id: Int!) {
+  person(where: {id: $id}) {
+    id
+    name
+    appearances {
+      id
+      image {
+        ...GridImage
+      }
+    }
+    memberOf {
+      ...OnePersonRelationshipMembership
+    }
+    preferredMembership {
+      ...OnePersonRelationshipMembership
+    }
+    aliases {
+      name
+    }
+    avatar {
+      ...Focus
+      ...OnePersonRelationshipImage
+    }
+    preferredAlias {
+      name
+    }
+    banner {
+      ...Focus
+      rawUrl
+    }
+  }
+}
+    ${GridImageFragmentDoc}
+${OnePersonRelationshipMembershipFragmentDoc}
+${FocusFragmentDoc}
+${OnePersonRelationshipImageFragmentDoc}`;
+export const useOnePersonQuery = <
+      TData = OnePersonQuery,
+      TError = unknown
+    >(
+      variables: OnePersonQueryVariables, 
+      options?: UseQueryOptions<OnePersonQuery, TError, TData>
+    ) => 
+    useQuery<OnePersonQuery, TError, TData>(
+      ['OnePerson', variables],
+      fetcher<OnePersonQuery, OnePersonQueryVariables>(OnePersonDocument, variables),
       options
     );
 export const AddToQueueDocument = `

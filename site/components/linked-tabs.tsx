@@ -13,11 +13,15 @@ export type LinkedTabsProps = {
 }
 export const LinkedTabs = (props: PropsWithChildren<LinkedTabsProps>) => {
   const router = useRouter()
-  console.log(router)
   return (
     <VStack spacing={8} w="full">
       <HStack>
         {props.tabs.map((tab) => {
+          console.log(router.asPath, tab.path)
+          const trimmedPath = tab.path.replace(
+            process.env.NEXT_PUBLIC_BASE_URL!,
+            ""
+          )
           return (
             <NextLink href={tab.path} passHref>
               <Link
@@ -26,7 +30,7 @@ export const LinkedTabs = (props: PropsWithChildren<LinkedTabsProps>) => {
                 fontWeight="medium"
                 px={3}
                 key={tab.path}
-                borderBottomWidth={router.pathname === tab.path ? "2px" : "0"}
+                borderBottomWidth={router.asPath === trimmedPath ? "2px" : "0"}
               >
                 {tab.component}
               </Link>

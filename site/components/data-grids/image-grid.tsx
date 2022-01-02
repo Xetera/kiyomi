@@ -21,7 +21,7 @@ export const GenericAutoTiledGrid = forwardRef<{}, "div">(
         gridAutoRows="300px"
         gridTemplateColumns={[
           "repeat(auto-fit, minmax(150px, 1fr))",
-          "repeat(auto-fill, minmax(220px, 1fr))",
+          "repeat(auto-fill, minmax(180px, 1fr))",
         ]}
         {...rest}
       >
@@ -35,47 +35,49 @@ const ImageGrid = forwardRef<ImageGridProps, "div">(
   ({ images, ...rest }, ref) => {
     return (
       <GenericAutoTiledGrid w="full">
-        {images.map((image) => (
-          <Box
-            maxHeight="385px"
-            key={image.id}
-            {...(image.aspectRatio > 1.4
-              ? { gridColumn: "auto / span 2" }
-              : {})}
-          >
-            <GenericGridElement
-              src={image.thumbnail.small}
-              href={image.url}
-              focus={{
-                focus: image.focus,
-                width: image.width,
-                height: image.height,
-              }}
-              bottom={
-                <>
-                  {image.appearances?.[0] && (
+        {images.map((image) => {
+          return (
+            <Box
+              maxHeight="385px"
+              key={image.id}
+              {...(image.aspectRatio > 1.4
+                ? { gridColumn: "auto / span 2" }
+                : {})}
+            >
+              <GenericGridElement
+                src={image.thumbnail.small}
+                href={image.url}
+                focus={{
+                  focus: image.focus,
+                  width: image.width,
+                  height: image.height,
+                }}
+                bottom={
+                  <>
+                    {image.appearances?.[0] && (
+                      <Text
+                        fontSize="xs"
+                        color="white"
+                        zIndex="1000000"
+                        opacity="var(--gradient)"
+                      >
+                        {image.appearances[0]?.person.name ?? "Unknown"}
+                      </Text>
+                    )}
                     <Text
+                      as="time"
+                      dateTime={image.createdAt}
                       fontSize="xs"
-                      color="white"
-                      zIndex="1000000"
                       opacity="var(--gradient)"
                     >
-                      {image.appearances[0]?.person.name ?? "Unknown"}
+                      {format(new Date(image.createdAt), "MMMM yyyy")}
                     </Text>
-                  )}
-                  <Text
-                    as="time"
-                    dateTime={image.createdAt}
-                    fontSize="xs"
-                    opacity="var(--gradient)"
-                  >
-                    {format(new Date(image.createdAt), "MMMM yyyy")}
-                  </Text>
-                </>
-              }
-            />
-          </Box>
-        ))}
+                  </>
+                }
+              />
+            </Box>
+          )
+        })}
       </GenericAutoTiledGrid>
     )
   }

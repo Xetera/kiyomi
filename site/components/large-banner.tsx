@@ -1,31 +1,45 @@
 import { Box, forwardRef, Image } from "@chakra-ui/react"
-import { focusToObjectPosition } from "@/components/data-grids/generic-grid-element"
+import {
+  FocusableImage,
+  focusToObjectPosition,
+} from "@/components/data-grids/generic-grid-element"
 import React from "react"
-
-const magicGradient =
-  "linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.908) 0%, rgba(0, 0, 0, 1) 19%, rgba(0, 0, 0, 0.841) 34%, rgba(0, 0, 0, 0.782) 47%, rgba(0, 0, 0, 0.498) 56.5%, rgba(0, 0, 0, 0.324) 65%, rgba(0, 0, 0, 0.256) 73%, rgba(0, 0, 0, 0.135) 80.2%, rgba(0, 0, 0, 0.102) 86.1%, rgba(0, 0, 0, 0.051) 91%, rgba(0, 0, 0, 0.015) 95.2%, rgba(0, 0, 0, 0.010) 98.2%, transparent 100%);"
+import { magicGradient } from "@/client/jsx-helpers"
 
 const DEFAULT_HEIGHT = ["30vh", "40vh", "55vh", "65vh"]
 
-export const LargeBanner = forwardRef(
-  ({ url, height = DEFAULT_HEIGHT, ...rest }, ref) => {
-    return (
-      <Box mb={3} height={height} display="flex" opacity={0.2}>
-        <Image
-          maxHeight="90vh"
-          top={0}
-          zIndex={-1}
-          draggable="false"
-          userSelect="none"
-          position="absolute"
-          objectFit="cover"
-          width="100%"
-          src={url}
-          sx={{ WebkitMaskImage: magicGradient }}
-          {...rest}
-          ref={ref}
-        />
-      </Box>
-    )
-  }
-)
+export const LargeBanner = forwardRef<
+  {
+    src: string
+    gradient?: string
+    focus?: FocusableImage
+    height?: string | string[]
+  },
+  "div"
+>(({ src, height, focus, gradient, ...rest }, ref) => {
+  const objectPosition = focus ? focusToObjectPosition(focus) : ""
+  return (
+    <Box
+      mb={3}
+      display="flex"
+      opacity={0.2}
+      height={["14vh", "20vh", "20vh"]}
+      {...rest}
+    >
+      <Image
+        maxHeight="90vh"
+        top={0}
+        zIndex={-1}
+        height={height ?? "100%"}
+        draggable="false"
+        userSelect="none"
+        position="absolute"
+        objectFit="cover"
+        width="100%"
+        src={src}
+        sx={{ WebkitMaskImage: gradient ?? magicGradient }}
+        ref={ref}
+      />
+    </Box>
+  )
+})

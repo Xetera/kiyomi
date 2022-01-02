@@ -20,8 +20,8 @@ import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
 import centroid from "@turf/centroid"
 import { points } from "@turf/helpers"
-import { imageUrl, rawUrl } from "../services/image"
 import { homepageQuery } from "../db-queries"
+import { Routing } from "@/client/routing"
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
@@ -96,7 +96,7 @@ export const Image = objectType({
       type: nonNull(Thumbnail),
       resolve(img) {
         const base = imgproxy
-          .image(rawUrl(img))
+          .image(Routing.toRawImage(img))
           .width(0)
           .resizeType("fill")
           .extension("webp")
@@ -118,13 +118,13 @@ export const Image = objectType({
     t.nonNull.string("url", {
       description: "Link to the image on the site",
       resolve(p) {
-        return imageUrl(p)
+        return Routing.toImage(p.slug)
       },
     })
     t.nonNull.string("rawUrl", {
       description: "Direct link to the image on the CDN",
       resolve(p) {
-        return rawUrl(p)
+        return Routing.toRawImage(p)
       },
     })
     t.nonNull.float("aspectRatio", {
@@ -503,7 +503,7 @@ export const PrivateQuery = queryField((t) => {
         Object.fromEntries(
           Object.entries(r).map(([key, value]) => [camelCase(key), value])
         )
-      // TODO: weights based on idol popularity?
+      // TODO: weights based on person popularity?
       return sampleSize<Response>(response, args.amount).map((res) => ({
         face: replace(res.face),
         image: replace(res.image),
