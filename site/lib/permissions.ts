@@ -5,9 +5,6 @@ import { URLSearchParams } from "url"
 
 export const NO_PERMISSIONS = "no-permissions"
 
-export const filterValidRoles = (roles: string[]) =>
-  roles.filter((role) => (roleValues as string[]).includes(role)) as Role[]
-
 export enum Role {
   User = "USER",
   Editor = "EDITOR",
@@ -15,6 +12,9 @@ export enum Role {
 }
 
 const roleValues = Object.values(Role)
+
+export const filterValidRoles = (roles: string[]) =>
+  roles.filter((role) => (roleValues as string[]).includes(role)) as Role[]
 
 export const PermissionsFor = {
   editingIdol: [Role.Editor],

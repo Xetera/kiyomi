@@ -730,6 +730,12 @@ export type GroupMemberWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
 };
 
+export type GroupMembership = {
+  endDate?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  startDate?: Maybe<Scalars['String']>;
+};
+
 export type GroupOrderByWithRelationInput = {
   aliases?: Maybe<GroupAliasOrderByRelationAggregateInput>;
   avatar?: Maybe<ImageOrderByWithRelationInput>;
@@ -1117,6 +1123,7 @@ export type Mutation = {
   toggleLike: Image;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
   unlinkFace: Scalars['Int'];
+  updatePerson?: Maybe<Person>;
 };
 
 
@@ -1198,6 +1205,12 @@ export type MutationToggleLikeArgs = {
 export type MutationUnlinkFaceArgs = {
   appearanceId: Scalars['Int'];
   faceId: Scalars['Int'];
+};
+
+
+export type MutationUpdatePersonArgs = {
+  id: Scalars['Int'];
+  update: UpdatePersonInputs;
 };
 
 export type NestedBoolFilter = {
@@ -1774,6 +1787,18 @@ export type Thumbnail = {
   small: Scalars['String'];
 };
 
+export type UpdatePersonInputs = {
+  aliases: Array<Scalars['String']>;
+  avatarId?: Maybe<Scalars['Int']>;
+  bannerId?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
+  gender?: Maybe<Gender>;
+  groups: Array<GroupMembership>;
+  name: Scalars['String'];
+  preferredAliasId?: Maybe<Scalars['Int']>;
+  preferredMembershipId?: Maybe<Scalars['Int']>;
+};
+
 export enum UploadType {
   AutoDiscovery = 'AUTO_DISCOVERY',
   Token = 'TOKEN',
@@ -1954,6 +1979,51 @@ export type DeleteAppearanceTagMutation = (
       { __typename?: 'Tag' }
       & Pick<Tag, 'name'>
     ) }
+  )> }
+);
+
+export type PersonEditQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type PersonEditQuery = (
+  { __typename?: 'Query' }
+  & { person?: Maybe<(
+    { __typename?: 'Person' }
+    & { memberOf: Array<(
+      { __typename?: 'GroupMember' }
+      & { group: (
+        { __typename?: 'Group' }
+        & Pick<Group, 'id' | 'name'>
+      ) }
+    )>, preferredMembership?: Maybe<(
+      { __typename?: 'GroupMember' }
+      & { group: (
+        { __typename?: 'Group' }
+        & Pick<Group, 'id' | 'name'>
+      ) }
+    )>, aliases: Array<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )>, preferredAlias?: Maybe<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'name'>
+    )>, banner?: Maybe<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'id' | 'rawUrl'>
+      & { thumbnail: (
+        { __typename?: 'Thumbnail' }
+        & Pick<Thumbnail, 'medium'>
+      ) }
+    )>, avatar?: Maybe<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'id' | 'rawUrl'>
+      & { thumbnail: (
+        { __typename?: 'Thumbnail' }
+        & Pick<Thumbnail, 'medium'>
+      ) }
+    )> }
   )> }
 );
 
@@ -2863,6 +2933,56 @@ export const useDeleteAppearanceTagMutation = <
     >(options?: UseMutationOptions<DeleteAppearanceTagMutation, TError, DeleteAppearanceTagMutationVariables, TContext>) => 
     useMutation<DeleteAppearanceTagMutation, TError, DeleteAppearanceTagMutationVariables, TContext>(
       (variables?: DeleteAppearanceTagMutationVariables) => fetcher<DeleteAppearanceTagMutation, DeleteAppearanceTagMutationVariables>(DeleteAppearanceTagDocument, variables)(),
+      options
+    );
+export const PersonEditDocument = `
+    query PersonEdit($id: Int!) {
+  person(where: {id: $id}) {
+    memberOf {
+      group {
+        id
+        name
+      }
+    }
+    preferredMembership {
+      group {
+        id
+        name
+      }
+    }
+    aliases {
+      name
+    }
+    preferredAlias {
+      name
+    }
+    banner {
+      id
+      rawUrl
+      thumbnail {
+        medium
+      }
+    }
+    avatar {
+      id
+      rawUrl
+      thumbnail {
+        medium
+      }
+    }
+  }
+}
+    `;
+export const usePersonEditQuery = <
+      TData = PersonEditQuery,
+      TError = unknown
+    >(
+      variables: PersonEditQueryVariables, 
+      options?: UseQueryOptions<PersonEditQuery, TError, TData>
+    ) => 
+    useQuery<PersonEditQuery, TError, TData>(
+      ['PersonEdit', variables],
+      fetcher<PersonEditQuery, PersonEditQueryVariables>(PersonEditDocument, variables),
       options
     );
 export const AddProviderDocument = `

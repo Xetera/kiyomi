@@ -1,7 +1,7 @@
 import { PrismaClient, User } from "@prisma/client"
 import { randomBytes } from "crypto"
 import { Context } from "@/lib/context-type"
-import { GetServerSidePropsResult } from "next"
+import { filterValidRoles, PermissionsFor, Role } from "./permissions"
 
 const TOKEN_PREFIX = "KIYOMI_"
 
@@ -14,9 +14,6 @@ export function getUserFromToken(
   token: string,
   db: PrismaClient
 ): Promise<User | null> {
-  if (!token.startsWith(TOKEN_PREFIX)) {
-    throw new Error("malformed token")
-  }
   return db.user.findUnique({ where: { token } })
 }
 
@@ -24,8 +21,14 @@ export const GraphqlAuth = {
   isLoggedIn(_: any, __: any, { user }: Context) {
     return Boolean(user)
   },
+  hasRole(inputRoles: readonly Role[]) {
+    return async (_: any, __: any, { user, prisma }: Context) => {
+      if (!user) {
+        return false
+      }
+      const roles = await prisma.role.findMany({ where: { userId: user.id } })
+      const validRoles = filterValidRoles(roles.map((role) => role.name))
+      return inputRoles.every((role) => validRoles.includes(role))
+    }
+  },
 }
-
-export const withAuthorizedUser = async (
-  f: (user: User) => Promise<GetServerSidePropsResult>
-): Promise<GetServerSidePropsResult> => {}

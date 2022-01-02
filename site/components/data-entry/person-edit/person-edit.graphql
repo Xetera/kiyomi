@@ -1,0 +1,36 @@
+query PersonEdit($id: Int!) {
+  person(where: { id: $id }) {
+    memberOf {
+      group {
+        id
+        name
+      }
+    }
+    preferredMembership {
+      group {
+        id
+        name
+      }
+    }
+    aliases {
+      name
+    }
+    preferredAlias {
+      name
+    }
+    banner {
+      id
+      rawUrl
+      thumbnail {
+        medium
+      }
+    }
+    avatar {
+      id
+      rawUrl
+      thumbnail {
+        medium
+      }
+    }
+  }
+}

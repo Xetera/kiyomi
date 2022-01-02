@@ -5,11 +5,13 @@ import {
 } from "@/components/data-entry/person-edit/page"
 import { WithNavbar } from "@/components/navbar"
 import { PermissionsFor, withAuthorizedUser } from "@/lib/permissions"
+import { useOnePersonQuery } from "@/lib/__generated__/graphql"
 
 const PersonEditPageWrapper = ({ id }: PersonEditPageProps) => {
+  const { data } = useOnePersonQuery({ id })
   return (
     <WithNavbar>
-      <PersonEditPage id={id} />
+      {data?.person && <PersonEditPage person={data.person} />}
     </WithNavbar>
   )
 }

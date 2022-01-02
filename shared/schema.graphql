@@ -652,6 +652,12 @@ input GroupMemberWhereUniqueInput {
   id: Int
 }
 
+input GroupMembership {
+  endDate: String
+  id: Int!
+  startDate: String
+}
+
 input GroupOrderByWithRelationInput {
   aliases: GroupAliasOrderByRelationAggregateInput
   avatar: ImageOrderByWithRelationInput
@@ -1033,6 +1039,7 @@ type Mutation {
   Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data
   """
   unlinkFace(appearanceId: Int!, faceId: Int!): Int!
+  updatePerson(id: Int!, update: UpdatePersonInputs!): Person
 }
 
 input NestedBoolFilter {
@@ -1468,6 +1475,18 @@ type Thumbnail {
   large: String!
   medium: String!
   small: String!
+}
+
+input UpdatePersonInputs {
+  aliases: [String!]!
+  avatarId: Int
+  bannerId: Int
+  description: String
+  gender: Gender
+  groups: [GroupMembership!]!
+  name: String!
+  preferredAliasId: Int
+  preferredMembershipId: Int
 }
 
 enum UploadType {

@@ -1,4 +1,6 @@
 {
     "discord.enabled": false,
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "graphql-config.load.rootDir": ".",
+    "graphql-config.load.filePath": ".graphqlrc.json"
 }

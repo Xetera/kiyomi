@@ -1,4 +1,13 @@
-import { objectType, queryField, mutationField } from "nexus"
+import {
+  inputObjectType,
+  list,
+  mutationField,
+  nonNull,
+  objectType,
+  queryField,
+} from "nexus"
+import { GraphqlAuth } from "@/lib/auth"
+import { Role } from "@/lib/permissions"
 
 export const Person = objectType({
   name: "Person",
@@ -17,6 +26,45 @@ export const Person = objectType({
       .updatedAt()
       .createdAt()
   },
+})
+
+const GroupMembership = inputObjectType({
+  name: "GroupMembership",
+  definition(t) {
+    t.nonNull.int("id")
+    t.string("startDate")
+    t.string("endDate")
+  },
+})
+
+export const UpdatePersonInputs = inputObjectType({
+  name: "UpdatePersonInputs",
+  definition(t) {
+    t.nonNull.string("name")
+    t.string("description")
+    t.field("gender", { type: "Gender" })
+    t.nonNull.list.nonNull.string("aliases")
+    t.int("preferredAliasId")
+    t.nonNull.field("groups", { type: list(nonNull(GroupMembership)) })
+    t.int("preferredMembershipId")
+    t.int("avatarId")
+    t.int("bannerId")
+  },
+})
+
+export const Mutation = mutationField((t) => {
+  const authorize = GraphqlAuth.hasRole([Role.Editor])
+  t.field("updatePerson", {
+    type: "Person",
+    authorize,
+    args: {
+      id: nonNull("Int"),
+      update: nonNull(UpdatePersonInputs),
+    },
+    async resolve(_, args, { prisma }) {
+      // args.person.name
+    },
+  })
 })
 
 export const Query = queryField((t) => {

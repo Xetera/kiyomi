@@ -446,6 +446,11 @@ export interface NexusGenInputs {
     groupId_personId?: NexusGenInputs['GroupMemberGroupIdPersonIdCompoundUniqueInput'] | null; // GroupMemberGroupIdPersonIdCompoundUniqueInput
     id?: number | null; // Int
   }
+  GroupMembership: { // input type
+    endDate?: string | null; // String
+    id: number; // Int!
+    startDate?: string | null; // String
+  }
   GroupOrderByWithRelationInput: { // input type
     aliases?: NexusGenInputs['GroupAliasOrderByRelationAggregateInput'] | null; // GroupAliasOrderByRelationAggregateInput
     avatar?: NexusGenInputs['ImageOrderByWithRelationInput'] | null; // ImageOrderByWithRelationInput
@@ -943,6 +948,17 @@ export interface NexusGenInputs {
     source?: NexusGenInputs['EnumTagSourceFilter'] | null; // EnumTagSourceFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
+  UpdatePersonInputs: { // input type
+    aliases: string[]; // [String!]!
+    avatarId?: number | null; // Int
+    bannerId?: number | null; // Int
+    description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
+    groups: NexusGenInputs['GroupMembership'][]; // [GroupMembership!]!
+    name: string; // String!
+    preferredAliasId?: number | null; // Int
+    preferredMembershipId?: number | null; // Int
+  }
   UserOrderByWithRelationInput: { // input type
     DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteOrderByRelationAggregateInput'] | null; // DiscoveredImageVoteOrderByRelationAggregateInput
     appearanceTags?: NexusGenInputs['AppearanceTagOrderByRelationAggregateInput'] | null; // AppearanceTagOrderByRelationAggregateInput
@@ -1321,6 +1337,7 @@ export interface NexusGenFieldTypes {
     scanFaces: NexusGenRootTypes['QueueInfo']; // QueueInfo!
     toggleLike: NexusGenRootTypes['Image']; // Image!
     unlinkFace: number; // Int!
+    updatePerson: NexusGenRootTypes['Person'] | null; // Person
   }
   Person: { // field return type
     aliases: NexusGenRootTypes['Alias'][]; // [Alias!]!
@@ -1621,6 +1638,7 @@ export interface NexusGenFieldTypeNames {
     scanFaces: 'QueueInfo'
     toggleLike: 'Image'
     unlinkFace: 'Int'
+    updatePerson: 'Person'
   }
   Person: { // field return type name
     aliases: 'Alias'
@@ -1831,6 +1849,10 @@ export interface NexusGenArgTypes {
     unlinkFace: { // args
       appearanceId: number; // Int!
       faceId: number; // Int!
+    }
+    updatePerson: { // args
+      id: number; // Int!
+      update: NexusGenInputs['UpdatePersonInputs']; // UpdatePersonInputs!
     }
   }
   Person: {
