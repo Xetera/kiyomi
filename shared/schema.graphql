@@ -1170,6 +1170,7 @@ type Person {
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
   avatar: Image
   banner: Image
+  birthDate: DateTime
   createdAt: DateTime!
   faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
@@ -1198,6 +1199,7 @@ input PersonOrderByWithRelationInput {
   avatarId: SortOrder
   banner: ImageOrderByWithRelationInput
   bannerId: SortOrder
+  birthDate: SortOrder
   createdAt: SortOrder
   description: SortOrder
   gender: SortOrder
@@ -1223,6 +1225,7 @@ input PersonWhereInput {
   avatarId: IntNullableFilter
   banner: ImageWhereInput
   bannerId: IntNullableFilter
+  birthDate: DateTimeNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   gender: EnumGenderNullableFilter

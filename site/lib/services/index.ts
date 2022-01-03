@@ -8,6 +8,7 @@ import { makeUploader, UploaderService } from "./uploader"
 import { makeWasabi, WasabiService } from "./wasabi"
 import { makeSearch, SearchService } from "./search"
 import { makeTag, TagService } from "./tag"
+import { makePerson, PersonService } from "@/lib/services/person"
 
 export type Services = {
   prisma: PrismaClient
@@ -20,6 +21,7 @@ export type Services = {
   wasabi: WasabiService
   search: SearchService
   tag: TagService
+  person: PersonService
 }
 
 export function createServices(
@@ -41,5 +43,6 @@ export function createServices(
     xp: makeXp({ prisma }),
     uploader: makeUploader({ prisma, wasabi, wendy }),
     tag: makeTag({ prisma, search }),
+    person: makePerson({ prisma }),
   }
 }

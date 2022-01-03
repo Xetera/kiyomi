@@ -88,8 +88,8 @@ export default function QueuePage() {
     <WithNavbar>
       <LargeBanner
         src={`${process.env.NEXT_PUBLIC_BASE_URL_CDN}/fKgpCdJxphzlsWqy.webp`}
-        height={["14vh", "20vh", "20vh"]}
-        objectPosition="50% 24%"
+        height="80vh"
+        objectPosition="50% 10%"
       />
       <VStack mx="auto" maxW="6xl" w="full">
         <DiscoverTabs queue={<Queue />} history={<DiscoveryHistory />} />

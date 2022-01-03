@@ -1,4 +1,5 @@
 fragment OnePersonRelationshipImage on Image {
+    id
     thumbnail {
         small
     }
@@ -28,6 +29,7 @@ query OnePerson($id: Int!) {
     person(where: {id: $id}) {
         id
         name
+        birthDate
         appearances {
             id
             image {
@@ -41,6 +43,7 @@ query OnePerson($id: Int!) {
             ...OnePersonRelationshipMembership
         }
         aliases {
+            id
             name
         }
         avatar {
@@ -48,9 +51,11 @@ query OnePerson($id: Int!) {
             ...OnePersonRelationshipImage
         }
         preferredAlias {
+            id
             name
         }
         banner {
+            id
             ...Focus
             # Do we want this? idk
             rawUrl

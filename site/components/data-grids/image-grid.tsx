@@ -1,4 +1,4 @@
-import { Box, forwardRef, Grid, Text } from "@chakra-ui/react"
+import { Box, Flex, forwardRef, Grid, Text } from "@chakra-ui/react"
 import format from "date-fns/format"
 import React from "react"
 import {
@@ -53,7 +53,7 @@ const ImageGrid = forwardRef<ImageGridProps, "div">(
                   height: image.height,
                 }}
                 bottom={
-                  <>
+                  <Flex w="full" justify="space-between" p={2}>
                     {image.appearances?.[0] && (
                       <Text
                         fontSize="xs"
@@ -72,7 +72,7 @@ const ImageGrid = forwardRef<ImageGridProps, "div">(
                     >
                       {format(new Date(image.createdAt), "MMMM yyyy")}
                     </Text>
-                  </>
+                  </Flex>
                 }
               />
             </Box>

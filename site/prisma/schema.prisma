@@ -127,6 +127,7 @@ model Person {
   preferredMembershipId Int?          @map("preferred_membership_id")
   bannerId              Int?          @unique(map: "persons.banner_id_unique") @map("banner_id")
   avatarId              Int?          @unique(map: "persons.avatar_id_unique") @map("avatar_id")
+  birthDate             DateTime?      @map("birth_date")
   gender                Gender?
   avatar                Image?        @relation("person_avatar", fields: [avatarId], references: [id])
   banner                Image?        @relation("person_banner", fields: [bannerId], references: [id], onUpdate: SetNull)

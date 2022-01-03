@@ -1342,6 +1342,7 @@ export type Person = {
   appearances: Array<Appearance>;
   avatar?: Maybe<Image>;
   banner?: Maybe<Image>;
+  birthDate?: Maybe<Scalars['DateTime']>;
   createdAt: Scalars['DateTime'];
   faces: Array<Face>;
   id: Scalars['Int'];
@@ -1398,6 +1399,7 @@ export type PersonOrderByWithRelationInput = {
   avatarId?: Maybe<SortOrder>;
   banner?: Maybe<ImageOrderByWithRelationInput>;
   bannerId?: Maybe<SortOrder>;
+  birthDate?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
   description?: Maybe<SortOrder>;
   gender?: Maybe<SortOrder>;
@@ -1423,6 +1425,7 @@ export type PersonWhereInput = {
   avatarId?: Maybe<IntNullableFilter>;
   banner?: Maybe<ImageWhereInput>;
   bannerId?: Maybe<IntNullableFilter>;
+  birthDate?: Maybe<DateTimeNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
   description?: Maybe<StringNullableFilter>;
   gender?: Maybe<EnumGenderNullableFilter>;
@@ -1982,15 +1985,16 @@ export type DeleteAppearanceTagMutation = (
   )> }
 );
 
-export type PersonEditQueryVariables = Exact<{
+export type PersonEditDataQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type PersonEditQuery = (
+export type PersonEditDataQuery = (
   { __typename?: 'Query' }
   & { person?: Maybe<(
     { __typename?: 'Person' }
+    & Pick<Person, 'birthDate'>
     & { memberOf: Array<(
       { __typename?: 'GroupMember' }
       & { group: (
@@ -2023,6 +2027,48 @@ export type PersonEditQuery = (
         { __typename?: 'Thumbnail' }
         & Pick<Thumbnail, 'medium'>
       ) }
+    )> }
+  )> }
+);
+
+export type PersonEditMutationVariables = Exact<{
+  id: Scalars['Int'];
+  input: UpdatePersonInputs;
+}>;
+
+
+export type PersonEditMutation = (
+  { __typename?: 'Mutation' }
+  & { updatePerson?: Maybe<(
+    { __typename?: 'Person' }
+    & Pick<Person, 'id' | 'name' | 'birthDate'>
+    & { appearances: Array<(
+      { __typename?: 'Appearance' }
+      & Pick<Appearance, 'id'>
+      & { image: (
+        { __typename?: 'Image' }
+        & GridImageFragment
+      ) }
+    )>, memberOf: Array<(
+      { __typename?: 'GroupMember' }
+      & OnePersonRelationshipMembershipFragment
+    )>, preferredMembership?: Maybe<(
+      { __typename?: 'GroupMember' }
+      & OnePersonRelationshipMembershipFragment
+    )>, aliases: Array<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'id' | 'name'>
+    )>, avatar?: Maybe<(
+      { __typename?: 'Image' }
+      & FocusFragment
+      & OnePersonRelationshipImageFragment
+    )>, preferredAlias?: Maybe<(
+      { __typename?: 'Alias' }
+      & Pick<Alias, 'id' | 'name'>
+    )>, banner?: Maybe<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'id' | 'rawUrl'>
+      & FocusFragment
     )> }
   )> }
 );
@@ -2079,6 +2125,7 @@ export type DiscoveryHistoryQuery = (
 
 export type OnePersonRelationshipImageFragment = (
   { __typename?: 'Image' }
+  & Pick<Image, 'id'>
   & { thumbnail: (
     { __typename?: 'Thumbnail' }
     & Pick<Thumbnail, 'small'>
@@ -2114,7 +2161,7 @@ export type OnePersonQuery = (
   { __typename?: 'Query' }
   & { person?: Maybe<(
     { __typename?: 'Person' }
-    & Pick<Person, 'id' | 'name'>
+    & Pick<Person, 'id' | 'name' | 'birthDate'>
     & { appearances: Array<(
       { __typename?: 'Appearance' }
       & Pick<Appearance, 'id'>
@@ -2130,17 +2177,17 @@ export type OnePersonQuery = (
       & OnePersonRelationshipMembershipFragment
     )>, aliases: Array<(
       { __typename?: 'Alias' }
-      & Pick<Alias, 'name'>
+      & Pick<Alias, 'id' | 'name'>
     )>, avatar?: Maybe<(
       { __typename?: 'Image' }
       & FocusFragment
       & OnePersonRelationshipImageFragment
     )>, preferredAlias?: Maybe<(
       { __typename?: 'Alias' }
-      & Pick<Alias, 'name'>
+      & Pick<Alias, 'id' | 'name'>
     )>, banner?: Maybe<(
       { __typename?: 'Image' }
-      & Pick<Image, 'rawUrl'>
+      & Pick<Image, 'id' | 'rawUrl'>
       & FocusFragment
     )> }
   )> }
@@ -2232,10 +2279,10 @@ export type PersonPageQuery = (
   { __typename?: 'Query' }
   & { person?: Maybe<(
     { __typename?: 'Person' }
-    & Pick<Person, 'name'>
+    & Pick<Person, 'name' | 'birthDate'>
     & { aliases: Array<(
       { __typename?: 'Alias' }
-      & Pick<Alias, 'name'>
+      & Pick<Alias, 'id' | 'name'>
     )>, preferredAlias?: Maybe<(
       { __typename?: 'Alias' }
       & Pick<Alias, 'name'>
@@ -2655,6 +2702,7 @@ export const PersonGridDataFragmentDoc = `
     `;
 export const OnePersonRelationshipImageFragmentDoc = `
     fragment OnePersonRelationshipImage on Image {
+  id
   thumbnail {
     small
   }
@@ -2935,9 +2983,10 @@ export const useDeleteAppearanceTagMutation = <
       (variables?: DeleteAppearanceTagMutationVariables) => fetcher<DeleteAppearanceTagMutation, DeleteAppearanceTagMutationVariables>(DeleteAppearanceTagDocument, variables)(),
       options
     );
-export const PersonEditDocument = `
-    query PersonEdit($id: Int!) {
+export const PersonEditDataDocument = `
+    query PersonEditData($id: Int!) {
   person(where: {id: $id}) {
+    birthDate
     memberOf {
       group {
         id
@@ -2973,16 +3022,65 @@ export const PersonEditDocument = `
   }
 }
     `;
-export const usePersonEditQuery = <
-      TData = PersonEditQuery,
+export const usePersonEditDataQuery = <
+      TData = PersonEditDataQuery,
       TError = unknown
     >(
-      variables: PersonEditQueryVariables, 
-      options?: UseQueryOptions<PersonEditQuery, TError, TData>
+      variables: PersonEditDataQueryVariables, 
+      options?: UseQueryOptions<PersonEditDataQuery, TError, TData>
     ) => 
-    useQuery<PersonEditQuery, TError, TData>(
-      ['PersonEdit', variables],
-      fetcher<PersonEditQuery, PersonEditQueryVariables>(PersonEditDocument, variables),
+    useQuery<PersonEditDataQuery, TError, TData>(
+      ['PersonEditData', variables],
+      fetcher<PersonEditDataQuery, PersonEditDataQueryVariables>(PersonEditDataDocument, variables),
+      options
+    );
+export const PersonEditDocument = `
+    mutation PersonEdit($id: Int!, $input: UpdatePersonInputs!) {
+  updatePerson(id: $id, update: $input) {
+    id
+    name
+    birthDate
+    appearances {
+      id
+      image {
+        ...GridImage
+      }
+    }
+    memberOf {
+      ...OnePersonRelationshipMembership
+    }
+    preferredMembership {
+      ...OnePersonRelationshipMembership
+    }
+    aliases {
+      id
+      name
+    }
+    avatar {
+      ...Focus
+      ...OnePersonRelationshipImage
+    }
+    preferredAlias {
+      id
+      name
+    }
+    banner {
+      id
+      ...Focus
+      rawUrl
+    }
+  }
+}
+    ${GridImageFragmentDoc}
+${OnePersonRelationshipMembershipFragmentDoc}
+${FocusFragmentDoc}
+${OnePersonRelationshipImageFragmentDoc}`;
+export const usePersonEditMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<PersonEditMutation, TError, PersonEditMutationVariables, TContext>) => 
+    useMutation<PersonEditMutation, TError, PersonEditMutationVariables, TContext>(
+      (variables?: PersonEditMutationVariables) => fetcher<PersonEditMutation, PersonEditMutationVariables>(PersonEditDocument, variables)(),
       options
     );
 export const AddProviderDocument = `
@@ -3077,6 +3175,7 @@ export const OnePersonDocument = `
   person(where: {id: $id}) {
     id
     name
+    birthDate
     appearances {
       id
       image {
@@ -3090,6 +3189,7 @@ export const OnePersonDocument = `
       ...OnePersonRelationshipMembership
     }
     aliases {
+      id
       name
     }
     avatar {
@@ -3097,9 +3197,11 @@ export const OnePersonDocument = `
       ...OnePersonRelationshipImage
     }
     preferredAlias {
+      id
       name
     }
     banner {
+      id
       ...Focus
       rawUrl
     }
@@ -3222,7 +3324,9 @@ export const PersonPageDocument = `
     query personPage($id: Int!) {
   person(where: {id: $id}) {
     name
+    birthDate
     aliases {
+      id
       name
     }
     preferredAlias {

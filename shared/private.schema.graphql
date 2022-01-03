@@ -5185,6 +5185,7 @@ type Person {
   appearances(cursor: AppearanceWhereUniqueInput, skip: Int, take: Int): [Appearance!]!
   avatar: Image
   banner: Image
+  birthDate: DateTime
   createdAt: DateTime!
   faces(cursor: FaceWhereUniqueInput, skip: Int, take: Int): [Face!]!
   id: Int!
@@ -5201,6 +5202,7 @@ input PersonCreateInput {
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5215,6 +5217,7 @@ input PersonCreateInput {
 input PersonCreateManyPreferredMembershipInput {
   avatarId: Int
   bannerId: Int
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5318,6 +5321,7 @@ input PersonCreateWithoutAliasesInput {
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5334,6 +5338,7 @@ input PersonCreateWithoutAppearancesInput {
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5350,6 +5355,7 @@ input PersonCreateWithoutAppearsInInput {
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5366,6 +5372,7 @@ input PersonCreateWithoutAvatarInput {
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5382,6 +5389,7 @@ input PersonCreateWithoutBannerInput {
   appearances: AppearanceCreateNestedManyWithoutPersonInput
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5399,6 +5407,7 @@ input PersonCreateWithoutMemberOfInput {
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5415,6 +5424,7 @@ input PersonCreateWithoutPreferredAliasInput {
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5431,6 +5441,7 @@ input PersonCreateWithoutPreferredMembershipInput {
   appearsIn: FaceCreateNestedManyWithoutPersonInput
   avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
   banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
   createdAt: DateTime
   description: String
   gender: Gender
@@ -5459,6 +5470,7 @@ input PersonOrderByWithRelationInput {
   avatarId: SortOrder
   banner: ImageOrderByWithRelationInput
   bannerId: SortOrder
+  birthDate: SortOrder
   createdAt: SortOrder
   description: SortOrder
   gender: SortOrder
@@ -5479,6 +5491,7 @@ input PersonScalarWhereInput {
   OR: [PersonScalarWhereInput!]
   avatarId: IntNullableFilter
   bannerId: IntNullableFilter
+  birthDate: DateTimeNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   gender: EnumGenderNullableFilter
@@ -5496,6 +5509,7 @@ input PersonUpdateInput {
   appearsIn: FaceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5508,6 +5522,7 @@ input PersonUpdateInput {
 }
 
 input PersonUpdateManyMutationInput {
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5609,6 +5624,7 @@ input PersonUpdateWithoutAliasesInput {
   appearsIn: FaceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5625,6 +5641,7 @@ input PersonUpdateWithoutAppearancesInput {
   appearsIn: FaceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5641,6 +5658,7 @@ input PersonUpdateWithoutAppearsInInput {
   appearances: AppearanceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5657,6 +5675,7 @@ input PersonUpdateWithoutAvatarInput {
   appearances: AppearanceUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5673,6 +5692,7 @@ input PersonUpdateWithoutBannerInput {
   appearances: AppearanceUpdateManyWithoutPersonInput
   appearsIn: FaceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5690,6 +5710,7 @@ input PersonUpdateWithoutMemberOfInput {
   appearsIn: FaceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5706,6 +5727,7 @@ input PersonUpdateWithoutPreferredAliasInput {
   appearsIn: FaceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5722,6 +5744,7 @@ input PersonUpdateWithoutPreferredMembershipInput {
   appearsIn: FaceUpdateManyWithoutPersonInput
   avatar: ImageUpdateOneWithoutPersonAvatarOfInput
   banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
@@ -5784,6 +5807,7 @@ input PersonWhereInput {
   avatarId: IntNullableFilter
   banner: ImageWhereInput
   bannerId: IntNullableFilter
+  birthDate: DateTimeNullableFilter
   createdAt: DateTimeFilter
   description: StringNullableFilter
   gender: EnumGenderNullableFilter

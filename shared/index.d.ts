@@ -783,6 +783,7 @@ export interface NexusGenInputs {
     avatarId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     banner?: NexusGenInputs['ImageOrderByWithRelationInput'] | null; // ImageOrderByWithRelationInput
     bannerId?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    birthDate?: NexusGenEnums['SortOrder'] | null; // SortOrder
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     description?: NexusGenEnums['SortOrder'] | null; // SortOrder
     gender?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -807,6 +808,7 @@ export interface NexusGenInputs {
     avatarId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     banner?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     bannerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    birthDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     description?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     gender?: NexusGenInputs['EnumGenderNullableFilter'] | null; // EnumGenderNullableFilter
@@ -1344,6 +1346,7 @@ export interface NexusGenFieldTypes {
     appearances: NexusGenRootTypes['Appearance'][]; // [Appearance!]!
     avatar: NexusGenRootTypes['Image'] | null; // Image
     banner: NexusGenRootTypes['Image'] | null; // Image
+    birthDate: NexusGenScalars['DateTime'] | null; // DateTime
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     faces: NexusGenRootTypes['Face'][]; // [Face!]!
     id: number; // Int!
@@ -1645,6 +1648,7 @@ export interface NexusGenFieldTypeNames {
     appearances: 'Appearance'
     avatar: 'Image'
     banner: 'Image'
+    birthDate: 'DateTime'
     createdAt: 'DateTime'
     faces: 'Face'
     id: 'Int'

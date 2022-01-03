@@ -1,5 +1,6 @@
-query PersonEdit($id: Int!) {
+query PersonEditData($id: Int!) {
   person(where: { id: $id }) {
+    birthDate
     memberOf {
       group {
         id
@@ -31,6 +32,44 @@ query PersonEdit($id: Int!) {
       thumbnail {
         medium
       }
+    }
+  }
+}
+
+mutation PersonEdit($id: Int!, $input: UpdatePersonInputs!) {
+  updatePerson(id: $id, update: $input) {
+    id
+    name
+    birthDate
+    appearances {
+      id
+      image {
+        ...GridImage
+      }
+    }
+    memberOf {
+      ...OnePersonRelationshipMembership
+    }
+    preferredMembership {
+      ...OnePersonRelationshipMembership
+    }
+    aliases {
+      id
+      name
+    }
+    avatar {
+      ...Focus
+      ...OnePersonRelationshipImage
+    }
+    preferredAlias {
+      id
+      name
+    }
+    banner {
+      id
+      ...Focus
+      # Do we want this? idk
+      rawUrl
     }
   }
 }

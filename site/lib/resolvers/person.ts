@@ -15,6 +15,7 @@ export const Person = objectType({
     t.model
       .id()
       .name()
+      .birthDate()
       .aliases()
       .preferredAlias()
       .appearsIn({ alias: "faces" })
@@ -61,7 +62,8 @@ export const Mutation = mutationField((t) => {
       id: nonNull("Int"),
       update: nonNull(UpdatePersonInputs),
     },
-    async resolve(_, args, { prisma }) {
+    async resolve(_, args, { prisma, person }) {
+      return person.updatePerson(args.id, args.update)
       // args.person.name
     },
   })

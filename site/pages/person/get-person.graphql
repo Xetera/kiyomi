@@ -1,7 +1,9 @@
 query personPage($id: Int!) {
   person(where: { id: $id }) {
     name
+    birthDate
     aliases {
+      id
       name
     }
     preferredAlias {

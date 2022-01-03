@@ -14,6 +14,7 @@ export const LargeBanner = forwardRef<
     gradient?: string
     focus?: FocusableImage
     height?: string | string[]
+    objectPosition?: string
   },
   "div"
 >(({ src, height, focus, gradient, ...rest }, ref) => {
@@ -35,6 +36,7 @@ export const LargeBanner = forwardRef<
         userSelect="none"
         position="absolute"
         objectFit="cover"
+        objectPosition={rest.objectPosition}
         width="100%"
         src={src}
         sx={{ WebkitMaskImage: gradient ?? magicGradient }}

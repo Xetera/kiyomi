@@ -7,7 +7,11 @@ import { WithNavbar } from "@/components/navbar"
 import { PermissionsFor, withAuthorizedUser } from "@/lib/permissions"
 import { useOnePersonQuery } from "@/lib/__generated__/graphql"
 
-const PersonEditPageWrapper = ({ id }: PersonEditPageProps) => {
+type PersonEditPageWrapperProps = {
+  id: number
+}
+
+const PersonEditPageWrapper = ({ id }: PersonEditPageWrapperProps) => {
   const { data } = useOnePersonQuery({ id })
   return (
     <WithNavbar>
@@ -16,7 +20,7 @@ const PersonEditPageWrapper = ({ id }: PersonEditPageProps) => {
   )
 }
 
-export const getServerSideProps = withAuthorizedUser<PersonEditPageProps>(
+export const getServerSideProps = withAuthorizedUser<PersonEditPageWrapperProps>(
   PermissionsFor.editingIdol,
   async (context) => {
     const { params } = context
