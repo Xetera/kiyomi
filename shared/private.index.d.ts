@@ -5652,6 +5652,7 @@ export interface NexusGenInputs {
     aliases: string[]; // [String!]!
     avatarId?: number | null; // Int
     bannerId?: number | null; // Int
+    birthDate?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
     groups: NexusGenInputs['GroupMembership'][]; // [GroupMembership!]!

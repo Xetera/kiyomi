@@ -44,6 +44,7 @@ export const UpdatePersonInputs = inputObjectType({
     t.nonNull.string("name")
     t.string("description")
     t.field("gender", { type: "Gender" })
+    t.field("birthDate", { type: "DateTime" })
     t.nonNull.list.nonNull.string("aliases")
     t.int("preferredAliasId")
     t.nonNull.field("groups", { type: list(nonNull(GroupMembership)) })

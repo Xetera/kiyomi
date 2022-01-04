@@ -17,6 +17,11 @@ import { LinkedTabs } from "../linked-tabs"
 import NextLink from "next/link"
 import { Portrait } from "../portrait"
 
+export const personPortraitDimensions = {
+  width: "250px",
+  height: "320px",
+}
+
 export type PersonPageProps = {
   id: number
 }

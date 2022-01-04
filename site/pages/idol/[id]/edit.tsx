@@ -1,11 +1,10 @@
 import { decodeUriFriendly } from "@/client/data"
-import {
-  PersonEditPage,
-  PersonEditPageProps,
-} from "@/components/data-entry/person-edit/page"
+import { PersonEditPage } from "@/components/data-entry/person-edit/page"
+import { LargeBanner } from "@/components/large-banner"
 import { WithNavbar } from "@/components/navbar"
 import { PermissionsFor, withAuthorizedUser } from "@/lib/permissions"
 import { useOnePersonQuery } from "@/lib/__generated__/graphql"
+import { Box } from "@chakra-ui/react"
 
 type PersonEditPageWrapperProps = {
   id: number
@@ -15,7 +14,16 @@ const PersonEditPageWrapper = ({ id }: PersonEditPageWrapperProps) => {
   const { data } = useOnePersonQuery({ id })
   return (
     <WithNavbar>
-      {data?.person && <PersonEditPage person={data.person} />}
+      <Box zIndex={-1} pointerEvents="none">
+        {data?.person?.banner && (
+          <LargeBanner
+            src={data?.person?.banner?.rawUrl}
+            // height="80vh"
+            focus={data?.person.banner}
+          />
+        )}
+      </Box>
+      <Box p={4}>{data?.person && <PersonEditPage person={data.person} />}</Box>
     </WithNavbar>
   )
 }

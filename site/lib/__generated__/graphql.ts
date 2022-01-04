@@ -1794,6 +1794,7 @@ export type UpdatePersonInputs = {
   aliases: Array<Scalars['String']>;
   avatarId?: Maybe<Scalars['Int']>;
   bannerId?: Maybe<Scalars['Int']>;
+  birthDate?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   gender?: Maybe<Gender>;
   groups: Array<GroupMembership>;

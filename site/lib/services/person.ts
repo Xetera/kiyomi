@@ -46,6 +46,7 @@ export const makePerson = ({ prisma }: PersonServiceOptions) => {
             gender: p.gender,
             avatarId: p.avatarId,
             bannerId: p.bannerId,
+            birthDate: p.birthDate ? new Date(p.birthDate) : null,
             description: p.description,
             preferredMembershipId: p.preferredMembershipId,
             preferredAliasId: p.preferredAliasId,

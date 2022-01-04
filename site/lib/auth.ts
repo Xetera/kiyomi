@@ -10,11 +10,8 @@ export function generateUserToken() {
   return TOKEN_PREFIX + token
 }
 
-export function getUserFromToken(
-  token: string,
-  db: PrismaClient
-): Promise<User | null> {
-  return db.user.findUnique({ where: { token } })
+export function getUserFromToken(token: string, db: PrismaClient) {
+  return db.user.findUnique({ where: { token }, include: { roles: true } })
 }
 
 export const GraphqlAuth = {

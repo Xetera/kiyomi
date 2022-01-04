@@ -7,6 +7,7 @@ import {
   RadioGroup,
   Radio,
   Link,
+  Box,
 } from "@chakra-ui/react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import NextLink from "next/link"
@@ -19,6 +20,9 @@ import { RiAddLine, RiArrowLeftLine, RiDeleteBin2Fill } from "react-icons/ri"
 import useToast from "@/hooks/useToast"
 import { Routing } from "@/client/routing"
 import { personPreferredName } from "@/client/data"
+import { Portrait } from "@/components/portrait"
+import { personPortraitDimensions } from "@/components/person/page"
+import { useEffect } from "react"
 
 export type PersonEditPageProps = {
   person: Exclude<OnePersonQuery["person"], undefined | null>
@@ -34,13 +38,19 @@ const Field = ({ name, children }) => (
 export const PersonEditPage = ({ person }: PersonEditPageProps) => {
   const { mutateAsync, isLoading } = usePersonEditMutation()
   const makeToast = useToast("warning")
-  const { register, handleSubmit, control, reset } = useForm({
+  const { register, handleSubmit, control, reset, getValues } = useForm({
     defaultValues: {
       name: person.name,
       birthDate: person.birthDate,
       aliases: person.aliases,
-      preferredAliasId: person.preferredAlias?.id,
+      preferredAliasId: person.preferredAlias?.id ?? -1,
+      avatarId: person.avatar?.id,
+      bannerId: person.banner?.id,
     },
+  })
+
+  useEffect(() => {
+    console.log(getValues())
   })
 
   const { fields: aliases, remove, append } = useFieldArray({
@@ -58,8 +68,10 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
         avatarId: person.avatar?.id,
         bannerId: person.banner?.id,
         description: "",
+        birthDate: data.birthDate,
         preferredMembershipId: person.preferredMembership?.id,
-        preferredAliasId: data.preferredAliasId,
+        preferredAliasId:
+          data.preferredAliasId === -1 ? null : data.preferredAliasId,
         groups: person.memberOf.map((m) => ({
           id: m.group.id,
           // endDate: m.group.
@@ -77,7 +89,7 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <VStack spacing={8} maxW="6xl" mx="auto" w="full" mt={6}>
         <NextLink
           href={Routing.toPerson(person.id, personPreferredName(person))}
@@ -90,11 +102,19 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
             </Text>
           </Link>
         </NextLink>
+        <Portrait
+          {...personPortraitDimensions}
+          src={person.avatar?.thumbnail.small}
+          opacity={1}
+        />
         <Field name="Full Name">
           <Input type="text" placeholder="Full name" {...register("name")} />
         </Field>
         <Field name="Birth Date">
-          <Input type="date" {...register("birthDate")} />
+          <Input
+            type="date"
+            {...register("birthDate", { valueAsDate: true })}
+          />
         </Field>
         <Field name="Aliases">
           <Controller
@@ -118,6 +138,9 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
                 name="preferredAliasId"
               >
                 <VStack spacing={4}>
+                  <HStack>
+                    <Radio value={-1}>No preferred alias</Radio>
+                  </HStack>
                   {aliases.map((alias, index) => (
                     <HStack key={alias.id}>
                       <Radio
@@ -142,6 +165,6 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
           Submit
         </Button>
       </VStack>
-    </form>
+    </Box>
   )
 }

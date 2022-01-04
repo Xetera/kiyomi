@@ -1484,6 +1484,7 @@ input UpdatePersonInputs {
   aliases: [String!]!
   avatarId: Int
   bannerId: Int
+  birthDate: DateTime
   description: String
   gender: Gender
   groups: [GroupMembership!]!

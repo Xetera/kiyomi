@@ -5,7 +5,6 @@ import { prefetchQuery } from "@/lib/client-helpers"
 import { PersonPage, PersonPageProps } from "@/components/person/page"
 
 const PersonPageWrapper = ({ id }: PersonPageProps) => {
-  console.log({ id })
   return (
     <WithNavbar>
       <PersonPage id={id} />

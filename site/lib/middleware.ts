@@ -50,52 +50,6 @@ export function makeMiddleware<T extends BaseContext, K>(
 
 export type CtxSession = { user: BackendUser; contextType: UploadType }
 
-export function withUser<T extends BaseContext>(
-  f: Middleware<T & { user?: DatabaseUser | null; contextType: UploadType }>,
-  opts?: { strict: false }
-): Middleware<T>
-export function withUser<T extends BaseContext>(
-  f: Middleware<T & CtxSession>,
-  opts?: { strict: true }
-): Middleware<T>
-export function withUser<T extends BaseContext>(
-  f: Middleware<T & CtxSession>,
-  { strict = true }: { strict: boolean } = { strict: true }
-): Middleware<T> {
-  return async (req, res, ctx) => {
-    const next = (user?: User | null, opts?: { contextType: UploadType }) => {
-      console.log(`Got a request from ${user ? user.name : "Anonymous User"}`)
-      return f(req, res, {
-        ...ctx,
-        contextType: opts?.contextType ?? "TOKEN",
-        user: user as DatabaseUser,
-      })
-    }
-
-    const error = () => {
-      return res.status(403).json({ error: "Forbidden" })
-    }
-
-    const auth = req.headers.authorization
-
-    if (auth) {
-      const user = await getUserFromToken(auth, ctx.db)
-      if (!user && strict) {
-        return error()
-      }
-      return next(user, { contextType: "TOKEN" })
-    }
-
-    const session = await getSession({ req })
-
-    if (!session && strict) {
-      return error()
-    }
-
-    return next(session?.user, { contextType: "WEBSITE" })
-  }
-}
-
 export type CtxUpload = { upload: FormData }
 
 export function withFileUpload<T extends BaseContext>(
