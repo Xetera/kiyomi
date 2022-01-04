@@ -30,7 +30,7 @@ query OnePerson($id: Int!) {
         id
         name
         birthDate
-        appearances {
+        appearances(take: 20) {
             id
             image {
                 ...GridImage

@@ -33,7 +33,7 @@ export const withAuthorizedUser = <T>(
 ): Promise<GetServerSidePropsResult<T>> => {
   const { req } = ctx
   const sess = await getSession({ req })
-  const hasAllRoles = roles.every((role) => sess?.user.roles.includes(role))
+  const hasAllRoles = roles.every((role) => sess?.user.roles?.includes(role))
   if (!sess?.user || !hasAllRoles) {
     const reqUrl = new URLSearchParams({
       "fail-reason": NO_PERMISSIONS,

@@ -3177,7 +3177,7 @@ export const OnePersonDocument = `
     id
     name
     birthDate
-    appearances {
+    appearances(take: 20) {
       id
       image {
         ...GridImage
