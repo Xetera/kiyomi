@@ -1,4 +1,4 @@
-import { personPreferredName } from "@/client/data"
+import { personPreferredName } from "@/client/data/person-mappers"
 import { magicGradientDark } from "@/client/jsx-helpers"
 import { Routing } from "@/client/routing"
 import { useOnePersonQuery } from "@/lib/__generated__/graphql"
@@ -16,6 +16,7 @@ import { LargeBanner } from "../large-banner"
 import { LinkedTabs } from "../linked-tabs"
 import NextLink from "next/link"
 import { Portrait } from "../portrait"
+import { toClickableGridImage } from "@/client/data/image-mappers"
 
 export const personPortraitDimensions = {
   width: "250px",
@@ -190,7 +191,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
           {data?.person && (
             <ImageGrid
               w="full"
-              images={data.person.appearances.map((app) => app.image)}
+              images={data.person.appearances.map((app) =>
+                toClickableGridImage(app.image)
+              )}
             />
           )}
         </VStack>

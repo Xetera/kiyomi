@@ -1,4 +1,4 @@
-import { encodeUriFriendly } from "@/client/data"
+import { encodeUriFriendly } from "@/client/data/encoders"
 import type { Image } from "@prisma/client"
 
 const base = process.env.NEXT_PUBLIC_BASE_URL

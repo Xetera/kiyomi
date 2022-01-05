@@ -13,7 +13,7 @@ import { Box, Link, Button, Image, Flex } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/layout"
 import { Routing } from "@/client/routing"
 import NextLink from "next/link"
-import { personPreferredName } from "@/client/data"
+import { personPreferredName } from "@/client/data/person-mappers"
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
   image: ImageDataFragment

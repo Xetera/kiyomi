@@ -1,8 +1,9 @@
 import { WithNavbar } from "@/components/navbar"
 import { GetServerSideProps } from "next"
-import { decodeUriFriendly, personPreferredName } from "@/client/data"
+import { personPreferredName } from "@/client/data/person-mappers"
 import { prefetchQuery } from "@/lib/client-helpers"
 import { PersonPage, PersonPageProps } from "@/components/person/page"
+import { decodeUriFriendly } from "@/client/data/encoders"
 
 const PersonPageWrapper = ({ id }: PersonPageProps) => {
   return (

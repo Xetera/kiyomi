@@ -2,12 +2,31 @@ import { Box, Flex, forwardRef, Grid, Text } from "@chakra-ui/react"
 import format from "date-fns/format"
 import React from "react"
 import {
+  FocusableImage,
   GenericGridElement,
-  ImageGridElementProps,
+  HrefOrOnclick,
 } from "./generic-grid-element"
+import {
+  Image as ImageData,
+  Person,
+  Thumbnail,
+} from "@/lib/__generated__/graphql"
+
+export type DisplayableGridImage = Pick<ImageData, "createdAt" | "id"> &
+  HrefOrOnclick & { aspectRatio?: number } & FocusableImage & {
+    thumbnail: Pick<Thumbnail, "small">
+    appearances?: Array<{
+      person: Pick<Person, "name">
+    }>
+  }
+
+export type ImageGridElementProps = {
+  forceSmall?: boolean
+  image: DisplayableGridImage
+}
 
 export type ImageGridProps = {
-  images: Array<ImageGridElementProps["image"] & { aspectRatio: number }>
+  images: DisplayableGridImage[]
 }
 
 export const GenericAutoTiledGrid = forwardRef<{}, "div">(
@@ -40,18 +59,12 @@ const ImageGrid = forwardRef<ImageGridProps, "div">(
             <Box
               maxHeight="385px"
               key={image.id}
-              {...(image.aspectRatio > 1.4
-                ? { gridColumn: "auto / span 2" }
+              {...(image.aspectRatio && image.aspectRatio > 1.4
+                ? { gridColumn: ["auto", null, "auto / span 2"] }
                 : {})}
             >
               <GenericGridElement
                 src={image.thumbnail.small}
-                href={image.url}
-                focus={{
-                  focus: image.focus,
-                  width: image.width,
-                  height: image.height,
-                }}
                 bottom={
                   <Flex w="full" justify="space-between" p={2}>
                     {image.appearances?.[0] && (
@@ -74,6 +87,12 @@ const ImageGrid = forwardRef<ImageGridProps, "div">(
                     </Text>
                   </Flex>
                 }
+                {...image}
+                focus={{
+                  focus: image.focus,
+                  width: image.width,
+                  height: image.height,
+                }}
               />
             </Box>
           )

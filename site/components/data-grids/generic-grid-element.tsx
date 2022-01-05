@@ -1,36 +1,11 @@
-import {
-  Image as ImageData,
-  Person,
-  Thumbnail,
-} from "@/lib/__generated__/graphql"
+import { Image as ImageData } from "@/lib/__generated__/graphql"
 import NextLink from "next/link"
-import {
-  Box,
-  Flex,
-  Image,
-  ImageProps,
-  Skeleton,
-  Text,
-  Link,
-} from "@chakra-ui/react"
+import { Box, Flex, Image, ImageProps, Skeleton, Link } from "@chakra-ui/react"
 import React, { useEffect, useRef, useState } from "react"
-import format from "date-fns/format"
 import { AnimatePresence, motion } from "framer-motion"
-import { magicGradient } from "@/client/jsx-helpers"
 
 export type FocusableImage = Pick<ImageData, "focus"> &
   Pick<ImageData, "width" | "height">
-
-export type ImageGridElementProps = {
-  forceSmall?: boolean
-  image: Pick<ImageData, "createdAt" | "id" | "url"> &
-    FocusableImage & {
-      thumbnail: Pick<Thumbnail, "small">
-      appearances?: Array<{
-        person: Pick<Person, "name">
-      }>
-    }
-}
 
 const MotionBox = motion(Box)
 
@@ -106,64 +81,76 @@ export const ImageLoader = ({
   )
 }
 
+export type HrefOrOnclick = { href: string } | { onClick: () => void }
+
 export type GenericGridElement = {
-  href: string
   src: string
   focus?: FocusableImage
   bottom?: React.ReactElement
-}
+} & HrefOrOnclick
 
 export function GenericGridElement(
   props: GenericGridElement /* ImageGridElementProps */
 ) {
   const [hovering, setHovering] = useState(false)
-  const { focus, bottom, src, href } = props
+  const { focus, bottom, src } = props
 
-  return (
-    <NextLink href={href} passHref>
-      <Link h="full" w="full">
-        <Flex
-          onMouseOver={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
-          height="100%"
-          w="full"
-          flexDirection="column"
-          objectFit="cover"
-          background="gray.900"
-          borderRadius="md"
-          position="relative"
-          overflow="hidden"
-        >
-          <ImageLoader focus={focus} src={src} />
-          {bottom && (
-            <AnimatePresence>
-              {hovering && (
-                <MotionBox
-                  initial={{ "--opacity": 0.1 }}
-                  exit={{ "--gradient": 0.1 }}
-                  animate={{ "--gradient": 0.8 }}
-                  transition="all"
-                  transitionDuration="0.04s"
-                  display="flex"
-                  background="linear-gradient(to bottom, transparent, rgba(0, 0, 0, var(--gradient)))"
-                  sx={{
-                    "--gradient": 0.1,
-                  }}
-                  position="absolute"
-                  bottom={0}
-                  left={0}
-                  right={0}
-                  height="20%"
-                  flexDirection="row"
-                  alignItems="flex-end"
-                >
-                  {bottom}
-                </MotionBox>
-              )}
-            </AnimatePresence>
+  const component = (
+    <Flex
+      onMouseOver={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      height="100%"
+      w="full"
+      flexDirection="column"
+      objectFit="cover"
+      background="gray.900"
+      borderRadius="md"
+      position="relative"
+      overflow="hidden"
+    >
+      <ImageLoader focus={focus} src={src} />
+      {bottom && (
+        <AnimatePresence>
+          {hovering && (
+            <MotionBox
+              initial={{ "--opacity": 0.1 }}
+              exit={{ "--gradient": 0.1 }}
+              animate={{ "--gradient": 0.8 }}
+              transition="all"
+              transitionDuration="0.04s"
+              display="flex"
+              background="linear-gradient(to bottom, transparent, rgba(0, 0, 0, var(--gradient)))"
+              sx={{
+                "--gradient": 0.1,
+              }}
+              position="absolute"
+              bottom={0}
+              left={0}
+              right={0}
+              height="20%"
+              flexDirection="row"
+              alignItems="flex-end"
+            >
+              {bottom}
+            </MotionBox>
           )}
-        </Flex>
-      </Link>
-    </NextLink>
+        </AnimatePresence>
+      )}
+    </Flex>
   )
+  if ("href" in props) {
+    return (
+      <NextLink href={props.href} passHref>
+        <Link h="full" w="full">
+          {component}
+        </Link>
+      </NextLink>
+    )
+  } else {
+    return (
+      <Box cursor="pointer" w="full" onClick={props.onClick} h="full">
+        {component}
+      </Box>
+    )
+  }
 }

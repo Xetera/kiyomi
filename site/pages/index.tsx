@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { paginateBySkip } from "@/client/pagination"
 import { OgImage } from "@/components/og-image"
 import { Portrait } from "@/components/portrait"
+import { toClickableGridImage } from "@/client/data/image-mappers"
 
 const AnimatedImage = motion(Image)
 
@@ -210,7 +211,11 @@ function HomeContent() {
           maxWidth="7xl"
         >
           {data && (
-            <ImageGrid images={data.pages.flatMap((data) => data.images)} />
+            <ImageGrid
+              images={data.pages.flatMap((data) =>
+                data.images.map(toClickableGridImage)
+              )}
+            />
           )}
         </Flex>
       </Flex>

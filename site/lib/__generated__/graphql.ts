@@ -1986,6 +1986,21 @@ export type DeleteAppearanceTagMutation = (
   )> }
 );
 
+export type PersonImagesQueryVariables = Exact<{
+  id: Scalars['Int'];
+  skip: Scalars['Int'];
+  take: Scalars['Int'];
+}>;
+
+
+export type PersonImagesQuery = (
+  { __typename?: 'Query' }
+  & { images: Array<(
+    { __typename?: 'Image' }
+    & GridImageFragment
+  )> }
+);
+
 export type PersonEditDataQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -2982,6 +2997,29 @@ export const useDeleteAppearanceTagMutation = <
     >(options?: UseMutationOptions<DeleteAppearanceTagMutation, TError, DeleteAppearanceTagMutationVariables, TContext>) => 
     useMutation<DeleteAppearanceTagMutation, TError, DeleteAppearanceTagMutationVariables, TContext>(
       (variables?: DeleteAppearanceTagMutationVariables) => fetcher<DeleteAppearanceTagMutation, DeleteAppearanceTagMutationVariables>(DeleteAppearanceTagDocument, variables)(),
+      options
+    );
+export const PersonImagesDocument = `
+    query PersonImages($id: Int!, $skip: Int!, $take: Int!) {
+  images(
+    where: {appearances: {some: {personId: {equals: $id}}}}
+    skip: $skip
+    take: $take
+  ) {
+    ...GridImage
+  }
+}
+    ${GridImageFragmentDoc}`;
+export const usePersonImagesQuery = <
+      TData = PersonImagesQuery,
+      TError = unknown
+    >(
+      variables: PersonImagesQueryVariables, 
+      options?: UseQueryOptions<PersonImagesQuery, TError, TData>
+    ) => 
+    useQuery<PersonImagesQuery, TError, TData>(
+      ['PersonImages', variables],
+      fetcher<PersonImagesQuery, PersonImagesQueryVariables>(PersonImagesDocument, variables),
       options
     );
 export const PersonEditDataDocument = `

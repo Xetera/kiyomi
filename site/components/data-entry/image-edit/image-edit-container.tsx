@@ -42,6 +42,7 @@ import { RiCloseCircleFill, RiScan2Line } from "react-icons/ri"
 import { TagSelect, useTagSelect } from "@/components/data-entry/tag-select"
 import useQueue from "@/components/queue-button"
 import Hr from "@/components/hr"
+import { EditModal } from "@/components/data-entry/edit-modal"
 
 const SearchBar = memo(
   ({ addPerson }: { addPerson: (num: number) => void }) => {
@@ -464,14 +465,13 @@ export const ImageEditEditor = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <SearchBar addPerson={addAppearance_} />
-      <VStack bg="#0d0f16" overflow="hidden">
+      <EditModal sidebar={<SearchBar addPerson={addAppearance_} />}>
         <ImageSelf
           appearances={Object.values(appearances)}
           removeAppearance={removeAppearance_}
           unknownFaces={Object.values(unknownFaces)}
         />
-      </VStack>
+      </EditModal>
     </DragDropContext>
   )
 }
@@ -481,19 +481,8 @@ export const ImageEditContainer = () => {
 
   return (
     <VStack spacing={8} alignItems="center" position="relative">
-      <Grid
-        gridTemplateColumns={["1fr", null, null, "300px auto"]}
-        maxW="100%"
-        w="full"
-        h="full"
-        overflow="hidden"
-        borderRadius="md"
-        flex="1"
-        minH="85vh"
-      >
-        <ModalCloseButton position="absolute" top={3} right={5} />
-        <ImageEditEditor />
-      </Grid>
+      <ModalCloseButton position="absolute" top={0} right={0} />
+      <ImageEditEditor />
       <Image
         src={image?.rawUrl}
         borderRadius="md"

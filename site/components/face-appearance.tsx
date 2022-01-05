@@ -4,7 +4,7 @@ import { Flex, Text } from "@chakra-ui/layout"
 import { Grid, Link, useBreakpointValue, VStack } from "@chakra-ui/react"
 import React from "react"
 import { EditableTag } from "@/components/data-entry/editable-tag"
-import { personPreferredName } from "@/client/data"
+import { personPreferredName } from "@/client/data/person-mappers"
 import { Routing } from "@/client/routing"
 import NextLink from "next/link"
 

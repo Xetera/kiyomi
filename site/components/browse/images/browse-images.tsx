@@ -14,6 +14,7 @@ import { Waypoint } from "react-waypoint"
 import { useInfiniteQuery } from "react-query"
 import { paginateBySkip } from "@/client/pagination"
 import { usePaginated } from "@/hooks/use-paginated"
+import { toClickableGridImage } from "@/client/data/image-mappers"
 
 const PER_PAGE = 30
 
@@ -29,7 +30,12 @@ export const BrowseImages = () => {
   if (!data) return null
   return (
     <VStack w="full">
-      <ImageGrid w="full" images={data.pages.flatMap((page) => page.images)} />
+      <ImageGrid
+        w="full"
+        images={data.pages.flatMap((page) =>
+          page.images.map(toClickableGridImage)
+        )}
+      />
 
       <Box height="800px">{waypoint}</Box>
     </VStack>

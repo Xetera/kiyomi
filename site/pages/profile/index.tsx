@@ -5,6 +5,7 @@ import { useMeQuery } from "@/lib/__generated__/graphql"
 import { GetServerSideProps } from "next"
 import { prefetchQuery } from "@/lib/client-helpers"
 import ImageGrid from "@/components/data-grids/image-grid"
+import { toClickableGridImage } from "@/client/data/image-mappers"
 
 function Image() {
   const { data } = useMeQuery()
@@ -24,7 +25,7 @@ function Image() {
             />
           </div>
         </div>
-        <ImageGrid images={data.me.images} />
+        <ImageGrid images={data.me.images.map(toClickableGridImage)} />
       </div>
     </WithNavbar>
   )

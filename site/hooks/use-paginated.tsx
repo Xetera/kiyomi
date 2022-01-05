@@ -1,10 +1,5 @@
 import React from "react"
-import {
-  BrowsePageDocument,
-  BrowsePageQuery,
-  BrowsePageQueryVariables,
-  fetcher,
-} from "@/lib/__generated__/graphql"
+import { fetcher } from "@/lib/__generated__/graphql"
 import { paginateBySkip } from "@/client/pagination"
 import { useInfiniteQuery } from "react-query"
 import { Waypoint } from "react-waypoint"

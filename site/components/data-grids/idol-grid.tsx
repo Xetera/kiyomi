@@ -6,7 +6,7 @@ import {
   ImageGridProps,
 } from "@/components/data-grids/image-grid"
 import { PersonGridImageFragment } from "@/lib/__generated__/graphql"
-import { personPreferredName, encodeUriFriendly } from "@/client/data"
+import { personPreferredName } from "@/client/data/person-mappers"
 import { Routing } from "@/client/routing"
 
 const IdolGrid = forwardRef<{ people: PersonGridImageFragment[] }, "div">(

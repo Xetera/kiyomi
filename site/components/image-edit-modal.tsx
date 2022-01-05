@@ -200,7 +200,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
   }
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Box className="p-2" maxWidth="4xl" alignItems="center" mx="auto">
+      <Box p={2} maxWidth="4xl" alignItems="center" mx="auto">
         <Heading mb={2} size="md" color="gray.300">
           Add a person
         </Heading>

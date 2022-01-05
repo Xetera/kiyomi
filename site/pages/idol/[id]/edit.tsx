@@ -1,4 +1,4 @@
-import { decodeUriFriendly } from "@/client/data"
+import { decodeUriFriendly } from "@/client/data/encoders"
 import { PersonEditPage } from "@/components/data-entry/person-edit/page"
 import { LargeBanner } from "@/components/large-banner"
 import { WithNavbar } from "@/components/navbar"
@@ -14,16 +14,7 @@ const PersonEditPageWrapper = ({ id }: PersonEditPageWrapperProps) => {
   const { data } = useOnePersonQuery({ id })
   return (
     <WithNavbar>
-      <Box zIndex={-1} pointerEvents="none">
-        {data?.person?.banner && (
-          <LargeBanner
-            src={data?.person?.banner?.rawUrl}
-            // height="80vh"
-            focus={data?.person.banner}
-          />
-        )}
-      </Box>
-      <Box p={4}>{data?.person && <PersonEditPage person={data.person} />}</Box>
+      {data?.person && <PersonEditPage person={data.person} />}
     </WithNavbar>
   )
 }
