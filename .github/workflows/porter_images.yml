@@ -42,3 +42,9 @@ jobs:
         id: deploy_porter
         run: |2
           curl -X POST "https://dashboard.getporter.dev/api/webhooks/deploy/${{secrets.WEBHOOK_IMAGES}}?commit=$(git rev-parse --short HEAD)&repository=index.docker.io/xetera/simp-pics"
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Deploying new site version!'

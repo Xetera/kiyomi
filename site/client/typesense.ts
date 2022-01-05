@@ -28,6 +28,7 @@ export type SearchIdol = {
   personId: number
   name: string
   aliases: string[]
+  preferredAlias?: string
 }
 
 export type SearchTag = {

@@ -19,6 +19,9 @@ import { RiAccountPinCircleLine } from "react-icons/ri"
 import { intersperse } from "@/client/jsx-helpers"
 import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 import { SearchGroup, SearchIdol } from "@/client/typesense"
+import { Routing } from "@/client/routing"
+import { defaultIdolHitMapper } from "@/client/data/person-mappers"
+import { defaultGroupHitMapper } from "@/client/data/group-mappers"
 
 export type QuickSearchTag = {
   href: string
@@ -28,14 +31,18 @@ export type QuickSearchTag = {
 }
 
 export type QuickSearchPerson = {
+  onClick?: () => void
+  href?: string
   name: string
   aliases: string[]
   image?: string
-} & ({ onClick: () => void } | { href: string })
+}
 
 export type QuickSearchGroup = {
+  onClick?: () => void
+  href?: string
   name: string
-} & ({ onClick: () => void } | { href: string })
+}
 
 export type SearchSectionMappings = {
   tag: QuickSearchTag[]
@@ -75,7 +82,7 @@ export function idolsSearchToQuickSearchSection(
   idols: Array<SearchResponseHit<SearchIdol>>,
   destinationMapper: (
     group: SearchResponseHit<SearchIdol>
-  ) => { href: string } | { onClick: () => void } = () => ({ href: "/" })
+  ) => { href: string } | { onClick: () => void } = defaultIdolHitMapper
 ): QuickSearchPerson[] {
   return idols.map((idol) => ({
     ...destinationMapper(idol),
@@ -88,7 +95,7 @@ export function groupsSearchToQuickSearchSection(
   groups: Array<SearchResponseHit<SearchGroup>>,
   destinationMapper: (
     group: SearchResponseHit<SearchGroup>
-  ) => { href: string } | { onClick: () => void } = () => ({ href: "/" })
+  ) => { href: string } | { onClick: () => void } = defaultGroupHitMapper
 ): QuickSearchGroup[] {
   return groups.map((group) => ({
     ...destinationMapper(group),
@@ -97,14 +104,7 @@ export function groupsSearchToQuickSearchSection(
 }
 
 function QuickSearchSectionGeneric(props) {
-  const router = useRouter()
   const [hovering, isHovering] = useState(false)
-  const [pressed] = useKeyPress((e) => e.key === "return")
-  useEffect(() => {
-    if (pressed) {
-      router.push(props.href)
-    }
-  }, [pressed])
 
   const component = (
     <Flex
@@ -140,7 +140,7 @@ function QuickSearchSectionGeneric(props) {
       )}
     </Flex>
   )
-  if ("onClick" in props) {
+  if (!("href" in props)) {
     return (
       <Button
         appearance="none"
@@ -168,6 +168,7 @@ function QuickSearchSectionGeneric(props) {
         className="highlight-em"
         w="full"
         cursor="pointer"
+        onClick={props.onClick}
         _hover={{
           textDecoration: "none",
           borderColor: "hsla(228,26%,16%,0.7)",
@@ -309,6 +310,7 @@ export const QuickSearchSection = forwardRef<QuickSearchSection, "div">(
         </Text>
         <VStack w="full">
           {props.data.map((r) => {
+            console.log(props)
             switch (props.type) {
               case "tag":
                 return <QuickSearchSectionTag {...r} />

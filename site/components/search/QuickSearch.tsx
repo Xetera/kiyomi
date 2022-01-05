@@ -60,12 +60,14 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
               {idols.length > 0 && (
                 <QuickSearchSection
                   type="person"
+                  onClick={onClose}
                   data={idolsSearchToQuickSearchSection(idols)}
                 />
               )}
               {groups.length > 0 && (
                 <QuickSearchSection
                   type="group"
+                  onClick={onClose}
                   data={groupsSearchToQuickSearchSection(groups)}
                 />
               )}

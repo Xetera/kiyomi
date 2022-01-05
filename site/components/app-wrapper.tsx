@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import { RootState, store } from "@/models/store"
 import { QuickSearch } from "@/components/search/QuickSearch"
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 
 export function AppWrapper({ children }) {
   const isOpen = useSelector((root: RootState) => root.search?.open)
@@ -16,9 +16,9 @@ export function AppWrapper({ children }) {
     return () => document.removeEventListener("keydown", listener)
   }, [])
 
-  function toggleSearch() {
+  const toggleSearch = useCallback(() => {
     store.dispatch.search.toggleSearch()
-  }
+  }, [])
 
   if (isOpen) {
     return (
