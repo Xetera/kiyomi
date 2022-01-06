@@ -127,7 +127,7 @@ model Person {
   preferredMembershipId Int?          @map("preferred_membership_id")
   bannerId              Int?          @unique(map: "persons.banner_id_unique") @map("banner_id")
   avatarId              Int?          @unique(map: "persons.avatar_id_unique") @map("avatar_id")
-  birthDate             DateTime?      @map("birth_date")
+  birthDate             DateTime?     @map("birth_date")
   gender                Gender?
   avatar                Image?        @relation("person_avatar", fields: [avatarId], references: [id])
   banner                Image?        @relation("person_banner", fields: [bannerId], references: [id], onUpdate: SetNull)
@@ -235,6 +235,9 @@ model User {
   appearanceTags      AppearanceTag[]
   tagAliases          TagAlias[]
   imageTags           ImageTag[]
+  placedRestrictions  UserRestriction[]     @relation("restricted_by")
+  restrictions        UserRestriction[]     @relation("restricted_user")
+  reportedImages      ImageReport[]
 
   @@index([token], map: "user.token.index")
   @@map("users")
@@ -291,6 +294,7 @@ model Image {
   appearanceTags      AppearanceTag[]
   userAvatarOf        User?                @relation("user_avatar")
   userBannerOf        User?                @relation("user_banner")
+  reports             ImageReport[]
 
   @@index([pHash2], map: "images.p_hash_2")
   @@index([slug], map: "images.slug_index")
@@ -428,6 +432,53 @@ model DiscoveredImageVote {
   @@index([discoveredImageId], map: "discoveredImageVotesImage")
   @@index([userId], map: "discovered_image_votes.user")
   @@map("discovered_image_votes")
+}
+
+model UserRestriction {
+  id                 Int             @id @default(autoincrement())
+  restriction        RestrictionKind
+  userId             Int             @map("user_id")
+  user               User            @relation("restricted_user", fields: [userId], references: [id], onDelete: Cascade)
+  addedById          Int?            @map("added_by_id")
+  addedBy            User?           @relation("restricted_by", fields: [addedById], references: [id], onDelete: SetNull)
+  // This is a polymorphic relationship to some related field
+  // Example:
+  // NO_REPORT | associatedEnityId -> ImageReport.id
+  associatedEntityId Int?
+  createdAt          DateTime        @default(now()) @map("created_at")
+  updatedAt          DateTime        @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([userId, restriction], name: "userRestrictionTarget")
+  @@index([userId])
+  @@map("user_restrictions")
+}
+
+enum RestrictionKind {
+  NO_IMAGE_REPORT
+}
+
+model ImageReport {
+  id           Int           @id @default(autoincrement())
+  imageId      Int           @map("image_id")
+  image        Image         @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  reportedById Int           @map("reported_by_id")
+  reportedBy   User          @relation(fields: [reportedById], references: [id], onDelete: Cascade)
+  // Theoretically, this needs to be normalized but there's just no need for it
+  action       ReportAction?
+  actionedAt   DateTime?
+  // Maybe make this an enum? Don't wanna tie database to business logic
+  reason       String?
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@index([imageId, reportedById], name: "imageReportUser")
+  @@map("image_reports")
+}
+
+enum ReportAction {
+  COMPLY
+  DISMISS
+  CUSTOM
 }
 
 enum Gender {

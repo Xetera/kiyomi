@@ -148,11 +148,12 @@ const imagesOfIdol = async (t) => {
 }
 
 async function downloadImages() {
+  const offset = 944
   const idolIds = Array(100)
     .fill(0)
-    .map((_, i) => i + 1)
+    .map((_, i) => i + 1 + offset)
   const getImages = async (d) =>
-    (await imagesOfIdol(d)).slice(0, 5).map((image) => ({
+    (await imagesOfIdol(d)).slice(0, 7).map((image) => ({
       imageId: image,
       personId: d,
     }))

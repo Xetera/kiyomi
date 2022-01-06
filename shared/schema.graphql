@@ -461,6 +461,20 @@ input EnumMimeTypeFilter {
   notIn: [MimeType!]
 }
 
+input EnumReportActionNullableFilter {
+  equals: ReportAction
+  in: [ReportAction!]
+  not: NestedEnumReportActionNullableFilter
+  notIn: [ReportAction!]
+}
+
+input EnumRestrictionKindFilter {
+  equals: RestrictionKind
+  in: [RestrictionKind!]
+  not: NestedEnumRestrictionKindFilter
+  notIn: [RestrictionKind!]
+}
+
 input EnumTagSourceFilter {
   equals: TagSource
   in: [TagSource!]
@@ -859,6 +873,7 @@ input ImageOrderByWithRelationInput {
   personBannerOf: PersonOrderByWithRelationInput
   potentialDuplicates: DiscoveredImageOrderByRelationAggregateInput
   public: SortOrder
+  reports: ImageReportOrderByRelationAggregateInput
   slug: SortOrder
   source: SortOrder
   updatedAt: SortOrder
@@ -870,6 +885,32 @@ input ImageOrderByWithRelationInput {
   views: SortOrder
   width: SortOrder
   xp: SortOrder
+}
+
+input ImageReportListRelationFilter {
+  every: ImageReportWhereInput
+  none: ImageReportWhereInput
+  some: ImageReportWhereInput
+}
+
+input ImageReportOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input ImageReportWhereInput {
+  AND: [ImageReportWhereInput!]
+  NOT: [ImageReportWhereInput!]
+  OR: [ImageReportWhereInput!]
+  action: EnumReportActionNullableFilter
+  actionedAt: DateTimeNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  image: ImageWhereInput
+  imageId: IntFilter
+  reason: StringNullableFilter
+  reportedBy: UserWhereInput
+  reportedById: IntFilter
+  updatedAt: DateTimeFilter
 }
 
 type ImageTag {
@@ -945,6 +986,7 @@ input ImageWhereInput {
   personBannerOf: PersonWhereInput
   potentialDuplicates: DiscoveredImageListRelationFilter
   public: BoolFilter
+  reports: ImageReportListRelationFilter
   slug: StringFilter
   source: StringNullableFilter
   updatedAt: DateTimeFilter
@@ -1088,6 +1130,20 @@ input NestedEnumMimeTypeFilter {
   in: [MimeType!]
   not: NestedEnumMimeTypeFilter
   notIn: [MimeType!]
+}
+
+input NestedEnumReportActionNullableFilter {
+  equals: ReportAction
+  in: [ReportAction!]
+  not: NestedEnumReportActionNullableFilter
+  notIn: [ReportAction!]
+}
+
+input NestedEnumRestrictionKindFilter {
+  equals: RestrictionKind
+  in: [RestrictionKind!]
+  not: NestedEnumRestrictionKindFilter
+  notIn: [RestrictionKind!]
 }
 
 input NestedEnumTagSourceFilter {
@@ -1296,6 +1352,16 @@ enum QueryMode {
 
 type QueueInfo {
   queueSize: Int!
+}
+
+enum ReportAction {
+  COMPLY
+  CUSTOM
+  DISMISS
+}
+
+enum RestrictionKind {
+  NO_IMAGE_REPORT
 }
 
 type Role {
@@ -1530,12 +1596,40 @@ input UserOrderByWithRelationInput {
   images: ImageOrderByRelationAggregateInput
   markedFaces: FaceOrderByRelationAggregateInput
   name: SortOrder
+  placedRestrictions: UserRestrictionOrderByRelationAggregateInput
+  reportedImages: ImageReportOrderByRelationAggregateInput
+  restrictions: UserRestrictionOrderByRelationAggregateInput
   roles: RoleOrderByRelationAggregateInput
   tagAliases: TagAliasOrderByRelationAggregateInput
   tagCategories: TagCategoryOrderByRelationAggregateInput
   taggedAppearances: AppearanceOrderByRelationAggregateInput
   token: SortOrder
   updatedAt: SortOrder
+}
+
+input UserRestrictionListRelationFilter {
+  every: UserRestrictionWhereInput
+  none: UserRestrictionWhereInput
+  some: UserRestrictionWhereInput
+}
+
+input UserRestrictionOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input UserRestrictionWhereInput {
+  AND: [UserRestrictionWhereInput!]
+  NOT: [UserRestrictionWhereInput!]
+  OR: [UserRestrictionWhereInput!]
+  addedBy: UserWhereInput
+  addedById: IntNullableFilter
+  associatedEntityId: IntNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  restriction: EnumRestrictionKindFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntFilter
 }
 
 input UserWhereInput {
@@ -1560,6 +1654,9 @@ input UserWhereInput {
   images: ImageListRelationFilter
   markedFaces: FaceListRelationFilter
   name: StringNullableFilter
+  placedRestrictions: UserRestrictionListRelationFilter
+  reportedImages: ImageReportListRelationFilter
+  restrictions: UserRestrictionListRelationFilter
   roles: RoleListRelationFilter
   tagAliases: TagAliasListRelationFilter
   tagCategories: TagCategoryListRelationFilter
