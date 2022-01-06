@@ -520,6 +520,20 @@ export type EnumMimeTypeFilter = {
   notIn?: Maybe<Array<MimeType>>;
 };
 
+export type EnumReportActionNullableFilter = {
+  equals?: Maybe<ReportAction>;
+  in?: Maybe<Array<ReportAction>>;
+  not?: Maybe<NestedEnumReportActionNullableFilter>;
+  notIn?: Maybe<Array<ReportAction>>;
+};
+
+export type EnumRestrictionKindFilter = {
+  equals?: Maybe<RestrictionKind>;
+  in?: Maybe<Array<RestrictionKind>>;
+  not?: Maybe<NestedEnumRestrictionKindFilter>;
+  notIn?: Maybe<Array<RestrictionKind>>;
+};
+
 export type EnumTagSourceFilter = {
   equals?: Maybe<TagSource>;
   in?: Maybe<Array<TagSource>>;
@@ -809,6 +823,7 @@ export type Image = {
   id: Scalars['Int'];
   imageTags: Array<ImageTag>;
   ireneBotId?: Maybe<Scalars['Int']>;
+  /** @deprecated Unused field, all images are SFW */
   isNsfw: Scalars['Boolean'];
   /** False if not logged in */
   liked?: Maybe<Scalars['Boolean']>;
@@ -820,6 +835,7 @@ export type Image = {
   public: Scalars['Boolean'];
   /** Direct link to the image on the CDN */
   rawUrl: Scalars['String'];
+  reported: Scalars['Boolean'];
   /** The unique url identifier of the image. */
   slug: Scalars['String'];
   /** The url the image was taken from (if applicable). Not guaranteed to be a direct image url. */
@@ -947,6 +963,7 @@ export type ImageOrderByWithRelationInput = {
   personBannerOf?: Maybe<PersonOrderByWithRelationInput>;
   potentialDuplicates?: Maybe<DiscoveredImageOrderByRelationAggregateInput>;
   public?: Maybe<SortOrder>;
+  reports?: Maybe<ImageReportOrderByRelationAggregateInput>;
   slug?: Maybe<SortOrder>;
   source?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
@@ -958,6 +975,44 @@ export type ImageOrderByWithRelationInput = {
   views?: Maybe<SortOrder>;
   width?: Maybe<SortOrder>;
   xp?: Maybe<SortOrder>;
+};
+
+export type ImageReport = {
+  __typename?: 'ImageReport';
+  action?: Maybe<ReportAction>;
+  actionedAt?: Maybe<Scalars['DateTime']>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Int'];
+  image: Image;
+  reason?: Maybe<Scalars['String']>;
+  reportedBy: User;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type ImageReportListRelationFilter = {
+  every?: Maybe<ImageReportWhereInput>;
+  none?: Maybe<ImageReportWhereInput>;
+  some?: Maybe<ImageReportWhereInput>;
+};
+
+export type ImageReportOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type ImageReportWhereInput = {
+  AND?: Maybe<Array<ImageReportWhereInput>>;
+  NOT?: Maybe<Array<ImageReportWhereInput>>;
+  OR?: Maybe<Array<ImageReportWhereInput>>;
+  action?: Maybe<EnumReportActionNullableFilter>;
+  actionedAt?: Maybe<DateTimeNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  image?: Maybe<ImageWhereInput>;
+  imageId?: Maybe<IntFilter>;
+  reason?: Maybe<StringNullableFilter>;
+  reportedBy?: Maybe<UserWhereInput>;
+  reportedById?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
 };
 
 export type ImageTag = {
@@ -1034,6 +1089,7 @@ export type ImageWhereInput = {
   personBannerOf?: Maybe<PersonWhereInput>;
   potentialDuplicates?: Maybe<DiscoveredImageListRelationFilter>;
   public?: Maybe<BoolFilter>;
+  reports?: Maybe<ImageReportListRelationFilter>;
   slug?: Maybe<StringFilter>;
   source?: Maybe<StringNullableFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
@@ -1118,6 +1174,7 @@ export type Mutation = {
   linkFace: Appearance;
   /** Removes an appearance from an image */
   removeAppearance: Appearance;
+  reportImage?: Maybe<ImageReport>;
   /** Queue an image to get scanned for faces */
   scanFaces: QueueInfo;
   toggleLike: Image;
@@ -1192,6 +1249,12 @@ export type MutationRemoveAppearanceArgs = {
 };
 
 
+export type MutationReportImageArgs = {
+  imageId: Scalars['Int'];
+  reason?: Maybe<Scalars['String']>;
+};
+
+
 export type MutationScanFacesArgs = {
   slug: Scalars['String'];
 };
@@ -1259,6 +1322,20 @@ export type NestedEnumMimeTypeFilter = {
   in?: Maybe<Array<MimeType>>;
   not?: Maybe<NestedEnumMimeTypeFilter>;
   notIn?: Maybe<Array<MimeType>>;
+};
+
+export type NestedEnumReportActionNullableFilter = {
+  equals?: Maybe<ReportAction>;
+  in?: Maybe<Array<ReportAction>>;
+  not?: Maybe<NestedEnumReportActionNullableFilter>;
+  notIn?: Maybe<Array<ReportAction>>;
+};
+
+export type NestedEnumRestrictionKindFilter = {
+  equals?: Maybe<RestrictionKind>;
+  in?: Maybe<Array<RestrictionKind>>;
+  not?: Maybe<NestedEnumRestrictionKindFilter>;
+  notIn?: Maybe<Array<RestrictionKind>>;
 };
 
 export type NestedEnumTagSourceFilter = {
@@ -1596,6 +1673,16 @@ export type QueueInfo = {
   queueSize: Scalars['Int'];
 };
 
+export enum ReportAction {
+  Comply = 'COMPLY',
+  Custom = 'CUSTOM',
+  Dismiss = 'DISMISS'
+}
+
+export enum RestrictionKind {
+  NoImageReport = 'NO_IMAGE_REPORT'
+}
+
 export type Role = {
   __typename?: 'Role';
   createdAt: Scalars['DateTime'];
@@ -1850,12 +1937,40 @@ export type UserOrderByWithRelationInput = {
   images?: Maybe<ImageOrderByRelationAggregateInput>;
   markedFaces?: Maybe<FaceOrderByRelationAggregateInput>;
   name?: Maybe<SortOrder>;
+  placedRestrictions?: Maybe<UserRestrictionOrderByRelationAggregateInput>;
+  reportedImages?: Maybe<ImageReportOrderByRelationAggregateInput>;
+  restrictions?: Maybe<UserRestrictionOrderByRelationAggregateInput>;
   roles?: Maybe<RoleOrderByRelationAggregateInput>;
   tagAliases?: Maybe<TagAliasOrderByRelationAggregateInput>;
   tagCategories?: Maybe<TagCategoryOrderByRelationAggregateInput>;
   taggedAppearances?: Maybe<AppearanceOrderByRelationAggregateInput>;
   token?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
+};
+
+export type UserRestrictionListRelationFilter = {
+  every?: Maybe<UserRestrictionWhereInput>;
+  none?: Maybe<UserRestrictionWhereInput>;
+  some?: Maybe<UserRestrictionWhereInput>;
+};
+
+export type UserRestrictionOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type UserRestrictionWhereInput = {
+  AND?: Maybe<Array<UserRestrictionWhereInput>>;
+  NOT?: Maybe<Array<UserRestrictionWhereInput>>;
+  OR?: Maybe<Array<UserRestrictionWhereInput>>;
+  addedBy?: Maybe<UserWhereInput>;
+  addedById?: Maybe<IntNullableFilter>;
+  associatedEntityId?: Maybe<IntNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  id?: Maybe<IntFilter>;
+  restriction?: Maybe<EnumRestrictionKindFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  user?: Maybe<UserWhereInput>;
+  userId?: Maybe<IntFilter>;
 };
 
 export type UserWhereInput = {
@@ -1880,6 +1995,9 @@ export type UserWhereInput = {
   images?: Maybe<ImageListRelationFilter>;
   markedFaces?: Maybe<FaceListRelationFilter>;
   name?: Maybe<StringNullableFilter>;
+  placedRestrictions?: Maybe<UserRestrictionListRelationFilter>;
+  reportedImages?: Maybe<ImageReportListRelationFilter>;
+  restrictions?: Maybe<UserRestrictionListRelationFilter>;
   roles?: Maybe<RoleListRelationFilter>;
   tagAliases?: Maybe<TagAliasListRelationFilter>;
   tagCategories?: Maybe<TagCategoryListRelationFilter>;
@@ -2139,6 +2257,20 @@ export type DiscoveryHistoryQuery = (
   )> }
 );
 
+export type ReportImageMutationVariables = Exact<{
+  imageId: Scalars['Int'];
+  reason?: Maybe<Scalars['String']>;
+}>;
+
+
+export type ReportImageMutation = (
+  { __typename?: 'Mutation' }
+  & { reportImage?: Maybe<(
+    { __typename?: 'ImageReport' }
+    & Pick<ImageReport, 'id'>
+  )> }
+);
+
 export type OnePersonRelationshipImageFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'id'>
@@ -2246,7 +2378,7 @@ export type OneImageQuery = (
   { __typename?: 'Query' }
   & { image?: Maybe<(
     { __typename?: 'Image' }
-    & Pick<Image, 'liked' | 'faceScanDate' | 'public'>
+    & Pick<Image, 'liked' | 'faceScanDate' | 'public' | 'reported'>
     & { unknownFaces: Array<(
       { __typename?: 'Face' }
       & { appearance?: Maybe<(
@@ -3209,6 +3341,21 @@ export const useDiscoveryHistoryQuery = <
       fetcher<DiscoveryHistoryQuery, DiscoveryHistoryQueryVariables>(DiscoveryHistoryDocument, variables),
       options
     );
+export const ReportImageDocument = `
+    mutation ReportImage($imageId: Int!, $reason: String) {
+  reportImage(reason: $reason, imageId: $imageId) {
+    id
+  }
+}
+    `;
+export const useReportImageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ReportImageMutation, TError, ReportImageMutationVariables, TContext>) => 
+    useMutation<ReportImageMutation, TError, ReportImageMutationVariables, TContext>(
+      (variables?: ReportImageMutationVariables) => fetcher<ReportImageMutation, ReportImageMutationVariables>(ReportImageDocument, variables)(),
+      options
+    );
 export const OnePersonDocument = `
     query OnePerson($id: Int!) {
   person(where: {id: $id}) {
@@ -3340,6 +3487,7 @@ export const OneImageDocument = `
     ...ImageData
     faceScanDate
     public
+    reported
   }
 }
     ${FaceDataFragmentDoc}

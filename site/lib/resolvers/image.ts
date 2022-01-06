@@ -64,7 +64,9 @@ export const Image = objectType({
         description:
           "Dominant colors in the image in decimal format, sorted by frequency.",
       })
-      .isNsfw()
+      .isNsfw({
+        deprecation: "Unused field, all images are SFW",
+      })
       .source({
         description:
           "The url the image was taken from (if applicable). Not guaranteed to be a direct image url.",
@@ -221,6 +223,23 @@ export const Image = objectType({
       },
       async resolve(base, { depth: maxDepth }, { prisma }) {
         return imageConnections(base, maxDepth, prisma)
+      },
+    })
+    t.nonNull.boolean("reported", {
+      async resolve(base, _, { prisma, user }) {
+        if (!user) {
+          return false
+        }
+        return Boolean(
+          await prisma.imageReport.findUnique({
+            where: {
+              imageReportUser: {
+                imageId: base.id,
+                reportedById: user.id,
+              },
+            },
+          })
+        )
       },
     })
   },

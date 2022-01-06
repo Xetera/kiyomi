@@ -471,7 +471,7 @@ model ImageReport {
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
 
-  @@index([imageId, reportedById], name: "imageReportUser")
+  @@unique([imageId, reportedById], name: "imageReportUser")
   @@map("image_reports")
 }
 

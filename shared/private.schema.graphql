@@ -2855,7 +2855,7 @@ type Image {
   id: Int!
   imageTags(cursor: ImageTagWhereUniqueInput, skip: Int, take: Int): [ImageTag!]!
   ireneBotId: Int
-  isNsfw: Boolean!
+  isNsfw: Boolean! @deprecated(reason: "Unused field, all images are SFW")
 
   """False if not logged in"""
   liked: Boolean
@@ -2871,6 +2871,7 @@ type Image {
 
   """Direct link to the image on the CDN"""
   rawUrl: String!
+  reported: Boolean!
 
   """The unique url identifier of the image."""
   slug: String!
@@ -3921,6 +3922,17 @@ input ImageOrderByWithRelationInput {
   xp: SortOrder
 }
 
+type ImageReport {
+  action: ReportAction
+  actionedAt: DateTime
+  createdAt: DateTime!
+  id: Int!
+  image: Image!
+  reason: String
+  reportedBy: User!
+  updatedAt: DateTime!
+}
+
 input ImageReportCreateManyImageInput {
   action: ReportAction
   actionedAt: DateTime
@@ -3991,6 +4003,11 @@ input ImageReportCreateWithoutReportedByInput {
   image: ImageCreateNestedOneWithoutReportsInput!
   reason: String
   updatedAt: DateTime
+}
+
+input ImageReportImageReportUserCompoundUniqueInput {
+  imageId: Int!
+  reportedById: Int!
 }
 
 input ImageReportListRelationFilter {
@@ -4121,6 +4138,7 @@ input ImageReportWhereInput {
 
 input ImageReportWhereUniqueInput {
   id: Int
+  imageReportUser: ImageReportImageReportUserCompoundUniqueInput
 }
 
 input ImageScalarWhereInput {
@@ -5373,6 +5391,7 @@ type Mutation {
 
   """Removes an appearance from an image"""
   removeAppearance(appearanceId: Int!): Appearance!
+  reportImage(imageId: Int!, reason: String): ImageReport
 
   """Queue an image to get scanned for faces"""
   scanFaces(slug: String!): QueueInfo!

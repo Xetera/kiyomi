@@ -3311,6 +3311,10 @@ export interface NexusGenInputs {
     reason?: string | null; // String
     updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
+  ImageReportImageReportUserCompoundUniqueInput: { // input type
+    imageId: number; // Int!
+    reportedById: number; // Int!
+  }
   ImageReportListRelationFilter: { // input type
     every?: NexusGenInputs['ImageReportWhereInput'] | null; // ImageReportWhereInput
     none?: NexusGenInputs['ImageReportWhereInput'] | null; // ImageReportWhereInput
@@ -3424,6 +3428,7 @@ export interface NexusGenInputs {
   }
   ImageReportWhereUniqueInput: { // input type
     id?: number | null; // Int
+    imageReportUser?: NexusGenInputs['ImageReportImageReportUserCompoundUniqueInput'] | null; // ImageReportImageReportUserCompoundUniqueInput
   }
   ImageScalarWhereInput: { // input type
     AND?: NexusGenInputs['ImageScalarWhereInput'][] | null; // [ImageScalarWhereInput!]
@@ -7375,6 +7380,7 @@ export interface NexusGenObjects {
     image: NexusGenRootTypes['Image']; // Image!
     person: NexusGenRootTypes['Person']; // Person!
   }
+  ImageReport: PrismaClient.ImageReport;
   ImageTag: PrismaClient.ImageTag;
   LeaderboardUser: { // root type
     rank: number; // Int!
@@ -7576,6 +7582,7 @@ export interface NexusGenFieldTypes {
     palette: number[]; // [Int!]!
     public: boolean; // Boolean!
     rawUrl: string; // String!
+    reported: boolean; // Boolean!
     slug: string; // String!
     source: string | null; // String
     thumbnail: NexusGenRootTypes['Thumbnail']; // Thumbnail!
@@ -7605,6 +7612,16 @@ export interface NexusGenFieldTypes {
     image: NexusGenRootTypes['Image']; // Image!
     person: NexusGenRootTypes['Person']; // Person!
   }
+  ImageReport: { // field return type
+    action: NexusGenEnums['ReportAction'] | null; // ReportAction
+    actionedAt: NexusGenScalars['DateTime'] | null; // DateTime
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    image: NexusGenRootTypes['Image']; // Image!
+    reason: string | null; // String
+    reportedBy: NexusGenRootTypes['User']; // User!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
   ImageTag: { // field return type
     addedBy: NexusGenRootTypes['User'] | null; // User
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -7630,6 +7647,7 @@ export interface NexusGenFieldTypes {
     discoveredPostVote: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
+    reportImage: NexusGenRootTypes['ImageReport'] | null; // ImageReport
     scanFaces: NexusGenRootTypes['QueueInfo']; // QueueInfo!
     toggleLike: NexusGenRootTypes['Image']; // Image!
     unlinkFace: number; // Int!
@@ -7887,6 +7905,7 @@ export interface NexusGenFieldTypeNames {
     palette: 'Int'
     public: 'Boolean'
     rawUrl: 'String'
+    reported: 'Boolean'
     slug: 'String'
     source: 'String'
     thumbnail: 'Thumbnail'
@@ -7916,6 +7935,16 @@ export interface NexusGenFieldTypeNames {
     image: 'Image'
     person: 'Person'
   }
+  ImageReport: { // field return type name
+    action: 'ReportAction'
+    actionedAt: 'DateTime'
+    createdAt: 'DateTime'
+    id: 'Int'
+    image: 'Image'
+    reason: 'String'
+    reportedBy: 'User'
+    updatedAt: 'DateTime'
+  }
   ImageTag: { // field return type name
     addedBy: 'User'
     createdAt: 'DateTime'
@@ -7941,6 +7970,7 @@ export interface NexusGenFieldTypeNames {
     discoveredPostVote: 'DiscoveredImage'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
+    reportImage: 'ImageReport'
     scanFaces: 'QueueInfo'
     toggleLike: 'Image'
     unlinkFace: 'Int'
@@ -8152,6 +8182,10 @@ export interface NexusGenArgTypes {
     }
     removeAppearance: { // args
       appearanceId: number; // Int!
+    }
+    reportImage: { // args
+      imageId: number; // Int!
+      reason?: string | null; // String
     }
     scanFaces: { // args
       slug: string; // String!

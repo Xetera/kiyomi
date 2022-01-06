@@ -1,24 +1,36 @@
 import { humanFileSize } from "@/lib/shared"
-import React from "react"
-import { Palette } from "./palette-color"
-import { Tags } from "./tags"
-import { CascadeChildren } from "./animations/cascade-children"
+import React, { useState } from "react"
+import { Palette } from "../palette-color"
+import { Tags } from "../tags"
+import { CascadeChildren } from "../animations/cascade-children"
 import {
+  RiAlarmWarningLine,
   RiHeartFill,
+  RiKnifeBloodLine,
   RiQuestionLine,
   RiScan2Line,
   RiUser3Fill,
 } from "react-icons/ri"
 import { format } from "date-fns"
-import { User } from "./user"
+import { User } from "../user"
 import { ImageContext } from "@/models/contexts"
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout"
-import { Grid, Tooltip, useToast, UseToastOptions } from "@chakra-ui/react"
+import {
+  Button,
+  Grid,
+  Tooltip,
+  useToast,
+  UseToastOptions,
+} from "@chakra-ui/react"
 import { useSession } from "next-auth/client"
-import { useToggleLikeMutation } from "@/lib/__generated__/graphql"
-import useQueue from "./queue-button"
+import {
+  useToggleLikeMutation,
+  useReportImageMutation,
+} from "@/lib/__generated__/graphql"
+import useQueue from "../queue-button"
 import { useRouter } from "next/router"
 import { useQueryClient } from "react-query"
+import { ReportModal } from "@/components/data-entry/report-modal"
 
 function SidebarSection({ title, children }) {
   return (
@@ -42,25 +54,42 @@ export type ImageSidebarProps = {
   onEdit: () => void
 }
 
-type TagProps = {}
+type TagProps = {
+  text: string
+  icon: React.ReactNode
+  onClick(): void
+  tooltip?: string
+  disabled?: boolean
+}
 
-function Tag({ text, icon, onClick, disabled = false }) {
+function Tag({ text, icon, onClick, tooltip, disabled = false }: TagProps) {
   const data = (
-    <Flex
+    <Button
       alignItems="center"
-      pr={4}
-      pb={2}
-      cursor="pointer"
+      px={4}
+      py={2}
+      mr={4}
+      mb={2}
+      disabled={disabled}
+      borderRadius="md"
+      overflow="hidden"
       onClick={onClick}
+      bg="hsla(222, 20%, 10%, 1)"
+      _hover={{
+        bg: "hsla(222, 20%, 15%, 1)",
+      }}
       fontSize={["sm", null, null, "md"]}
-      color={disabled ? "trueGray.600" : "trueGray.300"}
     >
       <Box mr={2}>{icon}</Box>
-      <Text fontWeight="600">{text}</Text>
-    </Flex>
+      <Text textStyle="heading-sm">{text}</Text>
+    </Button>
   )
-  if (disabled) {
-    return <Tooltip label="Already requested">{data}</Tooltip>
+  if (disabled && tooltip) {
+    return (
+      <Tooltip label={tooltip} shouldWrapChildren>
+        {data}
+      </Tooltip>
+    )
   }
   return data
 }
@@ -70,9 +99,11 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
   const image = React.useContext(ImageContext)
   const router = useRouter()
   const { data, mutate } = useToggleLikeMutation()
+  const [reportOpen, setReportOpen] = useState(false)
   if (!image) {
     return null
   }
+
   function toggleLike() {
     if (!image) {
       return
@@ -96,6 +127,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
     }
     mutate({ id: image.id })
   }
+
   const client = useQueryClient()
   const liked = data?.toggleLike.liked ?? image.liked
   const uploadDate = new Date(image.createdAt)
@@ -107,13 +139,28 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
       fontSize="sm"
       borderRadius="md"
       maxWidth="600px"
+      w="full"
       mx="auto"
     >
+      <ReportModal
+        id={image.id}
+        slug={image.slug}
+        src={image.rawUrl}
+        isOpen={reportOpen}
+        onClose={() => setReportOpen(false)}
+      />
       <CascadeChildren className="grid gap-4 text-sm">
-        <Flex>
+        <Flex flexFlow="row wrap">
           <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
           <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
-          <Tag icon={<RiScan2Line />} text="Re-scan Image" onClick={reScan} />
+          <Tag icon={<RiScan2Line />} text="Scan-image" onClick={reScan} />
+          <Tag
+            icon={<RiAlarmWarningLine />}
+            disabled={image.reported}
+            tooltip="You already reported this image"
+            text="Report"
+            onClick={() => setReportOpen(true)}
+          />
         </Flex>
         <Flex flexDirection="row" alignItems="top">
           <User

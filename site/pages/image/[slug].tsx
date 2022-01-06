@@ -1,6 +1,6 @@
 import React, { useRef } from "react"
 import ImageDisplay from "@/components/image-display"
-import ImageSidebar from "@/components/image-sidebar"
+import ImageSidebar from "@/components/image/image-sidebar"
 import { FaceContext, ImageContext } from "@/models/contexts"
 import { Footer } from "@/components/footer"
 import { WithNavbar } from "@/components/navbar"

@@ -34,5 +34,6 @@ query OneImage($slug: String!) {
     ...ImageData
     faceScanDate
     public
+    reported
   }
 }
