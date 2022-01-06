@@ -17,6 +17,7 @@ const options: NextAuthOptions = {
     Providers.Discord({
       clientId: process.env.DISCORD_ID!,
       clientSecret: process.env.DISCORD_SECRET!,
+      scope: ["identify"],
     }),
   ],
   adapter: Adapters.Prisma.Adapter({
