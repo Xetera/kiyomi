@@ -1,17 +1,21 @@
 import { Person, PrismaClient } from "@prisma/client"
-import {
-  Gender,
-  MutationUpdatePersonArgs,
-  UpdatePersonInputs,
-} from "@/lib/__generated__/graphql"
+import { UpdatePersonInputs } from "@/lib/__generated__/graphql"
+import { siteEvent } from "@/lib/observer"
 
 export type PersonServiceOptions = {
   prisma: PrismaClient
 }
 
+export type UpdatePersonOptions = {
+  personId: number
+  userId: number
+  input: UpdatePersonInputs
+}
+
 export const makePerson = ({ prisma }: PersonServiceOptions) => {
   return {
-    async updatePerson(id: number, p: UpdatePersonOptions): Promise<Person> {
+    async updatePerson(arg: UpdatePersonOptions): Promise<Person> {
+      const { input: p, userId, personId: id } = arg
       const person = await prisma.person.findUnique({
         where: { id },
         include: {
@@ -79,6 +83,7 @@ export const makePerson = ({ prisma }: PersonServiceOptions) => {
           })),
         }),
       ])
+      siteEvent.person.update$.next(arg)
       return newPerson
     },
   }
@@ -89,21 +94,5 @@ type GroupMembership = {
   startDate?: Date
   endDate?: Date
 }
-
-type UpdatePersonOptions = UpdatePersonInputs
-// type UpdatePersonOptions = {
-//   id: number
-//   name?: string
-//   description?: string
-//   gender: Gender
-//   // alias names
-//   aliases: string[]
-//   preferredAliasId?: number
-//   // ids
-//   groups: GroupMembership[]
-//   preferredMembershipId?: number
-//   avatarId?: number
-//   bannerId?: number
-// }
 
 export type PersonService = ReturnType<typeof makePerson>

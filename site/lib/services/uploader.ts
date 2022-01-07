@@ -11,6 +11,7 @@ import {
 import idgen from "nanoid"
 import mimeType from "mime-types"
 import { WendyService } from "./wendy"
+import { siteEvent } from "@/lib/observer"
 
 export type UploaderOptions = {
   prisma: PrismaClient
@@ -173,7 +174,8 @@ export function makeUploader({ prisma, wasabi, wendy }: UploaderOptions) {
         console.error(err)
       })
 
-      //
+      siteEvent.image.upload$.next(image)
+
       return image
     },
   }

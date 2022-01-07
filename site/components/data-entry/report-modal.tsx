@@ -28,11 +28,10 @@ export const ReportModal = ({
   onClose,
   isOpen,
 }: ReportModalProps) => {
-  const [reason, setReason] = useState("")
   const toast = useToast("error")
   const { mutateAsync } = useReportImageMutation()
   const client = useQueryClient()
-  const { handleSubmit } = useForm({
+  const { handleSubmit, register } = useForm({
     reValidateMode: "onBlur",
     defaultValues: {
       reason: "",
@@ -80,11 +79,7 @@ export const ReportModal = ({
           </VStack>
           <VStack spacing={4}>
             <Text textStyle="heading-sm">Report Reason?</Text>
-            <Input
-              type="text"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-            />
+            <Input type="text" {...register("reason")} />
           </VStack>
           <ButtonGroup>
             <Button size="sm" type="submit" colorScheme="telegram">

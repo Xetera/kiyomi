@@ -10,6 +10,7 @@ import { makeSearch, SearchService } from "./search"
 import { makeTag, TagService } from "./tag"
 import { makePerson, PersonService } from "@/lib/services/person"
 import { makeReport, ReportService } from "@/lib/services/report"
+import { makeWebhook, WebhookService } from "@/lib/services/webhook"
 
 export type Services = {
   prisma: PrismaClient
@@ -24,6 +25,7 @@ export type Services = {
   tag: TagService
   person: PersonService
   report: ReportService
+  webhook: WebhookService
 }
 
 export function createServices(
@@ -47,5 +49,9 @@ export function createServices(
     tag: makeTag({ prisma, search }),
     report: makeReport({ prisma }),
     person: makePerson({ prisma }),
+    webhook: makeWebhook({
+      prisma,
+      discordWebhook: process.env.DISCORD_WEBHOOK_URL,
+    }),
   }
 }

@@ -8,6 +8,7 @@ import {
 } from "nexus"
 import { GraphqlAuth } from "@/lib/auth"
 import { Role } from "@/lib/permissions"
+import { siteEvent } from "@/lib/observer"
 
 export const Person = objectType({
   name: "Person",
@@ -63,9 +64,15 @@ export const Mutation = mutationField((t) => {
       id: nonNull("Int"),
       update: nonNull(UpdatePersonInputs),
     },
-    async resolve(_, args, { prisma, person }) {
-      return person.updatePerson(args.id, args.update)
-      // args.person.name
+    async resolve(_, args, { user, person }) {
+      if (!user) {
+        throw Error("Unauthorized")
+      }
+      return person.updatePerson({
+        input: args.update,
+        userId: user.id,
+        personId: args.id,
+      })
     },
   })
 })

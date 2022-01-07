@@ -1,4 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client"
+import { siteEvent } from "@/lib/observer"
 
 export type ReportServiceOptions = {
   prisma: PrismaClient
@@ -6,10 +7,12 @@ export type ReportServiceOptions = {
 
 export const makeReport = ({ prisma }: ReportServiceOptions) => {
   return {
-    reportImage(data: Prisma.ImageReportCreateInput) {
-      return prisma.imageReport.create({
+    async reportImage(data: Prisma.ImageReportCreateInput) {
+      const image = await prisma.imageReport.create({
         data,
       })
+      siteEvent.image.report$.next(image)
+      return image
     },
   }
 }

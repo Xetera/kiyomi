@@ -176,10 +176,10 @@ function HomeContent() {
           gap={6}
         >
           {trending?.homepage.map((trend, i) => {
-            const opacity = i === selected ? "100%" : "40%"
+            const opacity = i === selected ? 1 : 0.4
             return (
               <Portrait
-                opacity={100}
+                opacity={opacity}
                 height="320px"
                 width="180px"
                 onClick={() => setSelected(i)}
