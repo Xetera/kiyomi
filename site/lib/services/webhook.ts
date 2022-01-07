@@ -30,7 +30,7 @@ export const makeWebhook = ({
 
   const imageUploadSubscription = siteEvent.image.upload$
     // these have to be buffered to prevent bombing discord logs
-    .pipe(bufferTime(6000))
+    .pipe(bufferTime(30000))
     .subscribe(async (images) => {
       const uploads = [...images].sort((a, b) =>
         a?.userId && b?.userId ? a.userId - b.userId : 0
