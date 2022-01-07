@@ -20,6 +20,7 @@ import { paginateBySkip } from "@/client/pagination"
 import { OgImage } from "@/components/og-image"
 import { Portrait } from "@/components/portrait"
 import { toClickableGridImage } from "@/client/data/image-mappers"
+import { personPreferredName } from "@/client/data/person-mappers"
 
 const AnimatedImage = motion(Image)
 
@@ -188,7 +189,7 @@ function HomeContent() {
                     ? trend.avatar.thumbnail.small
                     : "https://placewaifu.com/image/200/320"
                 }
-                name={trend.name}
+                name={personPreferredName(trend)}
               />
             )
           })}
