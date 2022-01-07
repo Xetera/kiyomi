@@ -20,7 +20,11 @@ export const makeWebhook = ({
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        username: "Kiyomi",
+        avatar_url: "https://kiyomi.io/kiyomi.png",
+        ...data,
+      }),
     }).catch(console.error)
   }
 
@@ -106,8 +110,6 @@ export const makeWebhook = ({
       }
 
       log({
-        username: "Kiyomi",
-        avatar_url: "https://kiyomi.io/kiyomi.png",
         embeds: [
           {
             title: `New report from **${username}**`,

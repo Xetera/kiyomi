@@ -15,7 +15,7 @@ export type UpdatePersonOptions = {
 export const makePerson = ({ prisma }: PersonServiceOptions) => {
   return {
     async updatePerson(arg: UpdatePersonOptions): Promise<Person> {
-      const { input: p, userId, personId: id } = arg
+      const { input: p, personId: id } = arg
       const person = await prisma.person.findUnique({
         where: { id },
         include: {
