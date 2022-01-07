@@ -3,6 +3,13 @@ const fs = require("fs")
 const path = require("path")
 const FormData = require("form-data")
 const members = require("./members.json")
+const progress = require("./progress.json")
+
+async function saveProgress(id, number) {
+  const progress = JSON.parse(await fs.promises.readFile("./progress.json"))
+  progress[id] = number
+  await fs.promises.writeFile("./progress.json", JSON.stringify(progress))
+}
 
 const production = process.env.NODE_ENV === "production"
 
@@ -58,8 +65,6 @@ const parallelMap = (arr, fn, max) => {
 
 const imageSize = (url) =>
   fetch(url, { method: "HEAD" }).then((r) => r.headers.get("content-length"))
-
-let _queue = Promise.resolve()
 
 const getIrene = (url, opts) =>
   fetch(`https://api.irenebot.com/${url}/`, {
@@ -136,8 +141,12 @@ async function memes(id, person) {
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms))
 
+const lastImageIndex = (t) => {
+  return progress[t] ?? 0
+}
+
 const imagesOfIdol = async (t) => {
-  const get = () => require(`./members/${t}.json`).ids.slice(0, 5)
+  const get = () => require(`./members/${t}.json`).ids
   try {
     return get()
   } catch (err) {
@@ -148,23 +157,28 @@ const imagesOfIdol = async (t) => {
 }
 
 async function downloadImages() {
-  const offset = 944
-  const idolIds = Array(1)
+  const idolOffset = 120
+  const idolTakeCount = 120
+  // next = 240
+  const idolIds = Array(idolTakeCount)
     .fill(0)
-    .map((_, i) => i + 1 + offset)
-  const getImages = async (d) =>
-    (await imagesOfIdol(d)).slice(0, 4).map((image) => ({
+    .map((_, i) => i + 1 + idolOffset)
+  const getImages = async (d) => {
+    const a = await imagesOfIdol(d)
+    const offset = lastImageIndex(d)
+    return a.slice(offset, 50).map((image, i) => ({
+      i: offset + i,
       imageId: image,
       personId: d,
     }))
-  const inputs = (
-    await parallelMap(idolIds, (image) => getImages(image), 5)
-  ).flat()
+  }
+  const inputs = (await parallelMap(idolIds, getImages, 5)).flat()
   parallelMap(
     inputs,
-    async ({ imageId, personId }) => {
+    async ({ imageId, personId, i }) => {
       const person = members[personId]
       await memes(imageId, { ...person, id: personId })
+      await saveProgress(personId, i)
       // production download delay
       await sleep(10000)
     },

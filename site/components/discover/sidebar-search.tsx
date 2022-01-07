@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 import { useList } from "react-use"
 import { SearchTag, SearchTags } from "@/components/discover/search-tags"
 import { SearchGroup, searchGroup } from "@/client/typesense"
-import { Flex, Icon, VStack } from "@chakra-ui/react"
+import { Flex, forwardRef, Icon, VStack } from "@chakra-ui/react"
 import { QuickSearchHeader } from "@/components/search/QuickSearchContainer"
 import { RiCloseLine } from "react-icons/ri"
 import {
@@ -33,80 +33,86 @@ type SidebarSearchProps<
   runSearch?: (input: string) => Promise<GroupSearchResult[]>
 }
 
-export function SidebarSearch<T extends QuickSearchSectionKind>({
-  hits,
-  setHits,
-  filters,
-  addFilter,
-  runSearch = (text) => searchGroup(text).then((r) => r.hits ?? []),
-  removeFilter,
-  searchType,
-  placeholder,
-}: SidebarSearchProps<T>) {
-  const [search, setSearch] = useState("")
-
-  async function changeSearch(text: string) {
-    setSearch(text)
-    const groups = await runSearch(text)
-    setHits(groups ?? [])
-  }
-
-  const validGroups = hits.filter((hit) =>
-    filters
-      .filter((tag) => tag.type === searchType)
-      .every((tag) => tag.id !== hit.document.groupId)
-  )
-  const onRemove = useCallback(
-    (tag: SearchTag) => {
-      if (tag.type === "group") {
-        removeFilter(tag)
-      }
+export const SidebarSearch = forwardRef<SidebarSearchProps<"group">, "div">(
+  (
+    {
+      hits,
+      setHits,
+      filters,
+      addFilter,
+      runSearch = (text) => searchGroup(text).then((r) => r.hits ?? []),
+      removeFilter,
+      searchType,
+      placeholder,
+      ...rest
     },
-    [removeFilter]
-  )
-  return (
-    <VStack align="flex-start" w="full">
-      <Flex p={2} bg="rgba(0, 0, 0, 0.2)" borderRadius="md" w="full">
-        <QuickSearchHeader
-          fontSize="16px"
-          w="full"
-          placeholder={placeholder ?? "Search social media posts"}
-          query={search}
-          onSearch={changeSearch}
-          closeButton={
-            search ? (
-              <Icon
-                as={RiCloseLine}
-                cursor="pointer"
-                mx={3}
-                w={5}
-                h={5}
-                alignSelf="center"
-                onClick={() => changeSearch("")}
-              />
-            ) : (
-              <div />
-            )
-          }
-        />
-      </Flex>
-      <SearchTags tags={filters} onRemove={onRemove} />
-      {validGroups.length > 0 && search && (
-        <QuickSearchSection
-          type={searchType}
-          data={groupsSearchToQuickSearchSection(validGroups, (group) => {
-            return {
-              onClick() {
-                addFilter({
-                  type: searchType,
-                  id: group.document.groupId,
-                  name: group.document.name,
-                })
-              },
+    ref
+  ) => {
+    const [search, setSearch] = useState("")
+
+    async function changeSearch(text: string) {
+      setSearch(text)
+      const groups = await runSearch(text)
+      setHits(groups ?? [])
+    }
+
+    const validGroups = hits.filter((hit) =>
+      filters
+        .filter((tag) => tag.type === searchType)
+        .every((tag) => tag.id !== hit.document.groupId)
+    )
+    const onRemove = useCallback(
+      (tag: SearchTag) => {
+        if (tag.type === "group") {
+          removeFilter(tag)
+        }
+      },
+      [removeFilter]
+    )
+    return (
+      <VStack align="flex-start" w="full" {...rest} ref={ref}>
+        <Flex p={2} bg="rgba(0, 0, 0, 0.2)" borderRadius="md" w="full">
+          <QuickSearchHeader
+            fontSize="16px"
+            w="full"
+            placeholder={placeholder ?? "Search social media posts"}
+            query={search}
+            onSearch={changeSearch}
+            closeButton={
+              search ? (
+                <Icon
+                  as={RiCloseLine}
+                  cursor="pointer"
+                  mx={3}
+                  w={5}
+                  h={5}
+                  alignSelf="center"
+                  onClick={() => changeSearch("")}
+                />
+              ) : (
+                <div />
+              )
             }
-          })}
-        />
-      )}
-    </VStack>
-  )
-}
+          />
+        </Flex>
+        <SearchTags tags={filters} onRemove={onRemove} />
+        {validGroups.length > 0 && search && (
+          <QuickSearchSection
+            type={searchType}
+            data={groupsSearchToQuickSearchSection(validGroups, (group) => {
+              return {
+                onClick() {
+                  addFilter({
+                    type: searchType,
+                    id: group.document.groupId,
+                    name: group.document.name,
+                  })
+                },
+              }
+            })}
+          />
+        )}
+      </VStack>
+    )
+  }
+)

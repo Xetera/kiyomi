@@ -1,3 +1,4 @@
 .env
 dist
 **/*.tsbuildinfo
+scripts/progress.json

@@ -17,7 +17,7 @@ export const SearchTags = forwardRef<SearchTagsProps, "div">((props, ref) => {
   return (
     <Flex flexWrap="wrap" ref={ref} {...rest} mt={4}>
       {tags.map((tag) => (
-        <Tag mr={2} mb={2}>
+        <Tag mr={2} mb={2} key={tag.id}>
           <TagLabel>{tag.name}</TagLabel>
           <TagCloseButton onClick={() => onRemove(tag)} />
         </Tag>
