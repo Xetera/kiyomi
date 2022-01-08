@@ -5,12 +5,13 @@ import { FaceContext, ImageContext } from "@/models/contexts"
 import { Footer } from "@/components/footer"
 import { WithNavbar } from "@/components/navbar"
 import NextHead from "next/head"
-import { RiSpyLine } from "react-icons/ri"
+import { RiAlarmWarningLine, RiSpyLine } from "react-icons/ri"
 import { useRouter } from "next/router"
 import { useOneImageQuery } from "@/lib/__generated__/graphql"
 import { prefetchQuery } from "@/lib/client-helpers"
 import { wrapRequest } from "@/lib/data-fetching"
 import { Flex, Heading, Text } from "@chakra-ui/layout"
+import format from "date-fns/format"
 import {
   ContextSidebar,
   SidebarItem,
@@ -68,7 +69,13 @@ const Image = () => {
 
   const { image } = data
   if (!image) {
-    return null
+    return (
+      <WithNavbar>
+        <Flex w="full" align="center" justify="center" h="full" flex="1">
+          <Text textStyle="heading-sm">This image doesn't exist :(</Text>
+        </Flex>
+      </WithNavbar>
+    )
   }
 
   return (
@@ -115,8 +122,41 @@ const Image = () => {
           >
             <Flex direction="row" flex={1}>
               <Box flex={1}>
+                {image.hiddenAt && (
+                  <Box mx="auto">
+                    <Flex
+                      alignItems="center"
+                      justifyContent="center"
+                      mx="auto"
+                      py={2}
+                      bg="blue.800"
+                      color="gray.200"
+                      maxW="full"
+                      fontSize={["sm", null, null, "md"]}
+                    >
+                      <Box display={{ base: "none", lg: "block" }} mr={2}>
+                        <RiAlarmWarningLine />
+                      </Box>
+                      <Text textAlign="center">
+                        This image was hidden on{" "}
+                        <Box
+                          as="span"
+                          color="gray.300"
+                          px={2}
+                          py={1}
+                          fontWeight="medium"
+                          borderRadius="md"
+                          bg="rgba(0, 0, 0, 0.3)"
+                        >
+                          {format(new Date(image.hiddenAt), "MMMM dd, yyyy")}
+                        </Box>{" "}
+                        but you can see it because you're a moderator.
+                      </Text>
+                    </Flex>
+                  </Box>
+                )}
                 {!image.public && (
-                  <div className="text-gray-400 rounded text-sm lg:text-base mx-auto">
+                  <Box mx="auto">
                     <Flex
                       fontWeight="semibold"
                       alignItems="center"
@@ -130,7 +170,7 @@ const Image = () => {
                         link.
                       </Text>
                     </Flex>
-                  </div>
+                  </Box>
                 )}
                 <div className="w-full relative overflow-hidden">
                   <div className="justify-center mx-auto max-w-7xl px-4 lg:mb-12 mb-4">

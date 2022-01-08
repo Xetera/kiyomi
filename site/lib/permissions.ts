@@ -1,4 +1,3 @@
-import { Role as RoleTable } from "@prisma/client"
 import type { GetServerSidePropsContext, GetServerSidePropsResult } from "next"
 import { getSession } from "next-auth/client"
 import { URLSearchParams } from "url"
@@ -8,8 +7,11 @@ export const NO_PERMISSIONS = "no-permissions"
 export enum Role {
   User = "USER",
   Editor = "EDITOR",
+  Moderator = "MODERATOR",
   Administrator = "ADMINISTRATOR",
 }
+
+export type BaseRoles = Array<{ name: string }>
 
 const roleValues = Object.values(Role)
 
@@ -19,15 +21,18 @@ export const filterValidRoles = (roles: string[]) =>
 export const PermissionsFor = {
   editingIdol: [Role.Editor],
   editingGroup: [Role.Editor],
+  actioningReport: [Role.Moderator],
 } as const
 
-export function hasRole(roles: RoleTable[], roleCheck: Role) {
-  return roles.some((role) => role.name === roleCheck)
+export function hasRole(roles: BaseRoles, roleCheck: Role) {
+  return roles.some(
+    (role) => role.name === roleCheck || role.name === Role.Administrator
+  )
 }
 
 export const withAuthorizedUser = <T>(
   roles: readonly Role[],
-  f: (user: GetServerSidePropsContext) => Promise<GetServerSidePropsResult<T>>
+  f: (ctx: GetServerSidePropsContext) => Promise<GetServerSidePropsResult<T>>
 ) => async (
   ctx: GetServerSidePropsContext
 ): Promise<GetServerSidePropsResult<T>> => {

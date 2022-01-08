@@ -282,7 +282,6 @@ export const gameModel = createModel<RootModel>()({
             emitError({
               description: message.error,
             })
-            console.log(Router.basePath)
             if (Router.basePath !== "/games") {
               Router.push("/games")
             }

@@ -320,17 +320,17 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
     notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
   }
+  EnumImageReportActionNullableFilter: { // input type
+    equals?: NexusGenEnums['ImageReportAction'] | null; // ImageReportAction
+    in?: NexusGenEnums['ImageReportAction'][] | null; // [ImageReportAction!]
+    not?: NexusGenInputs['NestedEnumImageReportActionNullableFilter'] | null; // NestedEnumImageReportActionNullableFilter
+    notIn?: NexusGenEnums['ImageReportAction'][] | null; // [ImageReportAction!]
+  }
   EnumMimeTypeFilter: { // input type
     equals?: NexusGenEnums['MimeType'] | null; // MimeType
     in?: NexusGenEnums['MimeType'][] | null; // [MimeType!]
     not?: NexusGenInputs['NestedEnumMimeTypeFilter'] | null; // NestedEnumMimeTypeFilter
     notIn?: NexusGenEnums['MimeType'][] | null; // [MimeType!]
-  }
-  EnumReportActionNullableFilter: { // input type
-    equals?: NexusGenEnums['ReportAction'] | null; // ReportAction
-    in?: NexusGenEnums['ReportAction'][] | null; // [ReportAction!]
-    not?: NexusGenInputs['NestedEnumReportActionNullableFilter'] | null; // NestedEnumReportActionNullableFilter
-    notIn?: NexusGenEnums['ReportAction'][] | null; // [ReportAction!]
   }
   EnumRestrictionKindFilter: { // input type
     equals?: NexusGenEnums['RestrictionKind'] | null; // RestrictionKind
@@ -541,6 +541,7 @@ export interface NexusGenInputs {
     groupBannerOf?: NexusGenInputs['GroupOrderByWithRelationInput'] | null; // GroupOrderByWithRelationInput
     hash?: NexusGenEnums['SortOrder'] | null; // SortOrder
     height?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    hiddenAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
     imageTags?: NexusGenInputs['ImageTagOrderByRelationAggregateInput'] | null; // ImageTagOrderByRelationAggregateInput
     ireneBotId?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -566,6 +567,10 @@ export interface NexusGenInputs {
     width?: NexusGenEnums['SortOrder'] | null; // SortOrder
     xp?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
+  ImageReportImageReportUserCompoundUniqueInput: { // input type
+    imageId: number; // Int!
+    reportedById: number; // Int!
+  }
   ImageReportListRelationFilter: { // input type
     every?: NexusGenInputs['ImageReportWhereInput'] | null; // ImageReportWhereInput
     none?: NexusGenInputs['ImageReportWhereInput'] | null; // ImageReportWhereInput
@@ -574,12 +579,28 @@ export interface NexusGenInputs {
   ImageReportOrderByRelationAggregateInput: { // input type
     _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
+  ImageReportOrderByWithRelationInput: { // input type
+    action?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    actionedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    actionedBy?: NexusGenInputs['UserOrderByWithRelationInput'] | null; // UserOrderByWithRelationInput
+    actionedById?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    id?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    image?: NexusGenInputs['ImageOrderByWithRelationInput'] | null; // ImageOrderByWithRelationInput
+    imageId?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    reason?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    reportedBy?: NexusGenInputs['UserOrderByWithRelationInput'] | null; // UserOrderByWithRelationInput
+    reportedById?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    updatedAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
   ImageReportWhereInput: { // input type
     AND?: NexusGenInputs['ImageReportWhereInput'][] | null; // [ImageReportWhereInput!]
     NOT?: NexusGenInputs['ImageReportWhereInput'][] | null; // [ImageReportWhereInput!]
     OR?: NexusGenInputs['ImageReportWhereInput'][] | null; // [ImageReportWhereInput!]
-    action?: NexusGenInputs['EnumReportActionNullableFilter'] | null; // EnumReportActionNullableFilter
+    action?: NexusGenInputs['EnumImageReportActionNullableFilter'] | null; // EnumImageReportActionNullableFilter
     actionedAt?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    actionedBy?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    actionedById?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     image?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
@@ -588,6 +609,10 @@ export interface NexusGenInputs {
     reportedBy?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     reportedById?: NexusGenInputs['IntFilter'] | null; // IntFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  ImageReportWhereUniqueInput: { // input type
+    id?: number | null; // Int
+    imageReportUser?: NexusGenInputs['ImageReportImageReportUserCompoundUniqueInput'] | null; // ImageReportImageReportUserCompoundUniqueInput
   }
   ImageTagImageTagCompoundUniqueInput: { // input type
     imageId: number; // Int!
@@ -637,6 +662,7 @@ export interface NexusGenInputs {
     groupBannerOf?: NexusGenInputs['GroupWhereInput'] | null; // GroupWhereInput
     hash?: NexusGenInputs['StringFilter'] | null; // StringFilter
     height?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    hiddenAt?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     imageTags?: NexusGenInputs['ImageTagListRelationFilter'] | null; // ImageTagListRelationFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
@@ -730,17 +756,17 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
     notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
   }
+  NestedEnumImageReportActionNullableFilter: { // input type
+    equals?: NexusGenEnums['ImageReportAction'] | null; // ImageReportAction
+    in?: NexusGenEnums['ImageReportAction'][] | null; // [ImageReportAction!]
+    not?: NexusGenInputs['NestedEnumImageReportActionNullableFilter'] | null; // NestedEnumImageReportActionNullableFilter
+    notIn?: NexusGenEnums['ImageReportAction'][] | null; // [ImageReportAction!]
+  }
   NestedEnumMimeTypeFilter: { // input type
     equals?: NexusGenEnums['MimeType'] | null; // MimeType
     in?: NexusGenEnums['MimeType'][] | null; // [MimeType!]
     not?: NexusGenInputs['NestedEnumMimeTypeFilter'] | null; // NestedEnumMimeTypeFilter
     notIn?: NexusGenEnums['MimeType'][] | null; // [MimeType!]
-  }
-  NestedEnumReportActionNullableFilter: { // input type
-    equals?: NexusGenEnums['ReportAction'] | null; // ReportAction
-    in?: NexusGenEnums['ReportAction'][] | null; // [ReportAction!]
-    not?: NexusGenInputs['NestedEnumReportActionNullableFilter'] | null; // NestedEnumReportActionNullableFilter
-    notIn?: NexusGenEnums['ReportAction'][] | null; // [ReportAction!]
   }
   NestedEnumRestrictionKindFilter: { // input type
     equals?: NexusGenEnums['RestrictionKind'] | null; // RestrictionKind
@@ -1013,6 +1039,7 @@ export interface NexusGenInputs {
   }
   UserOrderByWithRelationInput: { // input type
     DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteOrderByRelationAggregateInput'] | null; // DiscoveredImageVoteOrderByRelationAggregateInput
+    actionedReportedImages?: NexusGenInputs['ImageReportOrderByRelationAggregateInput'] | null; // ImageReportOrderByRelationAggregateInput
     appearanceTags?: NexusGenInputs['AppearanceTagOrderByRelationAggregateInput'] | null; // AppearanceTagOrderByRelationAggregateInput
     avatar?: NexusGenInputs['ImageOrderByWithRelationInput'] | null; // ImageOrderByWithRelationInput
     avatarId?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -1067,6 +1094,7 @@ export interface NexusGenInputs {
     DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteListRelationFilter'] | null; // DiscoveredImageVoteListRelationFilter
     NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    actionedReportedImages?: NexusGenInputs['ImageReportListRelationFilter'] | null; // ImageReportListRelationFilter
     appearanceTags?: NexusGenInputs['AppearanceTagListRelationFilter'] | null; // AppearanceTagListRelationFilter
     avatar?: NexusGenInputs['ImageWhereInput'] | null; // ImageWhereInput
     avatarId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
@@ -1100,9 +1128,9 @@ export interface NexusGenEnums {
   FaceSource: PrismaClient.FaceSource
   Gender: PrismaClient.Gender
   ImageConnectionEdge: "IMAGE_TO_PERSON" | "PERSON_TO_IMAGE"
+  ImageReportAction: PrismaClient.ImageReportAction
   MimeType: PrismaClient.MimeType
   QueryMode: PrismaClient.QueryMode
-  ReportAction: PrismaClient.ReportAction
   RestrictionKind: PrismaClient.RestrictionKind
   SortOrder: PrismaClient.SortOrder
   TagSource: PrismaClient.TagSource
@@ -1205,6 +1233,9 @@ export interface NexusGenObjects {
     small: string; // String!
   }
   User: PrismaClient.User;
+  UserNotifications: { // root type
+    unreadReports?: number | null; // Int
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -1360,6 +1391,7 @@ export interface NexusGenFieldTypes {
     focus: NexusGenRootTypes['ImageCoordinate']; // ImageCoordinate!
     hash: string; // String!
     height: number; // Int!
+    hiddenAt: NexusGenScalars['DateTime'] | null; // DateTime
     id: number; // Int!
     imageTags: NexusGenRootTypes['ImageTag'][]; // [ImageTag!]!
     ireneBotId: number | null; // Int
@@ -1395,7 +1427,7 @@ export interface NexusGenFieldTypes {
     type: NexusGenEnums['ImageConnectionEdge'] | null; // ImageConnectionEdge
   }
   ImageReport: { // field return type
-    action: NexusGenEnums['ReportAction'] | null; // ReportAction
+    action: NexusGenEnums['ImageReportAction'] | null; // ImageReportAction
     actionedAt: NexusGenScalars['DateTime'] | null; // DateTime
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
@@ -1426,6 +1458,7 @@ export interface NexusGenFieldTypes {
     deleteImageTag: NexusGenRootTypes['ImageTag'] | null; // ImageTag
     discoveredImageVote: NexusGenRootTypes['DiscoveredImageVote']; // DiscoveredImageVote!
     discoveredPostVote: NexusGenRootTypes['DiscoveredImage'][]; // [DiscoveredImage!]!
+    imageReportAction: NexusGenRootTypes['ImageReport'] | null; // ImageReport
     linkFace: NexusGenRootTypes['Appearance']; // Appearance!
     removeAppearance: NexusGenRootTypes['Appearance']; // Appearance!
     reportImage: NexusGenRootTypes['ImageReport'] | null; // ImageReport
@@ -1479,8 +1512,10 @@ export interface NexusGenFieldTypes {
     homepage: NexusGenRootTypes['Person'][]; // [Person!]!
     image: NexusGenRootTypes['Image'] | null; // Image
     imageConnections: NexusGenRootTypes['ImageConnections'] | null; // ImageConnections
+    imageReports: NexusGenRootTypes['ImageReport'][]; // [ImageReport!]!
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     me: NexusGenRootTypes['User'] | null; // User
+    notifications: NexusGenRootTypes['UserNotifications']; // UserNotifications!
     people: NexusGenRootTypes['Person'][]; // [Person!]!
     person: NexusGenRootTypes['Person'] | null; // Person
     user: NexusGenRootTypes['User'] | null; // User
@@ -1528,6 +1563,9 @@ export interface NexusGenFieldTypes {
     name: string | null; // String
     roles: NexusGenRootTypes['Role'][]; // [Role!]!
     xp: number | null; // Int
+  }
+  UserNotifications: { // field return type
+    unreadReports: number | null; // Int
   }
 }
 
@@ -1674,6 +1712,7 @@ export interface NexusGenFieldTypeNames {
     focus: 'ImageCoordinate'
     hash: 'String'
     height: 'Int'
+    hiddenAt: 'DateTime'
     id: 'Int'
     imageTags: 'ImageTag'
     ireneBotId: 'Int'
@@ -1709,7 +1748,7 @@ export interface NexusGenFieldTypeNames {
     type: 'ImageConnectionEdge'
   }
   ImageReport: { // field return type name
-    action: 'ReportAction'
+    action: 'ImageReportAction'
     actionedAt: 'DateTime'
     createdAt: 'DateTime'
     id: 'Int'
@@ -1740,6 +1779,7 @@ export interface NexusGenFieldTypeNames {
     deleteImageTag: 'ImageTag'
     discoveredImageVote: 'DiscoveredImageVote'
     discoveredPostVote: 'DiscoveredImage'
+    imageReportAction: 'ImageReport'
     linkFace: 'Appearance'
     removeAppearance: 'Appearance'
     reportImage: 'ImageReport'
@@ -1793,8 +1833,10 @@ export interface NexusGenFieldTypeNames {
     homepage: 'Person'
     image: 'Image'
     imageConnections: 'ImageConnections'
+    imageReports: 'ImageReport'
     images: 'Image'
     me: 'User'
+    notifications: 'UserNotifications'
     people: 'Person'
     person: 'Person'
     user: 'User'
@@ -1842,6 +1884,9 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
     roles: 'Role'
     xp: 'Int'
+  }
+  UserNotifications: { // field return type name
+    unreadReports: 'Int'
   }
 }
 
@@ -1942,6 +1987,10 @@ export interface NexusGenArgTypes {
       reason?: string | null; // String
       verdict: string; // String!
     }
+    imageReportAction: { // args
+      action: NexusGenEnums['ImageReportAction']; // ImageReportAction!
+      reportId: number; // Int!
+    }
     linkFace: { // args
       appearanceId: number; // Int!
       faceId: number; // Int!
@@ -2038,6 +2087,13 @@ export interface NexusGenArgTypes {
     imageConnections: { // args
       depth: number; // Int!
       slug: string; // String!
+    }
+    imageReports: { // args
+      cursor?: NexusGenInputs['ImageReportWhereUniqueInput'] | null; // ImageReportWhereUniqueInput
+      orderBy?: NexusGenInputs['ImageReportOrderByWithRelationInput'][] | null; // [ImageReportOrderByWithRelationInput!]
+      skip?: number | null; // Int
+      take?: number | null; // Int
+      where?: NexusGenInputs['ImageReportWhereInput'] | null; // ImageReportWhereInput
     }
     images: { // args
       cursor?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput

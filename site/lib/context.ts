@@ -26,10 +26,16 @@ export async function contextResolver(
   }
 
   const session = await getSession(ctx)
+  let user = session
+    ? await ctx.req.services.prisma.user.findUnique({
+        where: { id: session.user.id },
+        include: { roles: true },
+      })
+    : undefined
 
   return {
     req,
-    user: session?.user,
+    user: user ?? undefined,
     res,
     session,
     uploadType: "WEBSITE",

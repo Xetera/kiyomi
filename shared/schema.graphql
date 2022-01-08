@@ -454,18 +454,18 @@ input EnumGenderNullableFilter {
   notIn: [Gender!]
 }
 
+input EnumImageReportActionNullableFilter {
+  equals: ImageReportAction
+  in: [ImageReportAction!]
+  not: NestedEnumImageReportActionNullableFilter
+  notIn: [ImageReportAction!]
+}
+
 input EnumMimeTypeFilter {
   equals: MimeType
   in: [MimeType!]
   not: NestedEnumMimeTypeFilter
   notIn: [MimeType!]
-}
-
-input EnumReportActionNullableFilter {
-  equals: ReportAction
-  in: [ReportAction!]
-  not: NestedEnumReportActionNullableFilter
-  notIn: [ReportAction!]
 }
 
 input EnumRestrictionKindFilter {
@@ -750,6 +750,7 @@ type Image {
 
   """Height of the image in pixels."""
   height: Int!
+  hiddenAt: DateTime
   id: Int!
   imageTags(cursor: ImageTagWhereUniqueInput, skip: Int, take: Int): [ImageTag!]!
   ireneBotId: Int
@@ -862,6 +863,7 @@ input ImageOrderByWithRelationInput {
   groupBannerOf: GroupOrderByWithRelationInput
   hash: SortOrder
   height: SortOrder
+  hiddenAt: SortOrder
   id: SortOrder
   imageTags: ImageTagOrderByRelationAggregateInput
   ireneBotId: SortOrder
@@ -889,7 +891,7 @@ input ImageOrderByWithRelationInput {
 }
 
 type ImageReport {
-  action: ReportAction
+  action: ImageReportAction
   actionedAt: DateTime
   createdAt: DateTime!
   id: Int!
@@ -897,6 +899,19 @@ type ImageReport {
   reason: String
   reportedBy: User!
   updatedAt: DateTime!
+}
+
+enum ImageReportAction {
+  DELETE_IMAGE
+  DISMISS
+  HIDE_IMAGE
+  OTHER
+  RESTRICT_USER
+}
+
+input ImageReportImageReportUserCompoundUniqueInput {
+  imageId: Int!
+  reportedById: Int!
 }
 
 input ImageReportListRelationFilter {
@@ -909,12 +924,29 @@ input ImageReportOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input ImageReportOrderByWithRelationInput {
+  action: SortOrder
+  actionedAt: SortOrder
+  actionedBy: UserOrderByWithRelationInput
+  actionedById: SortOrder
+  createdAt: SortOrder
+  id: SortOrder
+  image: ImageOrderByWithRelationInput
+  imageId: SortOrder
+  reason: SortOrder
+  reportedBy: UserOrderByWithRelationInput
+  reportedById: SortOrder
+  updatedAt: SortOrder
+}
+
 input ImageReportWhereInput {
   AND: [ImageReportWhereInput!]
   NOT: [ImageReportWhereInput!]
   OR: [ImageReportWhereInput!]
-  action: EnumReportActionNullableFilter
+  action: EnumImageReportActionNullableFilter
   actionedAt: DateTimeNullableFilter
+  actionedBy: UserWhereInput
+  actionedById: IntNullableFilter
   createdAt: DateTimeFilter
   id: IntFilter
   image: ImageWhereInput
@@ -923,6 +955,11 @@ input ImageReportWhereInput {
   reportedBy: UserWhereInput
   reportedById: IntFilter
   updatedAt: DateTimeFilter
+}
+
+input ImageReportWhereUniqueInput {
+  id: Int
+  imageReportUser: ImageReportImageReportUserCompoundUniqueInput
 }
 
 type ImageTag {
@@ -986,6 +1023,7 @@ input ImageWhereInput {
   groupBannerOf: GroupWhereInput
   hash: StringFilter
   height: IntFilter
+  hiddenAt: DateTimeNullableFilter
   id: IntFilter
   imageTags: ImageTagListRelationFilter
   ireneBotId: IntNullableFilter
@@ -1079,6 +1117,9 @@ type Mutation {
   """Vote using the same verdict on all images in a post"""
   discoveredPostVote(postId: Int!, reason: String, verdict: String!): [DiscoveredImage!]!
 
+  """Action on an image reported by a user. Only usable by moderators"""
+  imageReportAction(action: ImageReportAction!, reportId: Int!): ImageReport
+
   """Attach an existing face to an apperance."""
   linkFace(appearanceId: Int!, faceId: Int!): Appearance!
 
@@ -1138,18 +1179,18 @@ input NestedEnumGenderNullableFilter {
   notIn: [Gender!]
 }
 
+input NestedEnumImageReportActionNullableFilter {
+  equals: ImageReportAction
+  in: [ImageReportAction!]
+  not: NestedEnumImageReportActionNullableFilter
+  notIn: [ImageReportAction!]
+}
+
 input NestedEnumMimeTypeFilter {
   equals: MimeType
   in: [MimeType!]
   not: NestedEnumMimeTypeFilter
   notIn: [MimeType!]
-}
-
-input NestedEnumReportActionNullableFilter {
-  equals: ReportAction
-  in: [ReportAction!]
-  not: NestedEnumReportActionNullableFilter
-  notIn: [ReportAction!]
 }
 
 input NestedEnumRestrictionKindFilter {
@@ -1351,8 +1392,10 @@ type Query {
   """Find a single image by its slug."""
   image(slug: String!): Image
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
+  imageReports(cursor: ImageReportWhereUniqueInput, orderBy: [ImageReportOrderByWithRelationInput!], skip: Int, take: Int, where: ImageReportWhereInput): [ImageReport!]!
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
+  notifications: UserNotifications!
   people(cursor: PersonWhereUniqueInput, orderBy: [PersonOrderByWithRelationInput!], skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   person(where: PersonWhereUniqueInput!): Person
   user(id: Int): User
@@ -1365,12 +1408,6 @@ enum QueryMode {
 
 type QueueInfo {
   queueSize: Int!
-}
-
-enum ReportAction {
-  COMPLY
-  CUSTOM
-  DISMISS
 }
 
 enum RestrictionKind {
@@ -1590,8 +1627,13 @@ type User {
   xp: Int
 }
 
+type UserNotifications {
+  unreadReports: Int
+}
+
 input UserOrderByWithRelationInput {
   DiscoveredImageVote: DiscoveredImageVoteOrderByRelationAggregateInput
+  actionedReportedImages: ImageReportOrderByRelationAggregateInput
   appearanceTags: AppearanceTagOrderByRelationAggregateInput
   avatar: ImageOrderByWithRelationInput
   avatarId: SortOrder
@@ -1650,6 +1692,7 @@ input UserWhereInput {
   DiscoveredImageVote: DiscoveredImageVoteListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  actionedReportedImages: ImageReportListRelationFilter
   appearanceTags: AppearanceTagListRelationFilter
   avatar: ImageWhereInput
   avatarId: IntNullableFilter

@@ -1,4 +1,7 @@
-import { UserDataFragment } from "@/lib/__generated__/graphql"
+import {
+  UserDataFragment,
+  useUserNotificationsQuery,
+} from "@/lib/__generated__/graphql"
 import { signOut, useSession } from "next-auth/client"
 import NextLink from "next/link"
 import React, { PropsWithChildren, useRef } from "react"
@@ -15,22 +18,19 @@ import {
   Flex,
   forwardRef,
   HStack,
-  Icon,
-  Kbd,
   Link,
+  Spinner,
+  Tag,
   Text,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import {
-  RiDiscordFill,
-  RiDiscordLine,
-  RiSearchLine,
-  RiStackLine,
-} from "react-icons/ri"
-import { store } from "@/models/store"
+import { RiSearchLine, RiStackLine } from "react-icons/ri"
+import { RootState, store } from "@/models/store"
 import { DISCORD_INVITE_URL } from "@/client/constants"
+import { useSelector } from "react-redux"
+import { hasRole, Role } from "@/lib/permissions"
 
 type AType = React.AnchorHTMLAttributes<HTMLAnchorElement>
 type NavLinkProps = AType & {
@@ -125,7 +125,9 @@ export type NavbarProps = {
 export function Navbar() {
   const [session] = useSession()
   const { isOpen, onClose, onOpen } = useDisclosure()
+  const { data } = useUserNotificationsQuery()
   const btnRef = useRef(null)
+  const user = useSelector((root: RootState) => root.user)
 
   function logout() {
     signOut()
@@ -141,6 +143,23 @@ export function Navbar() {
     </NavLink>
   )
 
+  const moderation = (
+    <NavLink href="/moderation" w="full">
+      Moderate{" "}
+      {data ? (
+        data.notifications.unreadReports &&
+        data.notifications.unreadReports > 0 ? (
+          <Tag size="sm" ml={2} lineHeight="1">
+            {data.notifications.unreadReports}
+          </Tag>
+        ) : null
+      ) : (
+        <Spinner size="xs" />
+      )}
+    </NavLink>
+  )
+
+  const isModerator = hasRole(user.cache?.roles ?? [], Role.Moderator)
   return (
     <HStack
       as="nav"
@@ -164,6 +183,7 @@ export function Navbar() {
             <NavLink href="/">Home</NavLink>
             <NavLink href="/browse">Browse</NavLink>
             <NavLink href="/discover">Discover</NavLink>
+            {isModerator && moderation}
             <NavLink href="/api/graphql" hardLink>
               API
             </NavLink>
@@ -232,6 +252,7 @@ export function Navbar() {
                 <NavLink href="/discover" w="full">
                   Discover
                 </NavLink>
+                {isModerator && moderation}
                 <NavLink href="/api/graphql" w="full" hardLink>
                   API
                 </NavLink>
@@ -265,10 +286,6 @@ export function Navbar() {
                 </NavLink>
               )}
             </VStack>
-            {/*<Button variant="outline" mr={3} onClick={onClose}>*/}
-            {/*  Cancel*/}
-            {/*</Button>*/}
-            {/*<Button colorScheme="blue">Save</Button>*/}
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -278,9 +295,11 @@ export function Navbar() {
 
 export function WithNavbar(props: PropsWithChildren<{ noSpace?: boolean }>) {
   return (
-    <Box>
+    <Flex w="full" minH="100vh">
       <Navbar />
-      <Box pt={props.noSpace ? 0 : 16}>{props.children}</Box>
-    </Box>
+      <Box w="full" pt={props.noSpace ? 0 : 16}>
+        {props.children}
+      </Box>
+    </Flex>
   )
 }

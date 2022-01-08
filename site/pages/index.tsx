@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { getSession } from "next-auth/client"
 import { WithNavbar } from "@/components/navbar"
 import {
@@ -21,6 +21,8 @@ import { OgImage } from "@/components/og-image"
 import { Portrait } from "@/components/portrait"
 import { toClickableGridImage } from "@/client/data/image-mappers"
 import { personPreferredName } from "@/client/data/person-mappers"
+import { Routing } from "@/client/routing"
+import NextLink from "next/link"
 
 const AnimatedImage = motion(Image)
 
@@ -178,6 +180,7 @@ function HomeContent() {
         >
           {trending?.homepage.map((trend, i) => {
             const opacity = i === selected ? 1 : 0.4
+            const name = personPreferredName(trend)
             return (
               <Portrait
                 opacity={opacity}
@@ -189,7 +192,11 @@ function HomeContent() {
                     ? trend.avatar.thumbnail.small
                     : "https://placewaifu.com/image/200/320"
                 }
-                name={personPreferredName(trend)}
+                name={
+                  <NextLink href={Routing.toPerson(trend.id, name)} passHref>
+                    <Link>{name}</Link>
+                  </NextLink>
+                }
               />
             )
           })}

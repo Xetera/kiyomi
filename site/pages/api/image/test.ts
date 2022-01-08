@@ -8,6 +8,5 @@ export default async (req: NextApiRequest, res) => {
   const { wendy } = req.services
   const image = await wendy.mostSimilarImage(url as string)
   console.log("got perceptual hash")
-  console.log({ image })
   res.json({ image })
 }

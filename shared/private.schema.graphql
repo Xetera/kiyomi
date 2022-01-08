@@ -1888,6 +1888,13 @@ input EnumGenderNullableFilter {
   notIn: [Gender!]
 }
 
+input EnumImageReportActionNullableFilter {
+  equals: ImageReportAction
+  in: [ImageReportAction!]
+  not: NestedEnumImageReportActionNullableFilter
+  notIn: [ImageReportAction!]
+}
+
 input EnumMimeTypeFieldUpdateOperationsInput {
   set: MimeType
 }
@@ -1897,13 +1904,6 @@ input EnumMimeTypeFilter {
   in: [MimeType!]
   not: NestedEnumMimeTypeFilter
   notIn: [MimeType!]
-}
-
-input EnumReportActionNullableFilter {
-  equals: ReportAction
-  in: [ReportAction!]
-  not: NestedEnumReportActionNullableFilter
-  notIn: [ReportAction!]
 }
 
 input EnumRestrictionKindFieldUpdateOperationsInput {
@@ -2852,6 +2852,7 @@ type Image {
 
   """Height of the image in pixels."""
   height: Int!
+  hiddenAt: DateTime
   id: Int!
   imageTags(cursor: ImageTagWhereUniqueInput, skip: Int, take: Int): [ImageTag!]!
   ireneBotId: Int
@@ -2919,6 +2920,7 @@ input ImageCreateManyUserInput {
   fileName: String
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   id: Int
   ireneBotId: Int
   isNsfw: Boolean
@@ -3118,6 +3120,7 @@ input ImageCreateWithoutAppearanceTagsInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3156,6 +3159,7 @@ input ImageCreateWithoutAppearancesInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3194,6 +3198,7 @@ input ImageCreateWithoutDiscoverySourceInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3232,6 +3237,7 @@ input ImageCreateWithoutFacesInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3270,6 +3276,7 @@ input ImageCreateWithoutGroupAvatarOfInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3308,6 +3315,7 @@ input ImageCreateWithoutGroupBannerOfInput {
   groupAvatarOf: GroupCreateNestedOneWithoutAvatarInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3347,6 +3355,7 @@ input ImageCreateWithoutImageTagsInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   ireneBotId: Int
   isNsfw: Boolean
   likes: ImageLikeCreateNestedManyWithoutImageInput
@@ -3385,6 +3394,7 @@ input ImageCreateWithoutLikesInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3423,6 +3433,7 @@ input ImageCreateWithoutPersonAvatarOfInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3461,6 +3472,7 @@ input ImageCreateWithoutPersonBannerOfInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3499,6 +3511,7 @@ input ImageCreateWithoutPotentialDuplicatesInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3537,6 +3550,7 @@ input ImageCreateWithoutReportsInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3575,6 +3589,7 @@ input ImageCreateWithoutUserAvatarOfInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3613,6 +3628,7 @@ input ImageCreateWithoutUserBannerOfInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3651,6 +3667,7 @@ input ImageCreateWithoutUserInput {
   groupBannerOf: GroupCreateNestedOneWithoutBannerInput
   hash: String!
   height: Int!
+  hiddenAt: DateTime
   imageTags: ImageTagCreateNestedManyWithoutImageInput
   ireneBotId: Int
   isNsfw: Boolean
@@ -3896,6 +3913,7 @@ input ImageOrderByWithRelationInput {
   groupBannerOf: GroupOrderByWithRelationInput
   hash: SortOrder
   height: SortOrder
+  hiddenAt: SortOrder
   id: SortOrder
   imageTags: ImageTagOrderByRelationAggregateInput
   ireneBotId: SortOrder
@@ -3923,7 +3941,7 @@ input ImageOrderByWithRelationInput {
 }
 
 type ImageReport {
-  action: ReportAction
+  action: ImageReportAction
   actionedAt: DateTime
   createdAt: DateTime!
   id: Int!
@@ -3933,9 +3951,34 @@ type ImageReport {
   updatedAt: DateTime!
 }
 
-input ImageReportCreateManyImageInput {
-  action: ReportAction
+enum ImageReportAction {
+  DELETE_IMAGE
+  DISMISS
+  HIDE_IMAGE
+  OTHER
+  RESTRICT_USER
+}
+
+input ImageReportCreateManyActionedByInput {
+  action: ImageReportAction
   actionedAt: DateTime
+  createdAt: DateTime
+  id: Int
+  imageId: Int!
+  reason: String
+  reportedById: Int!
+  updatedAt: DateTime
+}
+
+input ImageReportCreateManyActionedByInputEnvelope {
+  data: [ImageReportCreateManyActionedByInput!]
+  skipDuplicates: Boolean
+}
+
+input ImageReportCreateManyImageInput {
+  action: ImageReportAction
+  actionedAt: DateTime
+  actionedById: Int
   createdAt: DateTime
   id: Int
   reason: String
@@ -3949,8 +3992,9 @@ input ImageReportCreateManyImageInputEnvelope {
 }
 
 input ImageReportCreateManyReportedByInput {
-  action: ReportAction
+  action: ImageReportAction
   actionedAt: DateTime
+  actionedById: Int
   createdAt: DateTime
   id: Int
   imageId: Int!
@@ -3961,6 +4005,13 @@ input ImageReportCreateManyReportedByInput {
 input ImageReportCreateManyReportedByInputEnvelope {
   data: [ImageReportCreateManyReportedByInput!]
   skipDuplicates: Boolean
+}
+
+input ImageReportCreateNestedManyWithoutActionedByInput {
+  connect: [ImageReportWhereUniqueInput!]
+  connectOrCreate: [ImageReportCreateOrConnectWithoutActionedByInput!]
+  create: [ImageReportCreateWithoutActionedByInput!]
+  createMany: ImageReportCreateManyActionedByInputEnvelope
 }
 
 input ImageReportCreateNestedManyWithoutImageInput {
@@ -3977,6 +4028,11 @@ input ImageReportCreateNestedManyWithoutReportedByInput {
   createMany: ImageReportCreateManyReportedByInputEnvelope
 }
 
+input ImageReportCreateOrConnectWithoutActionedByInput {
+  create: ImageReportCreateWithoutActionedByInput!
+  where: ImageReportWhereUniqueInput!
+}
+
 input ImageReportCreateOrConnectWithoutImageInput {
   create: ImageReportCreateWithoutImageInput!
   where: ImageReportWhereUniqueInput!
@@ -3987,9 +4043,20 @@ input ImageReportCreateOrConnectWithoutReportedByInput {
   where: ImageReportWhereUniqueInput!
 }
 
-input ImageReportCreateWithoutImageInput {
-  action: ReportAction
+input ImageReportCreateWithoutActionedByInput {
+  action: ImageReportAction
   actionedAt: DateTime
+  createdAt: DateTime
+  image: ImageCreateNestedOneWithoutReportsInput!
+  reason: String
+  reportedBy: UserCreateNestedOneWithoutReportedImagesInput!
+  updatedAt: DateTime
+}
+
+input ImageReportCreateWithoutImageInput {
+  action: ImageReportAction
+  actionedAt: DateTime
+  actionedBy: UserCreateNestedOneWithoutActionedReportedImagesInput
   createdAt: DateTime
   reason: String
   reportedBy: UserCreateNestedOneWithoutReportedImagesInput!
@@ -3997,8 +4064,9 @@ input ImageReportCreateWithoutImageInput {
 }
 
 input ImageReportCreateWithoutReportedByInput {
-  action: ReportAction
+  action: ImageReportAction
   actionedAt: DateTime
+  actionedBy: UserCreateNestedOneWithoutActionedReportedImagesInput
   createdAt: DateTime
   image: ImageCreateNestedOneWithoutReportsInput!
   reason: String
@@ -4020,12 +4088,28 @@ input ImageReportOrderByRelationAggregateInput {
   _count: SortOrder
 }
 
+input ImageReportOrderByWithRelationInput {
+  action: SortOrder
+  actionedAt: SortOrder
+  actionedBy: UserOrderByWithRelationInput
+  actionedById: SortOrder
+  createdAt: SortOrder
+  id: SortOrder
+  image: ImageOrderByWithRelationInput
+  imageId: SortOrder
+  reason: SortOrder
+  reportedBy: UserOrderByWithRelationInput
+  reportedById: SortOrder
+  updatedAt: SortOrder
+}
+
 input ImageReportScalarWhereInput {
   AND: [ImageReportScalarWhereInput!]
   NOT: [ImageReportScalarWhereInput!]
   OR: [ImageReportScalarWhereInput!]
-  action: EnumReportActionNullableFilter
+  action: EnumImageReportActionNullableFilter
   actionedAt: DateTimeNullableFilter
+  actionedById: IntNullableFilter
   createdAt: DateTimeFilter
   id: IntFilter
   imageId: IntFilter
@@ -4035,11 +4119,16 @@ input ImageReportScalarWhereInput {
 }
 
 input ImageReportUpdateManyMutationInput {
-  action: NullableEnumReportActionFieldUpdateOperationsInput
+  action: NullableEnumImageReportActionFieldUpdateOperationsInput
   actionedAt: NullableDateTimeFieldUpdateOperationsInput
   createdAt: DateTimeFieldUpdateOperationsInput
   reason: NullableStringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ImageReportUpdateManyWithWhereWithoutActionedByInput {
+  data: ImageReportUpdateManyMutationInput!
+  where: ImageReportScalarWhereInput!
 }
 
 input ImageReportUpdateManyWithWhereWithoutImageInput {
@@ -4050,6 +4139,20 @@ input ImageReportUpdateManyWithWhereWithoutImageInput {
 input ImageReportUpdateManyWithWhereWithoutReportedByInput {
   data: ImageReportUpdateManyMutationInput!
   where: ImageReportScalarWhereInput!
+}
+
+input ImageReportUpdateManyWithoutActionedByInput {
+  connect: [ImageReportWhereUniqueInput!]
+  connectOrCreate: [ImageReportCreateOrConnectWithoutActionedByInput!]
+  create: [ImageReportCreateWithoutActionedByInput!]
+  createMany: ImageReportCreateManyActionedByInputEnvelope
+  delete: [ImageReportWhereUniqueInput!]
+  deleteMany: [ImageReportScalarWhereInput!]
+  disconnect: [ImageReportWhereUniqueInput!]
+  set: [ImageReportWhereUniqueInput!]
+  update: [ImageReportUpdateWithWhereUniqueWithoutActionedByInput!]
+  updateMany: [ImageReportUpdateManyWithWhereWithoutActionedByInput!]
+  upsert: [ImageReportUpsertWithWhereUniqueWithoutActionedByInput!]
 }
 
 input ImageReportUpdateManyWithoutImageInput {
@@ -4080,6 +4183,11 @@ input ImageReportUpdateManyWithoutReportedByInput {
   upsert: [ImageReportUpsertWithWhereUniqueWithoutReportedByInput!]
 }
 
+input ImageReportUpdateWithWhereUniqueWithoutActionedByInput {
+  data: ImageReportUpdateWithoutActionedByInput!
+  where: ImageReportWhereUniqueInput!
+}
+
 input ImageReportUpdateWithWhereUniqueWithoutImageInput {
   data: ImageReportUpdateWithoutImageInput!
   where: ImageReportWhereUniqueInput!
@@ -4090,9 +4198,20 @@ input ImageReportUpdateWithWhereUniqueWithoutReportedByInput {
   where: ImageReportWhereUniqueInput!
 }
 
-input ImageReportUpdateWithoutImageInput {
-  action: NullableEnumReportActionFieldUpdateOperationsInput
+input ImageReportUpdateWithoutActionedByInput {
+  action: NullableEnumImageReportActionFieldUpdateOperationsInput
   actionedAt: NullableDateTimeFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  image: ImageUpdateOneRequiredWithoutReportsInput
+  reason: NullableStringFieldUpdateOperationsInput
+  reportedBy: UserUpdateOneRequiredWithoutReportedImagesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ImageReportUpdateWithoutImageInput {
+  action: NullableEnumImageReportActionFieldUpdateOperationsInput
+  actionedAt: NullableDateTimeFieldUpdateOperationsInput
+  actionedBy: UserUpdateOneWithoutActionedReportedImagesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   reason: NullableStringFieldUpdateOperationsInput
   reportedBy: UserUpdateOneRequiredWithoutReportedImagesInput
@@ -4100,12 +4219,19 @@ input ImageReportUpdateWithoutImageInput {
 }
 
 input ImageReportUpdateWithoutReportedByInput {
-  action: NullableEnumReportActionFieldUpdateOperationsInput
+  action: NullableEnumImageReportActionFieldUpdateOperationsInput
   actionedAt: NullableDateTimeFieldUpdateOperationsInput
+  actionedBy: UserUpdateOneWithoutActionedReportedImagesInput
   createdAt: DateTimeFieldUpdateOperationsInput
   image: ImageUpdateOneRequiredWithoutReportsInput
   reason: NullableStringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ImageReportUpsertWithWhereUniqueWithoutActionedByInput {
+  create: ImageReportCreateWithoutActionedByInput!
+  update: ImageReportUpdateWithoutActionedByInput!
+  where: ImageReportWhereUniqueInput!
 }
 
 input ImageReportUpsertWithWhereUniqueWithoutImageInput {
@@ -4124,8 +4250,10 @@ input ImageReportWhereInput {
   AND: [ImageReportWhereInput!]
   NOT: [ImageReportWhereInput!]
   OR: [ImageReportWhereInput!]
-  action: EnumReportActionNullableFilter
+  action: EnumImageReportActionNullableFilter
   actionedAt: DateTimeNullableFilter
+  actionedBy: UserWhereInput
+  actionedById: IntNullableFilter
   createdAt: DateTimeFilter
   id: IntFilter
   image: ImageWhereInput
@@ -4153,6 +4281,7 @@ input ImageScalarWhereInput {
   fileName: StringNullableFilter
   hash: StringFilter
   height: IntFilter
+  hiddenAt: DateTimeNullableFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
   isNsfw: BoolFilter
@@ -4446,6 +4575,7 @@ input ImageUpdateManyMutationInput {
   fileName: NullableStringFieldUpdateOperationsInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
   mimetype: EnumMimeTypeFieldUpdateOperationsInput
@@ -4629,6 +4759,7 @@ input ImageUpdateWithoutAppearanceTagsInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4667,6 +4798,7 @@ input ImageUpdateWithoutAppearancesInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4705,6 +4837,7 @@ input ImageUpdateWithoutDiscoverySourceInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4743,6 +4876,7 @@ input ImageUpdateWithoutFacesInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4781,6 +4915,7 @@ input ImageUpdateWithoutGroupAvatarOfInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4819,6 +4954,7 @@ input ImageUpdateWithoutGroupBannerOfInput {
   groupAvatarOf: GroupUpdateOneWithoutAvatarInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4858,6 +4994,7 @@ input ImageUpdateWithoutImageTagsInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
   likes: ImageLikeUpdateManyWithoutImageInput
@@ -4896,6 +5033,7 @@ input ImageUpdateWithoutLikesInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4934,6 +5072,7 @@ input ImageUpdateWithoutPersonAvatarOfInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -4972,6 +5111,7 @@ input ImageUpdateWithoutPersonBannerOfInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -5010,6 +5150,7 @@ input ImageUpdateWithoutPotentialDuplicatesInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -5048,6 +5189,7 @@ input ImageUpdateWithoutReportsInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -5086,6 +5228,7 @@ input ImageUpdateWithoutUserAvatarOfInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -5124,6 +5267,7 @@ input ImageUpdateWithoutUserBannerOfInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -5162,6 +5306,7 @@ input ImageUpdateWithoutUserInput {
   groupBannerOf: GroupUpdateOneWithoutBannerInput
   hash: StringFieldUpdateOperationsInput
   height: IntFieldUpdateOperationsInput
+  hiddenAt: NullableDateTimeFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutImageInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   isNsfw: BoolFieldUpdateOperationsInput
@@ -5284,6 +5429,7 @@ input ImageWhereInput {
   groupBannerOf: GroupWhereInput
   hash: StringFilter
   height: IntFilter
+  hiddenAt: DateTimeNullableFilter
   id: IntFilter
   imageTags: ImageTagListRelationFilter
   ireneBotId: IntNullableFilter
@@ -5386,6 +5532,9 @@ type Mutation {
   """Vote using the same verdict on all images in a post"""
   discoveredPostVote(postId: Int!, reason: String, verdict: String!): [DiscoveredImage!]!
 
+  """Action on an image reported by a user. Only usable by moderators"""
+  imageReportAction(action: ImageReportAction!, reportId: Int!): ImageReport
+
   """Attach an existing face to an apperance."""
   linkFace(appearanceId: Int!, faceId: Int!): Appearance!
 
@@ -5447,18 +5596,18 @@ input NestedEnumGenderNullableFilter {
   notIn: [Gender!]
 }
 
+input NestedEnumImageReportActionNullableFilter {
+  equals: ImageReportAction
+  in: [ImageReportAction!]
+  not: NestedEnumImageReportActionNullableFilter
+  notIn: [ImageReportAction!]
+}
+
 input NestedEnumMimeTypeFilter {
   equals: MimeType
   in: [MimeType!]
   not: NestedEnumMimeTypeFilter
   notIn: [MimeType!]
-}
-
-input NestedEnumReportActionNullableFilter {
-  equals: ReportAction
-  in: [ReportAction!]
-  not: NestedEnumReportActionNullableFilter
-  notIn: [ReportAction!]
 }
 
 input NestedEnumRestrictionKindFilter {
@@ -5551,8 +5700,8 @@ input NullableEnumGenderFieldUpdateOperationsInput {
   set: Gender
 }
 
-input NullableEnumReportActionFieldUpdateOperationsInput {
-  set: ReportAction
+input NullableEnumImageReportActionFieldUpdateOperationsInput {
+  set: ImageReportAction
 }
 
 input NullableIntFieldUpdateOperationsInput {
@@ -6251,8 +6400,10 @@ type Query {
   """Find a single image by its slug."""
   image(slug: String!): Image
   imageConnections(depth: Int! = 2, slug: String!): ImageConnections
+  imageReports(cursor: ImageReportWhereUniqueInput, orderBy: [ImageReportOrderByWithRelationInput!], skip: Int, take: Int, where: ImageReportWhereInput): [ImageReport!]!
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   me: User
+  notifications: UserNotifications!
   people(cursor: PersonWhereUniqueInput, orderBy: [PersonOrderByWithRelationInput!], skip: Int, take: Int, where: PersonWhereInput): [Person!]!
   person(where: PersonWhereUniqueInput!): Person
   personImages(amount: Int = 100, personIds: [Int!]!): [ImageMatch!]!
@@ -6266,12 +6417,6 @@ enum QueryMode {
 
 type QueueInfo {
   queueSize: Int!
-}
-
-enum ReportAction {
-  COMPLY
-  CUSTOM
-  DISMISS
 }
 
 enum RestrictionKind {
@@ -7193,6 +7338,12 @@ type User {
   xp: Int
 }
 
+input UserCreateNestedOneWithoutActionedReportedImagesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutActionedReportedImagesInput
+  create: UserCreateWithoutActionedReportedImagesInput
+}
+
 input UserCreateNestedOneWithoutAppearanceTagsInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutAppearanceTagsInput
@@ -7277,6 +7428,11 @@ input UserCreateNestedOneWithoutTaggedAppearancesInput {
   create: UserCreateWithoutTaggedAppearancesInput
 }
 
+input UserCreateOrConnectWithoutActionedReportedImagesInput {
+  create: UserCreateWithoutActionedReportedImagesInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserCreateOrConnectWithoutAppearanceTagsInput {
   create: UserCreateWithoutAppearanceTagsInput!
   where: UserWhereUniqueInput!
@@ -7352,8 +7508,36 @@ input UserCreateOrConnectWithoutTaggedAppearancesInput {
   where: UserWhereUniqueInput!
 }
 
+input UserCreateWithoutActionedReportedImagesInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  imageTags: ImageTagCreateNestedManyWithoutAddedByInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  placedRestrictions: UserRestrictionCreateNestedManyWithoutAddedByInput
+  reportedImages: ImageReportCreateNestedManyWithoutReportedByInput
+  restrictions: UserRestrictionCreateNestedManyWithoutUserInput
+  roles: RoleCreateNestedManyWithoutUserInput
+  tagAliases: TagAliasCreateNestedManyWithoutAddedByInput
+  tagCategories: TagCategoryCreateNestedManyWithoutAddedByInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
 input UserCreateWithoutAppearanceTagsInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
@@ -7380,6 +7564,7 @@ input UserCreateWithoutAppearanceTagsInput {
 
 input UserCreateWithoutAvatarInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
   bot: Boolean
@@ -7406,6 +7591,7 @@ input UserCreateWithoutAvatarInput {
 
 input UserCreateWithoutBannerInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   bot: Boolean
@@ -7432,6 +7618,7 @@ input UserCreateWithoutBannerInput {
 
 input UserCreateWithoutCratedTagsInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7457,6 +7644,7 @@ input UserCreateWithoutCratedTagsInput {
 }
 
 input UserCreateWithoutDiscoveredImageVoteInput {
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7484,6 +7672,7 @@ input UserCreateWithoutDiscoveredImageVoteInput {
 
 input UserCreateWithoutImageLikesInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7510,6 +7699,7 @@ input UserCreateWithoutImageLikesInput {
 
 input UserCreateWithoutImageTagsInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7536,6 +7726,7 @@ input UserCreateWithoutImageTagsInput {
 
 input UserCreateWithoutImagesInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7562,6 +7753,7 @@ input UserCreateWithoutImagesInput {
 
 input UserCreateWithoutMarkedFacesInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7588,6 +7780,7 @@ input UserCreateWithoutMarkedFacesInput {
 
 input UserCreateWithoutPlacedRestrictionsInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7614,6 +7807,7 @@ input UserCreateWithoutPlacedRestrictionsInput {
 
 input UserCreateWithoutReportedImagesInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7640,6 +7834,7 @@ input UserCreateWithoutReportedImagesInput {
 
 input UserCreateWithoutRestrictionsInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7666,6 +7861,7 @@ input UserCreateWithoutRestrictionsInput {
 
 input UserCreateWithoutTagAliasesInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7692,6 +7888,7 @@ input UserCreateWithoutTagAliasesInput {
 
 input UserCreateWithoutTagCategoriesInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7718,6 +7915,7 @@ input UserCreateWithoutTagCategoriesInput {
 
 input UserCreateWithoutTaggedAppearancesInput {
   DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
   appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
   avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
   banner: ImageCreateNestedOneWithoutUserBannerOfInput
@@ -7742,8 +7940,13 @@ input UserCreateWithoutTaggedAppearancesInput {
   updatedAt: DateTime
 }
 
+type UserNotifications {
+  unreadReports: Int
+}
+
 input UserOrderByWithRelationInput {
   DiscoveredImageVote: DiscoveredImageVoteOrderByRelationAggregateInput
+  actionedReportedImages: ImageReportOrderByRelationAggregateInput
   appearanceTags: AppearanceTagOrderByRelationAggregateInput
   avatar: ImageOrderByWithRelationInput
   avatarId: SortOrder
@@ -8003,6 +8206,16 @@ input UserUpdateOneRequiredWithoutRestrictionsInput {
   upsert: UserUpsertWithoutRestrictionsInput
 }
 
+input UserUpdateOneWithoutActionedReportedImagesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutActionedReportedImagesInput
+  create: UserCreateWithoutActionedReportedImagesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutActionedReportedImagesInput
+  upsert: UserUpsertWithoutActionedReportedImagesInput
+}
+
 input UserUpdateOneWithoutAppearanceTagsInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutAppearanceTagsInput
@@ -8113,8 +8326,36 @@ input UserUpdateOneWithoutTaggedAppearancesInput {
   upsert: UserUpsertWithoutTaggedAppearancesInput
 }
 
+input UserUpdateWithoutActionedReportedImagesInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  imageTags: ImageTagUpdateManyWithoutAddedByInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  placedRestrictions: UserRestrictionUpdateManyWithoutAddedByInput
+  reportedImages: ImageReportUpdateManyWithoutReportedByInput
+  restrictions: UserRestrictionUpdateManyWithoutUserInput
+  roles: RoleUpdateManyWithoutUserInput
+  tagAliases: TagAliasUpdateManyWithoutAddedByInput
+  tagCategories: TagCategoryUpdateManyWithoutAddedByInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
 input UserUpdateWithoutAppearanceTagsInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -8141,6 +8382,7 @@ input UserUpdateWithoutAppearanceTagsInput {
 
 input UserUpdateWithoutAvatarInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -8167,6 +8409,7 @@ input UserUpdateWithoutAvatarInput {
 
 input UserUpdateWithoutBannerInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   bot: BoolFieldUpdateOperationsInput
@@ -8193,6 +8436,7 @@ input UserUpdateWithoutBannerInput {
 
 input UserUpdateWithoutCratedTagsInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8218,6 +8462,7 @@ input UserUpdateWithoutCratedTagsInput {
 }
 
 input UserUpdateWithoutDiscoveredImageVoteInput {
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8245,6 +8490,7 @@ input UserUpdateWithoutDiscoveredImageVoteInput {
 
 input UserUpdateWithoutImageLikesInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8271,6 +8517,7 @@ input UserUpdateWithoutImageLikesInput {
 
 input UserUpdateWithoutImageTagsInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8297,6 +8544,7 @@ input UserUpdateWithoutImageTagsInput {
 
 input UserUpdateWithoutImagesInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8323,6 +8571,7 @@ input UserUpdateWithoutImagesInput {
 
 input UserUpdateWithoutMarkedFacesInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8349,6 +8598,7 @@ input UserUpdateWithoutMarkedFacesInput {
 
 input UserUpdateWithoutPlacedRestrictionsInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8375,6 +8625,7 @@ input UserUpdateWithoutPlacedRestrictionsInput {
 
 input UserUpdateWithoutReportedImagesInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8401,6 +8652,7 @@ input UserUpdateWithoutReportedImagesInput {
 
 input UserUpdateWithoutRestrictionsInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8427,6 +8679,7 @@ input UserUpdateWithoutRestrictionsInput {
 
 input UserUpdateWithoutTagAliasesInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8453,6 +8706,7 @@ input UserUpdateWithoutTagAliasesInput {
 
 input UserUpdateWithoutTagCategoriesInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8479,6 +8733,7 @@ input UserUpdateWithoutTagCategoriesInput {
 
 input UserUpdateWithoutTaggedAppearancesInput {
   DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
   appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
   avatar: ImageUpdateOneWithoutUserAvatarOfInput
   banner: ImageUpdateOneWithoutUserBannerOfInput
@@ -8501,6 +8756,11 @@ input UserUpdateWithoutTaggedAppearancesInput {
   tagCategories: TagCategoryUpdateManyWithoutAddedByInput
   token: NullableStringFieldUpdateOperationsInput
   updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserUpsertWithoutActionedReportedImagesInput {
+  create: UserCreateWithoutActionedReportedImagesInput!
+  update: UserUpdateWithoutActionedReportedImagesInput!
 }
 
 input UserUpsertWithoutAppearanceTagsInput {
@@ -8583,6 +8843,7 @@ input UserWhereInput {
   DiscoveredImageVote: DiscoveredImageVoteListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  actionedReportedImages: ImageReportListRelationFilter
   appearanceTags: AppearanceTagListRelationFilter
   avatar: ImageWhereInput
   avatarId: IntNullableFilter

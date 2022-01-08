@@ -53,7 +53,6 @@ export const Search = forwardRef<SearchProps, "div">((props, ref) => {
             }
           }}
           onChange={(e) => {
-            console.log(e.target.value)
             setSearchString(e.target.value)
           }}
           width="100%"

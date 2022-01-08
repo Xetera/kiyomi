@@ -9,7 +9,7 @@ export type PortraitProps = {
   opacity: number
   onClick?: () => void
   src?: string
-  name?: string
+  name?: React.ReactNode
   width?: string
   height?: string
 }

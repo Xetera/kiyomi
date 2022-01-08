@@ -14,7 +14,6 @@ import {
   stringArg,
 } from "nexus"
 import { hasRole, Role } from "../permissions"
-import { Appearance, FaceSource, Person, Prisma } from "@prisma/client"
 import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
@@ -22,6 +21,7 @@ import centroid from "@turf/centroid"
 import { points } from "@turf/helpers"
 import { homepageQuery } from "../db-queries"
 import { Routing } from "@/client/routing"
+import { imageVisibleFor } from "@/client/data/image-mappers"
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
@@ -92,6 +92,7 @@ export const Image = objectType({
       .appearances()
       .faceScanDate()
       .ireneBotId()
+      .hiddenAt()
       .createdAt()
       .createdAt()
     t.field("thumbnail", {
@@ -309,6 +310,7 @@ export const Query = queryField((t) => {
           ...args,
           where: {
             ...args.where,
+            hiddenAt: { equals: null },
             public: { equals: true },
           },
         },
@@ -326,9 +328,11 @@ export const Query = queryField((t) => {
     },
     async resolve(_root, args, { prisma, user }) {
       const { slug } = args
-      return await prisma.image.findUnique({
+
+      const rawImage = await prisma.image.findUnique({
         where: { slug },
       })
+      return imageVisibleFor(rawImage, user)
     },
   })
   t.field("imageConnections", {

@@ -44,8 +44,6 @@ export const ImageLoader = ({
   }, [])
 
   function onError(err: any) {
-    console.log(src, srcDefault)
-    console.log(err)
     // making sure we don't recursively call the same error handler if the fallback value errors
     if (ref.current) {
       ref.current.onerror = () => {}

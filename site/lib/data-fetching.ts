@@ -7,6 +7,7 @@ import {
   GetServerSidePropsResult,
 } from "next"
 import { getSession } from "next-auth/client"
+import { Session } from "next-auth"
 
 export const client = new GraphQLClient(
   `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`
@@ -67,7 +68,9 @@ export const getImage = (slug: string, db: PrismaClient) => {
   })
 }
 
-export type ExtraServerSideProps = {}
+export type ExtraServerSideProps = {
+  session?: Session
+}
 
 export type ServerSideProps = (
   ctx: ExtraServerSideProps & GetServerSidePropsContext
@@ -79,13 +82,18 @@ export function wrapRequest<T>(
   return async (ctx) => {
     const { req, res, ...rest } = ctx
 
-    const session = await getSession(ctx)
+    const session = (await getSession(ctx)) ?? undefined
     // if (req.url?.startsWith("/_next")) {
     //   return {
     //     props: { session },
     //   }
     // }
-    const data: GetServerSidePropsResult<any> = await f({ req, res, ...rest })
+    const data: GetServerSidePropsResult<any> = await f({
+      req,
+      res,
+      session,
+      ...rest,
+    })
     if (!("props" in data)) {
       // @ts-ignore
       data.props = {}

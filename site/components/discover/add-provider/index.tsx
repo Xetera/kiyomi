@@ -159,13 +159,11 @@ export const AddProvider = () => {
   })
   const { mutateAsync } = useAddProviderMutation()
   const client = useQueryClient()
-  // const [idols, setIdols] = useState<GroupSearchResult[]>([])
   const [response, setResponse] = useState("")
   const { errors } = formState
 
   const onSubmit = handleSubmit(async ({ groups, ...form }) => {
     const groupIds = groups.map((g) => g.groupId)
-    console.log(form, groups, groupIds)
     const result = await mutateAsync({
       provider: {
         ...form,
@@ -176,7 +174,6 @@ export const AddProvider = () => {
     setResponse(result.addProvider)
     client.invalidateQueries(["DiscoveryProviders"])
   })
-  console.log(fields)
 
   return (
     <VStack spacing={8} w="full">
@@ -274,7 +271,6 @@ export const AddProvider = () => {
                   <ProviderFilterGroup
                     filters={fields}
                     addFilter={(f) => {
-                      console.log({ f })
                       appendGroup({ ...f, groupId: f.id })
                     }}
                     removeFilter={(f) => {

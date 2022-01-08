@@ -1,4 +1,5 @@
 import { arg, intArg, list, nonNull, objectType, queryField } from "nexus"
+import { hasRole, Role } from "@/lib/permissions"
 
 export const LeaderboardUser = objectType({
   name: "LeaderboardUser",
@@ -58,6 +59,13 @@ export const User = objectType({
   },
 })
 
+export const UserNotifications = objectType({
+  name: "UserNotifications",
+  definition(t) {
+    t.int("unreadReports")
+  },
+})
+
 export const Query = queryField((t) => {
   t.field("user", {
     type: "User",
@@ -79,6 +87,15 @@ export const Query = queryField((t) => {
         return null
       }
       return prisma.user.findUnique({ where: { id: user.id } })
+    },
+  })
+  t.field("notifications", {
+    type: nonNull(UserNotifications),
+    async resolve(_, __, { user, prisma, report }) {
+      const isModerator = user ? hasRole(user.roles, Role.Moderator) : false
+      return {
+        unreadReports: isModerator ? await report.pendingReportCount() : null,
+      }
     },
   })
   t.field("discoveryLeaderboard", {

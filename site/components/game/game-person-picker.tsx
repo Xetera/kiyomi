@@ -23,7 +23,6 @@ interface GamePersonPickerParams {
 const PersonSearch = forwardRef((props, ref) => {
   const search = useState((root) => root.game.lobbySearchQuery)
   const onSearch = useCallback((val: string) => {
-    console.log({ val })
     store.dispatch.game.search(val)
   }, [])
   const searching = useState((root) => root.game.searchingGroup)

@@ -1,7 +1,7 @@
 import { PrismaClient, User } from "@prisma/client"
 import { randomBytes } from "crypto"
 import { Context } from "@/lib/context-type"
-import { filterValidRoles, PermissionsFor, Role } from "./permissions"
+import { filterValidRoles, hasRole, PermissionsFor, Role } from "./permissions"
 
 const TOKEN_PREFIX = "KIYOMI_"
 
@@ -25,7 +25,13 @@ export const GraphqlAuth = {
       }
       const roles = await prisma.role.findMany({ where: { userId: user.id } })
       const validRoles = filterValidRoles(roles.map((role) => role.name))
-      return inputRoles.every((role) => validRoles.includes(role))
+      return inputRoles.every((role) =>
+        hasRole(
+          // TODO: eh?
+          validRoles.map((name) => ({ name })),
+          role
+        )
+      )
     }
   },
 }

@@ -171,12 +171,10 @@ export function makeWendy({ prisma, amqp }: WendyOptions) {
     hashStringToCube(hash: string): Uint8Array {
       // A14F4D8 -> [A1, F4, D8]
       const bytes = chunk(hash.split(""), 2)
-      const ret = Uint8Array.from(bytes, ([f, s]) => {
+      return Uint8Array.from(bytes, ([f, s]) => {
         const byte = (f as string) + (s as string)
         return parseInt(byte, 16)
       })
-      console.log(ret)
-      return ret
     },
     async mostSimilarImage(
       url: string

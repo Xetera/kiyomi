@@ -17,13 +17,12 @@ export const LinkedTabs = (props: PropsWithChildren<LinkedTabsProps>) => {
     <VStack spacing={8} w="full">
       <HStack>
         {props.tabs.map((tab) => {
-          console.log(router.asPath, tab.path)
           const trimmedPath = tab.path.replace(
             process.env.NEXT_PUBLIC_BASE_URL!,
             ""
           )
           return (
-            <NextLink href={tab.path} passHref>
+            <NextLink href={tab.path} passHref key={trimmedPath}>
               <Link
                 _hover={{ textDecoration: "none" }}
                 py={2}

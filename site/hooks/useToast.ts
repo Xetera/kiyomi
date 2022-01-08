@@ -5,6 +5,6 @@ const defaults: UseToastOptions = {
   variant: "solid",
 }
 
-export default function useToast(status: UseToastOptions["status"]) {
-  return useChakraToast({ ...defaults, status })
+export default function useToast(status?: UseToastOptions["status"]) {
+  return useChakraToast({ ...defaults, status: status ?? "info" })
 }

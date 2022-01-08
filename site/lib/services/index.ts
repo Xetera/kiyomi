@@ -1,7 +1,7 @@
-import { JiuService, makeJiu } from "./jiu"
 import { AmqpService } from "../amqp"
-import { DiscoveryService, makeDiscovery } from "./discovery"
 import { PrismaClient } from "@prisma/client"
+import { makeJiu, JiuService } from "./jiu"
+import { makeDiscovery, DiscoveryService } from "./discovery"
 import { makeXp, XpService } from "./xp"
 import { makeWendy, WendyService } from "./wendy"
 import { makeUploader, UploaderService } from "./uploader"
@@ -11,6 +11,7 @@ import { makeTag, TagService } from "./tag"
 import { makePerson, PersonService } from "@/lib/services/person"
 import { makeReport, ReportService } from "@/lib/services/report"
 import { makeWebhook, WebhookService } from "@/lib/services/webhook"
+import { makeBan, BanService } from "@/lib/services/ban"
 
 export type Services = {
   prisma: PrismaClient
@@ -26,6 +27,7 @@ export type Services = {
   person: PersonService
   report: ReportService
   webhook: WebhookService
+  ban: BanService
 }
 
 export function createServices(
@@ -35,6 +37,7 @@ export function createServices(
   const wendy = makeWendy({ prisma, amqp })
   const wasabi = makeWasabi()
   const search = makeSearch({ prisma })
+  const ban = makeBan({ prisma })
 
   return {
     prisma,
@@ -42,12 +45,13 @@ export function createServices(
     wendy,
     wasabi,
     search,
+    ban,
     discovery: makeDiscovery({ prisma }),
     jiu: makeJiu({ amqp, prisma, wendy }),
     xp: makeXp({ prisma }),
     uploader: makeUploader({ prisma, wasabi, wendy }),
     tag: makeTag({ prisma, search }),
-    report: makeReport({ prisma }),
+    report: makeReport({ prisma, ban }),
     person: makePerson({ prisma }),
     webhook: makeWebhook({
       prisma,
