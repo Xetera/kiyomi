@@ -211,33 +211,34 @@ model Role {
 
 /// A user
 model User {
-  id                  Int                   @id @default(autoincrement())
-  name                String?
-  email               String?               @unique(map: "users.email_unique")
-  emailVerified       DateTime?             @map("email_verified")
-  image               String?
-  token               String?               @unique(map: "users.token_unique")
-  createdAt           DateTime              @default(now()) @map("created_at")
-  updatedAt           DateTime              @default(now()) @updatedAt @map("updated_at")
-  bot                 Boolean               @default(false)
-  avatarId            Int?                  @unique(map: "users.avatar_id_unique") @map("avatar_id")
-  bannerId            Int?                  @unique(map: "users.bannerId_unique")
-  avatar              Image?                @relation("user_avatar", fields: [avatarId], references: [id])
-  banner              Image?                @relation("user_banner", fields: [bannerId], references: [id])
-  taggedAppearances   Appearance[]
-  DiscoveredImageVote DiscoveredImageVote[]
-  markedFaces         Face[]
-  imageLikes          ImageLike[]
-  images              Image[]
-  roles               Role[]
-  cratedTags          Tag[]
-  tagCategories       TagCategory[]
-  appearanceTags      AppearanceTag[]
-  tagAliases          TagAlias[]
-  imageTags           ImageTag[]
-  placedRestrictions  UserRestriction[]     @relation("restricted_by")
-  restrictions        UserRestriction[]     @relation("restricted_user")
-  reportedImages      ImageReport[]
+  id                     Int                   @id @default(autoincrement())
+  name                   String?
+  email                  String?               @unique(map: "users.email_unique")
+  emailVerified          DateTime?             @map("email_verified")
+  image                  String?
+  token                  String?               @unique(map: "users.token_unique")
+  createdAt              DateTime              @default(now()) @map("created_at")
+  updatedAt              DateTime              @default(now()) @updatedAt @map("updated_at")
+  bot                    Boolean               @default(false)
+  avatarId               Int?                  @unique(map: "users.avatar_id_unique") @map("avatar_id")
+  bannerId               Int?                  @unique(map: "users.bannerId_unique")
+  avatar                 Image?                @relation("user_avatar", fields: [avatarId], references: [id])
+  banner                 Image?                @relation("user_banner", fields: [bannerId], references: [id])
+  taggedAppearances      Appearance[]
+  DiscoveredImageVote    DiscoveredImageVote[]
+  markedFaces            Face[]
+  imageLikes             ImageLike[]
+  images                 Image[]
+  roles                  Role[]
+  cratedTags             Tag[]
+  tagCategories          TagCategory[]
+  appearanceTags         AppearanceTag[]
+  tagAliases             TagAlias[]
+  imageTags              ImageTag[]
+  placedRestrictions     UserRestriction[]     @relation("restricted_by")
+  restrictions           UserRestriction[]     @relation("restricted_user")
+  reportedImages         ImageReport[]         @relation("image_reporter")
+  actionedReportedImages ImageReport[]         @relation("image_report_actioner")
 
   @@index([token], map: "user.token.index")
   @@map("users")
@@ -295,6 +296,7 @@ model Image {
   userAvatarOf        User?                @relation("user_avatar")
   userBannerOf        User?                @relation("user_banner")
   reports             ImageReport[]
+  hiddenAt            DateTime?            @map("hidden_at")
 
   @@index([pHash2], map: "images.p_hash_2")
   @@index([slug], map: "images.slug_index")
@@ -458,27 +460,31 @@ enum RestrictionKind {
 }
 
 model ImageReport {
-  id           Int           @id @default(autoincrement())
-  imageId      Int           @map("image_id")
-  image        Image         @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  reportedById Int           @map("reported_by_id")
-  reportedBy   User          @relation(fields: [reportedById], references: [id], onDelete: Cascade)
+  id           Int                @id @default(autoincrement())
+  imageId      Int                @map("image_id")
+  image        Image              @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  reportedById Int                @map("reported_by_id")
+  reportedBy   User               @relation("image_reporter", fields: [reportedById], references: [id], onDelete: Cascade)
   // Theoretically, this needs to be normalized but there's just no need for it
-  action       ReportAction?
+  action       ImageReportAction?
   actionedAt   DateTime?
+  actionedById Int?               @map("actioned_by_id")
+  actionedBy   User?              @relation("image_report_actioner", fields: [actionedById], references: [id], onDelete: SetNull)
   // Maybe make this an enum? Don't wanna tie database to business logic
   reason       String?
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @default(now()) @updatedAt @map("updated_at")
 
   @@unique([imageId, reportedById], name: "imageReportUser")
   @@map("image_reports")
 }
 
-enum ReportAction {
-  COMPLY
+enum ImageReportAction {
   DISMISS
-  CUSTOM
+  DELETE_IMAGE
+  HIDE_IMAGE
+  RESTRICT_USER
+  OTHER
 }
 
 enum Gender {
