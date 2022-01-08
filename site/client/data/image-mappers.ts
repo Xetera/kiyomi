@@ -19,9 +19,7 @@ export const imageVisibleFor = <
   requester?: { roles: BaseRoles }
 ): T | undefined => {
   const out = image ?? undefined
-  console.log({ requester })
   if (requester && hasRole(requester.roles, Role.Moderator)) {
-    console.log("aa")
     return out
   }
   if (image?.hiddenAt) {
