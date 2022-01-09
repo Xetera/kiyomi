@@ -1,4 +1,7 @@
 import { z } from "zod"
+import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
+import { IndexedGroup, IndexedPerson } from "./search"
+
 export const clientPerson = z.object({
   id: z.number(),
   name: z.string(),
@@ -15,9 +18,25 @@ export const clientFace = z.object({
   height: z.number(),
 })
 
+const clientImage = z.object({
+  url: z.string(),
+  width: z.number(),
+  height: z.number(),
+  faces: z.array(
+    z.object({
+      id: z.number(),
+      x: z.number(),
+      y: z.number(),
+      width: z.number(),
+      height: z.number(),
+    })
+  ),
+})
+
+export type ClientImage = z.infer<typeof clientImage>
+
 export const clientRound = z.object({
-  face: clientFace,
-  imageUrl: z.string(),
+  image: clientImage,
   number: z.number(),
   secs: z.number(),
   scores: z.record(z.number()),
@@ -48,7 +67,15 @@ export const clientRoomPreview = z.object({
 
 export type ClientRoomPreview = z.infer<typeof clientRoomPreview>
 
+const seatState = z.union([
+  z.literal("waitingForGame"),
+  z.literal("answering"),
+  z.literal("waitingForNextRound"),
+])
+
+export type SeatState = z.infer<typeof seatState>
 export const clientSeat = z.object({
+  state: seatState,
   // answere: boolean,
   // id of the users current answer
   answer: z.optional(z.number()),
@@ -60,11 +87,18 @@ export const clientSeat = z.object({
 
 export type ClientSeat = z.infer<typeof clientSeat>
 
-export const clientSearchGroup = z.object({
-  id: z.number(),
+export const commonSearch = z.object({
+  id: z.string(),
   name: z.string(),
   aliases: z.array(z.string()),
 })
+
+export const clientSearchGroup = commonSearch.merge(
+  z.object({
+    groupId: z.number(),
+    members: z.array(z.number()),
+  })
+)
 
 export type ClientSearchGroup = z.infer<typeof clientSearchGroup>
 
@@ -74,6 +108,7 @@ export type MeiliResult<T> = {
 
 export const clientSearchPerson = clientSearchGroup.merge(
   z.object({
+    personId: z.number(),
     groups: z.array(z.number()),
   })
 )
@@ -99,8 +134,17 @@ const hints = z.union([
   z.literal("disabled"),
 ])
 
+const roomState = z.union([
+  z.literal("creating"),
+  z.literal("answering"),
+  z.literal("waitingForNextRound"),
+])
+
+export type RoomState = z.infer<typeof roomState>
+
 export const clientRoom = z.object({
   slug: z.string(),
+  state: roomState,
   type: gameType,
   name: z.string(),
   started: z.boolean(),
@@ -155,13 +199,14 @@ export const Messages = {
   answer: z.object({ id: z.number().nonnegative() }),
   start_game: z.object({}),
   auth: z.object({ token: z.string() }),
-}
+} as const
 
 type DistributeClientMessage<U> = U extends IncomingMessageType
   ? { t: U } & z.infer<typeof Messages[U]>
   : never
 
-type PublicEventsKeys = "auth"
+export const publicEvents = ["auth", "rooms"] as const
+export type PublicEventsKeys = typeof publicEvents[number]
 
 export type IncomingMessageData = typeof Messages
 
@@ -275,6 +320,7 @@ export class ClientError {
 export class ClientTechnicalError {
   constructor(public message: string) {}
 }
+
 export const AUTH_COOKIE_NAME = "next-auth.session-token"
 
 export type AugmentedSearchResultFrontend = {
@@ -283,16 +329,18 @@ export type AugmentedSearchResultFrontend = {
 }
 
 export function buildAugmentedResults(
-  groups: ClientSearchGroup[],
-  members: ClientSearchPerson[]
+  groups: SearchResponseHit<IndexedGroup>[],
+  members: SearchResponseHit<IndexedPerson>[]
 ): Record<number, PersonPool> {
   const out: Record<number, PersonPool> = {}
   for (const group of groups) {
-    const filtered = members.filter((member) =>
-      member.groups.includes(group.id)
-    )
-    out[group.id] = {
-      group,
+    const filtered = members
+      .filter((member) =>
+        member.document.groups.includes(Number(group.document.id))
+      )
+      .map((e) => e.document)
+    out[group.document.id] = {
+      group: group.document,
       members: filtered,
     }
   }
@@ -300,6 +348,6 @@ export function buildAugmentedResults(
 }
 
 export type PartialSearchResult = {
-  group: ClientSearchGroup
-  members?: ClientSearchPerson[]
+  group: IndexedGroup
+  members?: IndexedPerson[]
 }

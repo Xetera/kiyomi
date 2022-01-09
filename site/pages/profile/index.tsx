@@ -18,11 +18,7 @@ function Image() {
       <div className="flex flex-col w-full mx-auto max-w-7xl px-8">
         <div className="flex justify-content w-full py-10">
           <div>
-            <User
-              // @ts-ignore
-              user={data.me}
-              bottom={<h1>hi</h1>}
-            />
+            <User user={data.me} bottom={<h1>hi</h1>} />
           </div>
         </div>
         <ImageGrid images={data.me.images.map(toClickableGridImage)} />

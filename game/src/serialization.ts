@@ -6,6 +6,7 @@ import {
   ClientGroup,
   ServerGroup,
   Rooms,
+  GuessingPrompt,
 } from "./messaging"
 import {
   ClientPlayer,
@@ -13,6 +14,7 @@ import {
   ClientSeat,
   ClientPerson,
   ClientRoomPreview,
+  ClientImage,
 } from "../../shared/game"
 import { keyBy } from "lodash"
 import { fromPersonIds } from "./query"
@@ -40,14 +42,6 @@ export function serializeRoomPreview(
   }
 }
 
-export function serializeGroup(group: ServerGroup): ClientGroup {
-  return {
-    aliases: group.aliases.map((alias) => alias.name),
-    id: group.id,
-    name: group.name,
-  }
-}
-
 export function serializeSeat(seat: Seat, room: Room): ClientSeat {
   return {
     answer: seat.answer,
@@ -57,6 +51,17 @@ export function serializeSeat(seat: Seat, room: Room): ClientSeat {
       return history.answers.get(seat.player.id)?.answer === history.correctId
     }).length,
     player: serializePlayer(seat.player),
+  }
+}
+
+export function serializeImage({ image, face }: GuessingPrompt): ClientImage {
+  console.log(image)
+  return {
+    url: image.thumbnail.large,
+    width: image.width,
+    height: image.height,
+    // could have more images later on
+    faces: [face],
   }
 }
 

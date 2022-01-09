@@ -164,7 +164,6 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         </Flex>
         <Flex flexDirection="row" alignItems="top">
           <User
-            // @ts-ignore
             user={image.uploadedBy}
             bottom={
               <Box

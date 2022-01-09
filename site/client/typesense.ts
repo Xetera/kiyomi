@@ -1,3 +1,7 @@
+import {
+  queryFieldsBy,
+  SEARCH_ENGINE_RESULT_PER_PAGE,
+} from "@/../shared/search"
 import { SearchClient } from "typesense"
 import type { NodeConfiguration } from "typesense/lib/Typesense/Configuration"
 import type {
@@ -39,48 +43,22 @@ export type SearchTag = {
   count: number
 }
 
-// not sure why group_by causes issues here
-type SearchInput = Omit<SearchParams<any>, "q" | "group_by"> & {
-  collection: string
-}
-
-const queryFieldsBy = <T>({
-  collection,
-  options = { cacheSearchResultsForSeconds: 30 },
-  ...opts
-}: SearchInput & { options?: SearchOptions }) => async (
-  query: string
-): Promise<SearchResponse<T>> => {
-  return (await typesense
-    .collections(collection)
-    .documents()
-    .search(
-      {
-        q: query,
-        ...opts,
-      },
-      options
-    )) as any
-}
-
-const PER_PAGE = 6
-
-export const searchIdol = queryFieldsBy<SearchIdol>({
+export const searchIdol = queryFieldsBy<SearchIdol>(typesense, {
   collection: "people",
   query_by: "aliases,name",
-  per_page: PER_PAGE,
+  per_page: SEARCH_ENGINE_RESULT_PER_PAGE,
 })
 
-export const searchGroup = queryFieldsBy<SearchGroup>({
+export const searchGroup = queryFieldsBy<SearchGroup>(typesense, {
   collection: "groups",
   query_by: "aliases,name",
-  per_page: PER_PAGE,
+  per_page: SEARCH_ENGINE_RESULT_PER_PAGE,
 })
 
-export const searchTag = queryFieldsBy<SearchTag>({
+export const searchTag = queryFieldsBy<SearchTag>(typesense, {
   collection: "tags",
   query_by: "aliases,name",
-  per_page: PER_PAGE,
+  per_page: SEARCH_ENGINE_RESULT_PER_PAGE,
   options: {
     // tagging search happens very quickly
     // we don't want it to be cached
@@ -91,7 +69,7 @@ export const searchTag = queryFieldsBy<SearchTag>({
 export const searchGeneric = async (
   query: string,
   commonParams: Partial<MultiSearchRequestSchema<unknown>> = {
-    per_page: PER_PAGE,
+    per_page: SEARCH_ENGINE_RESULT_PER_PAGE,
   }
 ): Promise<[SearchResponse<SearchIdol>, SearchResponse<SearchGroup>]> => {
   const response = await typesense.multiSearch.perform(

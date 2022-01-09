@@ -1,4 +1,4 @@
-import { useState } from "@/hooks/useState"
+import { useSelector } from "@/hooks/useSelector"
 import {
   Modal,
   ModalBody,

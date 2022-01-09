@@ -5,16 +5,16 @@ import "focus-visible/dist/focus-visible"
 // Import our CSS
 import "../styles/tailwind.css"
 import "../styles/globals.css"
-import NextHead from "next/head"
 import type { AppProps } from "next/app"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { Hydrate } from "react-query/hydration"
-import { ChakraProvider } from "@chakra-ui/react"
+import { ChakraProvider, Flex } from "@chakra-ui/react"
 import theme from "@/client/theme"
 import { store } from "@/models/store"
 import { AppWrapper } from "@/components/app-wrapper"
 import { Head } from "@/components/head"
 import { UserData } from "@/components/user-data/user-data"
+import GameServerGateway from "@/components/game/game-server-gateway"
 
 const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
   const queryClientRef = React.useRef<QueryClient>()
@@ -28,21 +28,15 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
         <ReduxProvider store={store}>
           <Provider session={pageProps.session}>
             <ChakraProvider theme={theme}>
-              <div
-                style={{
-                  minHeight: "100vh",
-                  display: "flex",
-                  flexFlow: "column",
-                }}
-              >
-                {/* </GameServerGateway> */}
-                <AppWrapper>
-                  <Head />
-                  <Component {...pageProps} />
-                  <UserData />
-                </AppWrapper>
-                {/* <GameServerGateway> */}
-              </div>
+              <Flex minHeight="100vh" flexFlow="column">
+                <GameServerGateway>
+                  <AppWrapper>
+                    <Head />
+                    <Component {...pageProps} />
+                    <UserData />
+                  </AppWrapper>
+                </GameServerGateway>
+              </Flex>
             </ChakraProvider>
           </Provider>
         </ReduxProvider>

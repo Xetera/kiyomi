@@ -99,7 +99,7 @@ export function wrapRequest<T>(
       data.props = {}
     }
     // @ts-ignore
-    data.props.session = session
+    data.props.session = session ?? null
     return data
   }
 }

@@ -9,9 +9,7 @@ import { useRouter } from "next/router"
 
 export type GameServerGatewayProps = {}
 
-export default function GameServerGateway({
-  children,
-}: PropsWithChildren<GameServerGatewayProps>) {
+const ServerConnection = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter()
   const info = useToast("info")
   const warning = useToast("warning")
@@ -33,13 +31,17 @@ export default function GameServerGateway({
       console.log(`Disconnected from game server`, e)
     },
     onReconnectStop(attempts) {
-      if (router.basePath.startsWith("/game")) {
+      if (router.pathname.startsWith("/game")) {
         warning({
           description: `Failed to reconnect to game servers after ${attempts} attempts. Try refreshing the page later.`,
         })
       }
     },
     shouldReconnect(_e) {
+      console.log("b", router.pathname)
+      if (!router.pathname.startsWith("/game")) {
+        return false
+      }
       warning({
         description: `Connection lost to the game servers, attempting to reconnect...`,
       })
@@ -48,8 +50,10 @@ export default function GameServerGateway({
     reconnectAttempts: 5,
   })
 
+  const f = useCallback(() => data.send({ t: "p" }), [])
   React.useEffect(() => {
-    store.dispatch.game.refreshSearchData()
+    // Server expects periodic pings
+    setInterval(f, 30 * 1000)
   }, [])
   const data: GameServerContextData = useMemo(
     () => ({
@@ -60,12 +64,20 @@ export default function GameServerGateway({
     }),
     []
   )
-  const f = useCallback(() => data.send({ t: "p" }), [])
-  // Server expects periodic pings
-  useInterval(f, 60 * 1000)
+
   return (
     <GameServerContext.Provider value={data}>
       {children}
     </GameServerContext.Provider>
   )
+}
+
+export default function GameServerGateway({
+  children,
+}: PropsWithChildren<unknown>) {
+  const router = useRouter()
+  if (router.pathname.startsWith("/game")) {
+    return <ServerConnection>{children}</ServerConnection>
+  }
+  return children as React.ReactElement
 }

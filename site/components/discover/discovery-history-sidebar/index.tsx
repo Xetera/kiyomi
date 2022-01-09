@@ -14,7 +14,7 @@ export const DiscoveryHistorySidebar = () => {
         <UserPortrait
           username={me?.name ?? undefined}
           xp={me?.xp ?? undefined}
-          avatar={me?.image ?? undefined}
+          avatar={me?.avatar ?? undefined}
           avatarSize={14}
         />
       )}

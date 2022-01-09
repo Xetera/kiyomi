@@ -122,7 +122,7 @@ export type NavbarProps = {
   user?: UserDataFragment
 }
 
-export function Navbar() {
+export const Navbar = forwardRef(({ ...rest }, ref) => {
   const [session] = useSession()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const { data } = useUserNotificationsQuery()
@@ -168,6 +168,10 @@ export function Navbar() {
       alignItems="center"
       mx="auto"
       w="full"
+      borderBottomWidth="1px"
+      borderColor="borderSubtle"
+      {...rest}
+      ref={ref}
     >
       <Flex
         justify="space-between"
@@ -184,9 +188,7 @@ export function Navbar() {
             <NavLink href="/browse">Browse</NavLink>
             <NavLink href="/discover">Discover</NavLink>
             {isModerator && moderation}
-            <NavLink href="/api/graphql" hardLink>
-              API
-            </NavLink>
+            <NavLink href="/games">Games</NavLink>
             {discord}
           </HStack>
         </Box>
@@ -253,8 +255,8 @@ export function Navbar() {
                   Discover
                 </NavLink>
                 {isModerator && moderation}
-                <NavLink href="/api/graphql" w="full" hardLink>
-                  API
+                <NavLink href="/games" w="full">
+                  Games
                 </NavLink>
                 {discord}
               </VStack>
@@ -291,12 +293,12 @@ export function Navbar() {
       </Drawer>
     </HStack>
   )
-}
+})
 
 export function WithNavbar(props: PropsWithChildren<{ noSpace?: boolean }>) {
   return (
-    <Flex w="full" minH="100vh">
-      <Navbar />
+    <Flex w="full">
+      <Navbar borderBottomWidth={props.noSpace ? "0px" : "1px"} />
       <Box w="full" pt={props.noSpace ? 0 : 16}>
         {props.children}
       </Box>

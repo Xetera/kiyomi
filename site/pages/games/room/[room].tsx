@@ -3,7 +3,7 @@ import {
   SidebarItem,
   WithSidebar,
 } from "@/components/context-sidebar"
-import { Navbar } from "@/components/navbar"
+import { Navbar, WithNavbar } from "@/components/navbar"
 import { useRouter } from "next/router"
 import React from "react"
 import { GameServerContext } from "@/models/contexts"
@@ -13,14 +13,15 @@ import GameSetup from "@/components/game/game-setup"
 import GameCountdown from "@/components/game/game-countdown"
 import { useLeaveRoomOnUnMount } from "@/hooks/game"
 import GameScreen from "@/components/game/game-screen"
-import { useState } from "@/hooks/useState"
+import { useSelector } from "@/hooks/useSelector"
+import { GameSidebar } from "@/components/game/guessing-game/game-sidebar"
 
 export default function GameRoom() {
   const { send } = React.useContext(GameServerContext)
   const router = useRouter()
-  const seats = useState((root) => root.game.room?.seats)
-  const started = useState((root) => root.game.room?.started)
-  const starting = useState((root) => root.game.countingDown)
+  const seats = useSelector((root) => root.game.room?.seats)
+  const started = useSelector((root) => root.game.room?.started)
+  const starting = useSelector((root) => root.game.countingDown)
   useLeaveRoomOnUnMount()
   React.useEffect(() => {
     // // we're already connected to a room
@@ -31,12 +32,12 @@ export default function GameRoom() {
     send({ t: "join_room", room: router.query.room as string })
   }, [router.query.room])
   return (
-    <>
-      <Navbar />
+    <WithNavbar>
       <WithSidebar
         sidebar={
           <ContextSidebar
             items={[
+              <GameSidebar />,
               <SidebarItem title="Players" key="players">
                 {seats?.map((seat) => (
                   <Flex
@@ -71,6 +72,6 @@ export default function GameRoom() {
         {starting && !started && <GameCountdown seconds={4} />}
         {started && <GameScreen />}
       </WithSidebar>
-    </>
+    </WithNavbar>
   )
 }

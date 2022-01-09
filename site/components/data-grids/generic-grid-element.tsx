@@ -139,7 +139,7 @@ export function GenericGridElement(
   if ("href" in props) {
     return (
       <NextLink href={props.href} passHref>
-        <Link h="full" w="full">
+        <Link h="full" w="full" overflow="hidden">
           {component}
         </Link>
       </NextLink>

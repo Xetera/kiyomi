@@ -1554,11 +1554,10 @@ export interface NexusGenFieldTypes {
     small: string; // String!
   }
   User: { // field return type
-    avatar: NexusGenRootTypes['Image'] | null; // Image
+    avatar: string | null; // String
     bot: boolean; // Boolean!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number; // Int!
-    image: string | null; // String
     images: NexusGenRootTypes['Image'][]; // [Image!]!
     name: string | null; // String
     roles: NexusGenRootTypes['Role'][]; // [Role!]!
@@ -1875,11 +1874,10 @@ export interface NexusGenFieldTypeNames {
     small: 'String'
   }
   User: { // field return type name
-    avatar: 'Image'
+    avatar: 'String'
     bot: 'Boolean'
     createdAt: 'DateTime'
     id: 'Int'
-    image: 'String'
     images: 'Image'
     name: 'String'
     roles: 'Role'

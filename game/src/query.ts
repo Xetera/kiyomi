@@ -1,17 +1,26 @@
-import {
-  buildAugmentedResults,
-  ClientSearchGroup,
-  ClientSearchPerson,
-  MeiliResult,
-  PersonChoice,
-  PersonPool,
-} from "../../shared/game"
+import { buildAugmentedResults, PersonPool } from "../../shared/game"
 import { backend } from "../../shared/sdk"
 import { GuessingPrompt, ServerPerson } from "./messaging"
 import LRU from "lru-cache"
+import {
+  getGroupsById,
+  getPeopleById,
+  IndexedGroup,
+  IndexedPerson,
+} from "../../shared/search"
+import { SearchClient } from "typesense"
+import { NodeConfiguration } from "typesense/lib/Typesense/Configuration"
+import { SearchResponse } from "typesense/lib/Typesense/Documents"
+import { config } from "./config"
 
-const url = (type: string) =>
-  new URL(`/indexes/${type}/search`, process.env.MEILISEARCH_URL).href
+export const typesense = new SearchClient({
+  apiKey: config.get("typesenseKey"),
+  nodes: [
+    {
+      url: config.get("typesenseUrl"),
+    } as NodeConfiguration,
+  ],
+})
 
 const cache = new LRU<string, Record<string, PersonPool>>({
   maxAge: 1000 * 60 * 60,
@@ -26,28 +35,18 @@ export async function fromPersonIds(
   if (ids.length > 0 && (out = cache.get(key))) {
     return out
   }
-  let people: MeiliResult<ClientSearchPerson> | undefined
+  let people: SearchResponse<IndexedPerson> | undefined
   if (ids.length > 0) {
-    people = await fetch(url("idols"), {
-      method: "POST",
-      body: JSON.stringify({
-        limit: 5000,
-        filters: ids.map((id) => `id = ${id}`).join(" OR "),
-      }),
-    }).then((r) => r.json())
+    console.log(ids)
+    people = await getPeopleById(typesense, ids)
   }
 
-  let groups: MeiliResult<ClientSearchGroup> | undefined
+  let groups: SearchResponse<IndexedGroup> | undefined
   if (people) {
-    groups = await fetch(url("groups"), {
-      method: "POST",
-      body: JSON.stringify({
-        limit: 5000,
-        filters: people.hits
-          .flatMap((hit) => hit.groups.map((g) => `id = ${g}`))
-          .join(" OR "),
-      }),
-    }).then((r) => r.json())
+    groups = await getGroupsById(
+      typesense,
+      people.hits.flatMap((hit) => hit.document.groups)
+    )
   }
 
   out = buildAugmentedResults(groups?.hits ?? [], people?.hits ?? [])
@@ -68,6 +67,7 @@ export async function fetchAllPeople(): Promise<Array<ServerPerson>> {
     name: true,
     aliases: { name: true },
   } as const
+  console.time("fetch-people")
   const r = await backend.query({
     people: [
       {},
@@ -86,6 +86,7 @@ export async function fetchAllPeople(): Promise<Array<ServerPerson>> {
       },
     ],
   })
+  console.timeEnd("fetch-people")
   return r.people
 }
 
@@ -99,6 +100,7 @@ export async function fetchAllImages(
       name: true,
     },
   } as const
+  console.time("image-refetch")
   const result = await backend.query({
     personImages: [
       { personIds },
@@ -112,6 +114,8 @@ export async function fetchAllImages(
         image: {
           id: true,
           slug: true,
+          width: true,
+          height: true,
           thumbnail: {
             small: true,
             medium: true,
@@ -134,7 +138,7 @@ export async function fetchAllImages(
       },
     ],
   })
-
+  console.timeEnd("image-refetch")
   return result.personImages.map((res) => ({
     image: res.image,
     face: res.face,

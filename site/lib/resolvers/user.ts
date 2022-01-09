@@ -21,10 +21,9 @@ export const User = objectType({
   definition(t) {
     t.model
       .id()
-      .avatar()
       .name()
       .roles({ pagination: false })
-      .image()
+      .image({ alias: "avatar" })
       .bot()
       .images({
         pagination: true,

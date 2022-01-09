@@ -8,6 +8,8 @@ import {
   PersonChoice,
   PrivateIncomingMessageType,
   PublicIncomingMessageType,
+  RoomState,
+  SeatState,
 } from "../../shared/game"
 import { z } from "zod"
 import type { Face, Group, Image, Person } from "../../shared/backend/schema"
@@ -32,7 +34,10 @@ export type ServerPerson = Pick<Person, "name" | "id"> & {
 export type GuessingPrompt = {
   face: Pick<Face, "x" | "y" | "width" | "height">
   image: Pick<Image, "id" | "slug"> & {
+    width: number
+    height: number
     thumbnail: {
+      large: string
       medium: string
       small: string
     }
@@ -78,6 +83,7 @@ export type CommandContext = {
   room: Room
   people: People
   seat: Seat
+  log(data: any): void
 }
 
 export type Sender = <T extends OutgoingMessageType>(
@@ -121,6 +127,7 @@ export type Uuid = string
  * A seat is a player's state within the game
  */
 export type Seat = {
+  state: SeatState
   player: Player
   owner: boolean
   answer?: number
@@ -152,6 +159,7 @@ export type Difficulty = {
 
 export type Room = {
   id: string
+  state: RoomState
   name: string
   // used for synchronizing asynchronous events that are related to each other
   coordination?: number
@@ -162,7 +170,6 @@ export type Room = {
   round: number
   difficulty: Difficulty
   started: boolean
-  roundStarted: boolean
   maxSeats: number
   maxRounds: number
   deleteTimer?: number
@@ -176,6 +183,7 @@ export type Room = {
   history: PastQuestion[]
   broadcastWith<T extends OutgoingMessageType>(
     t: T,
+    // @ts-ignore
     opts: (seat: Seat) => z.infer<typeof outgoingMessageData[T]> | undefined
   ): void
 }

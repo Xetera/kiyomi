@@ -1,5 +1,4 @@
 import { Flex, Grid, Heading, Stack, Text } from "@chakra-ui/layout"
-import { useSelector } from "react-redux"
 import { RootState, store } from "@/models/store"
 import {
   Checkbox,
@@ -15,17 +14,17 @@ import { GameServerContext } from "@/models/contexts"
 import React, { useCallback, useMemo } from "react"
 import { PartialSearchResult } from "../../../shared/game"
 import { Search } from "@/components/searchbar"
-import { useState } from "@/hooks/useState"
+import { useSelector } from "@/hooks/useSelector"
 
 interface GamePersonPickerParams {
   disabled: boolean
 }
 const PersonSearch = forwardRef((props, ref) => {
-  const search = useState((root) => root.game.lobbySearchQuery)
+  const search = useSelector((root) => root.game.lobbySearchQuery)
   const onSearch = useCallback((val: string) => {
     store.dispatch.game.search(val)
   }, [])
-  const searching = useState((root) => root.game.searchingGroup)
+  const searching = useSelector((root) => root.game.searchingGroup)
   return (
     <Search
       placeholder="Search for a group"
@@ -49,7 +48,7 @@ const GroupCluster = React.memo(
     checkMembers,
   }: PartialSearchResult & {
     disabled: boolean
-    selectedPeople: number[]
+    selectedPeople: string[]
     checkMembers?: (arg: number[]) => void
   }) => {
     return (
@@ -68,7 +67,9 @@ const GroupCluster = React.memo(
           alignItems="center"
           cursor="pointer"
           htmlFor={`group-check-${group.id}`}
-          onClick={(_) => checkMembers?.(members?.map((r) => r.id) ?? [])}
+          onClick={(_) =>
+            checkMembers?.(members?.map((r) => Number(r.id)) ?? [])
+          }
         >
           <Image
             src="https://placewaifu.com/image/30/30"
@@ -86,7 +87,7 @@ const GroupCluster = React.memo(
           </Flex>
         </Flex>
         <Box>
-          {!members?.length && (
+          {!members && (
             <Stack isLoaded={Boolean(members)} py={1} px={10}>
               {[...Array(5)].map(() => (
                 <Flex height="50px" alignItems="center">
@@ -103,6 +104,7 @@ const GroupCluster = React.memo(
             // .filter((person) => (person.groups ?? []).includes(group.id))
             ?.map((person) => {
               const checked = selectedPeople.includes(person.id) ?? false
+              console.log(person)
               return (
                 <Flex
                   as="label"
@@ -117,7 +119,7 @@ const GroupCluster = React.memo(
                     id={`person-check-${person.id}`}
                     // size="sm"
                     mr={3}
-                    onChange={() => checkMembers?.([person.id])}
+                    onChange={() => checkMembers?.([Number(person.id)])}
                     isDisabled={disabled}
                     isChecked={checked}
                   />
@@ -164,17 +166,18 @@ export default function GamePersonPicker({ disabled }: GamePersonPickerParams) {
   const selectedPeople = useMemo(
     () =>
       Object.values(selections ?? {}).flatMap((s) =>
-        s.members.map((e) => e.id)
+        s.members.map((e) => String(e.id))
       ),
     [selections]
   )
+
+  console.log({ selectedPeople })
 
   const results = Object.values(searchResults ?? {})
 
   function checkMembers(personIds: number[]) {
     send({ t: "toggle_people", people: personIds })
   }
-  function checkPerson() {}
   return (
     <Flex flexFlow="column">
       {!disabled && <PersonSearch mb={4} disabled={disabled} />}
@@ -191,31 +194,37 @@ export default function GamePersonPicker({ disabled }: GamePersonPickerParams) {
       >
         {!disabled &&
           searchQuery !== "" &&
-          results.map(({ group, members }) => (
-            <GroupCluster
-              disabled={disabled}
-              selectedPeople={selectedPeople}
-              group={group}
-              members={members}
-              key={group.id}
-              checkMembers={checkMembers}
-            />
-          ))}
+          results.map(({ group, members }) => {
+            return (
+              <GroupCluster
+                disabled={disabled}
+                selectedPeople={selectedPeople}
+                group={group}
+                members={members}
+                key={group.id}
+                checkMembers={checkMembers}
+              />
+            )
+          })}
         {selectionArray
           .filter(
             (f) =>
-              !results.some((res) => res.group.id === f.group.id) || disabled // allow non-owners to view all groups
+              results.every(
+                (res) => String(res.group.id) !== String(f.group.id)
+              ) || disabled // allow non-owners to view all groups
           )
-          .map(({ group, members }) => (
-            <GroupCluster
-              disabled={disabled}
-              selectedPeople={selectedPeople}
-              group={group}
-              members={members}
-              checkMembers={checkMembers}
-              key={group.id}
-            />
-          ))}
+          .map(({ group, members }) => {
+            return (
+              <GroupCluster
+                disabled={disabled}
+                selectedPeople={selectedPeople}
+                group={group}
+                members={members}
+                checkMembers={checkMembers}
+                key={group.id}
+              />
+            )
+          })}
       </Grid>
     </Flex>
   )

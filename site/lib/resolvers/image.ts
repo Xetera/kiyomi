@@ -510,14 +510,14 @@ export const PrivateQuery = queryField((t) => {
       type Response = { face: object; person: object; image: object }
       const response: Response[] = await prisma.$queryRawUnsafe(
         `
-        select row_to_json(p.*) as person,
+        SELECT row_to_json(p.*) as person,
         row_to_json(f.*) as face,
         row_to_json(i.*) as image
-        from images i
-                inner join appearances a on i.id = a.image_id
-                inner join faces f on a.id = f.appearance_id
-                inner join persons p on p.id = a.person_id
-        where p.id = ANY($1);
+        FROM persons p
+                INNER JOIN appearances a on p.id = a.person_id
+                INNER JOIN faces f on a.id = f.appearance_id
+                INNER JOIN images i on i.id = a.image_id
+        WHERE f.appearance_id IS NOT NULL AND a.person_id = ANY($1);
       `,
         args.personIds
       )

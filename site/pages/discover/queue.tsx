@@ -85,7 +85,7 @@ function Queue() {
 
 export default function QueuePage() {
   return (
-    <WithNavbar>
+    <WithNavbar noSpace>
       <LargeBanner
         src={`${process.env.NEXT_PUBLIC_BASE_URL_CDN}/fKgpCdJxphzlsWqy.webp`}
         height="80vh"

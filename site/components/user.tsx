@@ -15,7 +15,7 @@ export function User({
   bottom,
 }: {
   user?: Maybe<
-    Pick<UserData, "bot" | "name" | "image" | "avatar"> & {
+    Pick<UserData, "bot" | "name" | "avatar"> & {
       roles: Array<Pick<Role, "name">>
     }
   >
@@ -29,7 +29,6 @@ export function User({
       <Box borderRadius="md" overflow="hidden">
         {user?.avatar && (
           <Image
-            // @ts-ignore [something is wrong here]
             src={user.avatar}
             width={imageDimensions}
             height={imageDimensions}

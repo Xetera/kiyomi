@@ -7327,11 +7327,10 @@ enum UploadType {
 }
 
 type User {
-  avatar: Image
+  avatar: String
   bot: Boolean!
   createdAt: DateTime!
   id: Int!
-  image: String
   images(cursor: ImageWhereUniqueInput, orderBy: [ImageOrderByWithRelationInput!], skip: Int, take: Int, where: ImageWhereInput): [Image!]!
   name: String
   roles: [Role!]!

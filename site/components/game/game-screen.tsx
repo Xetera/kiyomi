@@ -1,6 +1,6 @@
 import { Flex, Grid, Heading, Text } from "@chakra-ui/layout"
-import { useState } from "@/hooks/useState"
-import { forwardRef, Image, Kbd, Progress } from "@chakra-ui/react"
+import { useSelector } from "@/hooks/useSelector"
+import { Button, forwardRef, Image, Kbd, Progress } from "@chakra-ui/react"
 import { motion } from "framer-motion"
 import { useCountdown } from "@/hooks/game"
 import pick from "lodash/pick"
@@ -9,6 +9,9 @@ import React from "react"
 import { store } from "@/models/store"
 import { GameServerContext } from "@/models/contexts"
 import { useTween } from "react-use"
+import { Face, ImageWithFaces } from "../image-display"
+import { useDispatch } from "react-redux"
+import { RoundCountdown } from "@/components/game/guessing-game/round-countdown"
 
 const MotionFlex = motion(Flex)
 
@@ -23,8 +26,8 @@ function NextRoundCountdown({ seconds: _sec }: { seconds: number }) {
 
 const GameSearch = forwardRef((props, ref) => {
   const { send } = React.useContext(GameServerContext)
-  const searching = useState((r) => r.game.personHintSearching)
-  const hints = useState((r) => r.game.room?.hints)
+  const searching = useSelector((r) => r.game.personHintSearching)
+  const hints = useSelector((r) => r.game.room?.hints)
 
   const [search, setSearch] = React.useState("")
   function onEnter() {
@@ -34,13 +37,22 @@ const GameSearch = forwardRef((props, ref) => {
       console.warn("No person hints to choose from")
       return
     }
-    send({ t: "answer", id: firstPerson.id })
+    send({ t: "answer", id: Number(firstPerson.document.id) })
   }
   function onSearch(q: string) {
     store.dispatch.game.searchIdol(q)
   }
   return (
-    <Flex {...props} ref={ref} flexFlow="column">
+    <Flex
+      {...props}
+      ref={ref}
+      zIndex="4"
+      flexFlow="column"
+      position={["fixed", null, "static"]}
+      left={0}
+      right={0}
+      bottom={0}
+    >
       <Search
         search={search}
         setSearchString={setSearch}
@@ -49,7 +61,7 @@ const GameSearch = forwardRef((props, ref) => {
         onEnter={onEnter}
         debounceTime={150}
         placeholder="Who's the highlighted person?"
-        mb={3}
+        mb={[0, null, null, 3]}
         hasClearButton={false}
       />
       <Text color="gray.500" fontSize="xs">
@@ -59,33 +71,49 @@ const GameSearch = forwardRef((props, ref) => {
           </>
         )}
       </Text>
+      <SearchResults
+        setSearch={setSearch}
+        zIndex="4"
+        position="absolute"
+        top={{ base: "unset", lg: "100%" }}
+        bottom={{ base: "100%", lg: "unset" }}
+        gridAutoFlow="row-reverse"
+      />
     </Flex>
   )
 })
 
 const SearchResults = forwardRef((props, ref) => {
   const { send } = React.useContext(GameServerContext)
-  const results = useState((r) => r.game.personHintResults)
-  function submit(event: React.KeyboardEvent<HTMLDivElement>, id: number) {
-    if (event.key !== "Enter") {
-      return
-    }
+  const results = useSelector((r) => r.game.personHintResults)
+  function submit(id: number) {
+    props.setSearch("")
     send({ t: "answer", id })
   }
   return (
     <Grid
       {...props}
       ref={ref}
+      w="full"
       alignItems="flex-start"
       gap={4}
       gridAutoFlow="row"
     >
-      {results.map((result) => (
-        <Flex
+      {results.map(({ document: result }) => (
+        <Button
           key={result.id}
+          bg="transparent"
+          borderColor="borderSubtle"
+          borderWidth="1px"
+          px={4}
+          py={2}
+          w="full"
+          h="full"
+          appearance="none"
           alignItems="center"
+          justifyContent="flex-start"
           tabindex={0}
-          onKeyDown={(e) => submit(e, result.id)}
+          onClick={() => submit(Number(result.id))}
         >
           <Image
             src="https://placewaifu.com/image/30/30"
@@ -94,42 +122,31 @@ const SearchResults = forwardRef((props, ref) => {
             borderRadius="md"
             mr={2}
           />
-          <Flex flexFlow="column">
+          <Flex flexFlow="column" alignItems="flex-start">
             <Heading fontSize="md">{result.name}</Heading>
             <Flex flexFlow="row wrap" as="span" lineHeight="1.4">
               {result.aliases.map((e) => (
-                <Text fontSize="md" color="gray.500" mr={2}>
+                <Text fontSize="sm" color="gray.500" mr={2}>
                   {e}
                 </Text>
               ))}
             </Flex>
           </Flex>
-        </Flex>
+        </Button>
       ))}
     </Grid>
   )
 })
 
-function GameFill() {
-  const { round } = useState((r) => pick(r.game, ["round"]))
-  if (!round) {
-    return null
-  }
-  const value = useTween("linear", round.secs * 1000)
-
-  return (
-    <Progress value={value} min={0} max={1} width="100%" key={round.number} />
-  )
-}
-
 export default function GameScreen() {
-  const { waitingForNextRound, round, answers } = useState((r) =>
+  const { waitingForNextRound, round, answers } = useSelector((r) =>
     pick(r.game, ["waitingForNextRound", "round", "answers"])
   )
 
   if (!round) {
     return null
   }
+  const { image } = round
   return (
     <Flex
       flex={1}
@@ -140,16 +157,35 @@ export default function GameScreen() {
       <Flex
         flexFlow="column"
         height={["min-content", null, null, "auto"]}
-        // minHeight={["300px", null, "500px", "550px"]}
-        // flex={1}
         p={[3, null, 4, null, 6]}
         justifyContent="center"
         alignItems="center"
       >
-        <Image src={round.imageUrl} borderRadius={["sm", null, null, "md"]} />
+        <ImageWithFaces
+          image={image}
+          faces={(imageSize) => (
+            <>
+              {image.faces.map((face) => (
+                <Face
+                  key={`${face.x}-${face.y}-${face.width}-${face.height}`}
+                  label="Who is this?"
+                  forceActive
+                  face={face}
+                  style={{
+                    left: (face.x * imageSize.width) / (image?.width ?? 1),
+                    top: (face.y * imageSize.height) / (image?.height ?? 1),
+                    width: (face.width * imageSize.width) / (image?.width ?? 1),
+                    height:
+                      (face.height * imageSize.height) / (image?.height ?? 1),
+                  }}
+                />
+              ))}
+            </>
+          )}
+        />
       </Flex>
       <Flex justifyContent="flex-start" height="2px" width="100%">
-        <GameFill />
+        <RoundCountdown />
       </Flex>
       <Flex
         minHeight="30px"
@@ -177,7 +213,6 @@ export default function GameScreen() {
       >
         <Flex position="relative" height="min-content" flex={1}>
           <GameSearch mb={4} flex={1} />
-          <SearchResults position="absolute" top="100%" />
         </Flex>
       </Flex>
     </Flex>

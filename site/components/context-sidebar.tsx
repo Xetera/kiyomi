@@ -1,7 +1,6 @@
 import { Heading, Stack } from "@chakra-ui/layout"
-import { useBreakpoint, useBreakpointValue } from "@chakra-ui/media-query"
-import { Flex, Box, forwardRef, VStack } from "@chakra-ui/react"
-import React, { ComponentProps, PropsWithChildren } from "react"
+import { Box, Flex, forwardRef, VStack } from "@chakra-ui/react"
+import React, { PropsWithChildren } from "react"
 
 export type ContextSidebarProps = {
   items: React.ReactNode[]
@@ -27,11 +26,16 @@ export type SidebarItemProps = {
   title: React.ReactChild | string
 }
 
+export const sidebarItemPadding = {
+  py: [2, 3],
+  px: [3, 4, 5],
+}
+
 export const SidebarItem = forwardRef<SidebarItemProps, "div">((opts, ref) => {
   const { title, ...rest } = opts
   return (
     <Flex flexDirection="column" ref={ref} {...rest}>
-      <Flex background="bgPrimary" py={[2, 3]} px={[3, 4, 5]}>
+      <Flex background="bgPrimary" {...sidebarItemPadding}>
         <Heading size="sm" fontWeight="500">
           {opts.title}
         </Heading>

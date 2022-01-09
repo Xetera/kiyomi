@@ -1949,11 +1949,10 @@ export enum UploadType {
 
 export type User = {
   __typename?: 'User';
-  avatar?: Maybe<Image>;
+  avatar?: Maybe<Scalars['String']>;
   bot: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   id: Scalars['Int'];
-  image?: Maybe<Scalars['String']>;
   images: Array<Image>;
   name?: Maybe<Scalars['String']>;
   roles: Array<Role>;
@@ -2296,7 +2295,7 @@ export type DiscoveryLeaderboardQuery = (
     & Pick<LeaderboardUser, 'rank' | 'xp'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'image' | 'name' | 'bot'>
+      & Pick<User, 'id' | 'avatar' | 'name' | 'bot'>
     ) }
   )> }
 );
@@ -2360,14 +2359,7 @@ export type ImageReportsQuery = (
       ) }
     ), reportedBy: (
       { __typename?: 'User' }
-      & Pick<User, 'name'>
-      & { avatar?: Maybe<(
-        { __typename?: 'Image' }
-        & { thumbnail: (
-          { __typename?: 'Thumbnail' }
-          & Pick<Thumbnail, 'small'>
-        ) }
-      )> }
+      & Pick<User, 'avatar' | 'name'>
     ) }
   )> }
 );
@@ -2473,7 +2465,7 @@ export type UserDataQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'name' | 'image' | 'xp' | 'createdAt'>
+    & Pick<User, 'id' | 'name' | 'avatar' | 'xp' | 'createdAt'>
     & { roles: Array<(
       { __typename?: 'Role' }
       & Pick<Role, 'name'>
@@ -2689,7 +2681,7 @@ export type VoteDiscoveryPostMutation = (
 
 export type FaceDataFragment = (
   { __typename?: 'Face' }
-  & Pick<Face, 'id' | 'x' | 'y' | 'width' | 'height' | 'score'>
+  & Pick<Face, 'id' | 'x' | 'y' | 'width' | 'height'>
 );
 
 export type HomepagePersonQueryVariables = Exact<{
@@ -2932,8 +2924,7 @@ export type ToggleLikeMutation = (
 
 export type UserDataFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'name' | 'bot'>
-  & { avatar: User['image'] }
+  & Pick<User, 'id' | 'name' | 'avatar' | 'bot'>
 );
 
 export type UserRoleDataFragment = (
@@ -3112,7 +3103,6 @@ export const FaceDataFragmentDoc = `
   y
   width
   height
-  score
 }
     `;
 export const AppearanceWithFacesFragmentDoc = `
@@ -3138,7 +3128,7 @@ export const UserDataFragmentDoc = `
     fragment UserData on User {
   id
   name
-  avatar: image
+  avatar
   bot
 }
     `;
@@ -3415,7 +3405,7 @@ export const DiscoveryLeaderboardDocument = `
     xp
     user {
       id
-      image
+      avatar
       name
       bot
     }
@@ -3499,11 +3489,7 @@ export const ImageReportsDocument = `
       }
     }
     reportedBy {
-      avatar {
-        thumbnail {
-          small
-        }
-      }
+      avatar
       name
     }
     createdAt
@@ -3614,7 +3600,7 @@ export const UserDataDocument = `
   me {
     id
     name
-    image
+    avatar
     xp
     createdAt
     roles {

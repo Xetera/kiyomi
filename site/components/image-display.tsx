@@ -2,29 +2,35 @@ import React from "react"
 import { FaceContext, ImageContext } from "@/models/contexts"
 import { AnimatePresence, motion } from "framer-motion"
 import { useToggle } from "react-use"
-import { FaExpand, FaCompress } from "react-icons/fa"
+import { FaCompress, FaExpand } from "react-icons/fa"
 import {
   AppearanceDataFragment,
   FaceDataFragment,
   ImageDataFragment,
 } from "@/lib/__generated__/graphql"
-import Hr from "./hr"
-import { Box, Link, Button, Image, Flex } from "@chakra-ui/react"
+import { Box, Flex, Image, Link } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/layout"
 import { Routing } from "@/client/routing"
 import NextLink from "next/link"
 import { personPreferredName } from "@/client/data/person-mappers"
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
-  image: ImageDataFragment
   appearance?: AppearanceDataFragment
   face: FaceDataFragment
   forceActive: boolean
+  label: string
 }
 
 const BoxAnimate = motion(Box)
 
-function Face({ appearance, face, style, forceActive }: FaceProps) {
+export function Face({
+  appearance,
+  face,
+  style,
+  forceActive,
+  label,
+}: FaceProps) {
+  console.log("fff", face)
   const { face: activeFace } = React.useContext(FaceContext)
   const motionId = appearance
     ? `appearance:${appearance.id}`
@@ -69,16 +75,133 @@ function Face({ appearance, face, style, forceActive }: FaceProps) {
               minWidth="80px"
             >
               <Box color="gray.100" textAlign="center" maxW="full">
-                {appearance
-                  ? appearance.person.preferredAlias?.name ??
-                    appearance.person.name
-                  : "Unknown"}
+                {label}
               </Box>
             </Text>
           </Box>
         </BoxAnimate>
       )}
     </AnimatePresence>
+  )
+}
+
+export type ImageWithFacesProps = {
+  image: {
+    url: string
+    width: number
+    height: number
+  }
+  faces(rect: DOMRect): React.ReactElement
+}
+
+export function ImageWithFaces({ image, faces }: ImageWithFacesProps) {
+  // const image = React.useContext(ImageContext)
+  const imageRef = React.useRef<HTMLImageElement | null>()
+  const parentRef = React.useRef<HTMLDivElement | null>()
+  const { face: activeFace } = React.useContext(FaceContext)
+  const [expanded, toggleExpanded] = useToggle(false)
+  const [loaded, setLoaded] = React.useState(false)
+  const defaults = {
+    x: 0,
+    y: 0,
+    height: 0,
+    left: 0,
+    right: 0,
+    width: 1200,
+    bottom: 0,
+    top: 0,
+    toJSON() {},
+  }
+  React.useEffect(() => {
+    checkSize()
+  }, [])
+
+  const [parentSize, setParentSize] = React.useState<DOMRect>(defaults)
+  const [imageSize, setImageSize] = React.useState<DOMRect>(defaults)
+
+  React.useEffect(() => {
+    // seems to be necessary for refs to initialize properly first
+    setTimeout(() => {
+      checkSize()
+    }, 100)
+    window.addEventListener("resize", checkSize)
+    return () => window.removeEventListener("resize", checkSize)
+  }, [])
+
+  function checkSize() {
+    const a = parentRef.current?.getBoundingClientRect()
+    const b = imageRef.current?.getBoundingClientRect()
+    if (a) {
+      setParentSize(a)
+    }
+    if (b) {
+      setImageSize(b)
+    }
+  }
+
+  const MAX_WIDTH = 1200
+  const imageMaxHeight = !expanded
+    ? "50vh"
+    : image!.height! <= 800
+    ? image!.height
+    : "100%"
+  return (
+    <Box
+      position="relative"
+      borderRadius="md"
+      className="relative rounded"
+      maxHeight={imageMaxHeight!}
+      ref={(r) => (parentRef.current = r)}
+    >
+      <Box
+        left={0}
+        right={0}
+        position="absolute"
+        mx="auto"
+        top={0}
+        maxWidth={image!.width! <= 1200 ? image.width! : "100%"}
+        width={imageRef.current?.width}
+        maxHeight={imageMaxHeight}
+      >
+        {faces(imageSize)}
+      </Box>
+      {/* @ts-ignore */}
+      <Image
+        ref={(input) => {
+          imageRef.current = input
+          // onLoad replacement for SSR
+          if (!input) {
+            return
+          }
+          const img = input
+
+          const updateFunc = () => {
+            setLoaded(true)
+          }
+          img.onload = () => {
+            updateFunc()
+            checkSize()
+          }
+          img.onerror = () => {
+            updateFunc()
+            img.onerror = null
+          }
+          if (img.complete) {
+            updateFunc()
+          }
+        }}
+        src={image.url}
+        {...(loaded ? {} : { width: image.width })}
+        height={image.height!}
+        flexBasis={image.width! <= 1200 ? image.width! : "100%"}
+        maxHeight="100%"
+        display="flex"
+        objectFit="contain"
+        overflow="hidden"
+        m="auto"
+        borderRadius="md"
+      />
+    </Box>
   )
 }
 
@@ -113,6 +236,7 @@ export default function ImageDisplay() {
 
   const [parentSize, setParentSize] = React.useState<DOMRect>(defaults)
   const [imageSize, setImageSize] = React.useState<DOMRect>(defaults)
+
   function checkSize() {
     const a = parentRef.current?.getBoundingClientRect()
     const b = imageRef.current?.getBoundingClientRect()
@@ -157,8 +281,12 @@ export default function ImageDisplay() {
           key={face.id}
           forceActive={active}
           appearance={appearance}
+          label={
+            appearance
+              ? appearance.person.preferredAlias?.name ?? appearance.person.name
+              : "Unknown"
+          }
           face={face}
-          image={image!}
           style={{
             pointerEvents: "visible",
             left: (face.x * imageSize.width) / (image?.width ?? 1),

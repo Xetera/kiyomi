@@ -4,7 +4,7 @@ query DiscoveryLeaderboard {
         xp
         user {
             id
-            image
+            avatar
             name
             bot
         }

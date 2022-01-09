@@ -19,11 +19,7 @@ query ImageReports {
             }
         }
         reportedBy {
-            avatar {
-                thumbnail {
-                    small
-                }
-            }
+            avatar
             name
         }
         createdAt

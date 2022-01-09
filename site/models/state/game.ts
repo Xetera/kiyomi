@@ -1,8 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import {
-  buildAugmentedResults,
-  ClientPerson,
+import type {
   ClientRoom,
   ClientRoomPreview,
   ClientRound,
@@ -12,14 +10,19 @@ import {
   MeiliResult,
   OutgoingMessage,
   PartialSearchResult,
-  PersonPool,
   UserAnswerPayload,
 } from "../../../shared/game"
 import Router from "next/router"
 import { createStandaloneToast } from "@chakra-ui/react"
 import debounce from "lodash/debounce"
-import keyBy from "lodash/keyBy"
-import { store } from "@/models/store"
+import { SearchGroup, searchGroup, typesense } from "@/client/typesense"
+import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
+import {
+  getPeopleByGroupId,
+  IndexedPerson,
+  searchIdol,
+} from "../../../shared/search"
+import add from "date-fns/add"
 
 const defaultOptions = { position: "bottom-right" } as const
 
@@ -34,10 +37,15 @@ const emitError = createStandaloneToast({
 })
 
 export type GameState = {
+  // gameState: GameState
   connected: boolean
-  startDate?: number
+  roundBoundaries?: {
+    startDate: Date
+    endDate: Date
+  }
+  // startDate?: number
   countingDown?: boolean
-  personHintResults: ClientSearchPerson[]
+  personHintResults: SearchResponseHit<IndexedPerson>[]
   personHintSearching: boolean
   answers?: UserAnswerPayload
   groups: ClientSearchGroup[]
@@ -58,14 +66,14 @@ export type GameState = {
 }
 
 function buildSearchResult(
-  groups: ClientSearchGroup[],
-  members?: ClientSearchPerson[]
+  groups: SearchResponseHit<SearchGroup>[],
+  members?: SearchResponseHit<IndexedPerson>[]
 ): Record<number, PartialSearchResult> {
   const out: Record<number, PartialSearchResult> = {}
-  for (const group of groups) {
-    const filtered = members?.filter((member) =>
-      member.groups.includes(group.id)
-    )
+  for (const { document: group } of groups) {
+    const filtered = members
+      ?.filter((member) => member.document.groups.includes(group.groupId))
+      .map((e) => e.document)
     out[group.id] = {
       group,
       members: filtered,
@@ -73,6 +81,7 @@ function buildSearchResult(
   }
   return out
 }
+
 export const gameModel = createModel<RootModel>()({
   name: "game",
   state: {
@@ -135,8 +144,8 @@ export const gameModel = createModel<RootModel>()({
     },
     updateSearchResult(
       state,
-      groups: ClientSearchGroup[],
-      members?: ClientSearchPerson[]
+      groups: SearchResponseHit<SearchGroup>[],
+      members?: SearchResponseHit<IndexedPerson>[]
     ) {
       state.searchResult = buildSearchResult(groups, members)
       return state
@@ -154,6 +163,7 @@ export const gameModel = createModel<RootModel>()({
     },
     clearRoom(state) {
       state.room = undefined
+      state.round = undefined
       return state
     },
     updateRoom(state, room: ClientRoom) {
@@ -185,8 +195,13 @@ export const gameModel = createModel<RootModel>()({
       return state
     },
     setRound(state, clientRound: ClientRound) {
+      const startDate = new Date()
       state.waitingForNextRound = false
       state.round = clientRound
+      state.roundBoundaries = {
+        startDate,
+        endDate: add(startDate, { seconds: clientRound.secs }),
+      }
       return state
     },
     answerReveal(state, payload: UserAnswerPayload) {
@@ -198,7 +213,7 @@ export const gameModel = createModel<RootModel>()({
       state.personHintSearching = searching
       return state
     },
-    setGameSearchHints(state, results: ClientSearchPerson[]) {
+    setGameSearchHints(state, results: SearchResponseHit<IndexedPerson>[]) {
       state.personHintResults = results
       return state
     },
@@ -209,29 +224,27 @@ export const gameModel = createModel<RootModel>()({
         `/indexes/${type}/search`,
         process.env.NEXT_PUBLIC_MEILISEARCH_URL
       ).href
+
     async function* stepSearch(query: string) {
       if (!query) {
         return
       }
-      const groups: MeiliResult<ClientSearchPerson> = await fetch(
-        url("groups"),
-        {
-          method: "POST",
-          body: JSON.stringify({ limit: 5000, q: encodeURIComponent(query) }),
-        }
-      ).then((r) => r.json())
+      const groups = await searchGroup(query)
 
-      yield { groups: groups.hits }
-      const idols: MeiliResult<ClientSearchPerson> = await fetch(url("idols"), {
-        method: "POST",
-        body: JSON.stringify({
-          limit: 5000,
-          filters: groups.hits.map((hit) => `groups = ${hit.id}`).join(" OR "),
-        }),
-      }).then((r) => r.json())
+      yield { groups: groups.hits ?? [] }
 
-      yield { groups: groups.hits, people: idols.hits }
+      const idols = groups.hits
+        ? await getPeopleByGroupId(
+            typesense,
+            groups.hits.map((hit) => hit.document.groupId)
+          )
+        : { hits: [] }
+
+      console.log(groups, idols)
+
+      yield { groups: groups.hits ?? [], people: idols.hits }
     }
+
     const runSearch = debounce(async (query: string) => {
       dispatch.game.setSearchState(true)
       for await (const { groups, people } of stepSearch(query)) {
@@ -272,6 +285,7 @@ export const gameModel = createModel<RootModel>()({
           if (message.round.number === 0) {
             dispatch.game.endCountdown()
           }
+          console.log("rount", message.round)
           dispatch.game.setRound(message.round)
         } else if (message.t === "answers_reveal") {
           dispatch.game.answerReveal(message)
@@ -294,26 +308,9 @@ export const gameModel = createModel<RootModel>()({
           return
         }
         dispatch.game.setSearchingPerson(true)
-        const people: MeiliResult<ClientSearchPerson> = await fetch(
-          url("idols"),
-          {
-            method: "POST",
-            body: JSON.stringify({
-              limit: 8,
-              q,
-            }),
-          }
-        ).then((r) => r.json())
+        const results = await searchIdol(typesense)(q)
         dispatch.game.setSearchingPerson(false)
-        dispatch.game.setGameSearchHints(people.hits)
-      },
-      async refreshSearchData() {
-        const [groups] = (await Promise.all([
-          fetch(
-            `${process.env.NEXT_PUBLIC_MEILISEARCH_URL}/indexes/groups/documents?limit=5000`
-          ).then((r) => r.json()),
-        ])) as [ClientSearchPerson[]]
-        dispatch.game.updateSearchData(groups)
+        dispatch.game.setGameSearchHints(results.hits ?? [])
       },
       connectionChange(connected: boolean, state) {
         dispatch.game.connect()

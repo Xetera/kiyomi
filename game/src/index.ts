@@ -1,3 +1,4 @@
+import "dotenv/config"
 import * as uWS from "uWebSockets.js"
 import Hashids from "hashids"
 import { logger } from "./config"
@@ -5,6 +6,7 @@ import jose from "jose"
 import ms from "ms"
 import cookie from "cookie"
 import {
+  serializeImage,
   serializeRoom,
   serializeRoomPreview,
   serializeSeat,
@@ -15,12 +17,11 @@ import {
   ClientTechnicalError,
   IncomingMessage,
   Messages,
-  OutgoingMessage,
   outgoingMessageData,
   OutgoingMessageType,
   PrivateIncomingMessageType,
+  PublicEventsKeys,
   RevealedAnswer,
-  stateExempt,
 } from "../../shared/game"
 import {
   Anon,
@@ -50,8 +51,7 @@ import {
 } from "./query"
 import { backend } from "../../shared/sdk"
 import { z } from "zod"
-import { TemplatedApp } from "uWebSockets.js"
-import { randomInt, randomUUID } from "crypto"
+import { randomInt } from "crypto"
 import { Topic, topics } from "./pubsub"
 
 const idFactory = new Hashids("salt!")
@@ -112,6 +112,7 @@ function joinRoom(
   clearTimeout(room.deleteTimer)
 
   const seat: Seat = {
+    state: "waitingForGame",
     owner: isOwner,
     hintUsed: false,
     get answered(): boolean {
@@ -174,6 +175,7 @@ async function createRoom(
 
   const room: Omit<Room, "owner"> = {
     id,
+    state: "creating",
     type: game,
     seats: new Map(),
     joinOrder: [],
@@ -181,14 +183,13 @@ async function createRoom(
     round: 0,
     name: generateRoomName(player),
     difficulty,
-    maxRounds: 20,
+    maxRounds: 10,
     history: [] as PastQuestion[],
     choices: {},
     imagePool: [],
     endingTimeout: undefined,
     correctAnswer: -1,
     personPool: personIds,
-    roundStarted: false,
     started: false,
     maxSeats: 50,
     broadcastWith(t, f) {
@@ -217,6 +218,7 @@ function createPlayer(player: Player) {
 function isPlayer(anon: Anon): anon is Player {
   return "id" in anon
 }
+
 function publish<T extends keyof typeof outgoingMessageData>(
   ws: uWS.WebSocket | uWS.TemplatedApp,
   topic: string,
@@ -285,8 +287,8 @@ function startRound(ctx: CommandContext) {
     throw new Error("End of the prompt?")
   }
 
+  ctx.room.state = "answering"
   ctx.room.started = true
-  ctx.room.roundStarted = true
   ctx.room.correctAnswer = prompt.answer.id
   const secs = ctx.room.difficulty.timePerRound
   publish(ctx.app, topics.room(ctx.room.id), {
@@ -294,8 +296,7 @@ function startRound(ctx: CommandContext) {
     round: {
       number: ctx.room.round,
       // TODO: too low quality maybe? Don't wanna send an uncompressed image though
-      imageUrl: prompt.image.thumbnail.medium,
-      face: prompt.face,
+      image: serializeImage(prompt),
       secs,
       scores: Object.fromEntries(
         Array.from(ctx.room.seats.values(), (seat) => [
@@ -309,16 +310,18 @@ function startRound(ctx: CommandContext) {
   for (const seat of ctx.room.seats.values()) {
     unsubscribe(seat.player.sock, topics.rooms())
   }
+  const timeoutMs = secs * 1000
   ctx.room.endingTimeout = setTimeout(() => {
     endRound(ctx)
-  }, secs * 1000)
+  }, timeoutMs)
+  ctx.log(`Set a timeout for ${timeoutMs} ms`)
 }
 
 function endRound(ctx: CommandContext) {
   if (ctx.room.endingTimeout) {
     clearTimeout(ctx.room.endingTimeout)
   }
-  ctx.room.roundStarted = false
+  ctx.room.state = "waitingForNextRound"
   const round = ctx.room.imagePool[ctx.room.round]
   if (!round) {
     throw new Error(
@@ -490,6 +493,9 @@ function commandCtx(ctx: Context): CommandContext {
     room: ctx.player.room,
     seat: ctx.player.seat,
     people: ctx.people,
+    log(data: any) {
+      logger.debug(`[${ctx.player.room.id}] [${ctx.player.id}] ${data}`)
+    },
   }
 }
 
@@ -515,7 +521,6 @@ function withRoomEdit(f: (cmd: CommandContext) => Promise<void> | void) {
 
 async function emitImagePool(room: Room, app: uWS.TemplatedApp) {
   const imagePool = shuffle(await fetchAllImages(room.personPool))
-  console.log({ imagePool })
   room.imagePool = imagePool
   if (!room.coordination) {
     console.warn("Image pool was edited without a coordination id")
@@ -528,11 +533,6 @@ async function emitImagePool(room: Room, app: uWS.TemplatedApp) {
 }
 
 export const privateMessageHandlers: PrivateMessageHandlers = {
-  async rooms({ ws, reply }) {
-    // we might have previously unsubscribed from games
-    subscribe(ws, topics.rooms())
-    reply({ t: "rooms", rooms: activeRooms() })
-  },
   async create_room({ reply, player, args, ws }) {
     // only nugu game for now
     if (args.type !== "nugu") {
@@ -745,7 +745,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       throw new ClientTechnicalError("Argument 'id' must be a valid number")
     }
 
-    if (!ctx.room.roundStarted) {
+    if (ctx.room.state !== "answering") {
       throw new ClientError("Round has not started yet")
     }
 
@@ -795,7 +795,7 @@ async function authorize(ws: uWS.WebSocket, explicitToken?: string) {
   const jwt = await jose.JWT.verify(token, _signingKey)
   const id = (jwt as any).sub as string
   const { user } = await backend.query({
-    user: [{ id: Number(id) }, { id: true, avatar: true, name: true }],
+    user: [{ id: Number(id) }, { id: true, name: true, avatar: true }],
   })
   if (!user) {
     throw new ClientError("Invalid User")
@@ -813,6 +813,11 @@ async function authorize(ws: uWS.WebSocket, explicitToken?: string) {
 }
 
 const publicMessageHandlers: PublicMessageHandlers = {
+  async rooms({ ws, reply }) {
+    // we might have previously unsubscribed from games
+    subscribe(ws, topics.rooms())
+    reply({ t: "rooms", rooms: activeRooms() })
+  },
   // authorization happens only once upon connections in order to make
   // sure that people don't disconnect in the middle of their games
   // The auth event shouldn't be used in production. It's a way of doing
@@ -840,7 +845,7 @@ const publicMessageHandlers: PublicMessageHandlers = {
 
 const port = 9002
 
-const publicEvents = new Set<keyof MessageHandlers>(["auth", "rooms"])
+const publicEvents = new Set<PublicEventsKeys>(["auth", "rooms"])
 
 let allPeople = new Map<string, ServerPerson>()
 
@@ -862,7 +867,9 @@ async function main() {
       logger.info(`Fetched ${people.length} entries...`)
     } catch (err) {
       logger.error("Encountered an error while fetching new people")
-      logger.error(err)
+      if (err instanceof Error) {
+        logger.error(err)
+      }
     }
   }
 
@@ -920,13 +927,16 @@ async function main() {
           send(ws, { t: "error", message: "Invalid event type" })
           return
         }
+        // @ts-ignore
         let args: z.infer<typeof Messages[typeof t]>
         try {
           // zod doesn't work here? :(
           args = await Messages[t as keyof typeof Messages].parseAsync(rest)
         } catch (err) {
-          logger.error(err)
-          return send(ws, { t: "error", message: err })
+          if (err instanceof Error) {
+            logger.error(err)
+            return send(ws, { t: "error", message: err.message })
+          }
         }
         const player = ws.player
         const reply = createSender(ws)
@@ -942,20 +952,23 @@ async function main() {
         if (t === "p") {
           return reply({ t: "p" })
         }
-        if (t === "auth") {
+        if (publicEvents.has(t as PublicEventsKeys)) {
           console.log({ t })
           try {
-            const args = Messages.auth.parse(rest)
-            return await publicMessageHandlers.auth({
+            const args = Messages[t].parse(rest)
+            // @ts-ignore
+            return await publicMessageHandlers[t]({
               ...sharedContext,
               args,
             })
           } catch (err) {
-            logger.error(err)
+            if (err instanceof Error) {
+              logger.error(err)
+            }
             if (process.env.NODE_ENV === "production") {
               return reply({ t: "error", message: "Invalid token" })
-            } else {
-              return reply({ t: "error", message: err })
+            } else if (err instanceof Error) {
+              return reply({ t: "error", message: err.message })
             }
           }
         }
@@ -991,7 +1004,9 @@ async function main() {
             t: "error",
             message: "Something went wrong... try again later",
           })
-          logger.error(err)
+          if (err instanceof Error) {
+            logger.error(err)
+          }
         }
       },
       drain: (ws) => {
@@ -1040,6 +1055,24 @@ async function main() {
 }
 
 main()
+
+process.on("SIGINT", () => {
+  logger.warn("Received a shutdown request")
+  if (process.env.NODE_DEV === "production") {
+    logger.warn(
+      "Server is in production mode, once all users disconnect the server will shut itself down"
+    )
+    setTimeout(() => {
+      logger.error(
+        `Could not gracefully shut down after 30 minutes, forcefully shutting down`
+      )
+      process.exit(0)
+    }, 1000 * 60 * 30)
+  } else {
+    logger.info(`Server in development mode, killing immediately`)
+    process.exit(0)
+  }
+})
 
 process.on("unhandledRejection", (err) => {
   console.error(err)

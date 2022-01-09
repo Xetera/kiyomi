@@ -4,5 +4,4 @@ fragment FaceData on Face {
   y
   width
   height
-  score
 }

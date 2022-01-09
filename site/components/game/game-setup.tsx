@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux"
 import { RootState } from "@/models/store"
 import { Box, Flex, Grid, Heading, Text } from "@chakra-ui/layout"
 import { gameType, Hints } from "../../../shared/game"
@@ -28,7 +27,7 @@ import React, { ReactElement, ReactNode } from "react"
 import Hr from "@/components/hr"
 import isEqual from "react-fast-compare"
 import pick from "lodash/pick"
-import { useState } from "@/hooks/useState"
+import { useSelector } from "@/hooks/useSelector"
 
 interface HeadingLabelParams {
   name: string
@@ -56,13 +55,14 @@ interface GameTypeParams {
 }
 
 function GamePersonPickerSidebar() {
-  const { selections, imagePoolSize } = useState((root) =>
+  const { selections, imagePoolSize } = useSelector((root) =>
     pick(root.game.room, ["selections", "imagePoolSize"])
   )
-  const loadingImageCount = useState((root) => root.game.loadingImageCount)
+  const loadingImageCount = useSelector((root) => root.game.loadingImageCount)
   const selectedPeople = Object.values(selections ?? {}).flatMap(
     (s) => s.members
-  ).length
+  )
+  const selectedPeopleLength = new Set(selectedPeople.map((p) => p.id)).size
   return (
     <>
       <HeadingLabel
@@ -70,7 +70,7 @@ function GamePersonPickerSidebar() {
         description="Select images that will be included."
       />
       <Text fontSize="sm" mt={2} color="blue.300">
-        {selectedPeople} selected people
+        {selectedPeopleLength} selected people
       </Text>
       <Text
         fontSize="sm"
@@ -186,7 +186,7 @@ const hintLevels: Array<{
 
 export default function GameSetup() {
   const [session] = useSession()
-  const room = useState((root) => {
+  const room = useSelector((root) => {
     return pick(root.game.room, [
       "hints",
       "started",
@@ -195,7 +195,7 @@ export default function GameSetup() {
       "secondsPerRound",
       "maxRoundCount",
       "imagePoolSize",
-    ] as const) // root.game.room ?? {}
+    ] as const)
   })
   const { send } = React.useContext(GameServerContext)
   if (!room) {
