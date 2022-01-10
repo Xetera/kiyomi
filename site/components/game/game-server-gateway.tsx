@@ -38,7 +38,6 @@ const ServerConnection = ({ children }: PropsWithChildren<{}>) => {
       }
     },
     shouldReconnect(_e) {
-      console.log("b", router.pathname)
       if (!router.pathname.startsWith("/game")) {
         return false
       }

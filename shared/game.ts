@@ -5,6 +5,7 @@ import { IndexedGroup, IndexedPerson } from "./search"
 export const clientPerson = z.object({
   id: z.number(),
   name: z.string(),
+  image: z.string().optional(),
   aliases: z.array(z.string()),
   group: z.optional(z.number()),
 })
@@ -35,15 +36,6 @@ const clientImage = z.object({
 
 export type ClientImage = z.infer<typeof clientImage>
 
-export const clientRound = z.object({
-  image: clientImage,
-  number: z.number(),
-  secs: z.number(),
-  scores: z.record(z.number()),
-})
-
-export type ClientRound = z.infer<typeof clientRound>
-
 export const clientPlayer = z.object({
   id: z.number(),
   username: z.string(),
@@ -68,17 +60,21 @@ export const clientRoomPreview = z.object({
 export type ClientRoomPreview = z.infer<typeof clientRoomPreview>
 
 const seatState = z.union([
-  z.literal("waitingForGame"),
-  z.literal("answering"),
-  z.literal("waitingForNextRound"),
+  z.object({
+    type: z.literal("waitingForGame"),
+  }),
+  z.object({
+    type: z.literal("answering"),
+  }),
+  z.object({
+    type: z.literal("waitingForNextRound"),
+    answer: z.number().optional(),
+  }),
 ])
 
 export type SeatState = z.infer<typeof seatState>
 export const clientSeat = z.object({
   state: seatState,
-  // answere: boolean,
-  // id of the users current answer
-  answer: z.optional(z.number()),
   owner: z.boolean(),
   answered: z.boolean(),
   points: z.number(),
@@ -127,6 +123,14 @@ export type AugmentedSearchResultBackend = {
   members: ClientSearchPerson[]
 }
 
+export const revealedAnswer = z.object({
+  // we want to emit the full known data since we have
+  // the authoritative information on each person and
+  // don't want the client to have to re-fetch stuff
+  person: clientPerson,
+  users: z.array(z.number()),
+})
+
 const hints = z.union([
   z.literal("alwaysOn"),
   z.literal("pointCost"),
@@ -135,9 +139,18 @@ const hints = z.union([
 ])
 
 const roomState = z.union([
-  z.literal("creating"),
-  z.literal("answering"),
-  z.literal("waitingForNextRound"),
+  z.object({
+    type: z.literal("creating"),
+  }),
+  z.object({
+    type: z.literal("answering"),
+  }),
+  z.object({
+    type: z.literal("waitingForNextRound"),
+    correctAnswer: clientPerson,
+    answers: z.array(revealedAnswer),
+    waitSeconds: z.number(),
+  }),
 ])
 
 export type RoomState = z.infer<typeof roomState>
@@ -232,15 +245,21 @@ export type KnownOutgoingMessage<T extends keyof typeof outgoingMessageData> = {
   state?: ClientRoom
 } & z.infer<typeof outgoingMessageData[T]>
 
-export const revealedAnswer = z.object({
-  person: z.number(),
-  users: z.array(z.number()),
+export const clientRound = z.object({
+  state: roomState,
+  image: clientImage,
+  number: z.number(),
+  secs: z.number(),
+  scores: z.record(z.number()),
 })
+
+export type ClientRound = z.infer<typeof clientRound>
 
 export type RevealedAnswer = z.infer<typeof revealedAnswer>
 
 const userAnswerPayload = z.object({
-  correctAnswer: z.number(),
+  room: clientRoom,
+  correctAnswer: clientPerson,
   answers: z.array(revealedAnswer),
   nextRoundWait: z.number(),
 })

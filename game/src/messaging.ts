@@ -20,6 +20,11 @@ export type ServerGroup = Pick<Group, "name" | "id"> & {
 }
 
 export type ServerPerson = Pick<Person, "name" | "id"> & {
+  avatar?: {
+    thumbnail: {
+      large: string
+    }
+  }
   aliases: Array<{
     name: string
   }>
@@ -130,7 +135,6 @@ export type Seat = {
   state: SeatState
   player: Player
   owner: boolean
-  answer?: number
   hintUsed: boolean
   readonly answered: boolean
   readonly score: number

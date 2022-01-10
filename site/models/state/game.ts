@@ -5,11 +5,10 @@ import type {
   ClientRoomPreview,
   ClientRound,
   ClientSearchGroup,
-  ClientSearchPerson,
   ClientSeat,
-  MeiliResult,
   OutgoingMessage,
   PartialSearchResult,
+  RevealedAnswer,
   UserAnswerPayload,
 } from "../../../shared/game"
 import Router from "next/router"
@@ -24,7 +23,7 @@ import {
 } from "../../../shared/search"
 import add from "date-fns/add"
 
-const defaultOptions = { position: "bottom-right" } as const
+const defaultOptions = { position: "bottom-right", isClosable: true } as const
 
 const emitInfo = createStandaloneToast({
   colorMode: "dark",
@@ -47,13 +46,12 @@ export type GameState = {
   countingDown?: boolean
   personHintResults: SearchResponseHit<IndexedPerson>[]
   personHintSearching: boolean
-  answers?: UserAnswerPayload
+  answers?: RevealedAnswer[]
   groups: ClientSearchGroup[]
   lobbySearchQuery: string
   searchingGroup: boolean
   loadingImageCount: boolean
   round?: ClientRound
-  waitingForNextRound: boolean
   searchResult: Record<number, PartialSearchResult>
   // people: Record<number | string, ClientSearchPerson>
   // some events require waiting for a response after connection
@@ -86,7 +84,6 @@ export const gameModel = createModel<RootModel>()({
   name: "game",
   state: {
     waitedForInitialEvents: false,
-    waitingForNextRound: false,
     personHintSearching: false,
     loadingImageCount: false,
     auditLog: [],
@@ -188,6 +185,7 @@ export const gameModel = createModel<RootModel>()({
     },
     startGame(state) {
       if (state.room) {
+        state.room.state.type = "answering"
         state.room.started = true
       } else {
         console.warn(`Tried to start a game without being in a room?`)
@@ -196,7 +194,6 @@ export const gameModel = createModel<RootModel>()({
     },
     setRound(state, clientRound: ClientRound) {
       const startDate = new Date()
-      state.waitingForNextRound = false
       state.round = clientRound
       state.roundBoundaries = {
         startDate,
@@ -205,8 +202,11 @@ export const gameModel = createModel<RootModel>()({
       return state
     },
     answerReveal(state, payload: UserAnswerPayload) {
-      state.waitingForNextRound = true
-      state.answers = payload
+      if (state.round) {
+        state.round.state = payload.room.state
+      }
+      state.room = payload.room
+      state.answers = payload.answers
       return state
     },
     setSearchingPerson(state, searching: boolean) {
@@ -259,7 +259,7 @@ export const gameModel = createModel<RootModel>()({
         runSearch(query)
       },
       message(message: OutgoingMessage) {
-        console.log("Websocket message", message)
+        console.log("[received message]", message)
         if (message.t === "error") {
           emitError({
             description: message.message,
@@ -285,7 +285,7 @@ export const gameModel = createModel<RootModel>()({
           if (message.round.number === 0) {
             dispatch.game.endCountdown()
           }
-          console.log("rount", message.round)
+          console.log("[new round]", message.round)
           dispatch.game.setRound(message.round)
         } else if (message.t === "answers_reveal") {
           dispatch.game.answerReveal(message)

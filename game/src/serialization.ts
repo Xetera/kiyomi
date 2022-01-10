@@ -18,7 +18,7 @@ import {
 } from "../../shared/game"
 import { keyBy } from "lodash"
 import { fromPersonIds } from "./query"
-import { DEFAULT_START_TIMEOUT } from "./index"
+import { answerCount, DEFAULT_START_TIMEOUT } from "./index"
 
 export function serializePlayer(player: Player): ClientPlayer {
   const { username, id, image } = player
@@ -43,13 +43,18 @@ export function serializeRoomPreview(
 }
 
 export function serializeSeat(seat: Seat, room: Room): ClientSeat {
+  const points = room.history.reduce((all, history) => {
+    const answer = history.answers.get(seat.player.id)
+    if (!answer) {
+      return all
+    }
+    return answerCount(answer, room)
+  }, 0)
   return {
-    answer: seat.answer,
+    state: seat.state,
     owner: seat.owner,
     answered: seat.answered,
-    points: room.history.filter((history) => {
-      return history.answers.get(seat.player.id)?.answer === history.correctId
-    }).length,
+    points,
     player: serializePlayer(seat.player),
   }
 }
@@ -70,6 +75,7 @@ export async function serializeRoom(room: Room): Promise<ClientRoom> {
   const selections = await fromPersonIds(room.personPool)
   console.timeEnd(`room-serialization-${room.id}`)
   return {
+    state: room.state,
     slug: room.id,
     type: room.type,
     started: room.started,
@@ -90,6 +96,7 @@ export function serializePerson(person: ServerPerson): ClientPerson {
   return {
     id: person.id,
     group: person.preferredMembership?.group?.id,
+    image: person.avatar?.thumbnail.large,
     name: person.name,
     aliases: person.aliases.map((alias) => alias.name),
   }

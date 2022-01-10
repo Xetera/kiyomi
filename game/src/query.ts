@@ -75,6 +75,11 @@ export async function fetchAllPeople(): Promise<Array<ServerPerson>> {
         aliases: {
           name: true,
         },
+        avatar: {
+          thumbnail: {
+            large: true,
+          },
+        },
         name: true,
         id: true,
         preferredMembership: {
@@ -125,6 +130,11 @@ export async function fetchAllImages(
         person: {
           id: true,
           name: true,
+          avatar: {
+            thumbnail: {
+              large: true,
+            },
+          },
           aliases: {
             name: true,
           },

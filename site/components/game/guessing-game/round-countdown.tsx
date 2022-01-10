@@ -32,7 +32,6 @@ export const GenericCountdown = ({
     raf.current = requestAnimationFrame(animate)
   }, [])
   React.useEffect(() => {
-    console.log("mounting!")
     raf.current = requestAnimationFrame(animate)
     return () => {
       if (raf.current) {
@@ -51,10 +50,11 @@ export const GenericCountdown = ({
 
 export const RoundCountdown = () => {
   const boundaries = useSelector((root) => root.game?.roundBoundaries)
-  const waiting = useSelector((root) => root.game?.waitingForNextRound)
+  const round = useSelector((root) => root.game?.round)
   if (!boundaries) {
     return null
   }
+  const waiting = round?.state.type === "waitingForNextRound"
   const { startDate, endDate } = boundaries
   return (
     <GenericCountdown

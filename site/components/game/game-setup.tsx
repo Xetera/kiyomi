@@ -93,9 +93,9 @@ function GamePersonPickerSidebar() {
 function GameType({ selected, name, description, available }: GameTypeParams) {
   return (
     <Flex
-      borderWidth={selected ? "1px" : "0"}
+      borderWidth={"1px"}
       borderRadius="sm"
-      background={available ? "inherit" : "bgSecondary"}
+      background={selected ? "bgSecondary" : "inherit"}
       borderColor="borderSubtle"
       p={4}
       flexFlow="column"
@@ -185,6 +185,7 @@ const hintLevels: Array<{
 ]
 
 export default function GameSetup() {
+  const user = useSelector((r) => r.user?.cache)
   const [session] = useSession()
   const room = useSelector((root) => {
     return pick(root.game.room, [
@@ -202,7 +203,7 @@ export default function GameSetup() {
     return null
   }
   const owner = room.owner
-  const disabled = session?.user.id !== Number(owner?.id ?? "-1")
+  const disabled = user?.id !== Number(owner?.id ?? "-1")
 
   function changeHints(hints: Hints) {
     send({ t: "pick_hints", hints })

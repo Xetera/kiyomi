@@ -30,7 +30,6 @@ export function Face({
   forceActive,
   label,
 }: FaceProps) {
-  console.log("fff", face)
   const { face: activeFace } = React.useContext(FaceContext)
   const motionId = appearance
     ? `appearance:${appearance.id}`

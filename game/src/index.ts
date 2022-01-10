@@ -7,6 +7,7 @@ import ms from "ms"
 import cookie from "cookie"
 import {
   serializeImage,
+  serializePerson,
   serializeRoom,
   serializeRoomPreview,
   serializeSeat,
@@ -14,6 +15,7 @@ import {
 import {
   AUTH_COOKIE_NAME,
   ClientError,
+  ClientPerson,
   ClientTechnicalError,
   IncomingMessage,
   Messages,
@@ -30,7 +32,6 @@ import {
   Difficulty,
   EmittedMessage,
   GameType,
-  MessageHandlers,
   PastQuestion,
   Player,
   PrivateMessageHandlers,
@@ -56,8 +57,8 @@ import { Topic, topics } from "./pubsub"
 
 const idFactory = new Hashids("salt!")
 
-export const DEFAULT_START_TIMEOUT = 4
-export const DEFAULT_ROUND_WAIT_TIME = 6
+export const DEFAULT_START_TIMEOUT = 0
+export const DEFAULT_ROUND_WAIT_TIME = 30
 
 const server: Server = {
   // ????????????
@@ -88,7 +89,7 @@ function clearFromOtherRooms(player: Player) {
   })
 }
 
-function answerCount(an: QuestionAnswer, room: Room) {
+export function answerCount(an: QuestionAnswer, room: Room) {
   if (an.hintUsed) {
     return 0.5
   }
@@ -112,20 +113,22 @@ function joinRoom(
   clearTimeout(room.deleteTimer)
 
   const seat: Seat = {
-    state: "waitingForGame",
+    state: { type: "waitingForGame" },
     owner: isOwner,
     hintUsed: false,
     get answered(): boolean {
-      return Boolean(seat.answer)
+      return (
+        seat.state.type === "waitingForNextRound" && Boolean(seat.state.answer)
+      )
     },
     get score(): number {
-      return room.history.slice(0, room.round).reduce(
-        (all, round) =>
-          // I'm sorry for this war crime I just comitted
-          all +
-          Number(round.answers.get(player.id)?.answer === round.correctId),
-        0
-      )
+      return room.history.slice(0, room.round).reduce((all, round) => {
+        // I'm sorry for this war crime I just comitted
+        console.log(round)
+        return (
+          all + Number(round.answers.get(player.id)?.answer === round.correctId)
+        )
+      }, 0)
     },
     player,
   }
@@ -175,7 +178,7 @@ async function createRoom(
 
   const room: Omit<Room, "owner"> = {
     id,
-    state: "creating",
+    state: { type: "creating" },
     type: game,
     seats: new Map(),
     joinOrder: [],
@@ -253,9 +256,9 @@ function createSender(ws: uWS.WebSocket): Sender {
   }
 }
 
-function getRevealedAnswerPayload(
+async function getRevealedAnswerPayload(
   ctx: CommandContext
-): EmittedMessage<"answers_reveal"> {
+): Promise<EmittedMessage<"answers_reveal">> {
   const answers = getRevealedAnswers(ctx)
   const person = ctx.people.get(String(ctx.room.correctAnswer))
   if (!person) {
@@ -267,6 +270,7 @@ function getRevealedAnswerPayload(
   return {
     t: "answers_reveal",
     answers,
+    room: await serializeRoom(ctx.room),
     nextRoundWait: DEFAULT_ROUND_WAIT_TIME,
     correctAnswer: toRevealedPerson(person),
   }
@@ -277,23 +281,28 @@ function currentQuestion(ctx: CommandContext) {
 }
 
 function startRound(ctx: CommandContext) {
+  ctx.room.started = true
+  ctx.room.state = {
+    type: "answering",
+  }
   // resetting the previous round's answers back to nothing
   for (const seat of ctx.room.seats.values()) {
     seat.hintUsed = false
-    seat.answer = undefined
+    seat.state = {
+      type: "answering",
+    }
   }
   const prompt = currentQuestion(ctx)
   if (!prompt) {
     throw new Error("End of the prompt?")
   }
 
-  ctx.room.state = "answering"
-  ctx.room.started = true
   ctx.room.correctAnswer = prompt.answer.id
   const secs = ctx.room.difficulty.timePerRound
   publish(ctx.app, topics.room(ctx.room.id), {
     t: "round_start",
     round: {
+      state: ctx.room.state,
       number: ctx.room.round,
       // TODO: too low quality maybe? Don't wanna send an uncompressed image though
       image: serializeImage(prompt),
@@ -317,12 +326,32 @@ function startRound(ctx: CommandContext) {
   ctx.log(`Set a timeout for ${timeoutMs} ms`)
 }
 
-function endRound(ctx: CommandContext) {
+async function endRound(ctx: CommandContext) {
+  const correctPerson = allPeople.get(String(ctx.room.correctAnswer))
+  if (!correctPerson) {
+    throw Error(
+      `The correct answer for round was not in the person DB ${ctx.room.correctAnswer}`
+    )
+  }
+  ctx.room.state = {
+    type: "waitingForNextRound",
+    correctAnswer: serializePerson(correctPerson),
+    answers: getRevealedAnswers(ctx),
+    waitSeconds: DEFAULT_ROUND_WAIT_TIME,
+  }
+  for (const user of ctx.room.seats.values()) {
+    // we only want to set users who haven't already answered
+    const hasntAnswered = user.state.type !== "waitingForNextRound"
+    if (hasntAnswered) {
+      user.state = {
+        type: "waitingForNextRound",
+      }
+    }
+  }
   if (ctx.room.endingTimeout) {
     clearTimeout(ctx.room.endingTimeout)
   }
-  ctx.room.state = "waitingForNextRound"
-  const round = ctx.room.imagePool[ctx.room.round]
+  const round = currentQuestion(ctx)
   if (!round) {
     throw new Error(
       `Room in ${ctx.room.round} exceeded the maximum number of images allowed`
@@ -333,16 +362,22 @@ function endRound(ctx: CommandContext) {
     imageId: round.image.id,
     answers: new Map(
       [...ctx.room.seats.values()]
-        .filter((seat) => seat.answer)
+        .filter((seat) => seat.state.type === "waitingForNextRound")
         .map((seat) => [
           seat.player.id,
-          { answer: seat.answer as number, hintUsed: seat.hintUsed },
+          {
+            answer:
+              seat.state.type === "waitingForNextRound"
+                ? seat.state.answer
+                : undefined,
+            hintUsed: seat.hintUsed,
+          },
         ])
     ),
   })
   // TODO: choose winners of round
   ctx.room.round++
-  const payload = getRevealedAnswerPayload(ctx)
+  const payload = await getRevealedAnswerPayload(ctx)
   publish(ctx.app, topics.room(ctx.room.id), payload)
   if (ctx.room.round >= ctx.room.maxRounds) {
     return finishGame(ctx)
@@ -366,31 +401,35 @@ function finishGame(ctx: CommandContext) {
   }
 }
 
-function toRevealedPerson(artist: ServerPerson): number {
-  return artist.id
+function toRevealedPerson(artist: ServerPerson): ClientPerson {
+  return serializePerson(artist)
 }
 
 function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
   const userAnswers = Array.from(ctx.room.seats.values()).reduce(
     (all, seat) => {
-      if (!seat.answer) {
-        console.log(`${seat.player.username} has no answer`)
-        return all
+      switch (seat.state.type) {
+        case "waitingForNextRound": {
+          if (seat.state.answer) {
+            const chosenartist = ctx.people.get(String(seat.state.answer))
+            if (!chosenartist) {
+              logger.warn(
+                `A user was able to pick an answer that doesn't exist in the artist pool: ${seat.state.answer}`
+              )
+              return all
+            }
+            const userId = Number(seat.player.id)
+            if (all[chosenartist.id]) {
+              all[chosenartist.id]?.push(userId)
+            } else {
+              all[chosenartist.id] = [userId]
+            }
+          }
+          return all
+        }
+        default:
+          return all
       }
-
-      const chosenartist = ctx.people.get(String(seat.answer))
-      if (!chosenartist) {
-        throw new Error(
-          "A user was able to pick an answer that doesn't exist in the artist pool"
-        )
-      }
-      const userId = Number(seat.player.id)
-      if (all[chosenartist.id]) {
-        all[chosenartist.id]?.push(userId)
-      } else {
-        all[chosenartist.id] = [userId]
-      }
-      return all
     },
     {} as Record<number, number[]>
   )
@@ -450,7 +489,6 @@ async function disconnectPlayer(
       })
       return
     }
-    console.log(room.joinOrder)
 
     room.owner = newOwner
     newOwner.owner = true
@@ -737,7 +775,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       aliases: firstMembership.group.aliases.map((e) => e.name),
     })
   },
-  answer({ args, ...rest }) {
+  async answer({ args, ...rest }) {
     const { player, reply } = rest
     const ctx = commandCtx(rest)
 
@@ -745,14 +783,17 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       throw new ClientTechnicalError("Argument 'id' must be a valid number")
     }
 
-    if (ctx.room.state !== "answering") {
+    if (ctx.room.state.type !== "answering") {
       throw new ClientError("Round has not started yet")
     }
 
-    ctx.seat.answer = args.id
+    ctx.seat.state = {
+      type: "waitingForNextRound",
+      answer: args.id,
+    }
 
-    const hasEveryoneAnswered = [...ctx.room.seats.values()].every((seat) =>
-      Boolean(seat.answer)
+    const hasEveryoneAnswered = [...ctx.room.seats.values()].every(
+      (seat) => seat.answered
     )
 
     if (hasEveryoneAnswered) {
@@ -761,14 +802,14 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
 
     subscribe(rest.ws, topics.answers(ctx.room.id))
 
-    reply(getRevealedAnswerPayload(ctx))
+    reply(await getRevealedAnswerPayload(ctx))
     // if the user sending packets has not answered yet they should
     // not see the other user's answer
     ctx.room.broadcastWith("user_answer", (seat) => {
       if (seat.player.id === player.id) {
         return
       }
-      return seat.answer
+      return seat.answered
         ? { userId: player.id, choice: args.id }
         : { userId: player.id }
     })

@@ -104,7 +104,6 @@ const GroupCluster = React.memo(
             // .filter((person) => (person.groups ?? []).includes(group.id))
             ?.map((person) => {
               const checked = selectedPeople.includes(person.id) ?? false
-              console.log(person)
               return (
                 <Flex
                   as="label"
