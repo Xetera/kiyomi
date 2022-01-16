@@ -3,14 +3,15 @@ import { NodeConfiguration } from "typesense/lib/Typesense/Configuration"
 import type {
   Alias,
   Group,
+  GroupAlias,
   GroupMember,
   Person,
   PrismaClient,
   Tag,
   TagAlias,
   TagCategory,
-  GroupAlias,
 } from "@prisma/client"
+import { Image } from "@prisma/client"
 import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections"
 import {
   IndexedGroup,
@@ -19,9 +20,11 @@ import {
   searchGroupsName,
   searchPeopleName,
 } from "../../../shared/search"
+import { ImageProxyService } from "@/lib/services/image-proxy"
 
 export type SearchOptions = {
   prisma: PrismaClient
+  imageProxy: ImageProxyService
 }
 
 export type IndexableGroup = Group & {
@@ -30,8 +33,10 @@ export type IndexableGroup = Group & {
 }
 
 export type IndexablePerson = Person & {
+  avatar?: Image | null
   aliases: Alias[]
-  memberOf: GroupMember[]
+  memberOf: Array<GroupMember & { group: Group }>
+  preferredMembership?: (GroupMember & { group: Group }) | null
 }
 
 export type IndexableTag = Tag & {
@@ -40,7 +45,7 @@ export type IndexableTag = Tag & {
   count: number
 }
 
-export function makeSearch({ prisma }: SearchOptions) {
+export function makeSearch({ prisma, imageProxy }: SearchOptions) {
   const typesense = new Client({
     apiKey: process.env.NEXT_PUBLIC_TYPESENSE_KEY!,
     nodes: [
@@ -51,23 +56,29 @@ export function makeSearch({ prisma }: SearchOptions) {
   })
   const methods = {
     toIndexedPerson(person: IndexablePerson): IndexedPerson {
+      const thumbnails = person.avatar
+        ? imageProxy.thumbnails(person.avatar)
+        : undefined
+      const preferredGroup =
+        person.preferredMembership?.group ?? person.memberOf?.[0]?.group
       return {
         id: String(person.id),
         personId: person.id,
         name: person.name,
+        thumbnailSmall: thumbnails?.small,
+        thumbnailMedium: thumbnails?.medium,
+        thumbnailLarge: thumbnails?.large,
         aliases: person.aliases.map((alias) => alias.name),
         preferredAlias: person.aliases?.find(
           (alias) => alias.id === person.preferredAliasId
         )?.name,
+        preferredGroupName: preferredGroup?.name,
         groups: person.memberOf.map((mem) => mem.groupId),
         // TODO: get age calculations working
         age: undefined,
       }
     },
     toIndexedGroup(group: IndexableGroup): IndexedGroup {
-      if (group.id === 29) {
-        console.log(group)
-      }
       return {
         id: String(group.id),
         groupId: group.id,
@@ -105,8 +116,18 @@ export function makeSearch({ prisma }: SearchOptions) {
     async fullPersonRefresh() {
       const people = await prisma.person.findMany({
         include: {
+          avatar: true,
           aliases: true,
-          memberOf: true,
+          memberOf: {
+            include: {
+              group: true,
+            },
+          },
+          preferredMembership: {
+            include: {
+              group: true,
+            },
+          },
         },
       })
       const collectionName = searchPeopleName()
@@ -116,10 +137,7 @@ export function makeSearch({ prisma }: SearchOptions) {
           .collections(collectionName)
           .delete()
           .catch(() => {})
-        await typesense
-          .collections()
-          .create(personSchema)
-          .catch(() => {})
+        await typesense.collections().create(personSchema).catch(console.error)
       }
       const indexedPeople = people.map(methods.toIndexedPerson)
       return typesense
@@ -177,6 +195,27 @@ const personSchema: CollectionCreateSchema = {
     {
       name: "groups",
       type: "int32[]",
+    },
+    {
+      name: "preferredGroupName",
+      type: "string",
+      optional: true,
+      facet: true,
+    },
+    {
+      name: "thumbnailSmall",
+      optional: true,
+      type: "string",
+    },
+    {
+      name: "thumbnailMedium",
+      optional: true,
+      type: "string",
+    },
+    {
+      name: "thumbnailLarge",
+      optional: true,
+      type: "string",
     },
   ],
 }

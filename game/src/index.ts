@@ -24,6 +24,7 @@ import {
   PrivateIncomingMessageType,
   PublicEventsKeys,
   RevealedAnswer,
+  RevealedAnswerVote,
 } from "../../shared/game"
 import {
   Anon,
@@ -32,6 +33,7 @@ import {
   Difficulty,
   EmittedMessage,
   GameType,
+  GuessingPrompt,
   PastQuestion,
   Player,
   PrivateMessageHandlers,
@@ -57,11 +59,13 @@ import { Topic, topics } from "./pubsub"
 
 const idFactory = new Hashids("salt!")
 
-export const DEFAULT_START_TIMEOUT = 0
-export const DEFAULT_ROUND_WAIT_TIME = 30
+export const DEFAULT_START_TIMEOUT = 4
+export const DEFAULT_ROUND_WAIT_TIME = 7
 
 const server: Server = {
-  // ????????????
+  isShuttingDown: false,
+  // This is an incrementing number for seeding
+  // the name of the room
   incrementing: 0,
   rooms: {
     nugu: new Map<string, Room>(),
@@ -80,7 +84,6 @@ function addToRoomJoinOrder(room: Room, seat: Seat) {
     )
   }
   room.joinOrder.push(seat)
-  console.log({ joinOrder: room.joinOrder })
 }
 
 function clearFromOtherRooms(player: Player) {
@@ -89,7 +92,7 @@ function clearFromOtherRooms(player: Player) {
   })
 }
 
-export function answerCount(an: QuestionAnswer, room: Room) {
+export function answerPointWorth(an: QuestionAnswer, room: Room): number {
   if (an.hintUsed) {
     return 0.5
   }
@@ -122,13 +125,14 @@ function joinRoom(
       )
     },
     get score(): number {
-      return room.history.slice(0, room.round).reduce((all, round) => {
-        // I'm sorry for this war crime I just comitted
-        console.log(round)
-        return (
-          all + Number(round.answers.get(player.id)?.answer === round.correctId)
-        )
+      const score = room.history.reduce((all, history) => {
+        const answer = history.answers.get(seat.player.id)
+        if (!answer) {
+          return all
+        }
+        return all + answerPointWorth(answer, room)
       }, 0)
+      return score
     },
     player,
   }
@@ -260,6 +264,7 @@ async function getRevealedAnswerPayload(
   ctx: CommandContext
 ): Promise<EmittedMessage<"answers_reveal">> {
   const answers = getRevealedAnswers(ctx)
+  const question = currentQuestion(ctx)
   const person = ctx.people.get(String(ctx.room.correctAnswer))
   if (!person) {
     const error = `The correct answer in room ${ctx.room.id} was an artist that's not in the artist registry`
@@ -270,13 +275,15 @@ async function getRevealedAnswerPayload(
   return {
     t: "answers_reveal",
     answers,
+    people: question.people,
+    imageViews: question.image.views,
     room: await serializeRoom(ctx.room),
     nextRoundWait: DEFAULT_ROUND_WAIT_TIME,
     correctAnswer: toRevealedPerson(person),
   }
 }
 
-function currentQuestion(ctx: CommandContext) {
+function currentQuestion(ctx: CommandContext): GuessingPrompt | undefined {
   return ctx.room.imagePool[ctx.room.round]
 }
 
@@ -328,6 +335,7 @@ function startRound(ctx: CommandContext) {
 
 async function endRound(ctx: CommandContext) {
   const correctPerson = allPeople.get(String(ctx.room.correctAnswer))
+  const question = currentQuestion(ctx)
   if (!correctPerson) {
     throw Error(
       `The correct answer for round was not in the person DB ${ctx.room.correctAnswer}`
@@ -335,6 +343,7 @@ async function endRound(ctx: CommandContext) {
   }
   ctx.room.state = {
     type: "waitingForNextRound",
+    imageSlug: question.image.slug,
     correctAnswer: serializePerson(correctPerson),
     answers: getRevealedAnswers(ctx),
     waitSeconds: DEFAULT_ROUND_WAIT_TIME,
@@ -379,25 +388,35 @@ async function endRound(ctx: CommandContext) {
   ctx.room.round++
   const payload = await getRevealedAnswerPayload(ctx)
   publish(ctx.app, topics.room(ctx.room.id), payload)
-  if (ctx.room.round >= ctx.room.maxRounds) {
-    return finishGame(ctx)
-  }
 
   for (const seat of ctx.room.seats.values()) {
     unsubscribe(seat.player.sock, topics.answers(ctx.room.id))
   }
+
+  if (ctx.room.round >= ctx.room.maxRounds) {
+    return finishGame(ctx)
+  }
+
   setTimeout(() => {
     startRound(ctx)
   }, DEFAULT_ROUND_WAIT_TIME * 1000)
 }
 
 function finishGame(ctx: CommandContext) {
-  // ctx.room.broadcast({
-  //   t: "game_end",
-  // })
-
   for (const seat of ctx.room.seats.values()) {
     subscribe(seat.player.sock, topics.rooms())
+  }
+  server.rooms[ctx.room.type].delete(ctx.room.id)
+  graciousCoercedShutdown(ctx)
+}
+
+function graciousCoercedShutdown(ctx: CommandContext) {
+  const hasNoRunningRooms = server.rooms[ctx.room.type].size === 0
+  if (server.isShuttingDown && hasNoRunningRooms) {
+    logger.fatal(
+      `Server is forcefully shutting down because all the games are finished`
+    )
+    process.exit(0)
   }
 }
 
@@ -419,10 +438,14 @@ function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
               return all
             }
             const userId = Number(seat.player.id)
+            const payload: RevealedAnswerVote = {
+              userId,
+              usedHint: seat.hintUsed,
+            }
             if (all[chosenartist.id]) {
-              all[chosenartist.id]?.push(userId)
+              all[chosenartist.id]?.push(payload)
             } else {
-              all[chosenartist.id] = [userId]
+              all[chosenartist.id] = [payload]
             }
           }
           return all
@@ -431,7 +454,7 @@ function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
           return all
       }
     },
-    {} as Record<number, number[]>
+    {} as Record<number, RevealedAnswerVote[]>
   )
   // TODO: optimize this? idk
   return Object.entries(userAnswers).map(([artistId, users]) => {
@@ -473,14 +496,18 @@ async function disconnectPlayer(
       nukeRoom(room)
     }, 1000 * 60 * 5)
   } else if (seat.player.id === room.owner?.player.id) {
-    console.log("Transferring ownership")
+    logger.info(
+      `Transferring ownership of ${room.name} because the owner [${seat.player.username}] left`
+    )
     const transferEligible = room.joinOrder.filter((seat) =>
       room.seats.has(seat.player.id)
     )
-    console.log({ transferEligible })
+
     const newOwner = transferEligible[0]
     if (!newOwner) {
-      console.log("Owner is not in join order, impossible state. Exiting game")
+      logger.error(
+        `Game room is not empty but has no eligible users for ownership. Impossible state`
+      )
       nukeRoom(room)
       publish(relevantSocket, `room/${room.id}`, {
         t: "force_disconnected",
@@ -668,7 +695,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     }
     const playerAlreadyInOneRoom = [
       ...server.rooms.nugu.values(),
-    ].find((room) =>
+    ].some((room) =>
       [...room.seats.values()].some((seat) => seat.player.id === player.id)
     )
 
@@ -698,7 +725,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
   async start_game(data) {
     const { player } = data
     const ctx = commandCtx(data)
-    const { room, people, seat } = ctx
+    const { room } = ctx
 
     if (!player.seat) {
       throw new Error(
@@ -859,7 +886,7 @@ const publicMessageHandlers: PublicMessageHandlers = {
     subscribe(ws, topics.rooms())
     reply({ t: "rooms", rooms: activeRooms() })
   },
-  // authorization happens only once upon connections in order to make
+  // authorization happens only once upon connection in order to make
   // sure that people don't disconnect in the middle of their games
   // The auth event shouldn't be used in production. It's a way of doing
   // authentication in websocketking.com since it doesn't support auth headers
@@ -889,8 +916,6 @@ const port = 9002
 const publicEvents = new Set<PublicEventsKeys>(["auth", "rooms"])
 
 let allPeople = new Map<string, ServerPerson>()
-
-console.log("running code")
 
 async function main() {
   setInterval(() => {
@@ -934,6 +959,15 @@ async function main() {
         if (cookieHeader) {
           const cookies = cookie.parse(cookieHeader)
           token = cookies[AUTH_COOKIE_NAME]
+        }
+        if (server.isShuttingDown) {
+          logger.debug(
+            `Refusing to upgrade new connection from token {${
+              token ?? "unknown"
+            }} because the server is shutting down`
+          )
+          res.writeStatus("503").end()
+          return
         }
         // https://github.com/uNetworking/uWebSockets.js/discussions/112#discussioncomment-177625
         res.upgrade(
@@ -994,7 +1028,6 @@ async function main() {
           return reply({ t: "p" })
         }
         if (publicEvents.has(t as PublicEventsKeys)) {
-          console.log({ t })
           try {
             const args = Messages[t].parse(rest)
             // @ts-ignore
@@ -1088,9 +1121,9 @@ async function main() {
     })
     .listen(port, (token) => {
       if (token) {
-        console.log("Listening to port " + port)
+        logger.info("Listening to port " + port)
       } else {
-        console.log("Failed to listen to port " + port)
+        logger.error("Failed to listen to port " + port)
       }
     })
 }

@@ -52,6 +52,7 @@ export type GameState = {
   searchingGroup: boolean
   loadingImageCount: boolean
   round?: ClientRound
+  hintedGroupName?: string
   searchResult: Record<number, PartialSearchResult>
   // people: Record<number | string, ClientSearchPerson>
   // some events require waiting for a response after connection
@@ -159,6 +160,7 @@ export const gameModel = createModel<RootModel>()({
       return state
     },
     clearRoom(state) {
+      state.hintedGroupName = undefined
       state.room = undefined
       state.round = undefined
       return state
@@ -192,8 +194,13 @@ export const gameModel = createModel<RootModel>()({
       }
       return state
     },
+    receiveHint(state, groupName: string) {
+      state.hintedGroupName = groupName
+      return state
+    },
     setRound(state, clientRound: ClientRound) {
       const startDate = new Date()
+      state.hintedGroupName = undefined
       state.round = clientRound
       state.roundBoundaries = {
         startDate,
@@ -239,8 +246,6 @@ export const gameModel = createModel<RootModel>()({
             groups.hits.map((hit) => hit.document.groupId)
           )
         : { hits: [] }
-
-      console.log(groups, idols)
 
       yield { groups: groups.hits ?? [], people: idols.hits }
     }
@@ -299,6 +304,15 @@ export const gameModel = createModel<RootModel>()({
             if (Router.basePath !== "/games") {
               Router.push("/games")
             }
+          }
+        } else if (message.t === "hint") {
+          if (message.groupName) {
+            dispatch.game.receiveHint(message.groupName)
+          } else {
+            emitError({
+              title: "This person has no known group",
+              description: "Poke mods in the Discord server about this, sorry",
+            })
           }
         }
       },

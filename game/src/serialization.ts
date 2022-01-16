@@ -1,24 +1,21 @@
 import {
+  GuessingPrompt,
   Player,
   Room,
+  Rooms,
   Seat,
   ServerPerson,
-  ClientGroup,
-  ServerGroup,
-  Rooms,
-  GuessingPrompt,
 } from "./messaging"
 import {
+  ClientImage,
+  ClientPerson,
   ClientPlayer,
   ClientRoom,
-  ClientSeat,
-  ClientPerson,
   ClientRoomPreview,
-  ClientImage,
+  ClientSeat,
 } from "../../shared/game"
-import { keyBy } from "lodash"
 import { fromPersonIds } from "./query"
-import { answerCount, DEFAULT_START_TIMEOUT } from "./index"
+import { DEFAULT_START_TIMEOUT } from "./index"
 
 export function serializePlayer(player: Player): ClientPlayer {
   const { username, id, image } = player
@@ -43,18 +40,11 @@ export function serializeRoomPreview(
 }
 
 export function serializeSeat(seat: Seat, room: Room): ClientSeat {
-  const points = room.history.reduce((all, history) => {
-    const answer = history.answers.get(seat.player.id)
-    if (!answer) {
-      return all
-    }
-    return answerCount(answer, room)
-  }, 0)
   return {
     state: seat.state,
     owner: seat.owner,
     answered: seat.answered,
-    points,
+    points: seat.score,
     player: serializePlayer(seat.player),
   }
 }
@@ -93,11 +83,15 @@ export async function serializeRoom(room: Room): Promise<ClientRoom> {
 }
 
 export function serializePerson(person: ServerPerson): ClientPerson {
+  const [firstMembership] = person.memberOf
   return {
     id: person.id,
     group: person.preferredMembership?.group?.id,
     image: person.avatar?.thumbnail.large,
     name: person.name,
     aliases: person.aliases.map((alias) => alias.name),
+    preferredGroupName: (person.preferredMembership ?? firstMembership)?.group
+      .name,
+    preferredAlias: person.preferredAlias?.name,
   }
 }

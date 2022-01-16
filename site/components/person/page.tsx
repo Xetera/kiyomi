@@ -53,7 +53,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         justify="center"
         bg="rgba(0, 0, 0, 0.2)"
         backdropFilter="blur(3px)"
-        h="full"
         zIndex={222}
         p={6}
         position="relative"
@@ -188,7 +187,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
       </Flex>
       <Flex w="full" justify="center" bg="rgba(0, 0, 0, 0.8)" h="full" p={6}>
         <VStack w="full" maxW="7xl" margin="0 auto" py={3} spacing={4}>
-          <VStack h="full" bg="black"></VStack>
           {data?.person && (
             <ImageGrid
               w="full"

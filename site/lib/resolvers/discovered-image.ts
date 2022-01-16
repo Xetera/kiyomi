@@ -3,7 +3,6 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime"
 import { PrismaError } from "prisma-error-enum"
 import { GraphQLError } from "graphql"
 import { GraphqlAuth } from "../auth"
-import { imgproxy } from "../imgproxy"
 
 export const DiscoveredImage = objectType({
   name: "DiscoveredImage",
@@ -45,8 +44,8 @@ export const DiscoveredImage = objectType({
     t.field("thumbnail", {
       type: nonNull("String"),
       description: "A smaller thumbnail of the image",
-      resolve(root, _, {}) {
-        const base = imgproxy
+      resolve(root, _, { imageProxy }) {
+        const base = imageProxy.client
           .image(root.url)
           .width(0)
           .resizeType("fill")

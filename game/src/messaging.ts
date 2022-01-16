@@ -8,6 +8,7 @@ import {
   PersonChoice,
   PrivateIncomingMessageType,
   PublicIncomingMessageType,
+  RevealedPerson,
   RoomState,
   SeatState,
 } from "../../shared/game"
@@ -28,6 +29,7 @@ export type ServerPerson = Pick<Person, "name" | "id"> & {
   aliases: Array<{
     name: string
   }>
+  preferredAlias?: { name: string }
   preferredMembership?: {
     group: ServerGroup
   }
@@ -38,7 +40,8 @@ export type ServerPerson = Pick<Person, "name" | "id"> & {
 
 export type GuessingPrompt = {
   face: Pick<Face, "x" | "y" | "width" | "height">
-  image: Pick<Image, "id" | "slug"> & {
+  people: RevealedPerson[]
+  image: Pick<Image, "id" | "slug" | "views"> & {
     width: number
     height: number
     thumbnail: {
@@ -198,6 +201,7 @@ export type Rooms = {
 }
 
 export type Server = {
+  isShuttingDown: boolean
   incrementing: number
   rooms: Rooms
 }

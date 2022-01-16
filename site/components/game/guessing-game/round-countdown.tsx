@@ -1,6 +1,4 @@
 import { useSelector } from "@/hooks/useSelector"
-import pick from "lodash/pick"
-import { useRaf, useTween } from "react-use"
 import { Progress } from "@chakra-ui/react"
 import React, { useCallback, useRef, useState } from "react"
 
@@ -20,9 +18,16 @@ export const GenericCountdown = ({
   const round = useSelector((r) => r.game.round)
   const [elapsed, setElapsed] = useState(0)
   const raf = useRef<number>()
+  const cancelRafIfExists = () => {
+    if (raf.current) {
+      cancelAnimationFrame(raf.current)
+    }
+  }
+
   const animate = useCallback(() => {
     if (forceEnd) {
       setElapsed(1)
+      cancelRafIfExists()
       return
     }
     const now = Date.now()
@@ -30,14 +35,10 @@ export const GenericCountdown = ({
     const elapsed = (now - startDate.getTime()) / difference
     setElapsed(Math.min(1, elapsed))
     raf.current = requestAnimationFrame(animate)
-  }, [])
+  }, [forceEnd])
   React.useEffect(() => {
     raf.current = requestAnimationFrame(animate)
-    return () => {
-      if (raf.current) {
-        cancelAnimationFrame(raf.current)
-      }
-    }
+    return cancelRafIfExists
   }, [])
   if (!round) {
     return null

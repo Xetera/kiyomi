@@ -7,7 +7,15 @@ export const clientPerson = z.object({
   name: z.string(),
   image: z.string().optional(),
   aliases: z.array(z.string()),
+  preferredAlias: z.optional(z.string()),
+  preferredGroupName: z.optional(z.string()),
   group: z.optional(z.number()),
+})
+
+export const PartialClientPerson = z.object({
+  id: z.number(),
+  name: z.string(),
+  aliases: z.array(z.string()),
 })
 
 export type ClientPerson = z.infer<typeof clientPerson>
@@ -18,6 +26,13 @@ export const clientFace = z.object({
   width: z.number(),
   height: z.number(),
 })
+
+export const revealedPerson = z.object({
+  person: clientPerson,
+  faces: z.array(clientFace),
+})
+
+export type RevealedPerson = z.infer<typeof revealedPerson>
 
 const clientImage = z.object({
   url: z.string(),
@@ -39,7 +54,6 @@ export type ClientImage = z.infer<typeof clientImage>
 export const clientPlayer = z.object({
   id: z.number(),
   username: z.string(),
-  // ult?: z.optional(z.string()),
   imageUrl: z.optional(z.string()),
 })
 
@@ -102,7 +116,7 @@ export type MeiliResult<T> = {
   hits: T[]
 }
 
-export const clientSearchPerson = clientSearchGroup.merge(
+export const clientSearchPerson = commonSearch.merge(
   z.object({
     personId: z.number(),
     groups: z.array(z.number()),
@@ -123,12 +137,19 @@ export type AugmentedSearchResultBackend = {
   members: ClientSearchPerson[]
 }
 
+export const revealedAnswerVote = z.object({
+  userId: z.number(),
+  usedHint: z.boolean(),
+})
+
+export type RevealedAnswerVote = z.infer<typeof revealedAnswerVote>
+
 export const revealedAnswer = z.object({
   // we want to emit the full known data since we have
   // the authoritative information on each person and
   // don't want the client to have to re-fetch stuff
   person: clientPerson,
-  users: z.array(z.number()),
+  users: z.array(revealedAnswerVote),
 })
 
 const hints = z.union([
@@ -150,6 +171,7 @@ const roomState = z.union([
     correctAnswer: clientPerson,
     answers: z.array(revealedAnswer),
     waitSeconds: z.number(),
+    imageSlug: z.string(),
   }),
 ])
 
@@ -184,6 +206,9 @@ const editRoom = {
   hints,
 }
 
+/**
+ * Incoming messages
+ */
 export const Messages = {
   p: z.object({}),
   create_room: z.object({
@@ -259,6 +284,8 @@ export type RevealedAnswer = z.infer<typeof revealedAnswer>
 
 const userAnswerPayload = z.object({
   room: clientRoom,
+  people: z.array(revealedPerson),
+  imageViews: z.number(),
   correctAnswer: clientPerson,
   answers: z.array(revealedAnswer),
   nextRoundWait: z.number(),
@@ -311,7 +338,6 @@ export const outgoingMessageData = {
     z.object({ userId: z.number() }),
     z.object({ userId: z.number(), choice: z.number() }),
   ]),
-  // fired when a user answers and gets the results revealed to them,
   answers_reveal: userAnswerPayload,
   round_end: userAnswerPayload,
   auth: z.object({ success: z.boolean() }),
@@ -355,10 +381,10 @@ export function buildAugmentedResults(
   for (const group of groups) {
     const filtered = members
       .filter((member) =>
-        member.document.groups.includes(Number(group.document.id))
+        member.document.groups.includes(group.document.groupId)
       )
       .map((e) => e.document)
-    out[group.document.id] = {
+    out[group.document.groupId] = {
       group: group.document,
       members: filtered,
     }

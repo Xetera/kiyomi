@@ -12,6 +12,7 @@ import { makePerson, PersonService } from "@/lib/services/person"
 import { makeReport, ReportService } from "@/lib/services/report"
 import { makeWebhook, WebhookService } from "@/lib/services/webhook"
 import { makeBan, BanService } from "@/lib/services/ban"
+import { ImageProxyService, makeImageProxy } from "@/lib/services/image-proxy"
 
 export type Services = {
   prisma: PrismaClient
@@ -28,6 +29,7 @@ export type Services = {
   report: ReportService
   webhook: WebhookService
   ban: BanService
+  imageProxy: ImageProxyService
 }
 
 export function createServices(
@@ -36,14 +38,16 @@ export function createServices(
 ): Services {
   const wendy = makeWendy({ prisma, amqp })
   const wasabi = makeWasabi()
-  const search = makeSearch({ prisma })
   const ban = makeBan({ prisma })
+  const imageProxy = makeImageProxy({ prisma })
+  const search = makeSearch({ prisma, imageProxy })
 
   return {
     prisma,
     amqp,
     wendy,
     wasabi,
+    imageProxy,
     search,
     ban,
     discovery: makeDiscovery({ prisma }),

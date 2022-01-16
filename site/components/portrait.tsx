@@ -1,4 +1,4 @@
-import { Box, Flex, forwardRef, Image, Text } from "@chakra-ui/react"
+import { Box, BoxProps, Flex, forwardRef, Image, Text } from "@chakra-ui/react"
 import React from "react"
 import type { FocusableImage } from "@/components/data-grids/generic-grid-element"
 import { focusToObjectPosition } from "@/components/data-grids/generic-grid-element"
@@ -10,8 +10,8 @@ export type PortraitProps = {
   onClick?: () => void
   src?: string
   name?: React.ReactNode
-  width?: string
-  height?: string
+  width?: BoxProps["width"]
+  height?: BoxProps["height"]
 }
 
 export const Portrait = forwardRef<PortraitProps, "div">(
@@ -32,7 +32,6 @@ export const Portrait = forwardRef<PortraitProps, "div">(
           mx="auto"
           width={width}
           height={height}
-          mb={3}
           zIndex={1}
           borderRadius={"lg"}
           overflow="hidden"

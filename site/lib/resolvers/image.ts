@@ -14,7 +14,6 @@ import {
   stringArg,
 } from "nexus"
 import { hasRole, Role } from "../permissions"
-import { imgproxy } from "../imgproxy"
 import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
 import centroid from "@turf/centroid"
@@ -97,17 +96,8 @@ export const Image = objectType({
       .createdAt()
     t.field("thumbnail", {
       type: nonNull(Thumbnail),
-      resolve(img) {
-        const base = imgproxy
-          .image(Routing.toRawImage(img))
-          .width(0)
-          .resizeType("fill")
-          .extension("webp")
-        return {
-          small: base.height(350).get(),
-          medium: base.height(500).get(),
-          large: base.height(900).get(),
-        }
+      resolve(img, _, { imageProxy }) {
+        return imageProxy.thumbnails(img)
       },
     })
     t.field("fileSize", {

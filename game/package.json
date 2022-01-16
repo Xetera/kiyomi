@@ -75,8 +75,6 @@
     "cookie": "^0.4.1",
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
-    "fastify": "^3.15.1",
-    "fastify-cors": "^6.0.1",
     "graphql": "^15.5.1",
     "hashids": "^2.2.8",
     "ioredis": "^4.27.3",

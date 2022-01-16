@@ -18,6 +18,7 @@ type FaceProps = React.HTMLProps<HTMLDivElement> & {
   appearance?: AppearanceDataFragment
   face: FaceDataFragment
   forceActive: boolean
+  noBackground?: boolean
   label: string
 }
 
@@ -29,6 +30,7 @@ export function Face({
   style,
   forceActive,
   label,
+  noBackground,
 }: FaceProps) {
   const { face: activeFace } = React.useContext(FaceContext)
   const motionId = appearance
@@ -49,7 +51,11 @@ export function Face({
           transition={{
             duration: 0.4,
           }}
-          background="linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.25))"
+          background={
+            noBackground
+              ? "transparent"
+              : "linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.25))"
+          }
           boxShadow="inset 0px 0px 1px 1px rgba(255, 255, 255, 0.3)"
           style={{
             ...style,

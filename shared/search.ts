@@ -5,6 +5,12 @@ import {
 } from "typesense/lib/Typesense/Documents"
 import { SearchClient } from "typesense"
 
+export type ImageThumbnails = {
+  small: string
+  medium: string
+  large: string
+}
+
 export const searchGroupsName = () =>
   process.env.NODE_ENV === "production" ? "groups" : "groups_test"
 
@@ -39,7 +45,7 @@ export const SEARCH_ENGINE_RESULT_PER_PAGE = 6
 
 export const searchIdol = (client: SearchClient) =>
   queryFieldsBy<IndexedPerson>(client, {
-    collection: "people",
+    collection: searchPeopleName(),
     query_by: "aliases,name",
     per_page: SEARCH_ENGINE_RESULT_PER_PAGE,
   })
@@ -76,7 +82,11 @@ export type IndexedPerson = {
   name: string
   age?: number
   aliases: string[]
+  thumbnailSmall?: string
+  thumbnailMedium?: string
+  thumbnailLarge?: string
   preferredAlias?: string
+  preferredGroupName?: string
   // group ids
   groups: number[]
 }

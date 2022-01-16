@@ -62,7 +62,13 @@ type TagProps = {
   disabled?: boolean
 }
 
-function Tag({ text, icon, onClick, tooltip, disabled = false }: TagProps) {
+export function InteractableButton({
+  text,
+  icon,
+  onClick,
+  tooltip,
+  disabled = false,
+}: TagProps) {
   const data = (
     <Button
       alignItems="center"
@@ -151,10 +157,22 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
       />
       <CascadeChildren className="grid gap-4 text-sm">
         <Flex flexFlow="row wrap">
-          <Tag icon={<RiHeartFill />} text="Like" onClick={toggleLike} />
-          <Tag icon={<RiUser3Fill />} text="Edit Faces" onClick={onEdit} />
-          <Tag icon={<RiScan2Line />} text="Scan-image" onClick={reScan} />
-          <Tag
+          <InteractableButton
+            icon={<RiHeartFill />}
+            text="Like"
+            onClick={toggleLike}
+          />
+          <InteractableButton
+            icon={<RiUser3Fill />}
+            text="Edit Faces"
+            onClick={onEdit}
+          />
+          <InteractableButton
+            icon={<RiScan2Line />}
+            text="Scan-image"
+            onClick={reScan}
+          />
+          <InteractableButton
             icon={<RiAlarmWarningLine />}
             disabled={image.reported}
             tooltip="You already reported this image"

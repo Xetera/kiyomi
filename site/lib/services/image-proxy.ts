@@ -1,5 +1,46 @@
+import { ImageThumbnails } from "@/../shared/search"
+import { Routing } from "@/client/routing"
+import { Image, PrismaClient } from "@prisma/client"
 import createHmac from "create-hmac"
 
+export type ImageProxyOptions = {
+  prisma: PrismaClient
+}
+
+export const makeImageProxy = ({}: ImageProxyOptions) => {
+  const imgproxy = new ImgProxy({
+    key: process.env.IMGPROXY_KEY,
+    salt: process.env.IMGPROXY_SALT,
+    url: process.env.IMGPROXY_URL,
+  })
+  return {
+    client: imgproxy,
+    /**
+     * Generates a thumbnail for the given image
+     * IMPORTANT: the imageproxy client must not have an expiry set
+     * as these thumbnails are cached in the search engine for a later date
+     * @param img
+     */
+    thumbnails(img: Image): ImageThumbnails {
+      const base = imgproxy
+        .image(Routing.toRawImage(img))
+        .width(0)
+        .resizeType("fill")
+        .extension("webp")
+      return {
+        small: base.height(350).get(),
+        medium: base.height(500).get(),
+        large: base.height(900).get(),
+      }
+    },
+  }
+}
+
+export type ImageProxyService = ReturnType<typeof makeImageProxy>
+
+/**
+ * Shitty copy paste from another library, I didn't write this code don't get mad at me
+ */
 export class ImgProxy {
   static settings = {
     enlarge: 1,
@@ -96,9 +137,3 @@ export class ImgProxy {
     return `${config.url}/${this.sign(path)}${path}`
   }
 }
-
-export const imgproxy = new ImgProxy({
-  key: process.env.IMGPROXY_KEY,
-  salt: process.env.IMGPROXY_SALT,
-  url: process.env.IMGPROXY_URL,
-})

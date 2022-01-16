@@ -105,22 +105,43 @@ export async function fetchAllImages(
       name: true,
     },
   } as const
+
+  const personFields = {
+    id: true,
+    name: true,
+    preferredMembership: {
+      group: serverGroupFields,
+    },
+    preferredAlias: { name: true },
+    aliases: {
+      name: true,
+    },
+  } as const
+
+  const faceFields = {
+    x: true,
+    y: true,
+    width: true,
+    height: true,
+  }
   console.time("image-refetch")
   const result = await backend.query({
     personImages: [
       { personIds },
       {
-        face: {
-          x: true,
-          y: true,
-          width: true,
-          height: true,
-        },
+        face: faceFields,
         image: {
           id: true,
           slug: true,
           width: true,
           height: true,
+          views: true,
+          appearances: {
+            person: {
+              ...personFields,
+              faces: faceFields,
+            },
+          },
           thumbnail: {
             small: true,
             medium: true,
@@ -128,18 +149,11 @@ export async function fetchAllImages(
           },
         },
         person: {
-          id: true,
-          name: true,
+          ...personFields,
           avatar: {
             thumbnail: {
               large: true,
             },
-          },
-          aliases: {
-            name: true,
-          },
-          preferredMembership: {
-            group: serverGroupFields,
           },
           memberOf: {
             group: serverGroupFields,
@@ -150,6 +164,17 @@ export async function fetchAllImages(
   })
   console.timeEnd("image-refetch")
   return result.personImages.map((res) => ({
+    people: res.image.appearances.map((app) => ({
+      person: {
+        id: app.person.id,
+        name: app.person.name,
+        preferredAlias: app.person.preferredAlias?.name,
+        preferredGroupName: app.person.preferredMembership?.group.name,
+        image: "",
+        aliases: app.person.aliases.map((alias) => alias.name),
+      },
+      faces: app.person.faces,
+    })),
     image: res.image,
     face: res.face,
     answer: res.person,

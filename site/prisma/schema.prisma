@@ -117,26 +117,28 @@ model Alias {
 }
 
 model Person {
-  id                    Int           @id @default(autoincrement())
+  id                    Int                 @id @default(autoincrement())
   description           String?
   name                  String
-  preferredAliasId      Int?          @unique(map: "persons.preferred_alias_id_unique") @map("preferred_alias_id")
-  createdAt             DateTime      @default(now()) @map("created_at")
-  updatedAt             DateTime      @default(now()) @updatedAt @map("updated_at")
-  ireneBotId            Int?          @unique(map: "persons.irene_bot_id_unique") @map("irene_bot_id")
-  preferredMembershipId Int?          @map("preferred_membership_id")
-  bannerId              Int?          @unique(map: "persons.banner_id_unique") @map("banner_id")
-  avatarId              Int?          @unique(map: "persons.avatar_id_unique") @map("avatar_id")
-  birthDate             DateTime?     @map("birth_date")
+  preferredAliasId      Int?                @unique(map: "persons.preferred_alias_id_unique") @map("preferred_alias_id")
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @default(now()) @updatedAt @map("updated_at")
+  ireneBotId            Int?                @unique(map: "persons.irene_bot_id_unique") @map("irene_bot_id")
+  preferredMembershipId Int?                @map("preferred_membership_id")
+  bannerId              Int?                @unique(map: "persons.banner_id_unique") @map("banner_id")
+  avatarId              Int?                @unique(map: "persons.avatar_id_unique") @map("avatar_id")
+  birthDate             DateTime?           @map("birth_date")
   gender                Gender?
-  avatar                Image?        @relation("person_avatar", fields: [avatarId], references: [id])
-  banner                Image?        @relation("person_banner", fields: [bannerId], references: [id], onUpdate: SetNull)
-  preferredAlias        Alias?        @relation("preferred_alias", fields: [preferredAliasId], references: [id])
-  preferredMembership   GroupMember?  @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
+  avatar                Image?              @relation("person_avatar", fields: [avatarId], references: [id])
+  banner                Image?              @relation("person_banner", fields: [bannerId], references: [id], onUpdate: SetNull)
+  preferredAlias        Alias?              @relation("preferred_alias", fields: [preferredAliasId], references: [id])
+  preferredMembership   GroupMember?        @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
   aliases               Alias[]
   appearances           Appearance[]
-  appearsIn             Face[]        @relation("face_person")
+  appearsIn             Face[]              @relation("face_person")
   memberOf              GroupMember[]
+  guessingGameAnswers   GuessingGameGuess[] @relation("guessing_game_person_answer")
+  guessingGameGuesses   GuessingGameGuess[] @relation("guessing_game_person_guess")
 
   @@index([name], map: "person.name.index")
   @@map("persons")
@@ -239,6 +241,8 @@ model User {
   restrictions           UserRestriction[]     @relation("restricted_user")
   reportedImages         ImageReport[]         @relation("image_reporter")
   actionedReportedImages ImageReport[]         @relation("image_report_actioner")
+  guessingGamesHosted    GuessingGame[]        @relation("guessing_game_owner")
+  guessingGameGuesses GuessingGameGuess[]
 
   @@index([token], map: "user.token.index")
   @@map("users")
@@ -485,6 +489,70 @@ enum ImageReportAction {
   HIDE_IMAGE
   RESTRICT_USER
   OTHER
+}
+
+model GuessingGame {
+  id              Int               @id @default(autoincrement())
+  name            String
+  secondsPerRound Int               @map("seconds_per_round")
+  ownerId         Int               @map("owner_id")
+  owner           User              @relation("guessing_game_owner", fields: [ownerId], references: [id])
+  hints           GuessingGameHints @default(POINT_COST)
+  startDate       DateTime          @map("start_date")
+  finishDate      DateTime          @map("finish_date")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
+  rounds GuessingGameRound[]
+
+  @@map("guessing_game")
+}
+
+model GuessingGameParticipant {
+  @@map("guessing_game_participant")
+}
+
+model GuessingGameRound {
+  id              Int          @id @default(autoincrement())
+  gameId          Int          @map("game_id")
+  game            GuessingGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  correctPersonId Int
+  startDate       DateTime     @map("start_date")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @default(now()) @updatedAt @map("updated_at")
+  guesses         GuessingGameGuess[]
+
+  @@map("guessing_game_rounds")
+}
+
+model GuessingGameGuess {
+  id             Int               @id @default(autoincrement())
+  roundId        Int               @map("round_id")
+  round          GuessingGameRound @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  // If we want to delete a person, the guesses need to be manually deleted as they
+  // will be contributing to XP gain
+  personGuessId  Int               @map("person_guess_id")
+  personGuess    Person            @relation("guessing_game_person_guess", fields: [personGuessId], references: [id], onDelete: Restrict)
+  // same with guesses, a correct answer should never be deleted
+  personAnswerId Int               @map("person_answer_id")
+  personAnswer   Person            @relation("guessing_game_person_answer", fields: [personAnswerId], references: [id], onDelete: Restrict)
+  // we want this to be nullable for if users delete their accounts
+  // the data should still remain accessible
+  userId         Int?              @map("user_id")
+  user           User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  // guess date is different
+  guessedAt      DateTime
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @default(now()) @updatedAt @map("updated_at")
+
+  @@index([roundId], name: "guessingGameGuessRound")
+  @@map("guessing_game_guesses")
+}
+
+enum GuessingGameHints {
+  ALWAYS_ON
+  POINT_COST
+  LIMITED
+  DISABLED
 }
 
 enum Gender {

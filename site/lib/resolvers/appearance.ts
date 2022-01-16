@@ -1,4 +1,6 @@
-import { objectType, intArg, mutationField, nonNull, booleanArg } from "nexus"
+import { intArg, mutationField, nonNull, objectType } from "nexus"
+import { GraphqlAuth } from "@/lib/auth"
+import { Role } from "@/lib/permissions"
 
 export const Appearance = objectType({
   name: "Appearance",
@@ -43,6 +45,7 @@ export const Mutation = mutationField((t) => {
       faceId: nonNull(intArg()),
       appearanceId: nonNull(intArg()),
     },
+    authorize: GraphqlAuth.hasRole([Role.Editor]),
     async resolve(_, args, { prisma }) {
       const face = await prisma.face.update({
         where: { id: args.faceId },

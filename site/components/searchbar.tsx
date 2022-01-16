@@ -2,6 +2,7 @@ import {
   forwardRef,
   InputGroup,
   InputLeftAddon,
+  InputLeftElement,
   InputRightAddon,
   Spinner,
 } from "@chakra-ui/react"
@@ -19,6 +20,7 @@ type SearchProps = {
   hasClearButton?: boolean
   onEnter?: () => void
   debounceTime?: number
+  autoFocus?: boolean
   placeholder: string
 }
 
@@ -32,6 +34,7 @@ export const Search = forwardRef<SearchProps, "div">((props, ref) => {
     placeholder,
     onEnter,
     onSearch,
+    autoFocus = false,
     ...rest
   } = props
 
@@ -40,12 +43,17 @@ export const Search = forwardRef<SearchProps, "div">((props, ref) => {
   return (
     <Flex {...rest} ref={ref}>
       <InputGroup>
-        <InputLeftAddon background="bgPrimary" color="gray.400">
+        <InputLeftElement
+          background="bgPrimary"
+          color="gray.400"
+          display={{ base: "none", lg: "flex" }}
+        >
           {searching ? <Spinner size="sm" /> : <RiSearch2Line />}
-        </InputLeftAddon>
+        </InputLeftElement>
         <Input
           borderColor="borderSubtle"
           value={search}
+          autoFocus={autoFocus}
           placeholder={placeholder}
           onKeyPress={(e) => {
             if (e.key === "Enter") {

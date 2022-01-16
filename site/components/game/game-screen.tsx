@@ -1,18 +1,16 @@
-import { Flex, Grid, Heading, Text } from "@chakra-ui/layout"
+import { Flex, Grid, Text } from "@chakra-ui/layout"
 import { useSelector } from "@/hooks/useSelector"
-import { Button, forwardRef, Image, Kbd, Progress } from "@chakra-ui/react"
 import { motion } from "framer-motion"
 import { useCountdown } from "@/hooks/game"
 import pick from "lodash/pick"
-import { Search } from "@/components/searchbar"
 import React from "react"
-import { store } from "@/models/store"
-import { GameServerContext } from "@/models/contexts"
-import { useTween } from "react-use"
 import { Face, ImageWithFaces } from "../image-display"
-import { useDispatch } from "react-redux"
 import { RoundCountdown } from "@/components/game/guessing-game/round-countdown"
 import { GameBody } from "@/components/game/guessing-game/game-body"
+import { Link, Stack } from "@chakra-ui/react"
+import { InteractableButton } from "@/components/image/image-sidebar"
+import { RiAlarmWarningLine, RiHeartFill, RiImage2Line } from "react-icons/ri"
+import { Routing } from "@/client/routing"
 
 const MotionFlex = motion(Flex)
 
@@ -35,17 +33,36 @@ export default function GameScreen() {
   }
   const { image } = round
   return (
-    <Flex
+    <Grid
       flex={1}
+      maxW="1500px"
+      mx="auto"
+      h="full"
+      gridTemplateAreas={["'game' 'sidebar'", null, null, "'sidebar game'"]}
+      gridTemplateColumns={["1fr", null, null, "2fr 3fr", "2fr 4fr"]}
       justifyContent="flex-start"
       alignItems="center"
-      flexFlow="column"
+      flexFlow="row"
     >
       <Flex
-        flexFlow="column"
-        height={["min-content", null, null, "auto"]}
-        p={[3, null, 4, null, 6]}
+        borderLeftWidth="1px"
+        borderRightWidth="1px"
+        borderColor="borderSubtle"
+        height="100%"
+        width="100%"
+        gridArea="sidebar"
         justifyContent="center"
+      >
+        <GameBody />
+      </Flex>
+      <Flex
+        flexFlow="column"
+        height="100%"
+        borderRightWidth="1px"
+        borderColor="borderSubtle"
+        gridArea="game"
+        // p={[3, null, 4, null, 6]}
+        justifyContent="flex-start"
         alignItems="center"
       >
         <ImageWithFaces
@@ -54,8 +71,13 @@ export default function GameScreen() {
             <>
               {image.faces.map((face) => (
                 <Face
+                  noBackground
                   key={`${face.x}-${face.y}-${face.width}-${face.height}`}
-                  label="Who is this?"
+                  label={
+                    round && round.state.type === "waitingForNextRound"
+                      ? round.state.correctAnswer.name
+                      : "Who is this?"
+                  }
                   forceActive
                   face={face}
                   style={{
@@ -70,36 +92,67 @@ export default function GameScreen() {
             </>
           )}
         />
+        <Flex justifyContent="flex-start" height="2px" width="100%">
+          <RoundCountdown />
+        </Flex>
+        <Flex
+          minHeight="30px"
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
+          position="static"
+          top={0}
+          background="bgPrimary"
+          zIndex={2}
+          borderBottomWidth="1px"
+          borderColor="borderSubtle"
+          fontSize="sm"
+        >
+          {answers && round.state.type === "waitingForNextRound" && (
+            <NextRoundCountdown seconds={round.state.waitSeconds} />
+          )}
+        </Flex>
+        <Flex
+          pt={3}
+          pb={1}
+          direction="row"
+          spacing={0}
+          borderBottomWidth="1px"
+          borderColor="borderSubtle"
+          w="full"
+          justify="center"
+          flexFlow="row wrap"
+        >
+          <InteractableButton
+            icon={<RiHeartFill />}
+            text="Like"
+            onClick={() => {}}
+          />
+          <Link
+            href={Routing.toImage(
+              round.state.type === "waitingForNextRound"
+                ? round.state.imageSlug
+                : "#"
+            )}
+            textDecoration="none !important"
+            target="_blank"
+          >
+            <InteractableButton
+              icon={<RiImage2Line />}
+              disabled={round.state.type !== "waitingForNextRound"}
+              onClick={() => {}}
+              text="View Image"
+            />
+          </Link>
+          <InteractableButton
+            icon={<RiAlarmWarningLine />}
+            disabled={false}
+            tooltip="You already reported this image"
+            text="Report"
+            onClick={() => {}}
+          />
+        </Flex>
       </Flex>
-      <Flex justifyContent="flex-start" height="2px" width="100%">
-        <RoundCountdown />
-      </Flex>
-      <Flex
-        minHeight="30px"
-        width="100%"
-        justifyContent="center"
-        alignItems="center"
-        position="static"
-        top={0}
-        background="bgPrimary"
-        zIndex={2}
-        borderBottomWidth="1px"
-        borderColor="borderSubtle"
-        fontSize="sm"
-      >
-        {answers && round.state.type === "waitingForNextRound" && (
-          <NextRoundCountdown seconds={round.state.waitSeconds} />
-        )}
-      </Flex>
-      <Flex
-        height="100%"
-        width="100%"
-        justifyContent="center"
-        p={6}
-        maxWidth="600px"
-      >
-        <GameBody />
-      </Flex>
-    </Flex>
+    </Grid>
   )
 }

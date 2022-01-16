@@ -163,6 +163,7 @@ export const Navbar = forwardRef(({ ...rest }, ref) => {
   return (
     <HStack
       as="nav"
+      height={16}
       position="absolute"
       zIndex={10}
       alignItems="center"
@@ -297,11 +298,11 @@ export const Navbar = forwardRef(({ ...rest }, ref) => {
 
 export function WithNavbar(props: PropsWithChildren<{ noSpace?: boolean }>) {
   return (
-    <Flex w="full">
+    <Flex w="full" h="full" flex="1">
       <Navbar borderBottomWidth={props.noSpace ? "0px" : "1px"} />
-      <Box w="full" pt={props.noSpace ? 0 : 16}>
+      <Flex w="full" pt={props.noSpace ? 0 : 16} alignItems="flex-start">
         {props.children}
-      </Box>
+      </Flex>
     </Flex>
   )
 }

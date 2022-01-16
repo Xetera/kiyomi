@@ -2,7 +2,6 @@ import React, { useRef } from "react"
 import ImageDisplay from "@/components/image-display"
 import ImageSidebar from "@/components/image/image-sidebar"
 import { FaceContext, ImageContext } from "@/models/contexts"
-import { Footer } from "@/components/footer"
 import { WithNavbar } from "@/components/navbar"
 import NextHead from "next/head"
 import { RiAlarmWarningLine, RiSpyLine } from "react-icons/ri"
@@ -201,7 +200,6 @@ const Image = () => {
               </Box>
             </Flex>
           </WithSidebar>
-          <Footer />
           <Modal
             isOpen={isEditOpen}
             closeOnEsc
