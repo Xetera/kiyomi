@@ -507,9 +507,9 @@ model GuessingGame {
   @@map("guessing_game")
 }
 
-model GuessingGameParticipant {
-  @@map("guessing_game_participant")
-}
+//model GuessingGameParticipant {
+//  @@map("guessing_game_participant")
+//}
 
 model GuessingGameRound {
   id              Int          @id @default(autoincrement())

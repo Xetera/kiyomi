@@ -7,8 +7,6 @@ import { useInterval } from "@chakra-ui/react"
 import useToast from "@/hooks/useToast"
 import { useRouter } from "next/router"
 
-export type GameServerGatewayProps = {}
-
 const ServerConnection = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter()
   const info = useToast("info")
@@ -41,9 +39,9 @@ const ServerConnection = ({ children }: PropsWithChildren<{}>) => {
       if (!router.pathname.startsWith("/game")) {
         return false
       }
-      warning({
-        description: `Connection lost to the game servers, attempting to reconnect...`,
-      })
+      // warning({
+      //   description: `Connection lost to the game servers, attempting to reconnect...`,
+      // })
       return true
     },
     reconnectAttempts: 5,
