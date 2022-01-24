@@ -2,7 +2,7 @@ import { extendTheme, VStack } from "@chakra-ui/react"
 import { createBreakpoints } from "@chakra-ui/theme-tools"
 
 const fontFamily = `
-  "Inter",
+  "Lexend Deca",
   system-ui,
   -apple-system,
   'Segoe UI',

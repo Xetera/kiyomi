@@ -94,8 +94,8 @@ const Answers = forwardRef((props, ref) => {
 export const GameBody = () => {
   const hintedGroupName = useSelector((root) => root.game?.hintedGroupName)
   const round = useSelector((root) => root.game?.round)
-  const seats = useSelector((root) => root.game?.room?.seats)
-  const answers = useSelector((root) => root.game?.answers)
+  // const seats = useSelector((root) => root.game?.room?.seats)
+  // const answers = useSelector((root) => root.game?.answers)
 
   return (
     <Flex position="relative" height="min-content" flex={1} p={6} w="full">

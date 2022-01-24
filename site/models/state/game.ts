@@ -51,6 +51,7 @@ export type GameState = {
   lobbySearchQuery: string
   searchingGroup: boolean
   loadingImageCount: boolean
+  imageSlug?: string
   round?: ClientRound
   hintedGroupName?: string
   searchResult: Record<number, PartialSearchResult>
@@ -198,13 +199,17 @@ export const gameModel = createModel<RootModel>()({
       state.hintedGroupName = groupName
       return state
     },
+    prepareImage(state, newState: ClientRound) {
+      state.round = newState
+      return state
+    },
     setRound(state, clientRound: ClientRound) {
       const startDate = new Date()
       state.hintedGroupName = undefined
       state.round = clientRound
       state.roundBoundaries = {
         startDate,
-        endDate: add(startDate, { seconds: clientRound.secs }),
+        endDate: add(startDate, { seconds: state.room!.secondsPerRound }),
       }
       return state
     },
@@ -314,6 +319,8 @@ export const gameModel = createModel<RootModel>()({
               description: "Poke mods in the Discord server about this, sorry",
             })
           }
+        } else if (message.t === "image_prepare") {
+          dispatch.game.prepareImage(message.round)
         }
       },
       async searchIdol(q: string) {

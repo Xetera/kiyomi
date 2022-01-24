@@ -1,5 +1,6 @@
 import { WithNavbar } from "@/components/navbar"
 import { useRouter } from "next/router"
+import { Image } from "@chakra-ui/react"
 import React from "react"
 import { GameServerContext } from "@/models/contexts"
 import GameSetup from "@/components/game/game-setup"
@@ -11,7 +12,7 @@ import { useSelector } from "@/hooks/useSelector"
 export default function GameRoom() {
   const { send } = React.useContext(GameServerContext)
   const router = useRouter()
-  const seats = useSelector((root) => root.game.room?.seats)
+  const state = useSelector((root) => root.game.room?.state)
   const started = useSelector((root) => root.game.room?.started)
   const starting = useSelector((root) => root.game.countingDown)
   useLeaveRoomOnUnMount()

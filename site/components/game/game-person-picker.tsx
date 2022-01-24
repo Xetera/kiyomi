@@ -3,22 +3,23 @@ import { RootState, store } from "@/models/store"
 import {
   Checkbox,
   forwardRef,
+  Image,
+  Skeleton,
   SkeletonText,
   Spinner,
-  Image,
-  Box,
-  Skeleton,
-  SkeletonCircle,
 } from "@chakra-ui/react"
 import { GameServerContext } from "@/models/contexts"
 import React, { useCallback, useMemo } from "react"
 import { PartialSearchResult } from "../../../shared/game"
 import { Search } from "@/components/searchbar"
 import { useSelector } from "@/hooks/useSelector"
+import { personPreferredName } from "@/client/data/person-mappers"
+import { Portrait } from "@/components/portrait"
 
 interface GamePersonPickerParams {
   disabled: boolean
 }
+
 const PersonSearch = forwardRef((props, ref) => {
   const search = useSelector((root) => root.game.lobbySearchQuery)
   const onSearch = useCallback((val: string) => {
@@ -82,11 +83,15 @@ const GroupCluster = React.memo(
           <Flex flexFlow="column">
             <Heading fontSize="md">{group.name}</Heading>
             <Text fontSize="xs" color="gray.500" textTransform="uppercase">
-              placeholder data
+              Click to select all members
             </Text>
           </Flex>
         </Flex>
-        <Box>
+        <Grid
+          gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+          flexFlow="row wrap"
+          w="full"
+        >
           {!members && (
             <Stack isLoaded={Boolean(members)} py={1} px={10}>
               {[...Array(5)].map(() => (
@@ -108,44 +113,39 @@ const GroupCluster = React.memo(
                 <Flex
                   as="label"
                   alignItems="center"
+                  justifyContent="center"
                   background={checked ? "bgSecondary" : "inherit"}
                   htmlFor={`person-check-${person.id}`}
                   px={3}
                   py={2}
-                  width="100%"
                 >
-                  <Checkbox
-                    id={`person-check-${person.id}`}
-                    // size="sm"
-                    mr={3}
-                    onChange={() => checkMembers?.([Number(person.id)])}
-                    isDisabled={disabled}
-                    isChecked={checked}
-                  />
-                  <Image
-                    src="https://placewaifu.com/image/31/31"
-                    background="bgSecondary"
-                    height="30px"
-                    width="30px"
-                    borderRadius="md"
-                    mr={3}
-                  />
-                  <Flex flexFlow="column">
-                    <Flex fontSize="sm" color="gray.300">
-                      {person.name}
-                    </Flex>
-                    <Flex color="gray.500" fontSize="xs" flexWrap="wrap">
-                      {person.aliases.map((alias) => (
-                        <Text key={alias} mr={1} whiteSpace="nowrap">
-                          {alias}
+                  <Portrait
+                    opacity={checked ? 1 : 0.4}
+                    width="190px"
+                    height="200px"
+                    name={
+                      <Flex alignItems="center">
+                        <Checkbox
+                          id={`person-check-${person.id}`}
+                          mr={3}
+                          onChange={() => checkMembers?.([Number(person.id)])}
+                          isDisabled={disabled}
+                          isChecked={checked}
+                        />
+                        <Text>
+                          {personPreferredName({
+                            name: person.name,
+                            preferredAlias: { name: person.preferredAlias },
+                          })}
                         </Text>
-                      ))}
-                    </Flex>
-                  </Flex>
+                      </Flex>
+                    }
+                    src={person.thumbnailSmall}
+                  />
                 </Flex>
               )
             })}
-        </Box>
+        </Grid>
         {!members && <Spinner />}
       </Flex>
     )
@@ -177,20 +177,11 @@ export default function GamePersonPicker({ disabled }: GamePersonPickerParams) {
   function checkMembers(personIds: number[]) {
     send({ t: "toggle_people", people: personIds })
   }
+
   return (
     <Flex flexFlow="column">
       {!disabled && <PersonSearch mb={4} disabled={disabled} />}
-      <Grid
-        gridTemplateColumns={[
-          "1fr",
-          null,
-          null,
-          "1fr 1fr",
-          null,
-          "1fr 1fr 1fr",
-        ]}
-        gap={6}
-      >
+      <Grid gridTemplateColumns={["1fr", null, "1fr 1fr"]} gap={6}>
         {!disabled &&
           searchQuery !== "" &&
           results.map(({ group, members }) => {

@@ -43,13 +43,13 @@ export const Search = forwardRef<SearchProps, "div">((props, ref) => {
   return (
     <Flex {...rest} ref={ref}>
       <InputGroup>
-        <InputLeftElement
+        <InputLeftAddon
           background="bgPrimary"
           color="gray.400"
           display={{ base: "none", lg: "flex" }}
         >
           {searching ? <Spinner size="sm" /> : <RiSearch2Line />}
-        </InputLeftElement>
+        </InputLeftAddon>
         <Input
           borderColor="borderSubtle"
           value={search}

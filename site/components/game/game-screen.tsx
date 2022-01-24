@@ -3,14 +3,16 @@ import { useSelector } from "@/hooks/useSelector"
 import { motion } from "framer-motion"
 import { useCountdown } from "@/hooks/game"
 import pick from "lodash/pick"
-import React from "react"
+import React, { useContext } from "react"
 import { Face, ImageWithFaces } from "../image-display"
 import { RoundCountdown } from "@/components/game/guessing-game/round-countdown"
 import { GameBody } from "@/components/game/guessing-game/game-body"
-import { Link, Stack } from "@chakra-ui/react"
+import { Link } from "@chakra-ui/react"
 import { InteractableButton } from "@/components/image/image-sidebar"
 import { RiAlarmWarningLine, RiHeartFill, RiImage2Line } from "react-icons/ri"
 import { Routing } from "@/client/routing"
+import { GameServerContext } from "@/models/contexts"
+import { useSet } from "react-use"
 
 const MotionFlex = motion(Flex)
 
@@ -24,14 +26,28 @@ function NextRoundCountdown({ seconds: _sec }: { seconds: number }) {
 }
 
 export default function GameScreen() {
+  const { send } = useContext(GameServerContext)
   const { round, answers } = useSelector((r) =>
     pick(r.game, ["round", "answers"])
   )
+  const [sent, { add }] = useSet()
 
-  if (!round) {
-    return null
+  function onImageLoad() {
+    if (!round) {
+      return
+    }
+    if (sent.has(round.number)) {
+      return
+    }
+    add(round.number)
+    send({ t: "image_load" })
   }
-  const { image } = round
+
+  const roundImage =
+    round?.state.type === "loadingImages"
+      ? { url: round.state.imageUrl }
+      : round?.image
+  console.log({ roundImage, state: round?.state })
   return (
     <Grid
       flex={1}
@@ -65,33 +81,52 @@ export default function GameScreen() {
         justifyContent="flex-start"
         alignItems="center"
       >
-        <ImageWithFaces
-          image={image}
-          faces={(imageSize) => (
-            <>
-              {image.faces.map((face) => (
-                <Face
-                  noBackground
-                  key={`${face.x}-${face.y}-${face.width}-${face.height}`}
-                  label={
-                    round && round.state.type === "waitingForNextRound"
-                      ? round.state.correctAnswer.name
-                      : "Who is this?"
-                  }
-                  forceActive
-                  face={face}
-                  style={{
-                    left: (face.x * imageSize.width) / (image?.width ?? 1),
-                    top: (face.y * imageSize.height) / (image?.height ?? 1),
-                    width: (face.width * imageSize.width) / (image?.width ?? 1),
-                    height:
-                      (face.height * imageSize.height) / (image?.height ?? 1),
-                  }}
-                />
-              ))}
-            </>
-          )}
-        />
+        {roundImage && (
+          <ImageWithFaces
+            key={roundImage.url}
+            blurred={round?.state.type === "loadingImages"}
+            onLoad={onImageLoad}
+            image={roundImage}
+            faces={(imageSize) => (
+              <>
+                {round?.image.type === "fullImage" &&
+                  round.image.faces.map((face) => {
+                    if (round.image.type !== "fullImage") {
+                      // idk why I have to do this lol
+                      return null
+                    }
+                    return (
+                      <Face
+                        noBackground
+                        key={`${face.x}-${face.y}-${face.width}-${face.height}`}
+                        label={
+                          round && round.state.type === "waitingForNextRound"
+                            ? round.state.correctAnswer.name
+                            : "Who is this?"
+                        }
+                        forceActive
+                        face={face}
+                        style={{
+                          left:
+                            (face.x * imageSize.width) /
+                            (round.image.width ?? 1),
+                          top:
+                            (face.y * imageSize.height) /
+                            (round.image.height ?? 1),
+                          width:
+                            (face.width * imageSize.width) /
+                            (round.image.width ?? 1),
+                          height:
+                            (face.height * imageSize.height) /
+                            (round.image.height ?? 1),
+                        }}
+                      />
+                    )
+                  })}
+              </>
+            )}
+          />
+        )}
         <Flex justifyContent="flex-start" height="2px" width="100%">
           <RoundCountdown />
         </Flex>
@@ -108,7 +143,7 @@ export default function GameScreen() {
           borderColor="borderSubtle"
           fontSize="sm"
         >
-          {answers && round.state.type === "waitingForNextRound" && (
+          {answers && round?.state.type === "waitingForNextRound" && (
             <NextRoundCountdown seconds={round.state.waitSeconds} />
           )}
         </Flex>
@@ -128,22 +163,24 @@ export default function GameScreen() {
             text="Like"
             onClick={() => {}}
           />
-          <Link
-            href={Routing.toImage(
-              round.state.type === "waitingForNextRound"
-                ? round.state.imageSlug
-                : "#"
-            )}
-            textDecoration="none !important"
-            target="_blank"
-          >
-            <InteractableButton
-              icon={<RiImage2Line />}
-              disabled={round.state.type !== "waitingForNextRound"}
-              onClick={() => {}}
-              text="View Image"
-            />
-          </Link>
+          {round && (
+            <Link
+              href={Routing.toImage(
+                round.state.type === "waitingForNextRound"
+                  ? round.state.imageSlug
+                  : "#"
+              )}
+              textDecoration="none !important"
+              target="_blank"
+            >
+              <InteractableButton
+                icon={<RiImage2Line />}
+                disabled={round.state.type !== "waitingForNextRound"}
+                onClick={() => {}}
+                text="View Image"
+              />
+            </Link>
+          )}
           <InteractableButton
             icon={<RiAlarmWarningLine />}
             disabled={false}

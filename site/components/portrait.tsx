@@ -38,12 +38,14 @@ export const Portrait = forwardRef<PortraitProps, "div">(
           cursor="pointer"
           background="black"
           onClick={onClick}
+          mb={2}
         >
           <Image
             objectFit="cover"
             objectPosition={objectPosition}
             h="full"
             w="full"
+            overflow="hidden"
             src={
               src ?? "https://placewaifu.com/image/250/320"
               // trend.avatar

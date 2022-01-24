@@ -85,9 +85,10 @@ function HomeContent() {
   }
 
   return (
-    <>
+    <VStack w="full" alignItems="center">
       <Box
         position="relative"
+        w="full"
         mb={3}
         height={["30vh", "40vh", "55vh", "65vh"]}
         display="flex"
@@ -112,11 +113,11 @@ function HomeContent() {
         <Flex
           position="relative"
           maxWidth="7xl"
-          width="100%"
           mx="auto"
           justifyContent="center"
           alignItems="flex-end"
           px={4}
+          w="full"
         >
           <Box flexDirection="column" width="100%">
             <Flex
@@ -164,7 +165,8 @@ function HomeContent() {
       <VStack
         as="section"
         maxW="7xl"
-        mx="auto"
+        w="full"
+        margin="0 auto"
         px={5}
         p={4}
         alignItems="flex-start"
@@ -205,6 +207,7 @@ function HomeContent() {
       <Flex
         position="relative"
         flex={1}
+        w="full"
         flexDir="row"
         justifyContent="center"
         className="relative flex-1 flex-row flex justify-center"
@@ -230,7 +233,7 @@ function HomeContent() {
       <Box height="800px">
         <Waypoint onEnter={loadMore} topOffset="-1500px" />
       </Box>
-    </>
+    </VStack>
   )
 }
 

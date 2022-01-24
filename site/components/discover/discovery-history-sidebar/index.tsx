@@ -32,7 +32,7 @@ export const DiscoveryHistorySidebar = () => {
                   highlight={isMe}
                   username={stat.user.name ?? undefined}
                   xp={stat.xp ?? undefined}
-                  avatar={stat.user.image ?? undefined}
+                  avatar={stat.user.avatar ?? undefined}
                   avatarSize={12}
                   bot={stat.user.bot}
                   right={

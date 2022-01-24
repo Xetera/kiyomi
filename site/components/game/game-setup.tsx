@@ -1,14 +1,9 @@
-import { RootState } from "@/models/store"
 import { Box, Flex, Grid, Heading, Text } from "@chakra-ui/layout"
 import { gameType, Hints } from "../../../shared/game"
 import { z } from "zod"
 import {
   Button,
   forwardRef,
-  HStack,
-  InputGroup,
-  InputLeftElement,
-  InputRightElement,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -19,13 +14,11 @@ import {
   Spinner,
   VStack,
 } from "@chakra-ui/react"
-import { Input } from "@chakra-ui/input"
 import { useSession } from "next-auth/client"
 import GamePersonPicker from "@/components/game/game-person-picker"
 import { GameServerContext } from "@/models/contexts"
-import React, { ReactElement, ReactNode } from "react"
+import React, { ReactNode } from "react"
 import Hr from "@/components/hr"
-import isEqual from "react-fast-compare"
 import pick from "lodash/pick"
 import { useSelector } from "@/hooks/useSelector"
 
@@ -222,6 +215,7 @@ export default function GameSetup() {
       send({ t: "pick_time", seconds })
     })
   }
+
   const singleRow = ["1", null, null, "1 / 3"]
 
   function startGame() {

@@ -6,7 +6,6 @@ import { FaCompress, FaExpand } from "react-icons/fa"
 import {
   AppearanceDataFragment,
   FaceDataFragment,
-  ImageDataFragment,
 } from "@/lib/__generated__/graphql"
 import { Box, Flex, Image, Link } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/layout"
@@ -91,15 +90,22 @@ export function Face({
 }
 
 export type ImageWithFacesProps = {
+  blurred?: boolean
+  onLoad?: () => void
   image: {
     url: string
-    width: number
-    height: number
+    width?: number
+    height?: number
   }
   faces(rect: DOMRect): React.ReactElement
 }
 
-export function ImageWithFaces({ image, faces }: ImageWithFacesProps) {
+export const ImageWithFaces = ({
+  image,
+  faces,
+  onLoad,
+  blurred,
+}: ImageWithFacesProps) => {
   // const image = React.useContext(ImageContext)
   const imageRef = React.useRef<HTMLImageElement | null>()
   const parentRef = React.useRef<HTMLDivElement | null>()
@@ -181,6 +187,7 @@ export function ImageWithFaces({ image, faces }: ImageWithFacesProps) {
           const img = input
 
           const updateFunc = () => {
+            onLoad?.()
             setLoaded(true)
           }
           img.onload = () => {
@@ -197,14 +204,15 @@ export function ImageWithFaces({ image, faces }: ImageWithFacesProps) {
         }}
         src={image.url}
         {...(loaded ? {} : { width: image.width })}
-        height={image.height!}
-        flexBasis={image.width! <= 1200 ? image.width! : "100%"}
+        height={image.height ?? "100%"}
+        flexBasis={image.width && image.width <= 1200 ? image.width : "100%"}
         maxHeight="100%"
         display="flex"
         objectFit="contain"
         overflow="hidden"
         m="auto"
         borderRadius="md"
+        filter={blurred ? "blur(8px)" : "blur(0px)"}
       />
     </Box>
   )

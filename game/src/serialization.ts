@@ -15,7 +15,7 @@ import {
   ClientSeat,
 } from "../../shared/game"
 import { fromPersonIds } from "./query"
-import { DEFAULT_START_TIMEOUT } from "./index"
+import { DEFAULT_START_TIMEOUT } from "./config"
 
 export function serializePlayer(player: Player): ClientPlayer {
   const { username, id, image } = player
@@ -49,10 +49,14 @@ export function serializeSeat(seat: Seat, room: Room): ClientSeat {
   }
 }
 
-export function serializeImage({ image, face }: GuessingPrompt): ClientImage {
-  console.log(image)
+export const promptImageUrl = ({ image }: GuessingPrompt) =>
+  image.thumbnail.large
+
+export function serializeImage(prompt: GuessingPrompt): ClientImage {
+  const { image, face } = prompt
   return {
-    url: image.thumbnail.large,
+    type: "fullImage",
+    url: promptImageUrl(prompt),
     width: image.width,
     height: image.height,
     // could have more images later on
@@ -93,5 +97,16 @@ export function serializePerson(person: ServerPerson): ClientPerson {
     preferredGroupName: (person.preferredMembership ?? firstMembership)?.group
       .name,
     preferredAlias: person.preferredAlias?.name,
+  }
+}
+
+export function serializeRound(room: Room, image: ClientImage) {
+  return {
+    state: room.state,
+    number: room.round,
+    image,
+    scores: Object.fromEntries(
+      Array.from(room.seats.values(), (seat) => [seat.player.id, seat.score])
+    ),
   }
 }

@@ -17,4 +17,9 @@ export const topics = {
    * Changes to a specific room
    */
   room: (roomId: string) => `room/${roomId}` as Topic,
+  roomSubEvents: (roomId: string) => `room/${roomId}/#` as Topic,
+  /**
+   * Prepare loading the image before answering
+   */
+  prepareImages: (roomId: string) => `room/${roomId}/imageLoad`,
 }

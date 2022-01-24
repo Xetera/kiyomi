@@ -139,6 +139,7 @@ export type Seat = {
   player: Player
   owner: boolean
   hintUsed: boolean
+  imageLoaded: boolean
   readonly answered: boolean
   readonly score: number
 }
@@ -181,6 +182,7 @@ export type Room = {
   maxRounds: number
   deleteTimer?: number
   endingTimeout?: ReturnType<typeof setTimeout>
+  imagePrepareTimeout?: ReturnType<typeof setTimeout>
   correctAnswer: number
   // personChoice: number[]
   // groupPool: Group[]

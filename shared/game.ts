@@ -34,20 +34,27 @@ export const revealedPerson = z.object({
 
 export type RevealedPerson = z.infer<typeof revealedPerson>
 
-const clientImage = z.object({
-  url: z.string(),
-  width: z.number(),
-  height: z.number(),
-  faces: z.array(
-    z.object({
-      id: z.number(),
-      x: z.number(),
-      y: z.number(),
-      width: z.number(),
-      height: z.number(),
-    })
-  ),
-})
+const clientImage = z.union([
+  z.object({
+    type: z.literal("fullImage"),
+    url: z.string(),
+    width: z.number(),
+    height: z.number(),
+    faces: z.array(
+      z.object({
+        id: z.number(),
+        x: z.number(),
+        y: z.number(),
+        width: z.number(),
+        height: z.number(),
+      })
+    ),
+  }),
+  z.object({
+    type: z.literal("imageHint"),
+    url: z.string(),
+  }),
+])
 
 export type ClientImage = z.infer<typeof clientImage>
 
@@ -76,6 +83,9 @@ export type ClientRoomPreview = z.infer<typeof clientRoomPreview>
 const seatState = z.union([
   z.object({
     type: z.literal("waitingForGame"),
+  }),
+  z.object({
+    type: z.literal("loadingImage"),
   }),
   z.object({
     type: z.literal("answering"),
@@ -164,6 +174,10 @@ const roomState = z.union([
     type: z.literal("creating"),
   }),
   z.object({
+    type: z.literal("loadingImages"),
+    imageUrl: z.string(),
+  }),
+  z.object({
     type: z.literal("answering"),
   }),
   z.object({
@@ -231,7 +245,7 @@ export const Messages = {
     room: z.string().nonempty(),
   }),
   hint: z.object({}),
-  // pick_person: pickPerson,
+  image_load: z.object({}),
   rooms: z.object({}),
   leave_room: z.object({}),
   answer: z.object({ id: z.number().nonnegative() }),
@@ -341,6 +355,10 @@ export const outgoingMessageData = {
   answers_reveal: userAnswerPayload,
   round_end: userAnswerPayload,
   auth: z.object({ success: z.boolean() }),
+  /**
+   * Getting the user to preload an image without any other information
+   */
+  image_prepare: z.object({ round: clientRound }),
 } as const
 
 export const stateExempt: (keyof typeof outgoingMessageData)[] = [

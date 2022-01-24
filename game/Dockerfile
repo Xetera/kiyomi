@@ -1,4 +1,4 @@
-FROM node:14-slim AS build
+FROM node:16-slim AS build
 
 WORKDIR /opt/app
 COPY package.json yarn.lock ./
@@ -22,7 +22,7 @@ COPY game/src src
 RUN yarn typecheck
 RUN yarn build
 
-FROM node:14-alpine as release
+FROM node:16-alpine as release
 
 WORKDIR /opt/app/game
 

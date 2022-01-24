@@ -42,3 +42,6 @@ export const config = convict({
 export const logger = pino({
   prettyPrint: config.get("env") === "development",
 })
+
+export const DEFAULT_START_TIMEOUT = 4
+export const DEFAULT_ROUND_WAIT_TIME = 7

@@ -1,15 +1,21 @@
 import "dotenv/config"
 import * as uWS from "uWebSockets.js"
 import Hashids from "hashids"
-import { logger } from "./config"
+import {
+  DEFAULT_ROUND_WAIT_TIME,
+  DEFAULT_START_TIMEOUT,
+  logger,
+} from "./config"
 import jose from "jose"
 import ms from "ms"
 import cookie from "cookie"
 import {
+  promptImageUrl,
   serializeImage,
   serializePerson,
   serializeRoom,
   serializeRoomPreview,
+  serializeRound,
   serializeSeat,
 } from "./serialization"
 import {
@@ -58,9 +64,6 @@ import { randomInt } from "crypto"
 import { Topic, topics } from "./pubsub"
 
 const idFactory = new Hashids("salt!")
-
-export const DEFAULT_START_TIMEOUT = 4
-export const DEFAULT_ROUND_WAIT_TIME = 7
 
 const server: Server = {
   isShuttingDown: false,
@@ -119,6 +122,7 @@ function joinRoom(
     state: { type: "waitingForGame" },
     owner: isOwner,
     hintUsed: false,
+    imageLoaded: false,
     get answered(): boolean {
       return (
         seat.state.type === "waitingForNextRound" && Boolean(seat.state.answer)
@@ -148,6 +152,7 @@ function joinRoom(
   player.room = room
   player.seat = seat
   subscribe(player.sock, topics.room(room.id))
+  subscribe(player.sock, topics.roomSubEvents(room.id))
   return seat
 }
 
@@ -287,40 +292,55 @@ function currentQuestion(ctx: CommandContext): GuessingPrompt | undefined {
   return ctx.room.imagePool[ctx.room.round]
 }
 
-function startRound(ctx: CommandContext) {
-  ctx.room.started = true
+function prepareForRound(ctx: CommandContext) {
+  const prompt = currentQuestion(ctx)
+  if (!prompt) {
+    throw new Error("End of the prompt?")
+  }
+
+  ctx.room.started = false
   ctx.room.state = {
-    type: "answering",
+    type: "loadingImages",
+    imageUrl: promptImageUrl(prompt),
   }
   // resetting the previous round's answers back to nothing
   for (const seat of ctx.room.seats.values()) {
     seat.hintUsed = false
     seat.state = {
-      type: "answering",
+      type: "loadingImage",
     }
   }
+  publish(ctx.app, topics.prepareImages(ctx.room.id), {
+    t: "image_prepare",
+    round: serializeRound(ctx.room, {
+      type: "imageHint",
+      url: promptImageUrl(prompt),
+    }),
+  })
+
+  const timeoutMs = 3000
+  logger.info(`Preparing for round, ${timeoutMs}ms timeout`)
+  ctx.room.imagePrepareTimeout = setTimeout(() => {
+    startRound(ctx)
+  }, timeoutMs)
+}
+
+function startRound(ctx: CommandContext) {
+  ctx.room.started = true
+  ctx.room.state = {
+    type: "answering",
+  }
+
   const prompt = currentQuestion(ctx)
   if (!prompt) {
-    throw new Error("End of the prompt?")
+    throw Error("no prompt")
   }
 
   ctx.room.correctAnswer = prompt.answer.id
   const secs = ctx.room.difficulty.timePerRound
   publish(ctx.app, topics.room(ctx.room.id), {
     t: "round_start",
-    round: {
-      state: ctx.room.state,
-      number: ctx.room.round,
-      // TODO: too low quality maybe? Don't wanna send an uncompressed image though
-      image: serializeImage(prompt),
-      secs,
-      scores: Object.fromEntries(
-        Array.from(ctx.room.seats.values(), (seat) => [
-          seat.player.id,
-          seat.score,
-        ])
-      ),
-    },
+    round: serializeRound(ctx.room, serializeImage(prompt)),
   })
   // we don't want to send users unnecessary events during games
   for (const seat of ctx.room.seats.values()) {
@@ -398,7 +418,7 @@ async function endRound(ctx: CommandContext) {
   }
 
   setTimeout(() => {
-    startRound(ctx)
+    prepareForRound(ctx)
   }, DEFAULT_ROUND_WAIT_TIME * 1000)
 }
 
@@ -598,6 +618,22 @@ async function emitImagePool(room: Room, app: uWS.TemplatedApp) {
 }
 
 export const privateMessageHandlers: PrivateMessageHandlers = {
+  async image_load(ctx) {
+    const command = commandCtx(ctx)
+    command.seat.imageLoaded = true
+    const allUserHasLoadedImage = [...command.room.seats.values()].every(
+      (seat) => seat.imageLoaded
+    )
+    console.log({ allUserHasLoadedImage, started: command.room.started })
+    if (allUserHasLoadedImage && !command.room.started) {
+      logger.info(`All users loaded image, starting round`)
+      const timeout = command.room.imagePrepareTimeout
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+      startRound(command)
+    }
+  },
   async create_room({ reply, player, args, ws }) {
     // only nugu game for now
     if (args.type !== "nugu") {
@@ -614,7 +650,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
         personIds: [],
         difficulty: {
           hints: "pointCost",
-          timePerRound: 10,
+          timePerRound: 25,
         },
       } as CreateRoomOptions,
       args.type
@@ -755,7 +791,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     })
     setTimeout(() => {
       publish(data.app, `room/${room.id}`, { t: "started" })
-      startRound(ctx)
+      prepareForRound(ctx)
     }, DEFAULT_START_TIMEOUT * 1000)
   },
   hint({ args, ...rest }) {
@@ -1103,9 +1139,9 @@ async function main() {
 
         const seat = serializeSeat(player.seat, player.room)
         // we can't use `ws` for emitting because it's disconnected
-        publish(app, `room/${player.room.id}`, { t: "disconnect", seat })
+        publish(app, topics.room(player.room.id), { t: "disconnect", seat })
         disconnectPlayer(player, app)
-        publish(app, "rooms", { t: "rooms", rooms: activeRooms() })
+        publish(app, topics.rooms(), { t: "rooms", rooms: activeRooms() })
 
         if (player.room.owner === player.seat) {
         }
