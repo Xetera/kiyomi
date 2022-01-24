@@ -8,7 +8,6 @@ import {
 } from "nexus"
 import { GraphqlAuth } from "@/lib/auth"
 import { Role } from "@/lib/permissions"
-import { siteEvent } from "@/lib/observer"
 
 export const Person = objectType({
   name: "Person",
