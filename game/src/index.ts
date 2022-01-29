@@ -1224,7 +1224,7 @@ async function main() {
 
 main()
 
-process.on("SIGINT", () => {
+process.on("SIGTERM", () => {
   logger.warn("Received a shutdown request")
   server.isShuttingDown = true
   if (process.env.NODE_DEV === "production") {
