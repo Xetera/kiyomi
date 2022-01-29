@@ -1,7 +1,9 @@
 "on":
   push:
+    paths:
+      - game/**
     branches:
-    - main
+      - main
 name: Deploy to Porter
 jobs:
   porter-deploy:
