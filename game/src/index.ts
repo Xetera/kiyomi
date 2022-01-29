@@ -1214,7 +1214,14 @@ main()
 
 process.on("SIGINT", () => {
   logger.warn("Received a shutdown request")
+  server.isShuttingDown = true
   if (process.env.NODE_DEV === "production") {
+    const hasNoGames =
+      server.rooms.nugu.size === 0 && server.rooms.spotify.size === 0
+    if (hasNoGames) {
+      logger.info(`Got a shutdown request with no active games, shutting down`)
+      return process.exit(0)
+    }
     logger.warn(
       "Server is in production mode, once all users disconnect the server will shut itself down"
     )
