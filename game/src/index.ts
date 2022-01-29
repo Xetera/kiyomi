@@ -95,11 +95,14 @@ function clearFromOtherRooms(player: Player) {
   })
 }
 
-export function answerPointWorth(an: QuestionAnswer, room: Room): number {
+export function answerPointWorth(
+  an: QuestionAnswer,
+  correctId: number
+): number {
   if (an.hintUsed) {
     return 0.5
   }
-  return room.correctAnswer === an.answer ? 1 : 0
+  return correctId === an.answer ? 1 : 0
 }
 
 type JoinRoomOptions = {
@@ -125,16 +128,17 @@ function joinRoom(
     imageLoaded: false,
     get answered(): boolean {
       return (
-        seat.state.type === "waitingForNextRound" && seat.state.answer !== undefined
+        seat.state.type === "waitingForNextRound" &&
+        seat.state.answer !== undefined
       )
     },
     get score(): number {
-      const score = room.history.reduce((all, history) => {
-        const answer = history.answers.get(seat.player.id)
+      const score = room.history.reduce((all, history, i) => {
+        const answer = history.answers.get(player.id)
         if (!answer) {
           return all
         }
-        return all + answerPointWorth(answer, room)
+        return all + answerPointWorth(answer, history.correctId)
       }, 0)
       return score
     },
@@ -370,15 +374,6 @@ async function endRound(ctx: CommandContext) {
     answers: getRevealedAnswers(ctx),
     waitSeconds: DEFAULT_ROUND_WAIT_TIME,
   }
-  for (const user of ctx.room.seats.values()) {
-    // we only want to set users who haven't already answered
-    const hasntAnswered = user.state.type !== "waitingForNextRound"
-    if (hasntAnswered) {
-      user.state = {
-        type: "waitingForNextRound",
-      }
-    }
-  }
   if (ctx.room.endingTimeout) {
     clearTimeout(ctx.room.endingTimeout)
   }
@@ -388,24 +383,36 @@ async function endRound(ctx: CommandContext) {
       `Room in ${ctx.room.round} exceeded the maximum number of images allowed`
     )
   }
+  const answers = new Map(
+    [...ctx.room.seats.values()]
+      .filter((seat) => seat.state.type === "waitingForNextRound")
+      .map((seat) => [
+        seat.player.id,
+        {
+          answer:
+            seat.state.type === "waitingForNextRound"
+              ? seat.state.answer
+              : undefined,
+          hintUsed: seat.hintUsed,
+        },
+      ])
+  )
   ctx.room.history.push({
     correctId: round.answer.id,
     imageId: round.image.id,
-    answers: new Map(
-      [...ctx.room.seats.values()]
-        .filter((seat) => seat.state.type === "waitingForNextRound")
-        .map((seat) => [
-          seat.player.id,
-          {
-            answer:
-              seat.state.type === "waitingForNextRound"
-                ? seat.state.answer
-                : undefined,
-            hintUsed: seat.hintUsed,
-          },
-        ])
-    ),
+    answers,
   })
+
+  for (const user of ctx.room.seats.values()) {
+    // we only want to set users who haven't already answered
+    const hasntAnswered = user.state.type !== "waitingForNextRound"
+    if (hasntAnswered) {
+      user.state = {
+        type: "waitingForNextRound",
+      }
+    }
+  }
+
   // TODO: choose winners of round
   ctx.room.round++
   const payload = await getRevealedAnswerPayload(ctx)
@@ -841,13 +848,17 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
   hint({ args, ...rest }) {
     const { reply, player } = rest
     const ctx = commandCtx(rest)
+
     if (!player.room || !player.seat) {
       throw new ClientError("You must be in a room")
     }
+
     const { room } = player
+
     if (!room.started) {
       throw new ClientError("You cannot use a hint before the game starts")
     }
+
     if (room.difficulty.hints === "disabled") {
       throw new ClientError("Hints are disabled for this room")
     }
@@ -861,8 +872,10 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
         throw new ClientError("You've used all your hints")
       }
     }
+
     player.seat.hintUsed = true
     const question = currentQuestion(ctx)
+
     if (!question) {
       throw new ClientError(
         "Your room doesn't have an image assigned? This shouldn't be happening"
@@ -876,6 +889,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       // no groups for the person being guessed. Shouldn't happen but it could in the future
       return reply({ t: "hint" })
     }
+
     reply({
       t: "hint",
       groupName: firstMembership.group.name,
@@ -902,8 +916,6 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     const hasEveryoneAnswered = [...ctx.room.seats.values()].every(
       (seat) => seat.answered
     )
-
-    console.log({ hasEveryoneAnswered })
 
     if (hasEveryoneAnswered) {
       return endRound(ctx)
