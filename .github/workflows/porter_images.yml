@@ -34,7 +34,7 @@ jobs:
             --build-arg NEXT_PUBLIC_TYPESENSE_KEY=myeOtddZLPNZlfP5RGXwf2KzMnTBgeJZ \
             --build-arg NEXT_PUBLIC_TYPESENSE_URL=https://search.kiyomi.io \
             --build-arg NEXT_PUBLIC_BASE_URL=https://kiyomi.io \
-            --build-arg NEXT_PUBLIC_GAME_URL=https://dubu.kiyomi.io \
+            --build-arg NEXT_PUBLIC_GAME_URL=wss://dubu.kiyomi.io \
             --build-arg NEXT_PUBLIC_BASE_URL_CDN=https://img.kiyomi.io \
             . -t index.docker.io/xetera/simp-pics:$(git rev-parse --short HEAD)
           sudo docker push index.docker.io/xetera/simp-pics:$(git rev-parse --short HEAD)
