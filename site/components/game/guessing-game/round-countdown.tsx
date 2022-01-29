@@ -1,6 +1,7 @@
 import { useSelector } from "@/hooks/useSelector"
 import { Progress } from "@chakra-ui/react"
 import React, { useCallback, useRef, useState } from "react"
+import { ClientRoom, ClientRound } from "../../../../shared/game"
 
 // const useRaf = ()
 
@@ -49,18 +50,23 @@ export const GenericCountdown = ({
   )
 }
 
+function shouldRoundCountdown(round: ClientRound) {
+  const states = ["waitingForNextRound", "loadingImages"]
+  return states.includes(round.state.type)
+}
+
 export const RoundCountdown = () => {
   const boundaries = useSelector((root) => root.game?.roundBoundaries)
   const round = useSelector((root) => root.game?.round)
   if (!boundaries) {
     return null
   }
-  const waiting = round?.state.type === "waitingForNextRound"
+  const shouldCountdown = round ? shouldRoundCountdown(round) : false
   const { startDate, endDate } = boundaries
   return (
     <GenericCountdown
-      key={`${waiting}-${startDate.getTime()}-${endDate.getTime()}`}
-      forceEnd={waiting}
+      key={`${shouldCountdown}-${startDate.getTime()}-${endDate.getTime()}`}
+      forceEnd={!shouldCountdown}
       startDate={startDate}
       endDate={endDate}
     />

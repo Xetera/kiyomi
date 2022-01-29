@@ -41,6 +41,7 @@ export const config = convict({
 
 export const logger = pino({
   prettyPrint: config.get("env") === "development",
+  level: "debug",
 })
 
 export const DEFAULT_START_TIMEOUT = 4
