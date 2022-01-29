@@ -38,7 +38,6 @@ export const Portrait = forwardRef<PortraitProps, "div">(
           cursor="pointer"
           background="black"
           onClick={onClick}
-          mb={2}
         >
           <Image
             objectFit="cover"

@@ -309,6 +309,7 @@ function prepareForRound(ctx: CommandContext) {
     type: "loadingImages",
     imageUrl: promptImageUrl(prompt),
   }
+
   // resetting the previous round's answers back to nothing
   for (const seat of ctx.room.seats.values()) {
     seat.hintUsed = false
@@ -316,7 +317,13 @@ function prepareForRound(ctx: CommandContext) {
       type: "loadingImage",
     }
   }
-  publish(ctx.app, topics.prepareImages(ctx.room.id), {
+
+  ctx.room.seats.forEach((seat) => {
+    console.log(seat.player.username, seat.player.sock.getTopics())
+  })
+  const imagePrepareTopic = topics.prepareImages(ctx.room.id)
+  console.log(imagePrepareTopic)
+  publish(ctx.app, imagePrepareTopic, {
     t: "image_prepare",
     round: serializeRound(ctx.room, {
       type: "imageHint",
@@ -501,11 +508,14 @@ function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
 
 function subscribeToAllRoomEvents(room: Room, player: Player) {
   subscribe(player.sock, topics.room(room.id))
+  subscribe(player.sock, topics.prepareImages(room.id))
+  // for some reason this isn't working? I don't understand why
   subscribe(player.sock, topics.roomSubEvents(room.id))
 }
 
 function unsubscribeFromAllRoomEvents(room: Room, player: Player) {
   unsubscribe(player.sock, topics.room(room.id))
+  unsubscribe(player.sock, topics.prepareImages(room.id))
   unsubscribe(player.sock, topics.roomSubEvents(room.id))
 }
 
@@ -775,9 +785,10 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
         error: `Room ${args.room} does not exist`,
       })
     }
-    const playerAlreadyInOneRoom = [...server.rooms.nugu.values()].some(
-      (room) =>
-        [...room.seats.values()].some((seat) => seat.player.id === player.id)
+    const playerAlreadyInOneRoom = [
+      ...server.rooms.nugu.values(),
+    ].some((room) =>
+      [...room.seats.values()].some((seat) => seat.player.id === player.id)
     )
 
     if (playerAlreadyInOneRoom) {

@@ -21,5 +21,5 @@ export const topics = {
   /**
    * Prepare loading the image before answering
    */
-  prepareImages: (roomId: string) => `room/${roomId}/imageLoad` as Topic,
+  prepareImages: (roomId: string) => `room/${roomId}/image_load` as Topic,
 }
