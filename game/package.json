@@ -86,7 +86,7 @@
     "redis": "^3.1.2",
     "socket.io": "^4.1.2",
     "typesense": "^1.1.2",
-    "uWebSockets.js": "uNetworking/uWebSockets.js#v18.14.0",
+    "uWebSockets.js": "uNetworking/uWebSockets.js#v20.6.0",
     "zod": "^3.11.6"
   }
 }

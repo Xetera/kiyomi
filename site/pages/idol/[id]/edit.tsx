@@ -1,10 +1,8 @@
 import { decodeUriFriendly } from "@/client/data/encoders"
 import { PersonEditPage } from "@/components/data-entry/person-edit/page"
-import { LargeBanner } from "@/components/large-banner"
 import { WithNavbar } from "@/components/navbar"
 import { PermissionsFor, withAuthorizedUser } from "@/lib/permissions"
 import { useOnePersonQuery } from "@/lib/__generated__/graphql"
-import { Box } from "@chakra-ui/react"
 
 type PersonEditPageWrapperProps = {
   id: number

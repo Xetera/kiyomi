@@ -3,7 +3,6 @@ import useWebSocket from "react-use-websocket"
 import React, { PropsWithChildren, useCallback, useMemo } from "react"
 import { store } from "@/models/store"
 import { OutgoingMessage } from "../../../shared/game"
-import { useInterval } from "@chakra-ui/react"
 import useToast from "@/hooks/useToast"
 import { useRouter } from "next/router"
 

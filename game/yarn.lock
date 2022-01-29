@@ -10077,9 +10077,9 @@ typesense@^1.1.2:
     axios "^0.21.1"
     loglevel "^1.7.1"
 
-uWebSockets.js@uNetworking/uWebSockets.js#v18.14.0:
-  version "18.14.0"
-  resolved "https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/b4bc740f46f1508c0f342b999db4d1f9dc80deab"
+uWebSockets.js@uNetworking/uWebSockets.js#v20.6.0:
+  version "20.6.0"
+  resolved "https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/a58e810e47a23696410f6073c8c905dc38f75da5"
 
 uid2@0.0.3:
   version "0.0.3"

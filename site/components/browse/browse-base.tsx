@@ -6,7 +6,7 @@ import { SidebarGrid } from "@/components/discover/tabs"
 const BrowseBasePage = ({ children }) => {
   return (
     <WithNavbar>
-      <VStack mx="auto" maxW="8xl" w="full" pt={16}>
+      <VStack mx="auto" maxW="6xl" w="full" pt={16}>
         <LinkedTabs
           tabs={[
             { path: "/browse", component: <h1>Images</h1> },

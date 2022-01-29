@@ -91,7 +91,7 @@ export default function QueuePage() {
         height="80vh"
         objectPosition="50% 10%"
       />
-      <VStack mx="auto" maxW="6xl" w="full">
+      <VStack mx="auto" maxW="6xl" w="full" mt={[16, 32]}>
         <DiscoverTabs queue={<Queue />} history={<DiscoveryHistory />} />
       </VStack>
     </WithNavbar>
