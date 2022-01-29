@@ -22,7 +22,7 @@ COPY game/src src
 RUN yarn typecheck
 RUN yarn build
 
-FROM node:16-alpine as release
+FROM node:16-slim as release
 
 WORKDIR /opt/app/game
 
