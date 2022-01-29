@@ -95,17 +95,15 @@ export function makeSearch({ prisma, imageProxy }: SearchOptions) {
         },
       })
       const collectionName = searchGroupsName()
-      if (process.env.NODE_ENV !== "production") {
-        console.warn(`Dropping typesense collection: ${collectionName}`)
-        await typesense
-          .collections(collectionName)
-          .delete()
-          .catch(() => {})
-        await typesense
-          .collections()
-          .create(groupSchema)
-          .catch(() => {})
-      }
+      console.warn(`Dropping typesense collection: ${collectionName}`)
+      await typesense
+        .collections(collectionName)
+        .delete()
+        .catch(() => {})
+      await typesense
+        .collections()
+        .create(groupSchema)
+        .catch(() => {})
       const indexedPeople = groups.map(methods.toIndexedGroup)
       return typesense
         .collections(collectionName)
@@ -131,14 +129,12 @@ export function makeSearch({ prisma, imageProxy }: SearchOptions) {
         },
       })
       const collectionName = searchPeopleName()
-      if (process.env.NODE_ENV !== "production") {
-        console.warn(`Dropping typesense collection: ${collectionName}`)
-        await typesense
-          .collections(collectionName)
-          .delete()
-          .catch(() => {})
-        await typesense.collections().create(personSchema).catch(console.error)
-      }
+      console.warn(`Dropping typesense collection: ${collectionName}`)
+      await typesense
+        .collections(collectionName)
+        .delete()
+        .catch(() => {})
+      await typesense.collections().create(personSchema).catch(console.error)
       const indexedPeople = people.map(methods.toIndexedPerson)
       return typesense
         .collections(collectionName)
