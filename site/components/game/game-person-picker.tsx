@@ -170,8 +170,6 @@ export default function GamePersonPicker({ disabled }: GamePersonPickerParams) {
     [selections]
   )
 
-  console.log({ selectedPeople })
-
   const results = Object.values(searchResults ?? {})
 
   function checkMembers(personIds: number[]) {
@@ -181,7 +179,7 @@ export default function GamePersonPicker({ disabled }: GamePersonPickerParams) {
   return (
     <Flex flexFlow="column">
       {!disabled && <PersonSearch mb={4} disabled={disabled} />}
-      <Grid gridTemplateColumns={["1fr", null, "1fr 1fr"]} gap={6}>
+      <Grid gridTemplateColumns={["1fr"]} gap={6}>
         {!disabled &&
           searchQuery !== "" &&
           results.map(({ group, members }) => {

@@ -6,10 +6,13 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { generateUserToken } from "@/lib/auth"
 import { filterValidRoles, Role } from "@/lib/permissions"
 import { JWT } from "next-auth/jwt"
+import { AUTH_COOKIE_NAME } from "../../../../shared/game"
 
 if (!process.env.JWT_SECRET) {
   throw new Error("Missing JWT_SECRET")
 }
+
+const baseUrl = new URL(process.env.NEXT_PUBLIC_BASE_URL!)
 
 const options: NextAuthOptions = {
   secret: process.env.JWT_SECRET,
@@ -29,6 +32,7 @@ const options: NextAuthOptions = {
       Session: "session",
     },
   }),
+  theme: "dark",
   session: {
     jwt: true,
     // Seconds - How long until an idle session expires and is no longer valid.
@@ -38,6 +42,22 @@ const options: NextAuthOptions = {
     // Use it to limit write operations. Set to 0 to always update the database.
     // Note: This option is ignored if using JSON Web Tokens
     updateAge: 24 * 60 * 60, // 24 hours
+  },
+  cookies: {
+    sessionToken: {
+      name: AUTH_COOKIE_NAME,
+      options: {
+        // we specifically want this cookie to be accessible across
+        // all subdomains so we can get the game service to read it
+        domain:
+          process.env.NODE_ENV === "production"
+            ? `.${baseUrl.hostname}`
+            : baseUrl.hostname,
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
   },
   jwt: {
     secret: process.env.JWT_SECRET,

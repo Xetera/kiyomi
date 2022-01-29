@@ -127,6 +127,7 @@ const theme = extendTheme({
       body: {
         borderColor: "borderLight",
         bg: "bgPrimary",
+        color: "text.800",
       },
     },
   },

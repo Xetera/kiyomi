@@ -183,6 +183,7 @@ export type Room = {
   deleteTimer?: number
   endingTimeout?: ReturnType<typeof setTimeout>
   imagePrepareTimeout?: ReturnType<typeof setTimeout>
+  cleanupTimer?: ReturnType<typeof setTimeout>
   correctAnswer: number
   // personChoice: number[]
   // groupPool: Group[]

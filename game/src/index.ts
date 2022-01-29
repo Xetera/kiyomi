@@ -151,8 +151,7 @@ function joinRoom(
 
   player.room = room
   player.seat = seat
-  subscribe(player.sock, topics.room(room.id))
-  subscribe(player.sock, topics.roomSubEvents(room.id))
+  subscribeToAllRoomEvents(room, player)
   return seat
 }
 
@@ -233,10 +232,13 @@ function isPlayer(anon: Anon): anon is Player {
 
 function publish<T extends keyof typeof outgoingMessageData>(
   ws: uWS.WebSocket | uWS.TemplatedApp,
-  topic: string,
+  topic: Topic,
   o: EmittedMessage<T>
 ) {
   if ("isClosed" in ws && ws.isClosed) {
+    logger.info(
+      `Not publishing event ${topic} to ${ws.player.id} because the connection is closed`
+    )
     return
   }
   ws.publish(topic, JSON.stringify(o))
@@ -490,9 +492,26 @@ function getRevealedAnswers(ctx: CommandContext): RevealedAnswer[] {
   })
 }
 
-function nukeRoom(room: Room) {
+function subscribeToAllRoomEvents(room: Room, player: Player) {
+  subscribe(player.sock, topics.room(room.id))
+  subscribe(player.sock, topics.roomSubEvents(room.id))
+}
+
+function unsubscribeFromAllRoomEvents(room: Room, player: Player) {
+  unsubscribe(player.sock, topics.room(room.id))
+  unsubscribe(player.sock, topics.roomSubEvents(room.id))
+}
+
+function cleanUpRoom(room: Room) {
+  room.seats.forEach((seat) => {
+    unsubscribeFromAllRoomEvents(room, seat.player)
+  })
   room.seats.clear()
   server.rooms[room.type].delete(room.id)
+}
+
+function nukeRoom(room: Room) {
+  cleanUpRoom(room)
 }
 
 async function disconnectPlayer(
@@ -504,6 +523,13 @@ async function disconnectPlayer(
     throw new ClientError("You're not in a room")
   }
 
+  if (!room.seats.has(player.id)) {
+    logger.info(
+      `Player ${player.id} tried to leave room ${room.id} even though they're not in it`
+    )
+    return
+  }
+  const roomTopic = topics.room(room.id)
   const lastPersonLeft = room.seats.size === 1
   if (lastPersonLeft) {
     if (room.started) {
@@ -512,15 +538,22 @@ async function disconnectPlayer(
     }
     room.owner = undefined
     room.name = `Unclaimed room`
-    setTimeout(() => {
+    room.cleanupTimer = setTimeout(() => {
+      if (room.seats.size > 0) {
+        logger.debug(
+          `Not auto-nuking room ${room.id} because there are ${room.seats.size} people in it`
+        )
+      }
       nukeRoom(room)
     }, 1000 * 60 * 5)
   } else if (seat.player.id === room.owner?.player.id) {
+    const leavingOwnerId = seat.player.id
     logger.info(
       `Transferring ownership of ${room.name} because the owner [${seat.player.username}] left`
     )
-    const transferEligible = room.joinOrder.filter((seat) =>
-      room.seats.has(seat.player.id)
+    const transferEligible = room.joinOrder.filter(
+      (seat) =>
+        room.seats.has(seat.player.id) && seat.player.id !== leavingOwnerId
     )
 
     const newOwner = transferEligible[0]
@@ -529,33 +562,35 @@ async function disconnectPlayer(
         `Game room is not empty but has no eligible users for ownership. Impossible state`
       )
       nukeRoom(room)
-      publish(relevantSocket, `room/${room.id}`, {
+      publish(relevantSocket, roomTopic, {
         t: "force_disconnected",
         reason:
           "Unrecoverable server side error, disconnecting from game. SORRY!",
       })
       return
     }
+    logger.info(`New owner: ${newOwner.player.username}`)
 
     room.owner = newOwner
     newOwner.owner = true
     room.name = generateRoomName(newOwner.player)
-    publish(relevantSocket, `room/${room.id}`, {
-      t: "new_leader",
-      seat: serializeSeat(newOwner, room),
+    publish(relevantSocket, roomTopic, {
+      t: "room_update",
+      room: await serializeRoom(room),
+      coordinationId: room.coordination,
     })
   }
 
   clearFromOtherRooms(player)
-  publish(relevantSocket, `room/${room.id}`, {
+  publish(relevantSocket, roomTopic, {
     t: "disconnect",
     seat: serializeSeat(seat, room),
   })
-  publish(relevantSocket, `room/${room.id}`, {
+  publish(relevantSocket, roomTopic, {
     t: "room_update",
     room: await serializeRoom(room),
   })
-  publish(relevantSocket, `room/${room.id}`, {
+  publish(relevantSocket, roomTopic, {
     t: "users_update",
     seats: Array.from(room.seats.values()).map((seat) =>
       serializeSeat(seat, room)
@@ -587,6 +622,7 @@ function commandCtx(ctx: Context): CommandContext {
 function withRoomEdit(f: (cmd: CommandContext) => Promise<void> | void) {
   return async (ctx: Context) => {
     const { reply } = ctx
+
     const cmd = commandCtx(ctx)
     if (cmd.room.owner?.player.id !== ctx.player.id) {
       return reply({
@@ -596,9 +632,12 @@ function withRoomEdit(f: (cmd: CommandContext) => Promise<void> | void) {
     }
     await f(cmd)
 
-    publish(ctx.ws, `room/${cmd.room.id}`, {
+    const room = await serializeRoom(cmd.room)
+    logger.info(`Emitting update to room ${ctx.player.room.id}`)
+    const roomTopic = topics.room(ctx.player.room.id)
+    publish(ctx.app, roomTopic, {
       t: "room_update",
-      room: await serializeRoom(cmd.room),
+      room,
       coordinationId: cmd.room.coordination,
     })
   }
@@ -610,7 +649,8 @@ async function emitImagePool(room: Room, app: uWS.TemplatedApp) {
   if (!room.coordination) {
     console.warn("Image pool was edited without a coordination id")
   }
-  publish(app, `room/${room.id}`, {
+
+  publish(app, topics.room(room.id), {
     t: "image_counts",
     count: imagePool.length,
     coordinationId: room.coordination ?? -1,
@@ -624,7 +664,6 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     const allUserHasLoadedImage = [...command.room.seats.values()].every(
       (seat) => seat.imageLoaded
     )
-    console.log({ allUserHasLoadedImage, started: command.room.started })
     if (allUserHasLoadedImage && !command.room.started) {
       logger.info(`All users loaded image, starting round`)
       const timeout = command.room.imagePrepareTimeout
@@ -657,7 +696,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     )
     server.rooms[args.type].set(room.id, room)
     reply({ t: "created_room", room: await serializeRoom(room) }),
-      publish(ws, "rooms", { t: "rooms", rooms: activeRooms() })
+      publish(ws, topics.rooms(), { t: "rooms", rooms: activeRooms() })
   },
   async pick_round_count(ctx) {
     const { args } = ctx
@@ -679,7 +718,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
   },
   async toggle_people(ctx) {
     const { args } = ctx
-    return withRoomEdit(async (cmd) => {
+    return withRoomEdit((cmd) => {
       const { room } = cmd
       const { personPool } = room
       const selectedPeople = new Set(personPool)
@@ -714,7 +753,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     // need confirmation to know that they left
     // the room
     await disconnectPlayer(player, app) // ok to send sock here
-    publish(app, `room/${room.id}`, {
+    publish(app, topics.room(room.id), {
       t: "users_update",
       seats: Array.from(room.seats.values()).map((seat) =>
         serializeSeat(seat, room)
@@ -729,10 +768,9 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
         error: `Room ${args.room} does not exist`,
       })
     }
-    const playerAlreadyInOneRoom = [
-      ...server.rooms.nugu.values(),
-    ].some((room) =>
-      [...room.seats.values()].some((seat) => seat.player.id === player.id)
+    const playerAlreadyInOneRoom = [...server.rooms.nugu.values()].some(
+      (room) =>
+        [...room.seats.values()].some((seat) => seat.player.id === player.id)
     )
 
     if (playerAlreadyInOneRoom) {
@@ -750,13 +788,19 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     // join as the owner if the room doesn't already have an owner
     joinRoom(player, room, { isOwner: !room.owner })
     reply({ t: "joined_room", room: await serializeRoom(room) })
-    publish(ws, "rooms", { t: "rooms", rooms: activeRooms() })
-    publish(ws, `room/${room.id}`, {
+    publish(ws, topics.rooms(), { t: "rooms", rooms: activeRooms() })
+    publish(ws, topics.room(room.id), {
       t: "users_update",
       seats: Array.from(room.seats.values()).map((seat) =>
         serializeSeat(seat, room)
       ),
     })
+    /**
+     * No need to wait for this timer if someone joined already
+     */
+    if (room.cleanupTimer) {
+      clearTimeout(room.cleanupTimer)
+    }
   },
   async start_game(data) {
     const { player } = data
@@ -785,12 +829,12 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
       )
     }
 
-    publish(data.app, `room/${room.id}`, {
+    publish(data.app, topics.room(room.id), {
       t: "starting",
       secs: DEFAULT_START_TIMEOUT,
     })
     setTimeout(() => {
-      publish(data.app, `room/${room.id}`, { t: "started" })
+      publish(data.app, topics.room(room.id), { t: "started" })
       prepareForRound(ctx)
     }, DEFAULT_START_TIMEOUT * 1000)
   },
@@ -858,6 +902,8 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     const hasEveryoneAnswered = [...ctx.room.seats.values()].every(
       (seat) => seat.answered
     )
+
+    console.log({ hasEveryoneAnswered })
 
     if (hasEveryoneAnswered) {
       return endRound(ctx)
@@ -979,7 +1025,7 @@ async function main() {
 
   setInterval(fetchNewPeople, ms("6h"))
 
-  await fetchNewPeople()
+  fetchNewPeople()
 
   app
     .ws("/*", {

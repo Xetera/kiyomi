@@ -92,10 +92,7 @@ const Answers = forwardRef((props, ref) => {
 })
 
 export const GameBody = () => {
-  const hintedGroupName = useSelector((root) => root.game?.hintedGroupName)
   const round = useSelector((root) => root.game?.round)
-  // const seats = useSelector((root) => root.game?.room?.seats)
-  // const answers = useSelector((root) => root.game?.answers)
 
   return (
     <Flex position="relative" height="min-content" flex={1} p={6} w="full">
@@ -103,7 +100,6 @@ export const GameBody = () => {
         <Answers />
       ) : (
         <VStack spacing={2} w="full">
-          {hintedGroupName && <Text color="yellow.300">{hintedGroupName}</Text>}
           <Text textStyle="heading-sm">Answer Now!</Text>
           <GameSearch mb={4} flex={1} />
         </VStack>

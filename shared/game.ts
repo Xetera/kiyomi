@@ -384,7 +384,10 @@ export class ClientTechnicalError {
   constructor(public message: string) {}
 }
 
-export const AUTH_COOKIE_NAME = "next-auth.session-token"
+/**
+ * This depends on the value set in next-auth
+ */
+export const AUTH_COOKIE_NAME = "kiyomi.session"
 
 export type AugmentedSearchResultFrontend = {
   group: ClientSearchGroup

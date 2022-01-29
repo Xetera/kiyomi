@@ -90,6 +90,11 @@ export function Face({
 }
 
 export type ImageWithFacesProps = {
+  /**
+   * This number is only used to listen to resizes from the parent
+   * component
+   */
+  size: any
   blurred?: boolean
   onLoad?: () => void
   image: {
@@ -105,6 +110,7 @@ export const ImageWithFaces = ({
   faces,
   onLoad,
   blurred,
+  size,
 }: ImageWithFacesProps) => {
   // const image = React.useContext(ImageContext)
   const imageRef = React.useRef<HTMLImageElement | null>()
@@ -112,6 +118,10 @@ export const ImageWithFaces = ({
   const { face: activeFace } = React.useContext(FaceContext)
   const [expanded, toggleExpanded] = useToggle(false)
   const [loaded, setLoaded] = React.useState(false)
+  const recheck = React.useCallback(() => {
+    checkSize()
+    requestAnimationFrame(recheck)
+  }, [])
   const defaults = {
     x: 0,
     y: 0,
@@ -131,6 +141,7 @@ export const ImageWithFaces = ({
   const [imageSize, setImageSize] = React.useState<DOMRect>(defaults)
 
   React.useEffect(() => {
+    recheck()
     // seems to be necessary for refs to initialize properly first
     setTimeout(() => {
       checkSize()
@@ -138,6 +149,10 @@ export const ImageWithFaces = ({
     window.addEventListener("resize", checkSize)
     return () => window.removeEventListener("resize", checkSize)
   }, [])
+
+  React.useEffect(() => {
+    checkSize()
+  }, [size])
 
   function checkSize() {
     const a = parentRef.current?.getBoundingClientRect()
@@ -151,16 +166,13 @@ export const ImageWithFaces = ({
   }
 
   const MAX_WIDTH = 1200
-  const imageMaxHeight = !expanded
-    ? "50vh"
-    : image!.height! <= 800
-    ? image!.height
-    : "100%"
+  const imageMaxHeight = image!.height! <= 800 ? image!.height : "100%"
   return (
     <Box
       position="relative"
       borderRadius="md"
       className="relative rounded"
+      height="100%"
       maxHeight={imageMaxHeight!}
       ref={(r) => (parentRef.current = r)}
     >
@@ -204,9 +216,9 @@ export const ImageWithFaces = ({
         }}
         src={image.url}
         {...(loaded ? {} : { width: image.width })}
-        height={image.height ?? "100%"}
+        height={"100%"}
         flexBasis={image.width && image.width <= 1200 ? image.width : "100%"}
-        maxHeight="100%"
+        maxHeight="min-content"
         display="flex"
         objectFit="contain"
         overflow="hidden"

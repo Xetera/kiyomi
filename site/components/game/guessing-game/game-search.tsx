@@ -1,4 +1,4 @@
-import { Button, forwardRef, HStack, Kbd, VStack } from "@chakra-ui/react"
+import { Box, Button, forwardRef, HStack, Kbd, VStack } from "@chakra-ui/react"
 import React from "react"
 import { GameServerContext } from "@/models/contexts"
 import { useSelector } from "@/hooks/useSelector"
@@ -90,6 +90,7 @@ export const GameSearch = forwardRef((props, ref) => {
   const { send } = React.useContext(GameServerContext)
   const searching = useSelector((r) => r.game.personHintSearching)
   const hints = useSelector((r) => r.game.room?.hints)
+  const hintedGroupName = useSelector((r) => r.game?.hintedGroupName)
 
   useHotkeys(
     "ctrl+space",
@@ -147,11 +148,20 @@ export const GameSearch = forwardRef((props, ref) => {
         mt={3}
         display={{ base: "none", lg: "block" }}
       >
-        {hints !== "disabled" && (
-          <>
-            <Kbd>Ctrl</Kbd> + <Kbd>Space</Kbd> to request a hint
-          </>
-        )}
+        {hints !== "disabled" &&
+          (hintedGroupName ? (
+            <Text alignItems="center" textStyle="text">
+              This person is in{" "}
+              <Box as="span" color="yellow.300">
+                {" "}
+                {hintedGroupName}
+              </Box>
+            </Text>
+          ) : (
+            <>
+              <Kbd>Ctrl</Kbd> + <Kbd>Space</Kbd> to request a hint
+            </>
+          ))}
       </Text>
       <Flex position={{ base: "static", md: "relative" }} w="full" mt={3}>
         <SearchResults

@@ -21,6 +21,7 @@ import React, { ReactNode } from "react"
 import Hr from "@/components/hr"
 import pick from "lodash/pick"
 import { useSelector } from "@/hooks/useSelector"
+import { PlayerIcon } from "@/components/game/game-screen"
 
 interface HeadingLabelParams {
   name: string
@@ -30,9 +31,7 @@ interface HeadingLabelParams {
 function HeadingLabel({ name, description }: HeadingLabelParams) {
   return (
     <Flex flexFlow="column">
-      <Heading fontSize="lg" mb={2}>
-        {name}
-      </Heading>
+      <Text textStyle="heading">{name}</Text>
       <Text color="gray.400" fontSize="sm">
         {description}
       </Text>
@@ -177,6 +176,27 @@ const hintLevels: Array<{
   },
 ]
 
+const PlayersInLobby = () => {
+  const room = useSelector((r) => r.game?.room)
+  if (!room) {
+    return null
+  }
+  return (
+    <Grid
+      alignItems="flex-start"
+      gap={8}
+      gridAutoFlow="column"
+      justifyContent="flex-start"
+    >
+      {Object.values(room.seats).map((seat) => (
+        <Box color={seat.owner ? "yellow.300" : "inherit"} key={seat.player.id}>
+          <PlayerIcon seat={seat} status={seat.player.username ?? "Unknown"} />
+        </Box>
+      ))}
+    </Grid>
+  )
+}
+
 export default function GameSetup() {
   const user = useSelector((r) => r.user?.cache)
   const [session] = useSession()
@@ -244,6 +264,10 @@ export default function GameSetup() {
               start the game
             </Text>
           )}
+          <VStack spacing={4} mb={8}>
+            <Text textStyle="heading">Players</Text>
+            <PlayersInLobby />
+          </VStack>
           <Grid
             gridTemplateColumns={["1fr", null, null, "200px auto"]}
             columnGap={8}
