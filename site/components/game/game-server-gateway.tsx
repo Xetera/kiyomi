@@ -10,7 +10,11 @@ const ServerConnection = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter()
   const info = useToast("info")
   const warning = useToast("warning")
-  const { sendMessage } = useWebSocket(process.env.NEXT_PUBLIC_GAME_URL!, {
+  const url = process.env.NEXT_PUBLIC_GAME_URL
+  if (!url) {
+    return children
+  }
+  const { sendMessage } = useWebSocket(url, {
     onOpen() {
       if (router.basePath.startsWith("/game")) {
         info({
