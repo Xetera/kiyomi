@@ -12,7 +12,7 @@ const ServerConnection = ({ children }: PropsWithChildren<{}>) => {
   const warning = useToast("warning")
   const url = process.env.NEXT_PUBLIC_GAME_URL
   if (!url) {
-    return children
+    return children as React.ReactElement
   }
   const { sendMessage } = useWebSocket(url, {
     onOpen() {
