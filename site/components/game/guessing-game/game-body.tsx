@@ -3,7 +3,7 @@ import { Flex, forwardRef, Text, VStack } from "@chakra-ui/react"
 import React from "react"
 import { GameSearch } from "@/components/game/guessing-game/game-search"
 import { GameRevealedAnswer } from "@/components/game/guessing-game/game-revealed-answer"
-import { ClientSeat, RevealedAnswerVote } from "../../../../shared/game"
+import { RevealedAnswerVote } from "../../../../shared/game"
 import partition from "lodash/partition"
 import { GameRevealedAnswerUserProps } from "@/components/game/guessing-game/game-revealed-answer-person"
 
