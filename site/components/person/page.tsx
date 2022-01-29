@@ -41,7 +41,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         )
       : data?.person?.aliases) ?? []
   return (
-    <>
+    <VStack w="full">
       <LargeBanner
         height="80vh"
         focus={data?.person?.banner ?? undefined}
@@ -197,6 +197,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
           )}
         </VStack>
       </Flex>
-    </>
+    </VStack>
   )
 }

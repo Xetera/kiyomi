@@ -110,130 +110,134 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
   }
 
   return (
-    <Box as="form" onSubmit={handleSubmit(onSubmit)}>
-      <Box zIndex={-1} pointerEvents="none">
-        {watchBanner.src && <LargeBanner src={watchBanner.src} />}
-      </Box>
-      <Controller
-        control={control}
-        name="banner"
-        render={({ field }) => (
-          <GenericModal
-            isOpen={isBannerPickerOpen}
-            onClose={() => setBannerPickerOpen(false)}
-          >
-            <PersonImagePicker
-              onSelect={(e) => {
-                console.log(e)
-                field.onChange(mapBanner(e))
-                setBannerPickerOpen(false)
-              }}
-              id={person.id}
-            />
-          </GenericModal>
-        )}
-      />
-      <Controller
-        control={control}
-        name="avatar"
-        render={({ field }) => (
-          <GenericModal
-            isOpen={isAvatarPickerOpen}
-            onClose={() => setAvatarPickerOpen(false)}
-          >
-            <PersonImagePicker
-              onSelect={(e) => {
-                field.onChange(mapAvatar(e))
-                setAvatarPickerOpen(false)
-              }}
-              id={person.id}
-            />
-          </GenericModal>
-        )}
-      />
-      <VStack spacing={8} maxW="6xl" mx="auto" w="full" mt={6}>
-        <NextLink
-          href={Routing.toPerson(person.id, personPreferredName(person))}
-          passHref
-        >
-          <Link display="flex" alignItems="center">
-            <RiArrowLeftLine />
-            <Text textStyle="heading-sm" ml={2}>
-              Back
-            </Text>
-          </Link>
-        </NextLink>
-        <Box onClick={() => setAvatarPickerOpen(true)}>
-          <Portrait
-            {...personPortraitDimensions}
-            src={watchAvatar.src}
-            opacity={1}
-          />
+    <VStack w="full">
+      <Box as="form" onSubmit={handleSubmit(onSubmit)} w="full">
+        <Box zIndex={-1} pointerEvents="none">
+          {watchBanner.src && <LargeBanner src={watchBanner.src} />}
         </Box>
-        <Button
-          textStyle="heading-sm"
-          onClick={() => setBannerPickerOpen(true)}
-        >
-          Edit Banner
-        </Button>
-        <Field name="Full Name">
-          <Input type="text" placeholder="Full name" {...register("name")} />
-        </Field>
-        <Field name="Birth Date">
-          <Input
-            type="date"
-            {...register("birthDate", { valueAsDate: true })}
-          />
-        </Field>
-        <Field name="Aliases">
-          <Controller
-            control={control}
-            name="preferredAliasId"
-            render={({ field }) => (
-              <RadioGroup
-                value={field.value}
-                onChange={(val) => {
-                  const num = Number(val)
-                  if (Number.isNaN(num)) {
-                    makeToast({
-                      description:
-                        "You must submit changes before marking new aliases as preferred.",
-                    })
-                    return
-                  }
-                  field.onChange(num)
+        <Controller
+          control={control}
+          name="banner"
+          render={({ field }) => (
+            <GenericModal
+              isOpen={isBannerPickerOpen}
+              onClose={() => setBannerPickerOpen(false)}
+            >
+              <PersonImagePicker
+                onSelect={(e) => {
+                  console.log(e)
+                  field.onChange(mapBanner(e))
+                  setBannerPickerOpen(false)
                 }}
-                spacing={4}
-                name="preferredAliasId"
-              >
-                <VStack spacing={4}>
-                  <HStack>
-                    <Radio value={-1}>No preferred alias</Radio>
-                  </HStack>
-                  {aliases.map((alias, index) => (
-                    <HStack key={alias.id}>
-                      <Radio
-                        value={alias.id}
-                        disabled={Number.isNaN(Number(alias.id))}
-                      >
-                        Preferred
-                      </Radio>
-                      <Input {...register(`aliases.${index}.name` as const)} />
-                      <RiDeleteBin2Fill onClick={() => remove(index)} />
+                id={person.id}
+              />
+            </GenericModal>
+          )}
+        />
+        <Controller
+          control={control}
+          name="avatar"
+          render={({ field }) => (
+            <GenericModal
+              isOpen={isAvatarPickerOpen}
+              onClose={() => setAvatarPickerOpen(false)}
+            >
+              <PersonImagePicker
+                onSelect={(e) => {
+                  field.onChange(mapAvatar(e))
+                  setAvatarPickerOpen(false)
+                }}
+                id={person.id}
+              />
+            </GenericModal>
+          )}
+        />
+        <VStack spacing={8} maxW="6xl" mx="auto" w="full" mt={6}>
+          <NextLink
+            href={Routing.toPerson(person.id, personPreferredName(person))}
+            passHref
+          >
+            <Link display="flex" alignItems="center">
+              <RiArrowLeftLine />
+              <Text textStyle="heading-sm" ml={2}>
+                Back
+              </Text>
+            </Link>
+          </NextLink>
+          <Box onClick={() => setAvatarPickerOpen(true)}>
+            <Portrait
+              {...personPortraitDimensions}
+              src={watchAvatar.src}
+              opacity={1}
+            />
+          </Box>
+          <Button
+            textStyle="heading-sm"
+            onClick={() => setBannerPickerOpen(true)}
+          >
+            Edit Banner
+          </Button>
+          <Field name="Full Name">
+            <Input type="text" placeholder="Full name" {...register("name")} />
+          </Field>
+          <Field name="Birth Date">
+            <Input
+              type="date"
+              {...register("birthDate", { valueAsDate: true })}
+            />
+          </Field>
+          <Field name="Aliases">
+            <Controller
+              control={control}
+              name="preferredAliasId"
+              render={({ field }) => (
+                <RadioGroup
+                  value={field.value}
+                  onChange={(val) => {
+                    const num = Number(val)
+                    if (Number.isNaN(num)) {
+                      makeToast({
+                        description:
+                          "You must submit changes before marking new aliases as preferred.",
+                      })
+                      return
+                    }
+                    field.onChange(num)
+                  }}
+                  spacing={4}
+                  name="preferredAliasId"
+                >
+                  <VStack spacing={4}>
+                    <HStack>
+                      <Radio value={-1}>No preferred alias</Radio>
                     </HStack>
-                  ))}
-                </VStack>
-              </RadioGroup>
-            )}
-          />
-          <HStack>
-            <RiAddLine onClick={() => append({ name: "" })} />
-          </HStack>
-        </Field>
-        <Button type="submit" isLoading={isLoading}>
-          Submit
-        </Button>
-      </VStack>
-    </Box>
+                    {aliases.map((alias, index) => (
+                      <HStack key={alias.id}>
+                        <Radio
+                          value={alias.id}
+                          disabled={Number.isNaN(Number(alias.id))}
+                        >
+                          Preferred
+                        </Radio>
+                        <Input
+                          {...register(`aliases.${index}.name` as const)}
+                        />
+                        <RiDeleteBin2Fill onClick={() => remove(index)} />
+                      </HStack>
+                    ))}
+                  </VStack>
+                </RadioGroup>
+              )}
+            />
+            <HStack>
+              <RiAddLine onClick={() => append({ name: "" })} />
+            </HStack>
+          </Field>
+          <Button type="submit" isLoading={isLoading}>
+            Submit
+          </Button>
+        </VStack>
+      </Box>
+    </VStack>
   )
 }
