@@ -7,7 +7,7 @@ import { decodeUriFriendly } from "@/client/data/encoders"
 
 const PersonPageWrapper = ({ id }: PersonPageProps) => {
   return (
-    <WithNavbar>
+    <WithNavbar noSpace>
       <PersonPage id={id} />
     </WithNavbar>
   )

@@ -125,7 +125,7 @@ function joinRoom(
     imageLoaded: false,
     get answered(): boolean {
       return (
-        seat.state.type === "waitingForNextRound" && Boolean(seat.state.answer)
+        seat.state.type === "waitingForNextRound" && seat.state.answer !== undefined
       )
     },
     get score(): number {

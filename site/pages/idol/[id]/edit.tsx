@@ -11,7 +11,7 @@ type PersonEditPageWrapperProps = {
 const PersonEditPageWrapper = ({ id }: PersonEditPageWrapperProps) => {
   const { data } = useOnePersonQuery({ id })
   return (
-    <WithNavbar>
+    <WithNavbar noSpace>
       {data?.person && <PersonEditPage person={data.person} />}
     </WithNavbar>
   )
