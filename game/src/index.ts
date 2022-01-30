@@ -360,6 +360,7 @@ function startRound(ctx: CommandContext) {
     unsubscribe(seat.player.sock, topics.rooms())
   }
   const timeoutMs = secs * 1000
+  ctx.room.roundStart = new Date()
   ctx.room.endingTimeout = setTimeout(() => {
     endRound(ctx)
   }, timeoutMs)
@@ -367,6 +368,7 @@ function startRound(ctx: CommandContext) {
 }
 
 async function endRound(ctx: CommandContext) {
+  const roundStartDate = ctx.room.roundStart
   const correctPerson = allPeople.get(String(ctx.room.correctAnswer))
   const question = currentQuestion(ctx)
   if (!correctPerson) {
@@ -390,19 +392,20 @@ async function endRound(ctx: CommandContext) {
       `Room in ${ctx.room.round} exceeded the maximum number of images allowed`
     )
   }
-  const answers = new Map(
-    [...ctx.room.seats.values()]
-      .filter((seat) => seat.state.type === "waitingForNextRound")
-      .map((seat) => [
-        seat.player.id,
-        {
-          answer:
-            seat.state.type === "waitingForNextRound"
-              ? seat.state.answer
-              : undefined,
-          hintUsed: seat.hintUsed,
-        },
-      ])
+  const answers: Map<number, QuestionAnswer> = new Map(
+    [...ctx.room.seats.values()].flatMap((seat) => {
+      if (seat.state.type !== "waitingForNextRound") {
+        return []
+      }
+      const { answerDate, answer } = seat.state
+      const value: QuestionAnswer = {
+        answer,
+        answerDate,
+        answerMs: roundStartDate.getTime() - answerDate.getTime(),
+        hintUsed: seat.hintUsed,
+      }
+      return [[seat.player.id, value]]
+    })
   )
   ctx.room.history.push({
     correctId: round.answer.id,
@@ -922,6 +925,7 @@ export const privateMessageHandlers: PrivateMessageHandlers = {
     ctx.seat.state = {
       type: "waitingForNextRound",
       answer: args.id,
+      answerDate: new Date(),
     }
 
     const hasEveryoneAnswered = [...ctx.room.seats.values()].every(

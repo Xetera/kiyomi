@@ -117,28 +117,28 @@ model Alias {
 }
 
 model Person {
-  id                    Int                 @id @default(autoincrement())
+  id                    Int                  @id @default(autoincrement())
   description           String?
   name                  String
-  preferredAliasId      Int?                @unique(map: "persons.preferred_alias_id_unique") @map("preferred_alias_id")
-  createdAt             DateTime            @default(now()) @map("created_at")
-  updatedAt             DateTime            @default(now()) @updatedAt @map("updated_at")
-  ireneBotId            Int?                @unique(map: "persons.irene_bot_id_unique") @map("irene_bot_id")
-  preferredMembershipId Int?                @map("preferred_membership_id")
-  bannerId              Int?                @unique(map: "persons.banner_id_unique") @map("banner_id")
-  avatarId              Int?                @unique(map: "persons.avatar_id_unique") @map("avatar_id")
-  birthDate             DateTime?           @map("birth_date")
+  preferredAliasId      Int?                 @unique(map: "persons.preferred_alias_id_unique") @map("preferred_alias_id")
+  createdAt             DateTime             @default(now()) @map("created_at")
+  updatedAt             DateTime             @default(now()) @updatedAt @map("updated_at")
+  ireneBotId            Int?                 @unique(map: "persons.irene_bot_id_unique") @map("irene_bot_id")
+  preferredMembershipId Int?                 @map("preferred_membership_id")
+  bannerId              Int?                 @unique(map: "persons.banner_id_unique") @map("banner_id")
+  avatarId              Int?                 @unique(map: "persons.avatar_id_unique") @map("avatar_id")
+  birthDate             DateTime?            @map("birth_date")
   gender                Gender?
-  avatar                Image?              @relation("person_avatar", fields: [avatarId], references: [id])
-  banner                Image?              @relation("person_banner", fields: [bannerId], references: [id], onUpdate: SetNull)
-  preferredAlias        Alias?              @relation("preferred_alias", fields: [preferredAliasId], references: [id])
-  preferredMembership   GroupMember?        @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
+  avatar                Image?               @relation("person_avatar", fields: [avatarId], references: [id])
+  banner                Image?               @relation("person_banner", fields: [bannerId], references: [id], onUpdate: SetNull)
+  preferredAlias        Alias?               @relation("preferred_alias", fields: [preferredAliasId], references: [id])
+  preferredMembership   GroupMember?         @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
   aliases               Alias[]
   appearances           Appearance[]
-  appearsIn             Face[]              @relation("face_person")
+  appearsIn             Face[]               @relation("face_person")
   memberOf              GroupMember[]
-  guessingGameAnswers   GuessingGameGuess[] @relation("guessing_game_person_answer")
-  guessingGameGuesses   GuessingGameGuess[] @relation("guessing_game_person_guess")
+  guessingGameTargets   GuessingGameTarget[] @relation("guessing_game_target_answers")
+  guessingGameGuesses   GuessingGameGuess[]  @relation("guessing_game_person_guess")
 
   @@index([name], map: "person.name.index")
   @@map("persons")
@@ -213,36 +213,37 @@ model Role {
 
 /// A user
 model User {
-  id                     Int                   @id @default(autoincrement())
-  name                   String?
-  email                  String?               @unique(map: "users.email_unique")
-  emailVerified          DateTime?             @map("email_verified")
-  image                  String?
-  token                  String?               @unique(map: "users.token_unique")
-  createdAt              DateTime              @default(now()) @map("created_at")
-  updatedAt              DateTime              @default(now()) @updatedAt @map("updated_at")
-  bot                    Boolean               @default(false)
-  avatarId               Int?                  @unique(map: "users.avatar_id_unique") @map("avatar_id")
-  bannerId               Int?                  @unique(map: "users.bannerId_unique")
-  avatar                 Image?                @relation("user_avatar", fields: [avatarId], references: [id])
-  banner                 Image?                @relation("user_banner", fields: [bannerId], references: [id])
-  taggedAppearances      Appearance[]
-  DiscoveredImageVote    DiscoveredImageVote[]
-  markedFaces            Face[]
-  imageLikes             ImageLike[]
-  images                 Image[]
-  roles                  Role[]
-  cratedTags             Tag[]
-  tagCategories          TagCategory[]
-  appearanceTags         AppearanceTag[]
-  tagAliases             TagAlias[]
-  imageTags              ImageTag[]
-  placedRestrictions     UserRestriction[]     @relation("restricted_by")
-  restrictions           UserRestriction[]     @relation("restricted_user")
-  reportedImages         ImageReport[]         @relation("image_reporter")
-  actionedReportedImages ImageReport[]         @relation("image_report_actioner")
-  guessingGamesHosted    GuessingGame[]        @relation("guessing_game_owner")
-  guessingGameGuesses GuessingGameGuess[]
+  id                         Int                       @id @default(autoincrement())
+  name                       String?
+  email                      String?                   @unique(map: "users.email_unique")
+  emailVerified              DateTime?                 @map("email_verified")
+  image                      String?
+  token                      String?                   @unique(map: "users.token_unique")
+  createdAt                  DateTime                  @default(now()) @map("created_at")
+  updatedAt                  DateTime                  @default(now()) @updatedAt @map("updated_at")
+  bot                        Boolean                   @default(false)
+  avatarId                   Int?                      @unique(map: "users.avatar_id_unique") @map("avatar_id")
+  bannerId                   Int?                      @unique(map: "users.bannerId_unique")
+  avatar                     Image?                    @relation("user_avatar", fields: [avatarId], references: [id])
+  banner                     Image?                    @relation("user_banner", fields: [bannerId], references: [id])
+  taggedAppearances          Appearance[]
+  DiscoveredImageVote        DiscoveredImageVote[]
+  markedFaces                Face[]
+  imageLikes                 ImageLike[]
+  images                     Image[]
+  roles                      Role[]
+  cratedTags                 Tag[]
+  tagCategories              TagCategory[]
+  appearanceTags             AppearanceTag[]
+  tagAliases                 TagAlias[]
+  imageTags                  ImageTag[]
+  placedRestrictions         UserRestriction[]         @relation("restricted_by")
+  restrictions               UserRestriction[]         @relation("restricted_user")
+  reportedImages             ImageReport[]             @relation("image_reporter")
+  actionedReportedImages     ImageReport[]             @relation("image_report_actioner")
+  guessingGamesHosted        GuessingGame[]            @relation("guessing_game_owner")
+  guessingGameGuesses        GuessingGameGuess[]
+  guessingGameParticipations GuessingGameParticipant[]
 
   @@index([token], map: "user.token.index")
   @@map("users")
@@ -492,59 +493,108 @@ enum ImageReportAction {
 }
 
 model GuessingGame {
-  id              Int               @id @default(autoincrement())
+  id              Int                       @id @default(autoincrement())
   name            String
-  secondsPerRound Int               @map("seconds_per_round")
-  ownerId         Int               @map("owner_id")
-  owner           User              @relation("guessing_game_owner", fields: [ownerId], references: [id])
-  hints           GuessingGameHints @default(POINT_COST)
-  startDate       DateTime          @map("start_date")
-  finishDate      DateTime          @map("finish_date")
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
-  rounds GuessingGameRound[]
+  secondsPerRound Int                       @map("seconds_per_round")
+  ownerId         Int                       @map("owner_id")
+  owner           User                      @relation("guessing_game_owner", fields: [ownerId], references: [id])
+  hints           GuessingGameHints         @default(POINT_COST)
+  startDate       DateTime                  @map("start_date")
+  // Games always have a finish date because unfinished games are not recorded
+  finishDate      DateTime                  @map("finish_date")
+  rounds          GuessingGameRound[]
+  participants    GuessingGameParticipant[]
+  createdAt       DateTime                  @default(now()) @map("created_at")
+  updatedAt       DateTime                  @default(now()) @updatedAt @map("updated_at")
 
-  @@map("guessing_game")
+  @@map("guessing_games")
 }
 
-//model GuessingGameParticipant {
-//  @@map("guessing_game_participant")
-//}
+model GuessingGameParticipant {
+  id        Int                 @id @default(autoincrement())
+  // Nullable in case the user is deleted
+  userId    Int?                @map("user_id")
+  user      User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  gameId    Int                 @map("game_id")
+  game      GuessingGame        @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  type      GameParticipantKind @default(Player)
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([userId, gameId])
+  @@index([userId], name: "guessingGameParticipantUser")
+  @@index([gameId], name: "guessingGameParticipantGame")
+  @@map("guessing_game_participants")
+}
+
+enum GameParticipantKind {
+  Player
+  Spectator
+}
 
 model GuessingGameRound {
-  id              Int          @id @default(autoincrement())
-  gameId          Int          @map("game_id")
-  game            GuessingGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  correctPersonId Int
-  startDate       DateTime     @map("start_date")
-  createdAt       DateTime     @default(now()) @map("created_at")
-  updatedAt       DateTime     @default(now()) @updatedAt @map("updated_at")
-  guesses         GuessingGameGuess[]
+  id        Int                  @id @default(autoincrement())
+  gameId    Int                  @map("game_id")
+  game      GuessingGame         @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  startDate DateTime             @map("start_date")
+  // currently an array with a single element per round, but the game could be updated
+  // to include more guesses per round
+  targets   GuessingGameTarget[]
+  guesses   GuessingGameGuess[]
+  // the exact date the round started
+  startedAt DateTime             @map("started_at")
+  createdAt DateTime             @default(now()) @map("created_at")
+  updatedAt DateTime             @default(now()) @updatedAt @map("updated_at")
 
+  @@index([gameId], name: "guessinGameRoundGame")
   @@map("guessing_game_rounds")
 }
 
+// The correct answer for a round
+// this is a separate model because in the future it might need to be
+// changed into a m:m relationship
+model GuessingGameTarget {
+  id        Int                 @id @default(autoincrement())
+  // same with guesses, a correct answer should never be deleted
+  answerId  Int?                @map("answer_id")
+  answer    Person?             @relation("guessing_game_target_answers", fields: [answerId], references: [id], onDelete: Restrict)
+  roundId   Int                 @map("round_id")
+  round     GuessingGameRound   @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  guesses   GuessingGameGuess[]
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @default(now()) @updatedAt @map("updated_at")
+
+  @@index([roundId], name: "guessinGameTargetRound")
+  @@map("guessing_game_targets")
+}
+
 model GuessingGameGuess {
-  id             Int               @id @default(autoincrement())
-  roundId        Int               @map("round_id")
-  round          GuessingGameRound @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  id            Int                @id @default(autoincrement())
+  // duplicating round relationships on top of target for faster queries
+  roundId       Int                @map("round_id")
+  round         GuessingGameRound  @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  targetId      Int                @map("target_id")
+  target        GuessingGameTarget @relation(fields: [targetId], references: [id], onDelete: Cascade)
   // If we want to delete a person, the guesses need to be manually deleted as they
   // will be contributing to XP gain
-  personGuessId  Int               @map("person_guess_id")
-  personGuess    Person            @relation("guessing_game_person_guess", fields: [personGuessId], references: [id], onDelete: Restrict)
-  // same with guesses, a correct answer should never be deleted
-  personAnswerId Int               @map("person_answer_id")
-  personAnswer   Person            @relation("guessing_game_person_answer", fields: [personAnswerId], references: [id], onDelete: Restrict)
+  personGuessId Int?               @map("person_guess_id")
+  personGuess   Person?            @relation("guessing_game_person_guess", fields: [personGuessId], references: [id], onDelete: Restrict)
   // we want this to be nullable for if users delete their accounts
   // the data should still remain accessible
-  userId         Int?              @map("user_id")
-  user           User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
-  // guess date is different
-  guessedAt      DateTime
-  createdAt      DateTime          @default(now()) @map("created_at")
-  updatedAt      DateTime          @default(now()) @updatedAt @map("updated_at")
+  userId        Int?               @map("user_id")
+  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  hintUsed      Boolean            @default(false) @map("hint_used")
+  // guess date is when the guess was created
+  guessedAt     DateTime           @map("guessed_at")
+  // Miliseconds it took for this guess to register from the start of the round
+  // this can be derived by why bother since rounds don't change
+  guessMs       Int                @map("guess_ms")
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @default(now()) @updatedAt @map("updated_at")
 
+  // It's unlikely that we would ever need to query guesess through userId so we don't have it indexed
   @@index([roundId], name: "guessingGameGuessRound")
+  @@index([targetId], name: "guessingGameGuessTarget")
   @@map("guessing_game_guesses")
 }
 

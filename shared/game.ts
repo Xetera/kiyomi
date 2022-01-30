@@ -93,6 +93,7 @@ const seatState = z.union([
   z.object({
     type: z.literal("waitingForNextRound"),
     answer: z.number().optional(),
+    answerDate: z.date(),
   }),
 ])
 

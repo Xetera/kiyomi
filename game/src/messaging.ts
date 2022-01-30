@@ -151,6 +151,8 @@ export type EmittedMessage<T extends OutgoingMessageType> = {
 
 export type QuestionAnswer = {
   answer: number
+  answerDate: Date
+  answerMs: number
   hintUsed: boolean
 }
 
@@ -181,6 +183,7 @@ export type Room = {
   maxSeats: number
   maxRounds: number
   deleteTimer?: number
+  roundStart?: Date
   endingTimeout?: ReturnType<typeof setTimeout>
   imagePrepareTimeout?: ReturnType<typeof setTimeout>
   cleanupTimer?: ReturnType<typeof setTimeout>
