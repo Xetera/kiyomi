@@ -30,7 +30,7 @@ jobs:
         id: docker_build_push
         run: |2
           export $(echo "${{secrets.ENV_IMAGES}}" | xargs)
-          sudo docker buildx build -f site/Dockerfile \
+          DOCKER_BUILDKIT=1 sudo docker buildx build -f site/Dockerfile \
             --build-arg NEXT_PUBLIC_TYPESENSE_KEY=myeOtddZLPNZlfP5RGXwf2KzMnTBgeJZ \
             --build-arg NEXT_PUBLIC_TYPESENSE_URL=https://search.kiyomi.io \
             --build-arg NEXT_PUBLIC_BASE_URL=https://kiyomi.io \

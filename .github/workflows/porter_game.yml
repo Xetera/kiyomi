@@ -1,27 +1,37 @@
+name: Game build
 "on":
   push:
     paths:
       - game/**
     branches:
       - main
-name: Deploy to Porter
 jobs:
   porter-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2.3.4
-    - name: Set Github tag
-      id: vars
-      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-    - name: Update Porter App
-      timeout-minutes: 20
-      uses: porter-dev/porter-update-action@v0.1.0
-      with:
-        app: game
-        cluster: "355"
-        host: https://dashboard.getporter.dev
-        namespace: default
-        project: "662"
-        tag: ${{ steps.vars.outputs.sha_short }}
-        token: ${{ secrets.PORTER_TOKEN_662 }}
+      - name: Checkout code
+        uses: actions/checkout@v2.3.4
+      - name: Download Porter
+        id: download_porter
+        run: |2
+          name=$(curl -s https://api.github.com/repos/porter-dev/porter/releases/latest | grep "browser_download_url.*/porter_.*_Linux_x86_64\.zip" | cut -d ":" -f 2,3 | tr -d \")
+          name=$(basename $name)
+          curl -L https://github.com/porter-dev/porter/releases/latest/download/$name --output $name
+          unzip -a $name
+          rm $name
+          chmod +x ./porter
+          sudo mv ./porter /usr/local/bin/porter
+      - name: Configure Porter
+        id: configure_porter
+        run: |2
+          sudo porter auth login --token ${{secrets.PORTER_TOKEN_662}}
+          sudo porter docker configure
+      - name: Docker build, push
+        id: docker_build_push
+        run: |2
+          DOCKER_BUILDKIT=1 sudo docker buildx build -f game/Dockerfile . -t index.docker.io/xetera/game:latest
+          sudo docker push index.docker.io/xetera/game:latest
+      - name: Deploy on Porter
+        id: deploy_porter
+        run: |2
+          curl -X POST "https://dashboard.getporter.dev/api/webhooks/deploy/${{secrets.WEBHOOK_GAME}}?commit=latest&repository=index.docker.io/xetera/game"
