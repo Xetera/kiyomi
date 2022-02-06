@@ -47,8 +47,8 @@ async function main() {
     const parsedUrl = parse(req.url, true)
 
     return handle(req, res, parsedUrl)
-  }).listen(3000, () => {
-    console.log("> Ready on http://localhost:3000")
+  }).listen(Number(process.env.PORT ?? "3000"), () => {
+    console.log(`> Ready on http://localhost:${process.env.PORT}`)
   })
 }
 
