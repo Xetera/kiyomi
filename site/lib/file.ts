@@ -8,8 +8,6 @@ import sharp from "sharp"
 
 const upload = multer({ storage: multer.memoryStorage() })
 
-export type ImageMetadata = { width: number; height: number; type: string }
-
 export type FileDetails = {
   fieldname: string
   originalname: string
@@ -19,7 +17,6 @@ export type FileDetails = {
 }
 
 async function fileFromUrl(url: URL, fieldname: string): Promise<FileDetails> {
-  const DEFAULT_MIMETYPE = "?/?"
   const res = await fetch(url.toString()).then()
   const arrayBuffer = await res.arrayBuffer()
   return {
@@ -124,20 +121,6 @@ export async function convertImage(
     MimeType.WEBP,
     MimeType.WEBM,
   ])
-  const mappings: Record<MimeType | string, string> = {
-    [MimeType.AVIF]: "webp",
-    [MimeType.JPG]: "webp",
-    [MimeType.PNG]: "webp",
-    [MimeType.SVG]: "webp",
-    [MimeType.MP4]: "webm",
-    [MimeType.WEBM]: "webm",
-    [MimeType.GIF]: "webm",
-    [MimeType.WEBP]: "webp",
-  }
-  const readable = new Readable()
-  readable._read = () => {}
-  readable.push(buffer)
-  readable.push(null)
 
   async function convertWebp(b: Buffer): Promise<ConversionResult> {
     return withMetadata(sharp(b, { animated: true }).webp({ quality: 100 }))
@@ -155,20 +138,13 @@ export async function convertImage(
   }
 
   if (excludedFormats.has(inputFormat)) {
-    // const passthrough = new PassThrough()
     if (inputFormat === "GIF") {
       return new Promise((res, rej) => {
-        console.log("converting ffmpeg")
         const passthrough = ffmpeg()
           .input(Readable.from([buffer], { objectMode: false }))
           .inputFormat("gif_pipe")
           .toFormat("mp4")
-          .outputOptions([
-            // "-pix_fmt yuv420p",
-            // "-c:v libx264",
-            "-movflags +faststart+empty_moov",
-            // "-filter:v crop='floor(in_w/2)*2:floor(in_h/2)*2'",
-          ])
+          .outputOptions(["-movflags +faststart+empty_moov"])
           .on("error", (e) => console.log("something went wrong", e))
           .pipe()
         const chunks: Buffer[] = []
@@ -180,8 +156,6 @@ export async function convertImage(
           ffmpeg()
             .input(Readable.from([buff], { objectMode: false }))
             .ffprobe((err, data) => {
-              console.log("got ffprobe")
-              console.log(data)
               if (data.streams.length === 0) {
                 return rej(new Error("Invalid stream"))
               }
@@ -202,7 +176,6 @@ export async function convertImage(
                 },
               })
             })
-          console.log("Ended")
         })
       })
     }
