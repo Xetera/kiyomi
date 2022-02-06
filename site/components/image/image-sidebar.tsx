@@ -39,6 +39,7 @@ function SidebarSection({ title, children }) {
         fontSize="sm"
         whiteSpace="nowrap"
         display="flex"
+        fontWeight="semibold"
         flexFlow="row nowrap"
         alignItems="center"
         mr="2"
@@ -202,15 +203,13 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           gridTemplateColumns="min-content 1fr"
         >
           <SidebarSection title={"Dimensions"}>
-            <p className="font-semibold">
-              {image.width}x{image.height}
-            </p>
+            {image.width}x{image.height}
           </SidebarSection>
           <SidebarSection title={"Size"}>
-            <p className="font-semibold">{humanFileSize(image.bytes)}</p>
+            {humanFileSize(image.bytes)}
           </SidebarSection>
           <SidebarSection title={"Type"}>
-            <p className="font-semibold">{image.mimetype.toUpperCase()}</p>
+            {image.mimetype.toUpperCase()}
           </SidebarSection>
           <SidebarSection
             title={
@@ -222,11 +221,9 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
               </>
             }
           >
-            <p className="font-semibold">
-              {image.faceScanDate
-                ? format(new Date(image.faceScanDate), "MMMM dd, yyyy")
-                : "Never"}
-            </p>
+            {image.faceScanDate
+              ? format(new Date(image.faceScanDate), "MMMM dd, yyyy")
+              : "Never"}
           </SidebarSection>
         </Grid>
         {image.imageTags?.length > 0 ? (

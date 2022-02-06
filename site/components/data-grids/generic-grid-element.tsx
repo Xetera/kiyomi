@@ -1,6 +1,6 @@
 import { Image as ImageData } from "@/lib/__generated__/graphql"
 import NextLink from "next/link"
-import { Box, Flex, Image, ImageProps, Skeleton, Link } from "@chakra-ui/react"
+import { Box, Flex, Image, ImageProps, Link, Skeleton } from "@chakra-ui/react"
 import React, { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -51,6 +51,13 @@ export const ImageLoader = ({
     setErrored(true)
   }
 
+  const sharedProps = {
+    objectPosition: objectPosition,
+    objectFit: "cover",
+    width: "100%",
+    height: "100%",
+    loading: "lazy",
+  } as const
   return (
     <Skeleton
       isLoaded={loaded}
@@ -61,20 +68,37 @@ export const ImageLoader = ({
       w="full"
       background="black"
     >
-      {!errored && (
-        <Image
-          objectPosition={objectPosition}
-          objectFit="cover"
-          width="100%"
-          height="100%"
-          loading="lazy"
-          onError={onError}
-          onLoad={() => setLoaded(true)}
-          ref={ref}
-          {...rest}
-          src={src}
-        />
-      )}
+      {!errored &&
+        (src.endsWith("mp4") ? (
+          <Box
+            as="video"
+            {...sharedProps}
+            autoPlay
+            loop
+            playsInline
+            muted
+            onLoadedData={() => setLoaded(true)}
+          >
+            <source
+              src={src}
+              onLoad={() => setLoaded(true)}
+              onError={onError}
+            />
+          </Box>
+        ) : (
+          <Image
+            objectPosition={objectPosition}
+            objectFit="cover"
+            width="100%"
+            height="100%"
+            loading="lazy"
+            onError={onError}
+            onLoad={() => setLoaded(true)}
+            ref={ref}
+            {...rest}
+            src={src}
+          />
+        ))}
     </Skeleton>
   )
 }

@@ -1,5 +1,6 @@
 query OneImage($slug: String!) {
   image(slug: $slug) {
+    mimetype
     unknownFaces {
       ...FaceData
       appearance {

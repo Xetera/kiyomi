@@ -98,6 +98,7 @@ export type ImageWithFacesProps = {
   blurred?: boolean
   onLoad?: () => void
   image: {
+    type: string
     url: string
     width?: number
     height?: number
@@ -189,6 +190,7 @@ export const ImageWithFaces = ({
         {faces(imageSize)}
       </Box>
       {/* @ts-ignore */}
+      {image.type}
       <Image
         ref={(input) => {
           imageRef.current = input
@@ -345,6 +347,13 @@ export default function ImageDisplay() {
     ? image!.height
     : "100%"
 
+  const sharedImageProps = {
+    display: "flex",
+    objectFit: "contain",
+    overflow: "hidden",
+    m: "auto",
+    borderRadius: "md",
+  } as const
   return (
     <Flex
       flex={1}
@@ -394,39 +403,48 @@ export default function ImageDisplay() {
             renderFaces(appearance.faces, appearance)
           )}
         </Box>
-        {/* @ts-ignore */}
-        <Image
-          ref={(input) => {
-            imageRef.current = input
-            // onLoad replacement for SSR
-            if (!input) {
-              return
-            }
-            const img = input
+        {image.mimetype === "MP4" ? (
+          <Box
+            {...sharedImageProps}
+            as="video"
+            autoPlay
+            loop
+            playsInline
+            muted
+            controls
+          >
+            <source src={image.rawUrl} />
+          </Box>
+        ) : (
+          <Image
+            ref={(input) => {
+              imageRef.current = input
+              // onLoad replacement for SSR
+              if (!input) {
+                return
+              }
+              const img = input
 
-            const updateFunc = () => {
-              setLoaded(true)
-            }
-            img.onload = updateFunc
-            img.onerror = () => {
-              updateFunc()
-              img.onerror = null
-            }
-            if (img.complete) {
-              updateFunc()
-            }
-          }}
-          src={image.rawUrl}
-          {...(loaded ? {} : { width: image.width })}
-          height={image.height!}
-          flexBasis={image.width! <= 1200 ? image.width! : "100%"}
-          maxHeight={image.height! <= 800 ? image.height! : "100%"}
-          display="flex"
-          objectFit="contain"
-          overflow="hidden"
-          m="auto"
-          borderRadius="md"
-        />
+              const updateFunc = () => {
+                setLoaded(true)
+              }
+              img.onload = updateFunc
+              img.onerror = () => {
+                updateFunc()
+                img.onerror = null
+              }
+              if (img.complete) {
+                updateFunc()
+              }
+            }}
+            src={image.rawUrl}
+            {...(loaded ? {} : { width: image.width })}
+            height={image.height!}
+            flexBasis={image.width! <= 1200 ? image.width! : "100%"}
+            maxHeight={image.height! <= 800 ? image.height! : "100%"}
+            {...sharedImageProps}
+          />
+        )}
       </Box>
     </Flex>
   )

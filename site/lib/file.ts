@@ -1,9 +1,9 @@
 import multer from "multer"
 import { NextApiRequest, NextApiResponse } from "next"
-import { promisify } from "util"
 import { createHash } from "crypto"
 import { MimeType } from "@prisma/client"
 import { Readable } from "stream"
+import ffmpeg from "fluent-ffmpeg"
 import sharp from "sharp"
 
 const upload = multer({ storage: multer.memoryStorage() })
@@ -102,9 +102,16 @@ export function parseExtension(extension: string): MimeType {
   return MimeType[extension.toUpperCase()]
 }
 
+type MinimalOutputInfo = {
+  format: string
+  size: number
+  width: number
+  height: number
+}
+
 type ConversionResult = {
   data: Buffer
-  info: sharp.OutputInfo
+  info: MinimalOutputInfo
 }
 
 export async function convertImage(
@@ -133,7 +140,7 @@ export async function convertImage(
   readable.push(null)
 
   async function convertWebp(b: Buffer): Promise<ConversionResult> {
-    return withMetadata(sharp(b).webp({ quality: 100 }))
+    return withMetadata(sharp(b, { animated: true }).webp({ quality: 100 }))
   }
 
   async function withMetadata(b: sharp.Sharp): Promise<ConversionResult> {
@@ -148,6 +155,57 @@ export async function convertImage(
   }
 
   if (excludedFormats.has(inputFormat)) {
+    // const passthrough = new PassThrough()
+    if (inputFormat === "GIF") {
+      return new Promise((res, rej) => {
+        console.log("converting ffmpeg")
+        const passthrough = ffmpeg()
+          .input(Readable.from([buffer], { objectMode: false }))
+          .inputFormat("gif_pipe")
+          .toFormat("mp4")
+          .outputOptions([
+            // "-pix_fmt yuv420p",
+            // "-c:v libx264",
+            "-movflags +faststart+empty_moov",
+            // "-filter:v crop='floor(in_w/2)*2:floor(in_h/2)*2'",
+          ])
+          .on("error", (e) => console.log("something went wrong", e))
+          .pipe()
+        const chunks: Buffer[] = []
+        passthrough.on("data", (chunk: Buffer) => {
+          chunks.push(chunk)
+        })
+        passthrough.on("end", () => {
+          const buff = Buffer.concat(chunks)
+          ffmpeg()
+            .input(Readable.from([buff], { objectMode: false }))
+            .ffprobe((err, data) => {
+              console.log("got ffprobe")
+              console.log(data)
+              if (data.streams.length === 0) {
+                return rej(new Error("Invalid stream"))
+              }
+              const [firstStream] = data.streams
+              const width = firstStream!.width!
+              const height = firstStream!.height!
+              const size = (data.format.size as unknown) as
+                | string
+                | number
+                | undefined
+              res({
+                data: buff,
+                info: {
+                  width,
+                  height,
+                  size: size === "N/A" ? 0 : Number(size),
+                  format: "mp4",
+                },
+              })
+            })
+          console.log("Ended")
+        })
+      })
+    }
     return withMetadata(sharp(buffer))
   }
   return convertWebp(buffer)

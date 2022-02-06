@@ -157,30 +157,34 @@ const imagesOfIdol = async (t) => {
 }
 
 async function downloadImages() {
-  const idolOffset = 120
-  const idolTakeCount = 120
-  // next = 240
+  const idolOffset = 215
+  const idolTakeCount = 1
+  // next = 480
   const idolIds = Array(idolTakeCount)
     .fill(0)
     .map((_, i) => i + 1 + idolOffset)
   const getImages = async (d) => {
     const a = await imagesOfIdol(d)
     const offset = lastImageIndex(d)
-    return a.slice(offset, 50).map((image, i) => ({
+    return a.slice(0).map((image, i) => ({
       i: offset + i,
       imageId: image,
       personId: d,
     }))
   }
   const inputs = (await parallelMap(idolIds, getImages, 5)).flat()
+  const target = [inputs.find((input) => input.imageId === 2607571)]
+  console.log(inputs)
+  console.log(target)
   parallelMap(
-    inputs,
+    target,
+    // inputs,
     async ({ imageId, personId, i }) => {
       const person = members[personId]
       await memes(imageId, { ...person, id: personId })
       await saveProgress(personId, i)
       // production download delay
-      await sleep(10000)
+      await sleep(8000)
     },
     5
   ).then((r) => {

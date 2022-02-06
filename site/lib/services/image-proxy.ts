@@ -22,8 +22,18 @@ export const makeImageProxy = ({}: ImageProxyOptions) => {
      * @param img
      */
     thumbnails(img: Image): ImageThumbnails {
+      const rootImage = Routing.toRawImage(img)
+      // we can't really do resizing for MP4s so this is
+      // a decent alternative
+      if (img.mimetype === "MP4") {
+        return {
+          small: rootImage,
+          medium: rootImage,
+          large: rootImage,
+        }
+      }
       const base = imgproxy
-        .image(Routing.toRawImage(img))
+        .image(rootImage)
         .width(0)
         .resizeType("fill")
         .extension("webp")
