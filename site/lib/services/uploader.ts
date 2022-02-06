@@ -85,7 +85,7 @@ export function makeUploader({ prisma, wasabi, wendy }: UploaderOptions) {
           mimetype: mime || "image/webp",
         }),
       ])
-      const status = uploadResult.$metadata.httpStatusCode
+      const status = uploadResult?.$metadata.httpStatusCode
       if (status && status >= 500) {
         console.log(uploadResult.$metadata)
         throw new UploadError(`Failed to upload image`, 500)

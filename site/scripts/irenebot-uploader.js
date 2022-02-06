@@ -174,11 +174,9 @@ async function downloadImages() {
   }
   const inputs = (await parallelMap(idolIds, getImages, 5)).flat()
   const target = [inputs.find((input) => input.imageId === 2607571)]
-  console.log(inputs)
-  console.log(target)
   parallelMap(
-    target,
-    // inputs,
+    // target,
+    inputs,
     async ({ imageId, personId, i }) => {
       const person = members[personId]
       await memes(imageId, { ...person, id: personId })

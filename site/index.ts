@@ -14,15 +14,30 @@ async function main() {
   const amqp = makeAmqp()
   const prisma = new PrismaClient()
   const services = createServices(prisma, amqp)
+  services.metrics.client.collectDefaultMetrics()
   process.on("SIGINT", () => {
     amqp.gracefulExit()
     prisma.$disconnect()
     app.close()
     process.exit(0)
   })
-  createServer((req, res) => {
+  createServer(async (req, res) => {
     if (!req.url) {
       console.warn("Got a request with no url?")
+      return
+    }
+    if (req.url === "/metrics") {
+      const metrics = await services.metrics.client.register.metrics()
+      res.setHeader(
+        "content-type",
+        services.metrics.client.register.contentType
+      )
+      res.write(Buffer.from(metrics), (err) => {
+        if (err) {
+          console.error(err)
+        }
+        res.end()
+      })
       return
     }
     req.services = services

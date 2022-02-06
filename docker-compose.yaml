@@ -1,9 +1,14 @@
 version: "3.2"
 
 volumes:
+  prometheus_data:
+  grafana_data:
   # not important to get indexed immediately
   sp_pg:
     external: true
+
+networks:
+  observability:
 
 services:
   redis:
@@ -31,3 +36,48 @@ services:
       POSTGRES_USER: postgres
     volumes:
       - sp_pg:/var/lib/postgresql/data
+  prometheus:
+    image: prom/prometheus:v2.33.0
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    # this might not work on mac
+    network_mode: host
+    # uncomment if required
+    # ports:
+    #   - 9090:9090
+  grafana:
+    image: grafana/grafana
+    user: "472"
+    depends_on:
+      - prometheus
+    ports:
+      - 3003:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=foobar
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - observability
+  imgproxy:
+    image: darthsim/imgproxy
+    environment:
+      IMGPROXY_KEY: 07c52e42ea6f36ed4087b305ae29fb3e551ca936c4b817cf78a186c333b135f9c590d7eadd8cfe7cf038aa9113f911b64534e5bdd802e19c746889573c55a95a
+      IMGPROXY_SALT: d97a8516cf4ae6d387f5968c3b83396ea9b832e00196ff317447cfbf6341c4d644504b1796520e6b298d46fb62362904be53142e9c7811a21db32f7f7a3e757b
+      IMGPROXY_BIND: :3420
+      IMGPROXY_PROMETHEUS_BIND: :3421
+      IMGPROXY_PROMETHEUS_NAMESPACE: imgproxy
+    networks:
+      - observability
+    ports:
+      - 3420:3420
+      - 3421:3421
+
+

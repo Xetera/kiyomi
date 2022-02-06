@@ -10,11 +10,16 @@ export type WebhookServiceOptions = {
   prisma: PrismaClient
 }
 
+const WEBHOOK_UPLOAD_BUFFER_MS = 30_000
+
 export const makeWebhook = ({
   discordWebhook,
   prisma,
 }: WebhookServiceOptions) => {
   function log(data: any) {
+    if (!discordWebhook) {
+      return
+    }
     return fetch(`${discordWebhook}?wait=true`, {
       method: "POST",
       headers: {
@@ -30,7 +35,7 @@ export const makeWebhook = ({
 
   const imageUploadSubscription = siteEvent.image.upload$
     // these have to be buffered to prevent bombing discord logs
-    .pipe(bufferTime(30000))
+    .pipe(bufferTime(WEBHOOK_UPLOAD_BUFFER_MS))
     .subscribe(async (images) => {
       const uploads = [...images].sort((a, b) =>
         a?.userId && b?.userId ? a.userId - b.userId : 0

@@ -24,7 +24,7 @@ type JiuDiscoveryProvider = {
 type JiuServiceOptions = {
   prisma: PrismaClient
   wendy: WendyService
-  amqp: AmqpService
+  amqp?: AmqpService
 }
 
 const DIRECT_QUEUE_NAME =
@@ -45,11 +45,17 @@ function convertProviderType(m: string) {
   }
 }
 
-const fetchJiu = (url: string, init?: RequestInit) =>
-  fetch(`${process.env.JIU_BASE_URL}${url}`, init)
+const jiuBase = process.env.JIU_BASE_URL
+
+const fetchJiu = (url: string, init?: RequestInit) => fetch(`${jiuBase}`, init)
 
 export function makeJiu(opts: JiuServiceOptions) {
   const { prisma } = opts
+  if (!jiuBase) {
+    console.warn(
+      `[JiU] JiU service base url was not given, disabling discovery.`
+    )
+  }
   const methods = {
     async handleJiuMessage(message: JiuMessageType): Promise<void> {
       // reversing because we want to process the most recently discovered post last
@@ -189,44 +195,50 @@ export function makeJiu(opts: JiuServiceOptions) {
     },
   }
 
-  opts.amqp
-    .consumeWith(
-      DIRECT_QUEUE_NAME,
-      async (message, channel) => {
-        // TODO: DLX
-        if (message) {
-          try {
-            const rawData = camelCaseKeys(
-              JSON.parse(message.content.toString()),
-              {
-                deep: true,
-              }
-            )
-            let m: JiuMessageType
+  if (opts.amqp) {
+    opts.amqp
+      .consumeWith(
+        DIRECT_QUEUE_NAME,
+        async (message, channel) => {
+          // TODO: DLX
+          if (message) {
             try {
-              m = await JiuMessage.parseAsync(rawData)
+              const rawData = camelCaseKeys(
+                JSON.parse(message.content.toString()),
+                {
+                  deep: true,
+                }
+              )
+              let m: JiuMessageType
+              try {
+                m = await JiuMessage.parseAsync(rawData)
+              } catch (err) {
+                console.error("Got an unpredicted schema from Jiu")
+                console.error(err)
+                channel.nack(message, false, true)
+                // TODO: handle this unpredictable schema change somehow?
+                return
+              }
+              console.log(`Got a new post from Jiu [${m.provider.type}]`)
+              await methods.handleJiuMessage(m)
+              channel.ack(message)
             } catch (err) {
-              console.error("Got an unpredicted schema from Jiu")
-              console.error(err)
+              console.log(err)
+              // TODO: error handle something here
               channel.nack(message, false, true)
-              // TODO: handle this unpredictable schema change somehow?
-              return
             }
-            console.log(`Got a new post from Jiu [${m.provider.type}]`)
-            await methods.handleJiuMessage(m)
-            channel.ack(message)
-          } catch (err) {
-            console.log(err)
-            // TODO: error handle something here
-            channel.nack(message, false, true)
           }
-        }
-      },
-      { prefetch: 1, assertQueue: DIRECT_QUEUE_NAME }
+        },
+        { prefetch: 1, assertQueue: DIRECT_QUEUE_NAME }
+      )
+      .catch((err) => {
+        console.error("Error attaching listener to Jiu queue")
+      })
+  } else {
+    console.warn(
+      `Kiyomi was initialized without an AMQP url, image labeling and discovery are disabled.`
     )
-    .catch((err) => {
-      console.error("Error attaching listener to Jiu queue")
-    })
+  }
   return methods
 }
 

@@ -13,6 +13,8 @@ import { makeReport, ReportService } from "@/lib/services/report"
 import { makeWebhook, WebhookService } from "@/lib/services/webhook"
 import { makeBan, BanService } from "@/lib/services/ban"
 import { ImageProxyService, makeImageProxy } from "@/lib/services/image-proxy"
+import type * as Prometheus from "prom-client"
+import makeMetrics, { MetricsService } from "@/lib/services/metrics"
 
 export type Services = {
   prisma: PrismaClient
@@ -30,6 +32,7 @@ export type Services = {
   webhook: WebhookService
   ban: BanService
   imageProxy: ImageProxyService
+  metrics: MetricsService
 }
 
 export function createServices(
@@ -41,6 +44,7 @@ export function createServices(
   const ban = makeBan({ prisma })
   const imageProxy = makeImageProxy({ prisma })
   const search = makeSearch({ prisma, imageProxy })
+  const metrics = makeMetrics()
 
   return {
     prisma,
@@ -50,6 +54,7 @@ export function createServices(
     imageProxy,
     search,
     ban,
+    metrics,
     discovery: makeDiscovery({ prisma }),
     jiu: makeJiu({ amqp, prisma, wendy }),
     xp: makeXp({ prisma }),
