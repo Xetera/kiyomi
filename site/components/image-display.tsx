@@ -98,7 +98,6 @@ export type ImageWithFacesProps = {
   blurred?: boolean
   onLoad?: () => void
   image: {
-    type: string
     url: string
     width?: number
     height?: number
@@ -190,7 +189,6 @@ export const ImageWithFaces = ({
         {faces(imageSize)}
       </Box>
       {/* @ts-ignore */}
-      {image.type}
       <Image
         ref={(input) => {
           imageRef.current = input
