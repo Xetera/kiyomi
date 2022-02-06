@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.4"
 
 volumes:
   prometheus_data:
@@ -74,10 +74,6 @@ services:
       IMGPROXY_BIND: :3420
       IMGPROXY_PROMETHEUS_BIND: :3421
       IMGPROXY_PROMETHEUS_NAMESPACE: imgproxy
-    networks:
-      - observability
-    ports:
-      - 3420:3420
-      - 3421:3421
+    network_mode: host
 
 

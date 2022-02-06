@@ -9,7 +9,7 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets:
-          - docker.host.internal:3000
+          - localhost:3000
   # game server
   - job_name: dubu
     scrape_interval: 5s

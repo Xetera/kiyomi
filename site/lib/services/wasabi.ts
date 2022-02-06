@@ -77,7 +77,7 @@ export function makeWasabi() {
           ContentType: image.mimetype,
         })
       } else {
-        const localPath = path.join(diskImagePrefix, image.key)
+        const localPath = path.join(process.cwd(), diskImagePrefix, image.key)
         await fs.promises.writeFile(localPath, image.body)
       }
     },

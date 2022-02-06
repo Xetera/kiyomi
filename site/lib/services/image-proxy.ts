@@ -143,7 +143,7 @@ export class ImgProxy {
     }
 
     const encoded_url = this.urlSafeBase64(settings.originalImage)
-    const path = `/${settings.resizeType}/${settings.width}/${settings.height}/${settings.gravity}/${settings.enlarge}/${encoded_url}.${settings.extension}`
+    const path = `/resize:${settings.resizeType}:${settings.width}:${settings.height}:${settings.enlarge}/gravity:${settings.gravity}/${encoded_url}.${settings.extension}`
     return `${config.url}/${this.sign(path)}${path}`
   }
 }
