@@ -15,6 +15,7 @@ const numeric = z.string().regex(/^\d+$/).transform(Number)
 const boolic = z
   .string()
   .regex(/(true|false)/)
+  .default("true")
   .transform((f) => f === "true")
 
 const UploadSchema = z.object({
@@ -22,8 +23,8 @@ const UploadSchema = z.object({
   // only available if no file
   url: z.string().nullish(),
   source: z.string().nullish(),
-  ireneBotId: numeric,
-  ireneBotIdolId: numeric,
+  ireneBotId: numeric.nullish(),
+  ireneBotIdolId: numeric.nullish(),
   ireneBotIdolName: z.string().nullish(),
 })
 
