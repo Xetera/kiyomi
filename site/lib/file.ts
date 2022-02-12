@@ -47,7 +47,7 @@ export function parseFiles(
       let files = req.files
       // @ts-ignore
       const fields = req.body
-      if (!files.length) {
+      if (!files || !files.length) {
         let url: URL
         try {
           url = new URL(fields[name])
