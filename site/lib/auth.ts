@@ -10,6 +10,20 @@ export function generateUserToken() {
   return TOKEN_PREFIX + token
 }
 
+export function extractTokenFromHeader(header: string): string | undefined {
+  const pieces = header.split(/ +/g)
+  if (pieces.length === 1) {
+    // legacy token input
+    return pieces[0]
+  } else if (pieces.length === 2) {
+    const [scheme, token] = pieces
+    if (!scheme || scheme.toLowerCase() !== "bearer") {
+      throw new Error("Invalid scheme")
+    }
+    return token
+  }
+}
+
 export function getUserFromToken(token: string, db: PrismaClient) {
   return db.user.findUnique({ where: { token }, include: { roles: true } })
 }

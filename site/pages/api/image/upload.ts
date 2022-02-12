@@ -3,7 +3,7 @@ import { Image, User } from "@prisma/client"
 import { z } from "zod"
 import { IreneBotUploadOptions, UploadError } from "@/lib/services/uploader"
 import fetch from "node-fetch"
-import { getUserFromToken } from "@/lib/auth"
+import { extractTokenFromHeader, getUserFromToken } from "@/lib/auth"
 
 export const config = {
   api: {
@@ -37,7 +37,8 @@ export default handle(
     }
 
     const contextType = "TOKEN"
-    const auth = req.headers.authorization
+    const rawHeader = req.headers.authorization
+    const auth = rawHeader ? extractTokenFromHeader(rawHeader) : undefined
 
     if (!auth) {
       return error()
