@@ -469,7 +469,6 @@ export const PrivateFaceInput = inputObjectType({
     t.nonNull.float("width")
     t.nonNull.float("height")
     t.nonNull.float("certainty")
-    t.nonNull.list.nonNull.float("descriptor")
   },
 })
 
