@@ -134,38 +134,20 @@ export function makeWendy({ prisma, amqp }: WendyOptions) {
           console.error(err)
         })
 
-      // I know this is a very strange way to do this but prisma doesn't let us
-      // update CUBE values any other way
-      const pHashArray = methods.hashStringToCube(hash)
-      prisma.$queryRaw`${Prisma.raw(`
-        UPDATE images SET p_hash_2 = CUBE(ARRAY[${pHashArray.join(
-          ","
-        )}]) WHERE slug = '${slug}'
-      `)}`.catch((err) => {
-        console.error(err)
+      const data: Prisma.FaceCreateManyInput[] = faces.map((face) => ({
+        imageId: image.id,
+        score: 0,
+        x: face.x,
+        y: face.y,
+        width: face.width,
+        height: face.height,
+        addedById: user.id,
+        appearanceId: existingAppearance?.id,
+        source: user.bot ? FaceSource.Scan : FaceSource.Manual,
+      }))
+      await prisma.face.createMany({
+        data,
       })
-
-      const BASE_STRING = `INSERT INTO faces (image_id, score, descriptor, x, y, width, height, added_by_id, appearance_id, source) VALUES`
-      const templatedString = faces
-        .map(({ x, y, height, width, encoding }) => {
-          const cube = encoding.join(",")
-          const userId = user.id
-          const linkedPerson = existingAppearance?.id ?? "NULL"
-          const source = user.bot ? FaceSource.Scan : FaceSource.Manual
-          const data = `(${image.id}, 0, CUBE(ARRAY[${cube}]), ${x}, ${y}, ${width}, ${height}, ${userId}, ${linkedPerson}, '${source}')`
-          return data
-        })
-        .join(",")
-
-      if (faces.length > 0) {
-        await prisma.$executeRaw`${Prisma.raw(BASE_STRING + templatedString)}`
-      }
-      // const channel = await amqp.connection.createChannel()
-      // await channel.assertQueue(queueName)
-      // channel.sendToQueue(
-      //   queueName,
-      //   Buffer.from(JSON.stringify({ slug, ...opts }))
-      // )
       return { status: "success", data: undefined }
     },
     hashStringToCube(hash: string): Uint8Array {

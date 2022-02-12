@@ -167,7 +167,6 @@ model Face {
   y            Float
   height       Float
   width        Float
-  descriptor   Unsupported("cube")
   appearanceId Int?                @map("appearance_id")
   addedById    Int?                @map("added_by_id")
   createdAt    DateTime            @default(now()) @map("created_at")
