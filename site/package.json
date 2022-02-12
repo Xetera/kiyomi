@@ -90,6 +90,7 @@
     "@types/amqplib": "^0.5.17",
     "@types/create-hmac": "^1.1.0",
     "@types/fluent-ffmpeg": "^2.1.20",
+    "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.177",
     "@types/micro-cors": "^0.1.1",
     "@types/mime-types": "^2.1.1",
@@ -107,6 +108,6 @@
     "prisma": "~3.6.0",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.12.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.5"
   }
 }

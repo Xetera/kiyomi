@@ -33,6 +33,7 @@
     },
     "incremental": true,
     "baseUrl": ".",
+    "types": ["jest", "node"],
     "typeRoots": ["./typings"],
     "module": "commonjs"
   },
