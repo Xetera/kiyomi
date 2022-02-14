@@ -26,6 +26,7 @@ const UploadSchema = z.object({
   ireneBotId: numeric.nullish(),
   ireneBotIdolId: numeric.nullish(),
   ireneBotIdolName: z.string().nullish(),
+  personId: numeric.nullish(),
 })
 
 type UploadSchema = z.infer<typeof UploadSchema>
@@ -101,6 +102,7 @@ export default handle(
           buffer,
           uploader: userObject,
           uploadType: contextType,
+          personId: uploadSchema.personId ?? undefined,
         })
       } catch (err) {
         console.log(err)

@@ -114,27 +114,19 @@ export function makeUploader({ prisma, wasabi, wendy }: UploaderOptions) {
           isNsfw: false,
           slug,
           userId: opts.uploader.id,
-          // TODO: better tagging
-          // tags: {
-          //   create: tags.map((tag) => {
-          //     return {
-          //       source: "USER",
-          //       name: tag,
-          //       addedBy: {
-          //         connect: {
-          //           id: opts.uploader.id,
-          //         },
-          //       },
-          //     }
-          //   }),
-          // },
         },
       })
-      let existingPerson: Person | undefined = ireneBotIdolId
-        ? (await prisma.person.findUnique({
+      let existingPerson: Person | undefined | null = ireneBotIdolId
+        ? await prisma.person.findUnique({
             where: { ireneBotId: Number(ireneBotIdolId) },
-          })) ?? undefined
+          })
         : undefined
+
+      if (!existingPerson && opts.personId !== undefined) {
+        existingPerson = await prisma.person.findUnique({
+          where: { id: opts.personId },
+        })
+      }
 
       // create a person if given an irene bot entry and a person for it doesn't exist yet
       if (ireneBotIdolName && !existingPerson) {
@@ -197,5 +189,6 @@ export type UploadOptions = {
   fileName?: string
   source?: string
   public: boolean
+  personId?: number
   irene?: IreneBotUploadOptions
 }
