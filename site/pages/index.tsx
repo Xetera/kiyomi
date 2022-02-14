@@ -5,24 +5,17 @@ import {
   fetcher,
   HomepagePersonDocument,
   HomepagePersonQuery,
-  useHomepageQuery,
 } from "@/lib/__generated__/graphql"
-import { Grid, Heading, VStack } from "@chakra-ui/layout"
+import { Heading, VStack } from "@chakra-ui/layout"
 import { Waypoint } from "react-waypoint"
-import { Box, Flex, Image, Link, Text } from "@chakra-ui/react"
+import { Box, Flex, Image, Text } from "@chakra-ui/react"
 import { wrapRequest } from "@/lib/data-fetching"
 import ImageGrid from "@/components/data-grids/image-grid"
 import { dehydrate, QueryClient, useInfiniteQuery } from "react-query"
-import { RiLink } from "react-icons/ri"
-import { focusToObjectPosition } from "@/components/data-grids/generic-grid-element"
 import { AnimatePresence, motion } from "framer-motion"
 import { paginateBySkip } from "@/client/pagination"
 import { OgImage } from "@/components/og-image"
-import { Portrait } from "@/components/portrait"
 import { toClickableGridImage } from "@/client/data/image-mappers"
-import { personPreferredName } from "@/client/data/person-mappers"
-import { Routing } from "@/client/routing"
-import NextLink from "next/link"
 import sample from "lodash/sample"
 
 const AnimatedImage = motion(Image)
@@ -195,14 +188,11 @@ export default function Home() {
 
 export const getServerSideProps = wrapRequest(async (ctx) => {
   const client = new QueryClient()
-  // let result = await fetcher<HomepageQuery, unknown>(HomepageDocument)()
-  // client.setQueryData(["Homepage", {}], result)
-  // const personParams = fetchParams(0, result.homepage[0]?.id)
-  // let person = await fetcher<HomepageQuery, unknown>(
-  //   HomepagePersonDocument,
-  //   personParams
-  // )()
-  // client.setQueryData(homepagePersonKey(0), { pages: [person] })
+  let person = await fetcher<HomepagePersonQuery, unknown>(
+    HomepagePersonDocument,
+    fetchParams(0)
+  )()
+  client.setQueryData(homepagePersonKey(0), { pages: [person] })
 
   const dehydratedState = dehydrate(client)
 
