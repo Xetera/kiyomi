@@ -1,6 +1,9 @@
 quality: 90
 
 features:
+  security:
+    # default 16.8 is too low for higher quality images
+    maxSrcResolution: 30
   prometheus:
     enabled: true
     namespace: imgproxy
