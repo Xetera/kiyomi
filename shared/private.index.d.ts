@@ -223,6 +223,11 @@ export interface NexusGenInputs {
     create?: NexusGenInputs['AppearanceCreateWithoutPersonInput'][] | null; // [AppearanceCreateWithoutPersonInput!]
     createMany?: NexusGenInputs['AppearanceCreateManyPersonInputEnvelope'] | null; // AppearanceCreateManyPersonInputEnvelope
   }
+  AppearanceCreateNestedOneWithoutFacesInput: { // input type
+    connect?: NexusGenInputs['AppearanceWhereUniqueInput'] | null; // AppearanceWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutFacesInput'] | null; // AppearanceCreateOrConnectWithoutFacesInput
+    create?: NexusGenInputs['AppearanceCreateWithoutFacesInput'] | null; // AppearanceCreateWithoutFacesInput
+  }
   AppearanceCreateNestedOneWithoutTagsInput: { // input type
     connect?: NexusGenInputs['AppearanceWhereUniqueInput'] | null; // AppearanceWhereUniqueInput
     connectOrCreate?: NexusGenInputs['AppearanceCreateOrConnectWithoutTagsInput'] | null; // AppearanceCreateOrConnectWithoutTagsInput
@@ -1563,11 +1568,29 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumFaceSourceFilter'] | null; // NestedEnumFaceSourceFilter
     notIn?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
   }
+  EnumGameParticipantKindFieldUpdateOperationsInput: { // input type
+    set?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+  }
+  EnumGameParticipantKindFilter: { // input type
+    equals?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    in?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+    not?: NexusGenInputs['NestedEnumGameParticipantKindFilter'] | null; // NestedEnumGameParticipantKindFilter
+    notIn?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+  }
   EnumGenderNullableFilter: { // input type
     equals?: NexusGenEnums['Gender'] | null; // Gender
     in?: NexusGenEnums['Gender'][] | null; // [Gender!]
     not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
     notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
+  }
+  EnumGuessingGameHintsFieldUpdateOperationsInput: { // input type
+    set?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+  }
+  EnumGuessingGameHintsFilter: { // input type
+    equals?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    in?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
+    not?: NexusGenInputs['NestedEnumGuessingGameHintsFilter'] | null; // NestedEnumGuessingGameHintsFilter
+    notIn?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
   }
   EnumImageReportActionNullableFilter: { // input type
     equals?: NexusGenEnums['ImageReportAction'] | null; // ImageReportAction
@@ -1611,21 +1634,172 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumUploadTypeFilter'] | null; // NestedEnumUploadTypeFilter
     notIn?: NexusGenEnums['UploadType'][] | null; // [UploadType!]
   }
+  FaceCreateManyAddedByInput: { // input type
+    appearanceId?: number | null; // Int
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    id?: number | null; // Int
+    imageId: number; // Int!
+    personId?: number | null; // Int
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
+  FaceCreateManyAddedByInputEnvelope: { // input type
+    data?: NexusGenInputs['FaceCreateManyAddedByInput'][] | null; // [FaceCreateManyAddedByInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  FaceCreateManyAppearanceInput: { // input type
+    addedById?: number | null; // Int
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    id?: number | null; // Int
+    imageId: number; // Int!
+    personId?: number | null; // Int
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
+  FaceCreateManyAppearanceInputEnvelope: { // input type
+    data?: NexusGenInputs['FaceCreateManyAppearanceInput'][] | null; // [FaceCreateManyAppearanceInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  FaceCreateManyImageInput: { // input type
+    addedById?: number | null; // Int
+    appearanceId?: number | null; // Int
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    id?: number | null; // Int
+    personId?: number | null; // Int
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
+  FaceCreateManyImageInputEnvelope: { // input type
+    data?: NexusGenInputs['FaceCreateManyImageInput'][] | null; // [FaceCreateManyImageInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  FaceCreateManyPersonInput: { // input type
+    addedById?: number | null; // Int
+    appearanceId?: number | null; // Int
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    id?: number | null; // Int
+    imageId: number; // Int!
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
+  FaceCreateManyPersonInputEnvelope: { // input type
+    data?: NexusGenInputs['FaceCreateManyPersonInput'][] | null; // [FaceCreateManyPersonInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
   FaceCreateNestedManyWithoutAddedByInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutAddedByInput'][] | null; // [FaceCreateOrConnectWithoutAddedByInput!]
+    create?: NexusGenInputs['FaceCreateWithoutAddedByInput'][] | null; // [FaceCreateWithoutAddedByInput!]
+    createMany?: NexusGenInputs['FaceCreateManyAddedByInputEnvelope'] | null; // FaceCreateManyAddedByInputEnvelope
   }
   FaceCreateNestedManyWithoutAppearanceInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutAppearanceInput'][] | null; // [FaceCreateOrConnectWithoutAppearanceInput!]
+    create?: NexusGenInputs['FaceCreateWithoutAppearanceInput'][] | null; // [FaceCreateWithoutAppearanceInput!]
+    createMany?: NexusGenInputs['FaceCreateManyAppearanceInputEnvelope'] | null; // FaceCreateManyAppearanceInputEnvelope
   }
   FaceCreateNestedManyWithoutImageInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutImageInput'][] | null; // [FaceCreateOrConnectWithoutImageInput!]
+    create?: NexusGenInputs['FaceCreateWithoutImageInput'][] | null; // [FaceCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['FaceCreateManyImageInputEnvelope'] | null; // FaceCreateManyImageInputEnvelope
   }
   FaceCreateNestedManyWithoutPersonInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutPersonInput'][] | null; // [FaceCreateOrConnectWithoutPersonInput!]
+    create?: NexusGenInputs['FaceCreateWithoutPersonInput'][] | null; // [FaceCreateWithoutPersonInput!]
+    createMany?: NexusGenInputs['FaceCreateManyPersonInputEnvelope'] | null; // FaceCreateManyPersonInputEnvelope
+  }
+  FaceCreateOrConnectWithoutAddedByInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutAddedByInput']; // FaceCreateWithoutAddedByInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceCreateOrConnectWithoutAppearanceInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutAppearanceInput']; // FaceCreateWithoutAppearanceInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceCreateOrConnectWithoutImageInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutImageInput']; // FaceCreateWithoutImageInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceCreateOrConnectWithoutPersonInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutPersonInput']; // FaceCreateWithoutPersonInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceCreateWithoutAddedByInput: { // input type
+    appearance?: NexusGenInputs['AppearanceCreateNestedOneWithoutFacesInput'] | null; // AppearanceCreateNestedOneWithoutFacesInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    image: NexusGenInputs['ImageCreateNestedOneWithoutFacesInput']; // ImageCreateNestedOneWithoutFacesInput!
+    person?: NexusGenInputs['PersonCreateNestedOneWithoutAppearsInInput'] | null; // PersonCreateNestedOneWithoutAppearsInInput
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
+  FaceCreateWithoutAppearanceInput: { // input type
+    addedBy?: NexusGenInputs['UserCreateNestedOneWithoutMarkedFacesInput'] | null; // UserCreateNestedOneWithoutMarkedFacesInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    image: NexusGenInputs['ImageCreateNestedOneWithoutFacesInput']; // ImageCreateNestedOneWithoutFacesInput!
+    person?: NexusGenInputs['PersonCreateNestedOneWithoutAppearsInInput'] | null; // PersonCreateNestedOneWithoutAppearsInInput
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
+  FaceCreateWithoutImageInput: { // input type
+    addedBy?: NexusGenInputs['UserCreateNestedOneWithoutMarkedFacesInput'] | null; // UserCreateNestedOneWithoutMarkedFacesInput
+    appearance?: NexusGenInputs['AppearanceCreateNestedOneWithoutFacesInput'] | null; // AppearanceCreateNestedOneWithoutFacesInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    person?: NexusGenInputs['PersonCreateNestedOneWithoutAppearsInInput'] | null; // PersonCreateNestedOneWithoutAppearsInInput
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
+  }
+  FaceCreateWithoutPersonInput: { // input type
+    addedBy?: NexusGenInputs['UserCreateNestedOneWithoutMarkedFacesInput'] | null; // UserCreateNestedOneWithoutMarkedFacesInput
+    appearance?: NexusGenInputs['AppearanceCreateNestedOneWithoutFacesInput'] | null; // AppearanceCreateNestedOneWithoutFacesInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    height: number; // Float!
+    image: NexusGenInputs['ImageCreateNestedOneWithoutFacesInput']; // ImageCreateNestedOneWithoutFacesInput!
+    score?: number | null; // Float
+    source?: NexusGenEnums['FaceSource'] | null; // FaceSource
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    width: number; // Float!
+    x: number; // Float!
+    y: number; // Float!
   }
   FaceInput: { // input type
     certainty: number; // Float!
-    descriptor: number[]; // [Float!]!
     height: number; // Float!
     width: number; // Float!
     x: number; // Float!
@@ -1685,39 +1859,55 @@ export interface NexusGenInputs {
   }
   FaceUpdateManyWithoutAddedByInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutAddedByInput'][] | null; // [FaceCreateOrConnectWithoutAddedByInput!]
+    create?: NexusGenInputs['FaceCreateWithoutAddedByInput'][] | null; // [FaceCreateWithoutAddedByInput!]
+    createMany?: NexusGenInputs['FaceCreateManyAddedByInputEnvelope'] | null; // FaceCreateManyAddedByInputEnvelope
     delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
     disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutAddedByInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutAddedByInput!]
     updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutAddedByInput'][] | null; // [FaceUpdateManyWithWhereWithoutAddedByInput!]
+    upsert?: NexusGenInputs['FaceUpsertWithWhereUniqueWithoutAddedByInput'][] | null; // [FaceUpsertWithWhereUniqueWithoutAddedByInput!]
   }
   FaceUpdateManyWithoutAppearanceInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutAppearanceInput'][] | null; // [FaceCreateOrConnectWithoutAppearanceInput!]
+    create?: NexusGenInputs['FaceCreateWithoutAppearanceInput'][] | null; // [FaceCreateWithoutAppearanceInput!]
+    createMany?: NexusGenInputs['FaceCreateManyAppearanceInputEnvelope'] | null; // FaceCreateManyAppearanceInputEnvelope
     delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
     disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutAppearanceInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutAppearanceInput!]
     updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutAppearanceInput'][] | null; // [FaceUpdateManyWithWhereWithoutAppearanceInput!]
+    upsert?: NexusGenInputs['FaceUpsertWithWhereUniqueWithoutAppearanceInput'][] | null; // [FaceUpsertWithWhereUniqueWithoutAppearanceInput!]
   }
   FaceUpdateManyWithoutImageInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutImageInput'][] | null; // [FaceCreateOrConnectWithoutImageInput!]
+    create?: NexusGenInputs['FaceCreateWithoutImageInput'][] | null; // [FaceCreateWithoutImageInput!]
+    createMany?: NexusGenInputs['FaceCreateManyImageInputEnvelope'] | null; // FaceCreateManyImageInputEnvelope
     delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
     disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutImageInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutImageInput!]
     updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutImageInput'][] | null; // [FaceUpdateManyWithWhereWithoutImageInput!]
+    upsert?: NexusGenInputs['FaceUpsertWithWhereUniqueWithoutImageInput'][] | null; // [FaceUpsertWithWhereUniqueWithoutImageInput!]
   }
   FaceUpdateManyWithoutPersonInput: { // input type
     connect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['FaceCreateOrConnectWithoutPersonInput'][] | null; // [FaceCreateOrConnectWithoutPersonInput!]
+    create?: NexusGenInputs['FaceCreateWithoutPersonInput'][] | null; // [FaceCreateWithoutPersonInput!]
+    createMany?: NexusGenInputs['FaceCreateManyPersonInputEnvelope'] | null; // FaceCreateManyPersonInputEnvelope
     delete?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     deleteMany?: NexusGenInputs['FaceScalarWhereInput'][] | null; // [FaceScalarWhereInput!]
     disconnect?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     set?: NexusGenInputs['FaceWhereUniqueInput'][] | null; // [FaceWhereUniqueInput!]
     update?: NexusGenInputs['FaceUpdateWithWhereUniqueWithoutPersonInput'][] | null; // [FaceUpdateWithWhereUniqueWithoutPersonInput!]
     updateMany?: NexusGenInputs['FaceUpdateManyWithWhereWithoutPersonInput'][] | null; // [FaceUpdateManyWithWhereWithoutPersonInput!]
+    upsert?: NexusGenInputs['FaceUpsertWithWhereUniqueWithoutPersonInput'][] | null; // [FaceUpsertWithWhereUniqueWithoutPersonInput!]
   }
   FaceUpdateWithWhereUniqueWithoutAddedByInput: { // input type
     data: NexusGenInputs['FaceUpdateWithoutAddedByInput']; // FaceUpdateWithoutAddedByInput!
@@ -1786,6 +1976,26 @@ export interface NexusGenInputs {
     width?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     x?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     y?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
+  }
+  FaceUpsertWithWhereUniqueWithoutAddedByInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutAddedByInput']; // FaceCreateWithoutAddedByInput!
+    update: NexusGenInputs['FaceUpdateWithoutAddedByInput']; // FaceUpdateWithoutAddedByInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceUpsertWithWhereUniqueWithoutAppearanceInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutAppearanceInput']; // FaceCreateWithoutAppearanceInput!
+    update: NexusGenInputs['FaceUpdateWithoutAppearanceInput']; // FaceUpdateWithoutAppearanceInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceUpsertWithWhereUniqueWithoutImageInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutImageInput']; // FaceCreateWithoutImageInput!
+    update: NexusGenInputs['FaceUpdateWithoutImageInput']; // FaceUpdateWithoutImageInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
+  }
+  FaceUpsertWithWhereUniqueWithoutPersonInput: { // input type
+    create: NexusGenInputs['FaceCreateWithoutPersonInput']; // FaceCreateWithoutPersonInput!
+    update: NexusGenInputs['FaceUpdateWithoutPersonInput']; // FaceUpdateWithoutPersonInput!
+    where: NexusGenInputs['FaceWhereUniqueInput']; // FaceWhereUniqueInput!
   }
   FaceWhereInput: { // input type
     AND?: NexusGenInputs['FaceWhereInput'][] | null; // [FaceWhereInput!]
@@ -2327,6 +2537,1072 @@ export interface NexusGenInputs {
     id?: number | null; // Int
     ireneBotId?: number | null; // Int
   }
+  GuessingGameCreateManyOwnerInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    finishDate: NexusGenScalars['DateTime']; // DateTime!
+    hints?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    id?: number | null; // Int
+    name: string; // String!
+    secondsPerRound: number; // Int!
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameCreateManyOwnerInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameCreateManyOwnerInput'][] | null; // [GuessingGameCreateManyOwnerInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameCreateNestedManyWithoutOwnerInput: { // input type
+    connect?: NexusGenInputs['GuessingGameWhereUniqueInput'][] | null; // [GuessingGameWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameCreateOrConnectWithoutOwnerInput'][] | null; // [GuessingGameCreateOrConnectWithoutOwnerInput!]
+    create?: NexusGenInputs['GuessingGameCreateWithoutOwnerInput'][] | null; // [GuessingGameCreateWithoutOwnerInput!]
+    createMany?: NexusGenInputs['GuessingGameCreateManyOwnerInputEnvelope'] | null; // GuessingGameCreateManyOwnerInputEnvelope
+  }
+  GuessingGameCreateNestedOneWithoutParticipantsInput: { // input type
+    connect?: NexusGenInputs['GuessingGameWhereUniqueInput'] | null; // GuessingGameWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameCreateOrConnectWithoutParticipantsInput'] | null; // GuessingGameCreateOrConnectWithoutParticipantsInput
+    create?: NexusGenInputs['GuessingGameCreateWithoutParticipantsInput'] | null; // GuessingGameCreateWithoutParticipantsInput
+  }
+  GuessingGameCreateNestedOneWithoutRoundsInput: { // input type
+    connect?: NexusGenInputs['GuessingGameWhereUniqueInput'] | null; // GuessingGameWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameCreateOrConnectWithoutRoundsInput'] | null; // GuessingGameCreateOrConnectWithoutRoundsInput
+    create?: NexusGenInputs['GuessingGameCreateWithoutRoundsInput'] | null; // GuessingGameCreateWithoutRoundsInput
+  }
+  GuessingGameCreateOrConnectWithoutOwnerInput: { // input type
+    create: NexusGenInputs['GuessingGameCreateWithoutOwnerInput']; // GuessingGameCreateWithoutOwnerInput!
+    where: NexusGenInputs['GuessingGameWhereUniqueInput']; // GuessingGameWhereUniqueInput!
+  }
+  GuessingGameCreateOrConnectWithoutParticipantsInput: { // input type
+    create: NexusGenInputs['GuessingGameCreateWithoutParticipantsInput']; // GuessingGameCreateWithoutParticipantsInput!
+    where: NexusGenInputs['GuessingGameWhereUniqueInput']; // GuessingGameWhereUniqueInput!
+  }
+  GuessingGameCreateOrConnectWithoutRoundsInput: { // input type
+    create: NexusGenInputs['GuessingGameCreateWithoutRoundsInput']; // GuessingGameCreateWithoutRoundsInput!
+    where: NexusGenInputs['GuessingGameWhereUniqueInput']; // GuessingGameWhereUniqueInput!
+  }
+  GuessingGameCreateWithoutOwnerInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    finishDate: NexusGenScalars['DateTime']; // DateTime!
+    hints?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    name: string; // String!
+    participants?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutGameInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutGameInput
+    rounds?: NexusGenInputs['GuessingGameRoundCreateNestedManyWithoutGameInput'] | null; // GuessingGameRoundCreateNestedManyWithoutGameInput
+    secondsPerRound: number; // Int!
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameCreateWithoutParticipantsInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    finishDate: NexusGenScalars['DateTime']; // DateTime!
+    hints?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    name: string; // String!
+    owner: NexusGenInputs['UserCreateNestedOneWithoutGuessingGamesHostedInput']; // UserCreateNestedOneWithoutGuessingGamesHostedInput!
+    rounds?: NexusGenInputs['GuessingGameRoundCreateNestedManyWithoutGameInput'] | null; // GuessingGameRoundCreateNestedManyWithoutGameInput
+    secondsPerRound: number; // Int!
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameCreateWithoutRoundsInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    finishDate: NexusGenScalars['DateTime']; // DateTime!
+    hints?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    name: string; // String!
+    owner: NexusGenInputs['UserCreateNestedOneWithoutGuessingGamesHostedInput']; // UserCreateNestedOneWithoutGuessingGamesHostedInput!
+    participants?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutGameInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutGameInput
+    secondsPerRound: number; // Int!
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameGuessCreateManyPersonGuessInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    id?: number | null; // Int
+    roundId: number; // Int!
+    targetId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    userId?: number | null; // Int
+  }
+  GuessingGameGuessCreateManyPersonGuessInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameGuessCreateManyPersonGuessInput'][] | null; // [GuessingGameGuessCreateManyPersonGuessInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameGuessCreateManyRoundInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    id?: number | null; // Int
+    personGuessId?: number | null; // Int
+    targetId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    userId?: number | null; // Int
+  }
+  GuessingGameGuessCreateManyRoundInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameGuessCreateManyRoundInput'][] | null; // [GuessingGameGuessCreateManyRoundInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameGuessCreateManyTargetInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    id?: number | null; // Int
+    personGuessId?: number | null; // Int
+    roundId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    userId?: number | null; // Int
+  }
+  GuessingGameGuessCreateManyTargetInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameGuessCreateManyTargetInput'][] | null; // [GuessingGameGuessCreateManyTargetInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameGuessCreateManyUserInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    id?: number | null; // Int
+    personGuessId?: number | null; // Int
+    roundId: number; // Int!
+    targetId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameGuessCreateManyUserInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameGuessCreateManyUserInput'][] | null; // [GuessingGameGuessCreateManyUserInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameGuessCreateNestedManyWithoutPersonGuessInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutPersonGuessInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutPersonGuessInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutPersonGuessInput'][] | null; // [GuessingGameGuessCreateWithoutPersonGuessInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyPersonGuessInputEnvelope'] | null; // GuessingGameGuessCreateManyPersonGuessInputEnvelope
+  }
+  GuessingGameGuessCreateNestedManyWithoutRoundInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutRoundInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutRoundInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutRoundInput'][] | null; // [GuessingGameGuessCreateWithoutRoundInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyRoundInputEnvelope'] | null; // GuessingGameGuessCreateManyRoundInputEnvelope
+  }
+  GuessingGameGuessCreateNestedManyWithoutTargetInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutTargetInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutTargetInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutTargetInput'][] | null; // [GuessingGameGuessCreateWithoutTargetInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyTargetInputEnvelope'] | null; // GuessingGameGuessCreateManyTargetInputEnvelope
+  }
+  GuessingGameGuessCreateNestedManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutUserInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutUserInput'][] | null; // [GuessingGameGuessCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyUserInputEnvelope'] | null; // GuessingGameGuessCreateManyUserInputEnvelope
+  }
+  GuessingGameGuessCreateOrConnectWithoutPersonGuessInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutPersonGuessInput']; // GuessingGameGuessCreateWithoutPersonGuessInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessCreateOrConnectWithoutRoundInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutRoundInput']; // GuessingGameGuessCreateWithoutRoundInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessCreateOrConnectWithoutTargetInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutTargetInput']; // GuessingGameGuessCreateWithoutTargetInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessCreateOrConnectWithoutUserInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutUserInput']; // GuessingGameGuessCreateWithoutUserInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessCreateWithoutPersonGuessInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    round: NexusGenInputs['GuessingGameRoundCreateNestedOneWithoutGuessesInput']; // GuessingGameRoundCreateNestedOneWithoutGuessesInput!
+    target: NexusGenInputs['GuessingGameTargetCreateNestedOneWithoutGuessesInput']; // GuessingGameTargetCreateNestedOneWithoutGuessesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    user?: NexusGenInputs['UserCreateNestedOneWithoutGuessingGameGuessesInput'] | null; // UserCreateNestedOneWithoutGuessingGameGuessesInput
+  }
+  GuessingGameGuessCreateWithoutRoundInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    personGuess?: NexusGenInputs['PersonCreateNestedOneWithoutGuessingGameGuessesInput'] | null; // PersonCreateNestedOneWithoutGuessingGameGuessesInput
+    target: NexusGenInputs['GuessingGameTargetCreateNestedOneWithoutGuessesInput']; // GuessingGameTargetCreateNestedOneWithoutGuessesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    user?: NexusGenInputs['UserCreateNestedOneWithoutGuessingGameGuessesInput'] | null; // UserCreateNestedOneWithoutGuessingGameGuessesInput
+  }
+  GuessingGameGuessCreateWithoutTargetInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    personGuess?: NexusGenInputs['PersonCreateNestedOneWithoutGuessingGameGuessesInput'] | null; // PersonCreateNestedOneWithoutGuessingGameGuessesInput
+    round: NexusGenInputs['GuessingGameRoundCreateNestedOneWithoutGuessesInput']; // GuessingGameRoundCreateNestedOneWithoutGuessesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    user?: NexusGenInputs['UserCreateNestedOneWithoutGuessingGameGuessesInput'] | null; // UserCreateNestedOneWithoutGuessingGameGuessesInput
+  }
+  GuessingGameGuessCreateWithoutUserInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessMs: number; // Int!
+    guessedAt: NexusGenScalars['DateTime']; // DateTime!
+    hintUsed?: boolean | null; // Boolean
+    personGuess?: NexusGenInputs['PersonCreateNestedOneWithoutGuessingGameGuessesInput'] | null; // PersonCreateNestedOneWithoutGuessingGameGuessesInput
+    round: NexusGenInputs['GuessingGameRoundCreateNestedOneWithoutGuessesInput']; // GuessingGameRoundCreateNestedOneWithoutGuessesInput!
+    target: NexusGenInputs['GuessingGameTargetCreateNestedOneWithoutGuessesInput']; // GuessingGameTargetCreateNestedOneWithoutGuessesInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameGuessListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameGuessWhereInput'] | null; // GuessingGameGuessWhereInput
+    none?: NexusGenInputs['GuessingGameGuessWhereInput'] | null; // GuessingGameGuessWhereInput
+    some?: NexusGenInputs['GuessingGameGuessWhereInput'] | null; // GuessingGameGuessWhereInput
+  }
+  GuessingGameGuessOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameGuessScalarWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameGuessScalarWhereInput'][] | null; // [GuessingGameGuessScalarWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameGuessScalarWhereInput'][] | null; // [GuessingGameGuessScalarWhereInput!]
+    OR?: NexusGenInputs['GuessingGameGuessScalarWhereInput'][] | null; // [GuessingGameGuessScalarWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    guessMs?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    guessedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    hintUsed?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    personGuessId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    roundId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    targetId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+  }
+  GuessingGameGuessUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guessMs?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    guessedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hintUsed?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameGuessUpdateManyWithWhereWithoutPersonGuessInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateManyMutationInput']; // GuessingGameGuessUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameGuessScalarWhereInput']; // GuessingGameGuessScalarWhereInput!
+  }
+  GuessingGameGuessUpdateManyWithWhereWithoutRoundInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateManyMutationInput']; // GuessingGameGuessUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameGuessScalarWhereInput']; // GuessingGameGuessScalarWhereInput!
+  }
+  GuessingGameGuessUpdateManyWithWhereWithoutTargetInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateManyMutationInput']; // GuessingGameGuessUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameGuessScalarWhereInput']; // GuessingGameGuessScalarWhereInput!
+  }
+  GuessingGameGuessUpdateManyWithWhereWithoutUserInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateManyMutationInput']; // GuessingGameGuessUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameGuessScalarWhereInput']; // GuessingGameGuessScalarWhereInput!
+  }
+  GuessingGameGuessUpdateManyWithoutPersonGuessInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutPersonGuessInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutPersonGuessInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutPersonGuessInput'][] | null; // [GuessingGameGuessCreateWithoutPersonGuessInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyPersonGuessInputEnvelope'] | null; // GuessingGameGuessCreateManyPersonGuessInputEnvelope
+    delete?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameGuessScalarWhereInput'][] | null; // [GuessingGameGuessScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameGuessUpdateWithWhereUniqueWithoutPersonGuessInput'][] | null; // [GuessingGameGuessUpdateWithWhereUniqueWithoutPersonGuessInput!]
+    updateMany?: NexusGenInputs['GuessingGameGuessUpdateManyWithWhereWithoutPersonGuessInput'][] | null; // [GuessingGameGuessUpdateManyWithWhereWithoutPersonGuessInput!]
+    upsert?: NexusGenInputs['GuessingGameGuessUpsertWithWhereUniqueWithoutPersonGuessInput'][] | null; // [GuessingGameGuessUpsertWithWhereUniqueWithoutPersonGuessInput!]
+  }
+  GuessingGameGuessUpdateManyWithoutRoundInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutRoundInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutRoundInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutRoundInput'][] | null; // [GuessingGameGuessCreateWithoutRoundInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyRoundInputEnvelope'] | null; // GuessingGameGuessCreateManyRoundInputEnvelope
+    delete?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameGuessScalarWhereInput'][] | null; // [GuessingGameGuessScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameGuessUpdateWithWhereUniqueWithoutRoundInput'][] | null; // [GuessingGameGuessUpdateWithWhereUniqueWithoutRoundInput!]
+    updateMany?: NexusGenInputs['GuessingGameGuessUpdateManyWithWhereWithoutRoundInput'][] | null; // [GuessingGameGuessUpdateManyWithWhereWithoutRoundInput!]
+    upsert?: NexusGenInputs['GuessingGameGuessUpsertWithWhereUniqueWithoutRoundInput'][] | null; // [GuessingGameGuessUpsertWithWhereUniqueWithoutRoundInput!]
+  }
+  GuessingGameGuessUpdateManyWithoutTargetInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutTargetInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutTargetInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutTargetInput'][] | null; // [GuessingGameGuessCreateWithoutTargetInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyTargetInputEnvelope'] | null; // GuessingGameGuessCreateManyTargetInputEnvelope
+    delete?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameGuessScalarWhereInput'][] | null; // [GuessingGameGuessScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameGuessUpdateWithWhereUniqueWithoutTargetInput'][] | null; // [GuessingGameGuessUpdateWithWhereUniqueWithoutTargetInput!]
+    updateMany?: NexusGenInputs['GuessingGameGuessUpdateManyWithWhereWithoutTargetInput'][] | null; // [GuessingGameGuessUpdateManyWithWhereWithoutTargetInput!]
+    upsert?: NexusGenInputs['GuessingGameGuessUpsertWithWhereUniqueWithoutTargetInput'][] | null; // [GuessingGameGuessUpsertWithWhereUniqueWithoutTargetInput!]
+  }
+  GuessingGameGuessUpdateManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameGuessCreateOrConnectWithoutUserInput'][] | null; // [GuessingGameGuessCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['GuessingGameGuessCreateWithoutUserInput'][] | null; // [GuessingGameGuessCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['GuessingGameGuessCreateManyUserInputEnvelope'] | null; // GuessingGameGuessCreateManyUserInputEnvelope
+    delete?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameGuessScalarWhereInput'][] | null; // [GuessingGameGuessScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameGuessWhereUniqueInput'][] | null; // [GuessingGameGuessWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameGuessUpdateWithWhereUniqueWithoutUserInput'][] | null; // [GuessingGameGuessUpdateWithWhereUniqueWithoutUserInput!]
+    updateMany?: NexusGenInputs['GuessingGameGuessUpdateManyWithWhereWithoutUserInput'][] | null; // [GuessingGameGuessUpdateManyWithWhereWithoutUserInput!]
+    upsert?: NexusGenInputs['GuessingGameGuessUpsertWithWhereUniqueWithoutUserInput'][] | null; // [GuessingGameGuessUpsertWithWhereUniqueWithoutUserInput!]
+  }
+  GuessingGameGuessUpdateWithWhereUniqueWithoutPersonGuessInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateWithoutPersonGuessInput']; // GuessingGameGuessUpdateWithoutPersonGuessInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessUpdateWithWhereUniqueWithoutRoundInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateWithoutRoundInput']; // GuessingGameGuessUpdateWithoutRoundInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessUpdateWithWhereUniqueWithoutTargetInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateWithoutTargetInput']; // GuessingGameGuessUpdateWithoutTargetInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessUpdateWithWhereUniqueWithoutUserInput: { // input type
+    data: NexusGenInputs['GuessingGameGuessUpdateWithoutUserInput']; // GuessingGameGuessUpdateWithoutUserInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessUpdateWithoutPersonGuessInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guessMs?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    guessedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hintUsed?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    round?: NexusGenInputs['GuessingGameRoundUpdateOneRequiredWithoutGuessesInput'] | null; // GuessingGameRoundUpdateOneRequiredWithoutGuessesInput
+    target?: NexusGenInputs['GuessingGameTargetUpdateOneRequiredWithoutGuessesInput'] | null; // GuessingGameTargetUpdateOneRequiredWithoutGuessesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneWithoutGuessingGameGuessesInput'] | null; // UserUpdateOneWithoutGuessingGameGuessesInput
+  }
+  GuessingGameGuessUpdateWithoutRoundInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guessMs?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    guessedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hintUsed?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    personGuess?: NexusGenInputs['PersonUpdateOneWithoutGuessingGameGuessesInput'] | null; // PersonUpdateOneWithoutGuessingGameGuessesInput
+    target?: NexusGenInputs['GuessingGameTargetUpdateOneRequiredWithoutGuessesInput'] | null; // GuessingGameTargetUpdateOneRequiredWithoutGuessesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneWithoutGuessingGameGuessesInput'] | null; // UserUpdateOneWithoutGuessingGameGuessesInput
+  }
+  GuessingGameGuessUpdateWithoutTargetInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guessMs?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    guessedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hintUsed?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    personGuess?: NexusGenInputs['PersonUpdateOneWithoutGuessingGameGuessesInput'] | null; // PersonUpdateOneWithoutGuessingGameGuessesInput
+    round?: NexusGenInputs['GuessingGameRoundUpdateOneRequiredWithoutGuessesInput'] | null; // GuessingGameRoundUpdateOneRequiredWithoutGuessesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneWithoutGuessingGameGuessesInput'] | null; // UserUpdateOneWithoutGuessingGameGuessesInput
+  }
+  GuessingGameGuessUpdateWithoutUserInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guessMs?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    guessedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hintUsed?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    personGuess?: NexusGenInputs['PersonUpdateOneWithoutGuessingGameGuessesInput'] | null; // PersonUpdateOneWithoutGuessingGameGuessesInput
+    round?: NexusGenInputs['GuessingGameRoundUpdateOneRequiredWithoutGuessesInput'] | null; // GuessingGameRoundUpdateOneRequiredWithoutGuessesInput
+    target?: NexusGenInputs['GuessingGameTargetUpdateOneRequiredWithoutGuessesInput'] | null; // GuessingGameTargetUpdateOneRequiredWithoutGuessesInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameGuessUpsertWithWhereUniqueWithoutPersonGuessInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutPersonGuessInput']; // GuessingGameGuessCreateWithoutPersonGuessInput!
+    update: NexusGenInputs['GuessingGameGuessUpdateWithoutPersonGuessInput']; // GuessingGameGuessUpdateWithoutPersonGuessInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessUpsertWithWhereUniqueWithoutRoundInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutRoundInput']; // GuessingGameGuessCreateWithoutRoundInput!
+    update: NexusGenInputs['GuessingGameGuessUpdateWithoutRoundInput']; // GuessingGameGuessUpdateWithoutRoundInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessUpsertWithWhereUniqueWithoutTargetInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutTargetInput']; // GuessingGameGuessCreateWithoutTargetInput!
+    update: NexusGenInputs['GuessingGameGuessUpdateWithoutTargetInput']; // GuessingGameGuessUpdateWithoutTargetInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessUpsertWithWhereUniqueWithoutUserInput: { // input type
+    create: NexusGenInputs['GuessingGameGuessCreateWithoutUserInput']; // GuessingGameGuessCreateWithoutUserInput!
+    update: NexusGenInputs['GuessingGameGuessUpdateWithoutUserInput']; // GuessingGameGuessUpdateWithoutUserInput!
+    where: NexusGenInputs['GuessingGameGuessWhereUniqueInput']; // GuessingGameGuessWhereUniqueInput!
+  }
+  GuessingGameGuessWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameGuessWhereInput'][] | null; // [GuessingGameGuessWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameGuessWhereInput'][] | null; // [GuessingGameGuessWhereInput!]
+    OR?: NexusGenInputs['GuessingGameGuessWhereInput'][] | null; // [GuessingGameGuessWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    guessMs?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    guessedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    hintUsed?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    personGuess?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    personGuessId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    round?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    roundId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    target?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+    targetId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+  }
+  GuessingGameGuessWhereUniqueInput: { // input type
+    id?: number | null; // Int
+  }
+  GuessingGameListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    none?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    some?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+  }
+  GuessingGameOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameParticipantCreateManyGameInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    type?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    userId?: number | null; // Int
+  }
+  GuessingGameParticipantCreateManyGameInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameParticipantCreateManyGameInput'][] | null; // [GuessingGameParticipantCreateManyGameInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameParticipantCreateManyUserInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    gameId: number; // Int!
+    id?: number | null; // Int
+    type?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameParticipantCreateManyUserInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameParticipantCreateManyUserInput'][] | null; // [GuessingGameParticipantCreateManyUserInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameParticipantCreateNestedManyWithoutGameInput: { // input type
+    connect?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameParticipantCreateOrConnectWithoutGameInput'][] | null; // [GuessingGameParticipantCreateOrConnectWithoutGameInput!]
+    create?: NexusGenInputs['GuessingGameParticipantCreateWithoutGameInput'][] | null; // [GuessingGameParticipantCreateWithoutGameInput!]
+    createMany?: NexusGenInputs['GuessingGameParticipantCreateManyGameInputEnvelope'] | null; // GuessingGameParticipantCreateManyGameInputEnvelope
+  }
+  GuessingGameParticipantCreateNestedManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameParticipantCreateOrConnectWithoutUserInput'][] | null; // [GuessingGameParticipantCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['GuessingGameParticipantCreateWithoutUserInput'][] | null; // [GuessingGameParticipantCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['GuessingGameParticipantCreateManyUserInputEnvelope'] | null; // GuessingGameParticipantCreateManyUserInputEnvelope
+  }
+  GuessingGameParticipantCreateOrConnectWithoutGameInput: { // input type
+    create: NexusGenInputs['GuessingGameParticipantCreateWithoutGameInput']; // GuessingGameParticipantCreateWithoutGameInput!
+    where: NexusGenInputs['GuessingGameParticipantWhereUniqueInput']; // GuessingGameParticipantWhereUniqueInput!
+  }
+  GuessingGameParticipantCreateOrConnectWithoutUserInput: { // input type
+    create: NexusGenInputs['GuessingGameParticipantCreateWithoutUserInput']; // GuessingGameParticipantCreateWithoutUserInput!
+    where: NexusGenInputs['GuessingGameParticipantWhereUniqueInput']; // GuessingGameParticipantWhereUniqueInput!
+  }
+  GuessingGameParticipantCreateWithoutGameInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    type?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    user?: NexusGenInputs['UserCreateNestedOneWithoutGuessingGameParticipationsInput'] | null; // UserCreateNestedOneWithoutGuessingGameParticipationsInput
+  }
+  GuessingGameParticipantCreateWithoutUserInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    game: NexusGenInputs['GuessingGameCreateNestedOneWithoutParticipantsInput']; // GuessingGameCreateNestedOneWithoutParticipantsInput!
+    type?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameParticipantListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameParticipantWhereInput'] | null; // GuessingGameParticipantWhereInput
+    none?: NexusGenInputs['GuessingGameParticipantWhereInput'] | null; // GuessingGameParticipantWhereInput
+    some?: NexusGenInputs['GuessingGameParticipantWhereInput'] | null; // GuessingGameParticipantWhereInput
+  }
+  GuessingGameParticipantOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameParticipantScalarWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameParticipantScalarWhereInput'][] | null; // [GuessingGameParticipantScalarWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameParticipantScalarWhereInput'][] | null; // [GuessingGameParticipantScalarWhereInput!]
+    OR?: NexusGenInputs['GuessingGameParticipantScalarWhereInput'][] | null; // [GuessingGameParticipantScalarWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    gameId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    type?: NexusGenInputs['EnumGameParticipantKindFilter'] | null; // EnumGameParticipantKindFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+  }
+  GuessingGameParticipantUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    type?: NexusGenInputs['EnumGameParticipantKindFieldUpdateOperationsInput'] | null; // EnumGameParticipantKindFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameParticipantUpdateManyWithWhereWithoutGameInput: { // input type
+    data: NexusGenInputs['GuessingGameParticipantUpdateManyMutationInput']; // GuessingGameParticipantUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameParticipantScalarWhereInput']; // GuessingGameParticipantScalarWhereInput!
+  }
+  GuessingGameParticipantUpdateManyWithWhereWithoutUserInput: { // input type
+    data: NexusGenInputs['GuessingGameParticipantUpdateManyMutationInput']; // GuessingGameParticipantUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameParticipantScalarWhereInput']; // GuessingGameParticipantScalarWhereInput!
+  }
+  GuessingGameParticipantUpdateManyWithoutGameInput: { // input type
+    connect?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameParticipantCreateOrConnectWithoutGameInput'][] | null; // [GuessingGameParticipantCreateOrConnectWithoutGameInput!]
+    create?: NexusGenInputs['GuessingGameParticipantCreateWithoutGameInput'][] | null; // [GuessingGameParticipantCreateWithoutGameInput!]
+    createMany?: NexusGenInputs['GuessingGameParticipantCreateManyGameInputEnvelope'] | null; // GuessingGameParticipantCreateManyGameInputEnvelope
+    delete?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameParticipantScalarWhereInput'][] | null; // [GuessingGameParticipantScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameParticipantUpdateWithWhereUniqueWithoutGameInput'][] | null; // [GuessingGameParticipantUpdateWithWhereUniqueWithoutGameInput!]
+    updateMany?: NexusGenInputs['GuessingGameParticipantUpdateManyWithWhereWithoutGameInput'][] | null; // [GuessingGameParticipantUpdateManyWithWhereWithoutGameInput!]
+    upsert?: NexusGenInputs['GuessingGameParticipantUpsertWithWhereUniqueWithoutGameInput'][] | null; // [GuessingGameParticipantUpsertWithWhereUniqueWithoutGameInput!]
+  }
+  GuessingGameParticipantUpdateManyWithoutUserInput: { // input type
+    connect?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameParticipantCreateOrConnectWithoutUserInput'][] | null; // [GuessingGameParticipantCreateOrConnectWithoutUserInput!]
+    create?: NexusGenInputs['GuessingGameParticipantCreateWithoutUserInput'][] | null; // [GuessingGameParticipantCreateWithoutUserInput!]
+    createMany?: NexusGenInputs['GuessingGameParticipantCreateManyUserInputEnvelope'] | null; // GuessingGameParticipantCreateManyUserInputEnvelope
+    delete?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameParticipantScalarWhereInput'][] | null; // [GuessingGameParticipantScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameParticipantWhereUniqueInput'][] | null; // [GuessingGameParticipantWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameParticipantUpdateWithWhereUniqueWithoutUserInput'][] | null; // [GuessingGameParticipantUpdateWithWhereUniqueWithoutUserInput!]
+    updateMany?: NexusGenInputs['GuessingGameParticipantUpdateManyWithWhereWithoutUserInput'][] | null; // [GuessingGameParticipantUpdateManyWithWhereWithoutUserInput!]
+    upsert?: NexusGenInputs['GuessingGameParticipantUpsertWithWhereUniqueWithoutUserInput'][] | null; // [GuessingGameParticipantUpsertWithWhereUniqueWithoutUserInput!]
+  }
+  GuessingGameParticipantUpdateWithWhereUniqueWithoutGameInput: { // input type
+    data: NexusGenInputs['GuessingGameParticipantUpdateWithoutGameInput']; // GuessingGameParticipantUpdateWithoutGameInput!
+    where: NexusGenInputs['GuessingGameParticipantWhereUniqueInput']; // GuessingGameParticipantWhereUniqueInput!
+  }
+  GuessingGameParticipantUpdateWithWhereUniqueWithoutUserInput: { // input type
+    data: NexusGenInputs['GuessingGameParticipantUpdateWithoutUserInput']; // GuessingGameParticipantUpdateWithoutUserInput!
+    where: NexusGenInputs['GuessingGameParticipantWhereUniqueInput']; // GuessingGameParticipantWhereUniqueInput!
+  }
+  GuessingGameParticipantUpdateWithoutGameInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    type?: NexusGenInputs['EnumGameParticipantKindFieldUpdateOperationsInput'] | null; // EnumGameParticipantKindFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneWithoutGuessingGameParticipationsInput'] | null; // UserUpdateOneWithoutGuessingGameParticipationsInput
+  }
+  GuessingGameParticipantUpdateWithoutUserInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    game?: NexusGenInputs['GuessingGameUpdateOneRequiredWithoutParticipantsInput'] | null; // GuessingGameUpdateOneRequiredWithoutParticipantsInput
+    type?: NexusGenInputs['EnumGameParticipantKindFieldUpdateOperationsInput'] | null; // EnumGameParticipantKindFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameParticipantUpsertWithWhereUniqueWithoutGameInput: { // input type
+    create: NexusGenInputs['GuessingGameParticipantCreateWithoutGameInput']; // GuessingGameParticipantCreateWithoutGameInput!
+    update: NexusGenInputs['GuessingGameParticipantUpdateWithoutGameInput']; // GuessingGameParticipantUpdateWithoutGameInput!
+    where: NexusGenInputs['GuessingGameParticipantWhereUniqueInput']; // GuessingGameParticipantWhereUniqueInput!
+  }
+  GuessingGameParticipantUpsertWithWhereUniqueWithoutUserInput: { // input type
+    create: NexusGenInputs['GuessingGameParticipantCreateWithoutUserInput']; // GuessingGameParticipantCreateWithoutUserInput!
+    update: NexusGenInputs['GuessingGameParticipantUpdateWithoutUserInput']; // GuessingGameParticipantUpdateWithoutUserInput!
+    where: NexusGenInputs['GuessingGameParticipantWhereUniqueInput']; // GuessingGameParticipantWhereUniqueInput!
+  }
+  GuessingGameParticipantUserIdGameIdCompoundUniqueInput: { // input type
+    gameId: number; // Int!
+    userId: number; // Int!
+  }
+  GuessingGameParticipantWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameParticipantWhereInput'][] | null; // [GuessingGameParticipantWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameParticipantWhereInput'][] | null; // [GuessingGameParticipantWhereInput!]
+    OR?: NexusGenInputs['GuessingGameParticipantWhereInput'][] | null; // [GuessingGameParticipantWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    game?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    gameId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    type?: NexusGenInputs['EnumGameParticipantKindFilter'] | null; // EnumGameParticipantKindFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+  }
+  GuessingGameParticipantWhereUniqueInput: { // input type
+    id?: number | null; // Int
+    userId_gameId?: NexusGenInputs['GuessingGameParticipantUserIdGameIdCompoundUniqueInput'] | null; // GuessingGameParticipantUserIdGameIdCompoundUniqueInput
+  }
+  GuessingGameRoundCreateManyGameInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    startedAt: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameRoundCreateManyGameInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameRoundCreateManyGameInput'][] | null; // [GuessingGameRoundCreateManyGameInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameRoundCreateNestedManyWithoutGameInput: { // input type
+    connect?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'][] | null; // [GuessingGameRoundWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameRoundCreateOrConnectWithoutGameInput'][] | null; // [GuessingGameRoundCreateOrConnectWithoutGameInput!]
+    create?: NexusGenInputs['GuessingGameRoundCreateWithoutGameInput'][] | null; // [GuessingGameRoundCreateWithoutGameInput!]
+    createMany?: NexusGenInputs['GuessingGameRoundCreateManyGameInputEnvelope'] | null; // GuessingGameRoundCreateManyGameInputEnvelope
+  }
+  GuessingGameRoundCreateNestedOneWithoutGuessesInput: { // input type
+    connect?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'] | null; // GuessingGameRoundWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameRoundCreateOrConnectWithoutGuessesInput'] | null; // GuessingGameRoundCreateOrConnectWithoutGuessesInput
+    create?: NexusGenInputs['GuessingGameRoundCreateWithoutGuessesInput'] | null; // GuessingGameRoundCreateWithoutGuessesInput
+  }
+  GuessingGameRoundCreateNestedOneWithoutTargetsInput: { // input type
+    connect?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'] | null; // GuessingGameRoundWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameRoundCreateOrConnectWithoutTargetsInput'] | null; // GuessingGameRoundCreateOrConnectWithoutTargetsInput
+    create?: NexusGenInputs['GuessingGameRoundCreateWithoutTargetsInput'] | null; // GuessingGameRoundCreateWithoutTargetsInput
+  }
+  GuessingGameRoundCreateOrConnectWithoutGameInput: { // input type
+    create: NexusGenInputs['GuessingGameRoundCreateWithoutGameInput']; // GuessingGameRoundCreateWithoutGameInput!
+    where: NexusGenInputs['GuessingGameRoundWhereUniqueInput']; // GuessingGameRoundWhereUniqueInput!
+  }
+  GuessingGameRoundCreateOrConnectWithoutGuessesInput: { // input type
+    create: NexusGenInputs['GuessingGameRoundCreateWithoutGuessesInput']; // GuessingGameRoundCreateWithoutGuessesInput!
+    where: NexusGenInputs['GuessingGameRoundWhereUniqueInput']; // GuessingGameRoundWhereUniqueInput!
+  }
+  GuessingGameRoundCreateOrConnectWithoutTargetsInput: { // input type
+    create: NexusGenInputs['GuessingGameRoundCreateWithoutTargetsInput']; // GuessingGameRoundCreateWithoutTargetsInput!
+    where: NexusGenInputs['GuessingGameRoundWhereUniqueInput']; // GuessingGameRoundWhereUniqueInput!
+  }
+  GuessingGameRoundCreateWithoutGameInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutRoundInput'] | null; // GuessingGameGuessCreateNestedManyWithoutRoundInput
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    startedAt: NexusGenScalars['DateTime']; // DateTime!
+    targets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutRoundInput'] | null; // GuessingGameTargetCreateNestedManyWithoutRoundInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameRoundCreateWithoutGuessesInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    game: NexusGenInputs['GuessingGameCreateNestedOneWithoutRoundsInput']; // GuessingGameCreateNestedOneWithoutRoundsInput!
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    startedAt: NexusGenScalars['DateTime']; // DateTime!
+    targets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutRoundInput'] | null; // GuessingGameTargetCreateNestedManyWithoutRoundInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameRoundCreateWithoutTargetsInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    game: NexusGenInputs['GuessingGameCreateNestedOneWithoutRoundsInput']; // GuessingGameCreateNestedOneWithoutRoundsInput!
+    guesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutRoundInput'] | null; // GuessingGameGuessCreateNestedManyWithoutRoundInput
+    startDate: NexusGenScalars['DateTime']; // DateTime!
+    startedAt: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameRoundListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    none?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    some?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+  }
+  GuessingGameRoundScalarWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameRoundScalarWhereInput'][] | null; // [GuessingGameRoundScalarWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameRoundScalarWhereInput'][] | null; // [GuessingGameRoundScalarWhereInput!]
+    OR?: NexusGenInputs['GuessingGameRoundScalarWhereInput'][] | null; // [GuessingGameRoundScalarWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    gameId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    startedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameRoundUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    startedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameRoundUpdateManyWithWhereWithoutGameInput: { // input type
+    data: NexusGenInputs['GuessingGameRoundUpdateManyMutationInput']; // GuessingGameRoundUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameRoundScalarWhereInput']; // GuessingGameRoundScalarWhereInput!
+  }
+  GuessingGameRoundUpdateManyWithoutGameInput: { // input type
+    connect?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'][] | null; // [GuessingGameRoundWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameRoundCreateOrConnectWithoutGameInput'][] | null; // [GuessingGameRoundCreateOrConnectWithoutGameInput!]
+    create?: NexusGenInputs['GuessingGameRoundCreateWithoutGameInput'][] | null; // [GuessingGameRoundCreateWithoutGameInput!]
+    createMany?: NexusGenInputs['GuessingGameRoundCreateManyGameInputEnvelope'] | null; // GuessingGameRoundCreateManyGameInputEnvelope
+    delete?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'][] | null; // [GuessingGameRoundWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameRoundScalarWhereInput'][] | null; // [GuessingGameRoundScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'][] | null; // [GuessingGameRoundWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'][] | null; // [GuessingGameRoundWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameRoundUpdateWithWhereUniqueWithoutGameInput'][] | null; // [GuessingGameRoundUpdateWithWhereUniqueWithoutGameInput!]
+    updateMany?: NexusGenInputs['GuessingGameRoundUpdateManyWithWhereWithoutGameInput'][] | null; // [GuessingGameRoundUpdateManyWithWhereWithoutGameInput!]
+    upsert?: NexusGenInputs['GuessingGameRoundUpsertWithWhereUniqueWithoutGameInput'][] | null; // [GuessingGameRoundUpsertWithWhereUniqueWithoutGameInput!]
+  }
+  GuessingGameRoundUpdateOneRequiredWithoutGuessesInput: { // input type
+    connect?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'] | null; // GuessingGameRoundWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameRoundCreateOrConnectWithoutGuessesInput'] | null; // GuessingGameRoundCreateOrConnectWithoutGuessesInput
+    create?: NexusGenInputs['GuessingGameRoundCreateWithoutGuessesInput'] | null; // GuessingGameRoundCreateWithoutGuessesInput
+    update?: NexusGenInputs['GuessingGameRoundUpdateWithoutGuessesInput'] | null; // GuessingGameRoundUpdateWithoutGuessesInput
+    upsert?: NexusGenInputs['GuessingGameRoundUpsertWithoutGuessesInput'] | null; // GuessingGameRoundUpsertWithoutGuessesInput
+  }
+  GuessingGameRoundUpdateOneRequiredWithoutTargetsInput: { // input type
+    connect?: NexusGenInputs['GuessingGameRoundWhereUniqueInput'] | null; // GuessingGameRoundWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameRoundCreateOrConnectWithoutTargetsInput'] | null; // GuessingGameRoundCreateOrConnectWithoutTargetsInput
+    create?: NexusGenInputs['GuessingGameRoundCreateWithoutTargetsInput'] | null; // GuessingGameRoundCreateWithoutTargetsInput
+    update?: NexusGenInputs['GuessingGameRoundUpdateWithoutTargetsInput'] | null; // GuessingGameRoundUpdateWithoutTargetsInput
+    upsert?: NexusGenInputs['GuessingGameRoundUpsertWithoutTargetsInput'] | null; // GuessingGameRoundUpsertWithoutTargetsInput
+  }
+  GuessingGameRoundUpdateWithWhereUniqueWithoutGameInput: { // input type
+    data: NexusGenInputs['GuessingGameRoundUpdateWithoutGameInput']; // GuessingGameRoundUpdateWithoutGameInput!
+    where: NexusGenInputs['GuessingGameRoundWhereUniqueInput']; // GuessingGameRoundWhereUniqueInput!
+  }
+  GuessingGameRoundUpdateWithoutGameInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutRoundInput'] | null; // GuessingGameGuessUpdateManyWithoutRoundInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    startedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    targets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutRoundInput'] | null; // GuessingGameTargetUpdateManyWithoutRoundInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameRoundUpdateWithoutGuessesInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    game?: NexusGenInputs['GuessingGameUpdateOneRequiredWithoutRoundsInput'] | null; // GuessingGameUpdateOneRequiredWithoutRoundsInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    startedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    targets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutRoundInput'] | null; // GuessingGameTargetUpdateManyWithoutRoundInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameRoundUpdateWithoutTargetsInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    game?: NexusGenInputs['GuessingGameUpdateOneRequiredWithoutRoundsInput'] | null; // GuessingGameUpdateOneRequiredWithoutRoundsInput
+    guesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutRoundInput'] | null; // GuessingGameGuessUpdateManyWithoutRoundInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    startedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameRoundUpsertWithWhereUniqueWithoutGameInput: { // input type
+    create: NexusGenInputs['GuessingGameRoundCreateWithoutGameInput']; // GuessingGameRoundCreateWithoutGameInput!
+    update: NexusGenInputs['GuessingGameRoundUpdateWithoutGameInput']; // GuessingGameRoundUpdateWithoutGameInput!
+    where: NexusGenInputs['GuessingGameRoundWhereUniqueInput']; // GuessingGameRoundWhereUniqueInput!
+  }
+  GuessingGameRoundUpsertWithoutGuessesInput: { // input type
+    create: NexusGenInputs['GuessingGameRoundCreateWithoutGuessesInput']; // GuessingGameRoundCreateWithoutGuessesInput!
+    update: NexusGenInputs['GuessingGameRoundUpdateWithoutGuessesInput']; // GuessingGameRoundUpdateWithoutGuessesInput!
+  }
+  GuessingGameRoundUpsertWithoutTargetsInput: { // input type
+    create: NexusGenInputs['GuessingGameRoundCreateWithoutTargetsInput']; // GuessingGameRoundCreateWithoutTargetsInput!
+    update: NexusGenInputs['GuessingGameRoundUpdateWithoutTargetsInput']; // GuessingGameRoundUpdateWithoutTargetsInput!
+  }
+  GuessingGameRoundWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameRoundWhereInput'][] | null; // [GuessingGameRoundWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameRoundWhereInput'][] | null; // [GuessingGameRoundWhereInput!]
+    OR?: NexusGenInputs['GuessingGameRoundWhereInput'][] | null; // [GuessingGameRoundWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    game?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    gameId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    guesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    startedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    targets?: NexusGenInputs['GuessingGameTargetListRelationFilter'] | null; // GuessingGameTargetListRelationFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameRoundWhereUniqueInput: { // input type
+    id?: number | null; // Int
+  }
+  GuessingGameScalarWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameScalarWhereInput'][] | null; // [GuessingGameScalarWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameScalarWhereInput'][] | null; // [GuessingGameScalarWhereInput!]
+    OR?: NexusGenInputs['GuessingGameScalarWhereInput'][] | null; // [GuessingGameScalarWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    finishDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    hints?: NexusGenInputs['EnumGuessingGameHintsFilter'] | null; // EnumGuessingGameHintsFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    ownerId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    secondsPerRound?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameTargetCreateManyAnswerInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    roundId: number; // Int!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameTargetCreateManyAnswerInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameTargetCreateManyAnswerInput'][] | null; // [GuessingGameTargetCreateManyAnswerInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameTargetCreateManyRoundInput: { // input type
+    answerId?: number | null; // Int
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id?: number | null; // Int
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameTargetCreateManyRoundInputEnvelope: { // input type
+    data?: NexusGenInputs['GuessingGameTargetCreateManyRoundInput'][] | null; // [GuessingGameTargetCreateManyRoundInput!]
+    skipDuplicates?: boolean | null; // Boolean
+  }
+  GuessingGameTargetCreateNestedManyWithoutAnswerInput: { // input type
+    connect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameTargetCreateOrConnectWithoutAnswerInput'][] | null; // [GuessingGameTargetCreateOrConnectWithoutAnswerInput!]
+    create?: NexusGenInputs['GuessingGameTargetCreateWithoutAnswerInput'][] | null; // [GuessingGameTargetCreateWithoutAnswerInput!]
+    createMany?: NexusGenInputs['GuessingGameTargetCreateManyAnswerInputEnvelope'] | null; // GuessingGameTargetCreateManyAnswerInputEnvelope
+  }
+  GuessingGameTargetCreateNestedManyWithoutRoundInput: { // input type
+    connect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameTargetCreateOrConnectWithoutRoundInput'][] | null; // [GuessingGameTargetCreateOrConnectWithoutRoundInput!]
+    create?: NexusGenInputs['GuessingGameTargetCreateWithoutRoundInput'][] | null; // [GuessingGameTargetCreateWithoutRoundInput!]
+    createMany?: NexusGenInputs['GuessingGameTargetCreateManyRoundInputEnvelope'] | null; // GuessingGameTargetCreateManyRoundInputEnvelope
+  }
+  GuessingGameTargetCreateNestedOneWithoutGuessesInput: { // input type
+    connect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'] | null; // GuessingGameTargetWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameTargetCreateOrConnectWithoutGuessesInput'] | null; // GuessingGameTargetCreateOrConnectWithoutGuessesInput
+    create?: NexusGenInputs['GuessingGameTargetCreateWithoutGuessesInput'] | null; // GuessingGameTargetCreateWithoutGuessesInput
+  }
+  GuessingGameTargetCreateOrConnectWithoutAnswerInput: { // input type
+    create: NexusGenInputs['GuessingGameTargetCreateWithoutAnswerInput']; // GuessingGameTargetCreateWithoutAnswerInput!
+    where: NexusGenInputs['GuessingGameTargetWhereUniqueInput']; // GuessingGameTargetWhereUniqueInput!
+  }
+  GuessingGameTargetCreateOrConnectWithoutGuessesInput: { // input type
+    create: NexusGenInputs['GuessingGameTargetCreateWithoutGuessesInput']; // GuessingGameTargetCreateWithoutGuessesInput!
+    where: NexusGenInputs['GuessingGameTargetWhereUniqueInput']; // GuessingGameTargetWhereUniqueInput!
+  }
+  GuessingGameTargetCreateOrConnectWithoutRoundInput: { // input type
+    create: NexusGenInputs['GuessingGameTargetCreateWithoutRoundInput']; // GuessingGameTargetCreateWithoutRoundInput!
+    where: NexusGenInputs['GuessingGameTargetWhereUniqueInput']; // GuessingGameTargetWhereUniqueInput!
+  }
+  GuessingGameTargetCreateWithoutAnswerInput: { // input type
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutTargetInput'] | null; // GuessingGameGuessCreateNestedManyWithoutTargetInput
+    round: NexusGenInputs['GuessingGameRoundCreateNestedOneWithoutTargetsInput']; // GuessingGameRoundCreateNestedOneWithoutTargetsInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameTargetCreateWithoutGuessesInput: { // input type
+    answer?: NexusGenInputs['PersonCreateNestedOneWithoutGuessingGameTargetsInput'] | null; // PersonCreateNestedOneWithoutGuessingGameTargetsInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    round: NexusGenInputs['GuessingGameRoundCreateNestedOneWithoutTargetsInput']; // GuessingGameRoundCreateNestedOneWithoutTargetsInput!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameTargetCreateWithoutRoundInput: { // input type
+    answer?: NexusGenInputs['PersonCreateNestedOneWithoutGuessingGameTargetsInput'] | null; // PersonCreateNestedOneWithoutGuessingGameTargetsInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    guesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutTargetInput'] | null; // GuessingGameGuessCreateNestedManyWithoutTargetInput
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  GuessingGameTargetListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+    none?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+    some?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+  }
+  GuessingGameTargetOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameTargetScalarWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameTargetScalarWhereInput'][] | null; // [GuessingGameTargetScalarWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameTargetScalarWhereInput'][] | null; // [GuessingGameTargetScalarWhereInput!]
+    OR?: NexusGenInputs['GuessingGameTargetScalarWhereInput'][] | null; // [GuessingGameTargetScalarWhereInput!]
+    answerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    roundId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameTargetUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameTargetUpdateManyWithWhereWithoutAnswerInput: { // input type
+    data: NexusGenInputs['GuessingGameTargetUpdateManyMutationInput']; // GuessingGameTargetUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameTargetScalarWhereInput']; // GuessingGameTargetScalarWhereInput!
+  }
+  GuessingGameTargetUpdateManyWithWhereWithoutRoundInput: { // input type
+    data: NexusGenInputs['GuessingGameTargetUpdateManyMutationInput']; // GuessingGameTargetUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameTargetScalarWhereInput']; // GuessingGameTargetScalarWhereInput!
+  }
+  GuessingGameTargetUpdateManyWithoutAnswerInput: { // input type
+    connect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameTargetCreateOrConnectWithoutAnswerInput'][] | null; // [GuessingGameTargetCreateOrConnectWithoutAnswerInput!]
+    create?: NexusGenInputs['GuessingGameTargetCreateWithoutAnswerInput'][] | null; // [GuessingGameTargetCreateWithoutAnswerInput!]
+    createMany?: NexusGenInputs['GuessingGameTargetCreateManyAnswerInputEnvelope'] | null; // GuessingGameTargetCreateManyAnswerInputEnvelope
+    delete?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameTargetScalarWhereInput'][] | null; // [GuessingGameTargetScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameTargetUpdateWithWhereUniqueWithoutAnswerInput'][] | null; // [GuessingGameTargetUpdateWithWhereUniqueWithoutAnswerInput!]
+    updateMany?: NexusGenInputs['GuessingGameTargetUpdateManyWithWhereWithoutAnswerInput'][] | null; // [GuessingGameTargetUpdateManyWithWhereWithoutAnswerInput!]
+    upsert?: NexusGenInputs['GuessingGameTargetUpsertWithWhereUniqueWithoutAnswerInput'][] | null; // [GuessingGameTargetUpsertWithWhereUniqueWithoutAnswerInput!]
+  }
+  GuessingGameTargetUpdateManyWithoutRoundInput: { // input type
+    connect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameTargetCreateOrConnectWithoutRoundInput'][] | null; // [GuessingGameTargetCreateOrConnectWithoutRoundInput!]
+    create?: NexusGenInputs['GuessingGameTargetCreateWithoutRoundInput'][] | null; // [GuessingGameTargetCreateWithoutRoundInput!]
+    createMany?: NexusGenInputs['GuessingGameTargetCreateManyRoundInputEnvelope'] | null; // GuessingGameTargetCreateManyRoundInputEnvelope
+    delete?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameTargetScalarWhereInput'][] | null; // [GuessingGameTargetScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'][] | null; // [GuessingGameTargetWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameTargetUpdateWithWhereUniqueWithoutRoundInput'][] | null; // [GuessingGameTargetUpdateWithWhereUniqueWithoutRoundInput!]
+    updateMany?: NexusGenInputs['GuessingGameTargetUpdateManyWithWhereWithoutRoundInput'][] | null; // [GuessingGameTargetUpdateManyWithWhereWithoutRoundInput!]
+    upsert?: NexusGenInputs['GuessingGameTargetUpsertWithWhereUniqueWithoutRoundInput'][] | null; // [GuessingGameTargetUpsertWithWhereUniqueWithoutRoundInput!]
+  }
+  GuessingGameTargetUpdateOneRequiredWithoutGuessesInput: { // input type
+    connect?: NexusGenInputs['GuessingGameTargetWhereUniqueInput'] | null; // GuessingGameTargetWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameTargetCreateOrConnectWithoutGuessesInput'] | null; // GuessingGameTargetCreateOrConnectWithoutGuessesInput
+    create?: NexusGenInputs['GuessingGameTargetCreateWithoutGuessesInput'] | null; // GuessingGameTargetCreateWithoutGuessesInput
+    update?: NexusGenInputs['GuessingGameTargetUpdateWithoutGuessesInput'] | null; // GuessingGameTargetUpdateWithoutGuessesInput
+    upsert?: NexusGenInputs['GuessingGameTargetUpsertWithoutGuessesInput'] | null; // GuessingGameTargetUpsertWithoutGuessesInput
+  }
+  GuessingGameTargetUpdateWithWhereUniqueWithoutAnswerInput: { // input type
+    data: NexusGenInputs['GuessingGameTargetUpdateWithoutAnswerInput']; // GuessingGameTargetUpdateWithoutAnswerInput!
+    where: NexusGenInputs['GuessingGameTargetWhereUniqueInput']; // GuessingGameTargetWhereUniqueInput!
+  }
+  GuessingGameTargetUpdateWithWhereUniqueWithoutRoundInput: { // input type
+    data: NexusGenInputs['GuessingGameTargetUpdateWithoutRoundInput']; // GuessingGameTargetUpdateWithoutRoundInput!
+    where: NexusGenInputs['GuessingGameTargetWhereUniqueInput']; // GuessingGameTargetWhereUniqueInput!
+  }
+  GuessingGameTargetUpdateWithoutAnswerInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutTargetInput'] | null; // GuessingGameGuessUpdateManyWithoutTargetInput
+    round?: NexusGenInputs['GuessingGameRoundUpdateOneRequiredWithoutTargetsInput'] | null; // GuessingGameRoundUpdateOneRequiredWithoutTargetsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameTargetUpdateWithoutGuessesInput: { // input type
+    answer?: NexusGenInputs['PersonUpdateOneWithoutGuessingGameTargetsInput'] | null; // PersonUpdateOneWithoutGuessingGameTargetsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    round?: NexusGenInputs['GuessingGameRoundUpdateOneRequiredWithoutTargetsInput'] | null; // GuessingGameRoundUpdateOneRequiredWithoutTargetsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameTargetUpdateWithoutRoundInput: { // input type
+    answer?: NexusGenInputs['PersonUpdateOneWithoutGuessingGameTargetsInput'] | null; // PersonUpdateOneWithoutGuessingGameTargetsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    guesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutTargetInput'] | null; // GuessingGameGuessUpdateManyWithoutTargetInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameTargetUpsertWithWhereUniqueWithoutAnswerInput: { // input type
+    create: NexusGenInputs['GuessingGameTargetCreateWithoutAnswerInput']; // GuessingGameTargetCreateWithoutAnswerInput!
+    update: NexusGenInputs['GuessingGameTargetUpdateWithoutAnswerInput']; // GuessingGameTargetUpdateWithoutAnswerInput!
+    where: NexusGenInputs['GuessingGameTargetWhereUniqueInput']; // GuessingGameTargetWhereUniqueInput!
+  }
+  GuessingGameTargetUpsertWithWhereUniqueWithoutRoundInput: { // input type
+    create: NexusGenInputs['GuessingGameTargetCreateWithoutRoundInput']; // GuessingGameTargetCreateWithoutRoundInput!
+    update: NexusGenInputs['GuessingGameTargetUpdateWithoutRoundInput']; // GuessingGameTargetUpdateWithoutRoundInput!
+    where: NexusGenInputs['GuessingGameTargetWhereUniqueInput']; // GuessingGameTargetWhereUniqueInput!
+  }
+  GuessingGameTargetUpsertWithoutGuessesInput: { // input type
+    create: NexusGenInputs['GuessingGameTargetCreateWithoutGuessesInput']; // GuessingGameTargetCreateWithoutGuessesInput!
+    update: NexusGenInputs['GuessingGameTargetUpdateWithoutGuessesInput']; // GuessingGameTargetUpdateWithoutGuessesInput!
+  }
+  GuessingGameTargetWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameTargetWhereInput'][] | null; // [GuessingGameTargetWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameTargetWhereInput'][] | null; // [GuessingGameTargetWhereInput!]
+    OR?: NexusGenInputs['GuessingGameTargetWhereInput'][] | null; // [GuessingGameTargetWhereInput!]
+    answer?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    answerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    guesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    round?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    roundId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameTargetWhereUniqueInput: { // input type
+    id?: number | null; // Int
+  }
+  GuessingGameUpdateManyMutationInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    finishDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hints?: NexusGenInputs['EnumGuessingGameHintsFieldUpdateOperationsInput'] | null; // EnumGuessingGameHintsFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    secondsPerRound?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameUpdateManyWithWhereWithoutOwnerInput: { // input type
+    data: NexusGenInputs['GuessingGameUpdateManyMutationInput']; // GuessingGameUpdateManyMutationInput!
+    where: NexusGenInputs['GuessingGameScalarWhereInput']; // GuessingGameScalarWhereInput!
+  }
+  GuessingGameUpdateManyWithoutOwnerInput: { // input type
+    connect?: NexusGenInputs['GuessingGameWhereUniqueInput'][] | null; // [GuessingGameWhereUniqueInput!]
+    connectOrCreate?: NexusGenInputs['GuessingGameCreateOrConnectWithoutOwnerInput'][] | null; // [GuessingGameCreateOrConnectWithoutOwnerInput!]
+    create?: NexusGenInputs['GuessingGameCreateWithoutOwnerInput'][] | null; // [GuessingGameCreateWithoutOwnerInput!]
+    createMany?: NexusGenInputs['GuessingGameCreateManyOwnerInputEnvelope'] | null; // GuessingGameCreateManyOwnerInputEnvelope
+    delete?: NexusGenInputs['GuessingGameWhereUniqueInput'][] | null; // [GuessingGameWhereUniqueInput!]
+    deleteMany?: NexusGenInputs['GuessingGameScalarWhereInput'][] | null; // [GuessingGameScalarWhereInput!]
+    disconnect?: NexusGenInputs['GuessingGameWhereUniqueInput'][] | null; // [GuessingGameWhereUniqueInput!]
+    set?: NexusGenInputs['GuessingGameWhereUniqueInput'][] | null; // [GuessingGameWhereUniqueInput!]
+    update?: NexusGenInputs['GuessingGameUpdateWithWhereUniqueWithoutOwnerInput'][] | null; // [GuessingGameUpdateWithWhereUniqueWithoutOwnerInput!]
+    updateMany?: NexusGenInputs['GuessingGameUpdateManyWithWhereWithoutOwnerInput'][] | null; // [GuessingGameUpdateManyWithWhereWithoutOwnerInput!]
+    upsert?: NexusGenInputs['GuessingGameUpsertWithWhereUniqueWithoutOwnerInput'][] | null; // [GuessingGameUpsertWithWhereUniqueWithoutOwnerInput!]
+  }
+  GuessingGameUpdateOneRequiredWithoutParticipantsInput: { // input type
+    connect?: NexusGenInputs['GuessingGameWhereUniqueInput'] | null; // GuessingGameWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameCreateOrConnectWithoutParticipantsInput'] | null; // GuessingGameCreateOrConnectWithoutParticipantsInput
+    create?: NexusGenInputs['GuessingGameCreateWithoutParticipantsInput'] | null; // GuessingGameCreateWithoutParticipantsInput
+    update?: NexusGenInputs['GuessingGameUpdateWithoutParticipantsInput'] | null; // GuessingGameUpdateWithoutParticipantsInput
+    upsert?: NexusGenInputs['GuessingGameUpsertWithoutParticipantsInput'] | null; // GuessingGameUpsertWithoutParticipantsInput
+  }
+  GuessingGameUpdateOneRequiredWithoutRoundsInput: { // input type
+    connect?: NexusGenInputs['GuessingGameWhereUniqueInput'] | null; // GuessingGameWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['GuessingGameCreateOrConnectWithoutRoundsInput'] | null; // GuessingGameCreateOrConnectWithoutRoundsInput
+    create?: NexusGenInputs['GuessingGameCreateWithoutRoundsInput'] | null; // GuessingGameCreateWithoutRoundsInput
+    update?: NexusGenInputs['GuessingGameUpdateWithoutRoundsInput'] | null; // GuessingGameUpdateWithoutRoundsInput
+    upsert?: NexusGenInputs['GuessingGameUpsertWithoutRoundsInput'] | null; // GuessingGameUpsertWithoutRoundsInput
+  }
+  GuessingGameUpdateWithWhereUniqueWithoutOwnerInput: { // input type
+    data: NexusGenInputs['GuessingGameUpdateWithoutOwnerInput']; // GuessingGameUpdateWithoutOwnerInput!
+    where: NexusGenInputs['GuessingGameWhereUniqueInput']; // GuessingGameWhereUniqueInput!
+  }
+  GuessingGameUpdateWithoutOwnerInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    finishDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hints?: NexusGenInputs['EnumGuessingGameHintsFieldUpdateOperationsInput'] | null; // EnumGuessingGameHintsFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    participants?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutGameInput'] | null; // GuessingGameParticipantUpdateManyWithoutGameInput
+    rounds?: NexusGenInputs['GuessingGameRoundUpdateManyWithoutGameInput'] | null; // GuessingGameRoundUpdateManyWithoutGameInput
+    secondsPerRound?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameUpdateWithoutParticipantsInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    finishDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hints?: NexusGenInputs['EnumGuessingGameHintsFieldUpdateOperationsInput'] | null; // EnumGuessingGameHintsFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    owner?: NexusGenInputs['UserUpdateOneRequiredWithoutGuessingGamesHostedInput'] | null; // UserUpdateOneRequiredWithoutGuessingGamesHostedInput
+    rounds?: NexusGenInputs['GuessingGameRoundUpdateManyWithoutGameInput'] | null; // GuessingGameRoundUpdateManyWithoutGameInput
+    secondsPerRound?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameUpdateWithoutRoundsInput: { // input type
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    finishDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    hints?: NexusGenInputs['EnumGuessingGameHintsFieldUpdateOperationsInput'] | null; // EnumGuessingGameHintsFieldUpdateOperationsInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    owner?: NexusGenInputs['UserUpdateOneRequiredWithoutGuessingGamesHostedInput'] | null; // UserUpdateOneRequiredWithoutGuessingGamesHostedInput
+    participants?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutGameInput'] | null; // GuessingGameParticipantUpdateManyWithoutGameInput
+    secondsPerRound?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    startDate?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  GuessingGameUpsertWithWhereUniqueWithoutOwnerInput: { // input type
+    create: NexusGenInputs['GuessingGameCreateWithoutOwnerInput']; // GuessingGameCreateWithoutOwnerInput!
+    update: NexusGenInputs['GuessingGameUpdateWithoutOwnerInput']; // GuessingGameUpdateWithoutOwnerInput!
+    where: NexusGenInputs['GuessingGameWhereUniqueInput']; // GuessingGameWhereUniqueInput!
+  }
+  GuessingGameUpsertWithoutParticipantsInput: { // input type
+    create: NexusGenInputs['GuessingGameCreateWithoutParticipantsInput']; // GuessingGameCreateWithoutParticipantsInput!
+    update: NexusGenInputs['GuessingGameUpdateWithoutParticipantsInput']; // GuessingGameUpdateWithoutParticipantsInput!
+  }
+  GuessingGameUpsertWithoutRoundsInput: { // input type
+    create: NexusGenInputs['GuessingGameCreateWithoutRoundsInput']; // GuessingGameCreateWithoutRoundsInput!
+    update: NexusGenInputs['GuessingGameUpdateWithoutRoundsInput']; // GuessingGameUpdateWithoutRoundsInput!
+  }
+  GuessingGameWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameWhereInput'][] | null; // [GuessingGameWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameWhereInput'][] | null; // [GuessingGameWhereInput!]
+    OR?: NexusGenInputs['GuessingGameWhereInput'][] | null; // [GuessingGameWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    finishDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    hints?: NexusGenInputs['EnumGuessingGameHintsFilter'] | null; // EnumGuessingGameHintsFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    owner?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    ownerId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    participants?: NexusGenInputs['GuessingGameParticipantListRelationFilter'] | null; // GuessingGameParticipantListRelationFilter
+    rounds?: NexusGenInputs['GuessingGameRoundListRelationFilter'] | null; // GuessingGameRoundListRelationFilter
+    secondsPerRound?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameWhereUniqueInput: { // input type
+    id?: number | null; // Int
+  }
   ImageCreateManyUserInput: { // input type
     bytes?: number | null; // Int
     caption?: string | null; // String
@@ -2379,6 +3655,11 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
     connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutDiscoverySourceInput'] | null; // ImageCreateOrConnectWithoutDiscoverySourceInput
     create?: NexusGenInputs['ImageCreateWithoutDiscoverySourceInput'] | null; // ImageCreateWithoutDiscoverySourceInput
+  }
+  ImageCreateNestedOneWithoutFacesInput: { // input type
+    connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['ImageCreateOrConnectWithoutFacesInput'] | null; // ImageCreateOrConnectWithoutFacesInput
+    create?: NexusGenInputs['ImageCreateWithoutFacesInput'] | null; // ImageCreateWithoutFacesInput
   }
   ImageCreateNestedOneWithoutGroupAvatarOfInput: { // input type
     connect?: NexusGenInputs['ImageWhereUniqueInput'] | null; // ImageWhereUniqueInput
@@ -4698,11 +5979,23 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumFaceSourceFilter'] | null; // NestedEnumFaceSourceFilter
     notIn?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
   }
+  NestedEnumGameParticipantKindFilter: { // input type
+    equals?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    in?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+    not?: NexusGenInputs['NestedEnumGameParticipantKindFilter'] | null; // NestedEnumGameParticipantKindFilter
+    notIn?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+  }
   NestedEnumGenderNullableFilter: { // input type
     equals?: NexusGenEnums['Gender'] | null; // Gender
     in?: NexusGenEnums['Gender'][] | null; // [Gender!]
     not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
     notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
+  }
+  NestedEnumGuessingGameHintsFilter: { // input type
+    equals?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    in?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
+    not?: NexusGenInputs['NestedEnumGuessingGameHintsFilter'] | null; // NestedEnumGuessingGameHintsFilter
+    notIn?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
   }
   NestedEnumImageReportActionNullableFilter: { // input type
     equals?: NexusGenEnums['ImageReportAction'] | null; // ImageReportAction
@@ -4819,6 +6112,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -4859,6 +6154,11 @@ export interface NexusGenInputs {
     connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAppearancesInput'] | null; // PersonCreateOrConnectWithoutAppearancesInput
     create?: NexusGenInputs['PersonCreateWithoutAppearancesInput'] | null; // PersonCreateWithoutAppearancesInput
   }
+  PersonCreateNestedOneWithoutAppearsInInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAppearsInInput'] | null; // PersonCreateOrConnectWithoutAppearsInInput
+    create?: NexusGenInputs['PersonCreateWithoutAppearsInInput'] | null; // PersonCreateWithoutAppearsInInput
+  }
   PersonCreateNestedOneWithoutAvatarInput: { // input type
     connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
     connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutAvatarInput'] | null; // PersonCreateOrConnectWithoutAvatarInput
@@ -4868,6 +6168,16 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
     connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutBannerInput'] | null; // PersonCreateOrConnectWithoutBannerInput
     create?: NexusGenInputs['PersonCreateWithoutBannerInput'] | null; // PersonCreateWithoutBannerInput
+  }
+  PersonCreateNestedOneWithoutGuessingGameGuessesInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutGuessingGameGuessesInput'] | null; // PersonCreateOrConnectWithoutGuessingGameGuessesInput
+    create?: NexusGenInputs['PersonCreateWithoutGuessingGameGuessesInput'] | null; // PersonCreateWithoutGuessingGameGuessesInput
+  }
+  PersonCreateNestedOneWithoutGuessingGameTargetsInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutGuessingGameTargetsInput'] | null; // PersonCreateOrConnectWithoutGuessingGameTargetsInput
+    create?: NexusGenInputs['PersonCreateWithoutGuessingGameTargetsInput'] | null; // PersonCreateWithoutGuessingGameTargetsInput
   }
   PersonCreateNestedOneWithoutMemberOfInput: { // input type
     connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
@@ -4899,6 +6209,14 @@ export interface NexusGenInputs {
     create: NexusGenInputs['PersonCreateWithoutBannerInput']; // PersonCreateWithoutBannerInput!
     where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
   }
+  PersonCreateOrConnectWithoutGuessingGameGuessesInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutGuessingGameGuessesInput']; // PersonCreateWithoutGuessingGameGuessesInput!
+    where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+  }
+  PersonCreateOrConnectWithoutGuessingGameTargetsInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutGuessingGameTargetsInput']; // PersonCreateWithoutGuessingGameTargetsInput!
+    where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
+  }
   PersonCreateOrConnectWithoutMemberOfInput: { // input type
     create: NexusGenInputs['PersonCreateWithoutMemberOfInput']; // PersonCreateWithoutMemberOfInput!
     where: NexusGenInputs['PersonWhereUniqueInput']; // PersonWhereUniqueInput!
@@ -4920,6 +6238,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -4936,6 +6256,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -4952,6 +6274,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -4968,6 +6292,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -4984,6 +6310,44 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
+    ireneBotId?: number | null; // Int
+    memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
+    name: string; // String!
+    preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
+    preferredMembership?: NexusGenInputs['GroupMemberCreateNestedOneWithoutPreferredMemberships_Input'] | null; // GroupMemberCreateNestedOneWithoutPreferredMemberships_Input
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PersonCreateWithoutGuessingGameGuessesInput: { // input type
+    aliases?: NexusGenInputs['AliasCreateNestedManyWithoutPersonInput'] | null; // AliasCreateNestedManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutPersonInput'] | null; // AppearanceCreateNestedManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceCreateNestedManyWithoutPersonInput'] | null; // FaceCreateNestedManyWithoutPersonInput
+    avatar?: NexusGenInputs['ImageCreateNestedOneWithoutPersonAvatarOfInput'] | null; // ImageCreateNestedOneWithoutPersonAvatarOfInput
+    banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
+    birthDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
+    ireneBotId?: number | null; // Int
+    memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
+    name: string; // String!
+    preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
+    preferredMembership?: NexusGenInputs['GroupMemberCreateNestedOneWithoutPreferredMemberships_Input'] | null; // GroupMemberCreateNestedOneWithoutPreferredMemberships_Input
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  PersonCreateWithoutGuessingGameTargetsInput: { // input type
+    aliases?: NexusGenInputs['AliasCreateNestedManyWithoutPersonInput'] | null; // AliasCreateNestedManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutPersonInput'] | null; // AppearanceCreateNestedManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceCreateNestedManyWithoutPersonInput'] | null; // FaceCreateNestedManyWithoutPersonInput
+    avatar?: NexusGenInputs['ImageCreateNestedOneWithoutPersonAvatarOfInput'] | null; // ImageCreateNestedOneWithoutPersonAvatarOfInput
+    banner?: NexusGenInputs['ImageCreateNestedOneWithoutPersonBannerOfInput'] | null; // ImageCreateNestedOneWithoutPersonBannerOfInput
+    birthDate?: NexusGenScalars['DateTime'] | null; // DateTime
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    description?: string | null; // String
+    gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -5001,6 +6365,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     name: string; // String!
     preferredAlias?: NexusGenInputs['AliasCreateNestedOneWithoutPreferredAliasOfInput'] | null; // AliasCreateNestedOneWithoutPreferredAliasOfInput
@@ -5017,6 +6383,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -5033,6 +6401,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     description?: string | null; // String
     gender?: NexusGenEnums['Gender'] | null; // Gender
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutPersonGuessInput'] | null; // GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetCreateNestedManyWithoutAnswerInput'] | null; // GuessingGameTargetCreateNestedManyWithoutAnswerInput
     ireneBotId?: number | null; // Int
     memberOf?: NexusGenInputs['GroupMemberCreateNestedManyWithoutPersonInput'] | null; // GroupMemberCreateNestedManyWithoutPersonInput
     name: string; // String!
@@ -5059,6 +6429,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     description?: NexusGenEnums['SortOrder'] | null; // SortOrder
     gender?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessOrderByRelationAggregateInput'] | null; // GuessingGameGuessOrderByRelationAggregateInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetOrderByRelationAggregateInput'] | null; // GuessingGameTargetOrderByRelationAggregateInput
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
     ireneBotId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     memberOf?: NexusGenInputs['GroupMemberOrderByRelationAggregateInput'] | null; // GroupMemberOrderByRelationAggregateInput
@@ -5096,6 +6468,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5177,6 +6551,24 @@ export interface NexusGenInputs {
     update?: NexusGenInputs['PersonUpdateWithoutBannerInput'] | null; // PersonUpdateWithoutBannerInput
     upsert?: NexusGenInputs['PersonUpsertWithoutBannerInput'] | null; // PersonUpsertWithoutBannerInput
   }
+  PersonUpdateOneWithoutGuessingGameGuessesInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutGuessingGameGuessesInput'] | null; // PersonCreateOrConnectWithoutGuessingGameGuessesInput
+    create?: NexusGenInputs['PersonCreateWithoutGuessingGameGuessesInput'] | null; // PersonCreateWithoutGuessingGameGuessesInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['PersonUpdateWithoutGuessingGameGuessesInput'] | null; // PersonUpdateWithoutGuessingGameGuessesInput
+    upsert?: NexusGenInputs['PersonUpsertWithoutGuessingGameGuessesInput'] | null; // PersonUpsertWithoutGuessingGameGuessesInput
+  }
+  PersonUpdateOneWithoutGuessingGameTargetsInput: { // input type
+    connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutGuessingGameTargetsInput'] | null; // PersonCreateOrConnectWithoutGuessingGameTargetsInput
+    create?: NexusGenInputs['PersonCreateWithoutGuessingGameTargetsInput'] | null; // PersonCreateWithoutGuessingGameTargetsInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['PersonUpdateWithoutGuessingGameTargetsInput'] | null; // PersonUpdateWithoutGuessingGameTargetsInput
+    upsert?: NexusGenInputs['PersonUpsertWithoutGuessingGameTargetsInput'] | null; // PersonUpsertWithoutGuessingGameTargetsInput
+  }
   PersonUpdateOneWithoutPreferredAliasInput: { // input type
     connect?: NexusGenInputs['PersonWhereUniqueInput'] | null; // PersonWhereUniqueInput
     connectOrCreate?: NexusGenInputs['PersonCreateOrConnectWithoutPreferredAliasInput'] | null; // PersonCreateOrConnectWithoutPreferredAliasInput
@@ -5199,6 +6591,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5215,6 +6609,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5231,6 +6627,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5247,6 +6645,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5263,6 +6663,44 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
+    preferredMembership?: NexusGenInputs['GroupMemberUpdateOneWithoutPreferredMemberships_Input'] | null; // GroupMemberUpdateOneWithoutPreferredMemberships_Input
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  PersonUpdateWithoutGuessingGameGuessesInput: { // input type
+    aliases?: NexusGenInputs['AliasUpdateManyWithoutPersonInput'] | null; // AliasUpdateManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutPersonInput'] | null; // AppearanceUpdateManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceUpdateManyWithoutPersonInput'] | null; // FaceUpdateManyWithoutPersonInput
+    avatar?: NexusGenInputs['ImageUpdateOneWithoutPersonAvatarOfInput'] | null; // ImageUpdateOneWithoutPersonAvatarOfInput
+    banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
+    birthDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
+    ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
+    memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
+    name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
+    preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
+    preferredMembership?: NexusGenInputs['GroupMemberUpdateOneWithoutPreferredMemberships_Input'] | null; // GroupMemberUpdateOneWithoutPreferredMemberships_Input
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  PersonUpdateWithoutGuessingGameTargetsInput: { // input type
+    aliases?: NexusGenInputs['AliasUpdateManyWithoutPersonInput'] | null; // AliasUpdateManyWithoutPersonInput
+    appearances?: NexusGenInputs['AppearanceUpdateManyWithoutPersonInput'] | null; // AppearanceUpdateManyWithoutPersonInput
+    appearsIn?: NexusGenInputs['FaceUpdateManyWithoutPersonInput'] | null; // FaceUpdateManyWithoutPersonInput
+    avatar?: NexusGenInputs['ImageUpdateOneWithoutPersonAvatarOfInput'] | null; // ImageUpdateOneWithoutPersonAvatarOfInput
+    banner?: NexusGenInputs['ImageUpdateOneWithoutPersonBannerOfInput'] | null; // ImageUpdateOneWithoutPersonBannerOfInput
+    birthDate?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5280,6 +6718,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
     preferredAlias?: NexusGenInputs['AliasUpdateOneWithoutPreferredAliasOfInput'] | null; // AliasUpdateOneWithoutPreferredAliasOfInput
@@ -5296,6 +6736,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5312,6 +6754,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     description?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     gender?: NexusGenInputs['NullableEnumGenderFieldUpdateOperationsInput'] | null; // NullableEnumGenderFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutPersonGuessInput'] | null; // GuessingGameGuessUpdateManyWithoutPersonGuessInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetUpdateManyWithoutAnswerInput'] | null; // GuessingGameTargetUpdateManyWithoutAnswerInput
     ireneBotId?: NexusGenInputs['NullableIntFieldUpdateOperationsInput'] | null; // NullableIntFieldUpdateOperationsInput
     memberOf?: NexusGenInputs['GroupMemberUpdateManyWithoutPersonInput'] | null; // GroupMemberUpdateManyWithoutPersonInput
     name?: NexusGenInputs['StringFieldUpdateOperationsInput'] | null; // StringFieldUpdateOperationsInput
@@ -5343,6 +6787,14 @@ export interface NexusGenInputs {
     create: NexusGenInputs['PersonCreateWithoutBannerInput']; // PersonCreateWithoutBannerInput!
     update: NexusGenInputs['PersonUpdateWithoutBannerInput']; // PersonUpdateWithoutBannerInput!
   }
+  PersonUpsertWithoutGuessingGameGuessesInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutGuessingGameGuessesInput']; // PersonCreateWithoutGuessingGameGuessesInput!
+    update: NexusGenInputs['PersonUpdateWithoutGuessingGameGuessesInput']; // PersonUpdateWithoutGuessingGameGuessesInput!
+  }
+  PersonUpsertWithoutGuessingGameTargetsInput: { // input type
+    create: NexusGenInputs['PersonCreateWithoutGuessingGameTargetsInput']; // PersonCreateWithoutGuessingGameTargetsInput!
+    update: NexusGenInputs['PersonUpdateWithoutGuessingGameTargetsInput']; // PersonUpdateWithoutGuessingGameTargetsInput!
+  }
   PersonUpsertWithoutMemberOfInput: { // input type
     create: NexusGenInputs['PersonCreateWithoutMemberOfInput']; // PersonCreateWithoutMemberOfInput!
     update: NexusGenInputs['PersonUpdateWithoutMemberOfInput']; // PersonUpdateWithoutMemberOfInput!
@@ -5366,6 +6818,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     description?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     gender?: NexusGenInputs['EnumGenderNullableFilter'] | null; // EnumGenderNullableFilter
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetListRelationFilter'] | null; // GuessingGameTargetListRelationFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     memberOf?: NexusGenInputs['GroupMemberListRelationFilter'] | null; // GroupMemberListRelationFilter
@@ -6151,6 +7605,21 @@ export interface NexusGenInputs {
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutDiscoveredImageVoteInput'] | null; // UserCreateOrConnectWithoutDiscoveredImageVoteInput
     create?: NexusGenInputs['UserCreateWithoutDiscoveredImageVoteInput'] | null; // UserCreateWithoutDiscoveredImageVoteInput
   }
+  UserCreateNestedOneWithoutGuessingGameGuessesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutGuessingGameGuessesInput'] | null; // UserCreateOrConnectWithoutGuessingGameGuessesInput
+    create?: NexusGenInputs['UserCreateWithoutGuessingGameGuessesInput'] | null; // UserCreateWithoutGuessingGameGuessesInput
+  }
+  UserCreateNestedOneWithoutGuessingGameParticipationsInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutGuessingGameParticipationsInput'] | null; // UserCreateOrConnectWithoutGuessingGameParticipationsInput
+    create?: NexusGenInputs['UserCreateWithoutGuessingGameParticipationsInput'] | null; // UserCreateWithoutGuessingGameParticipationsInput
+  }
+  UserCreateNestedOneWithoutGuessingGamesHostedInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutGuessingGamesHostedInput'] | null; // UserCreateOrConnectWithoutGuessingGamesHostedInput
+    create?: NexusGenInputs['UserCreateWithoutGuessingGamesHostedInput'] | null; // UserCreateWithoutGuessingGamesHostedInput
+  }
   UserCreateNestedOneWithoutImageLikesInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutImageLikesInput'] | null; // UserCreateOrConnectWithoutImageLikesInput
@@ -6165,6 +7634,11 @@ export interface NexusGenInputs {
     connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutImagesInput'] | null; // UserCreateOrConnectWithoutImagesInput
     create?: NexusGenInputs['UserCreateWithoutImagesInput'] | null; // UserCreateWithoutImagesInput
+  }
+  UserCreateNestedOneWithoutMarkedFacesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutMarkedFacesInput'] | null; // UserCreateOrConnectWithoutMarkedFacesInput
+    create?: NexusGenInputs['UserCreateWithoutMarkedFacesInput'] | null; // UserCreateWithoutMarkedFacesInput
   }
   UserCreateNestedOneWithoutPlacedRestrictionsInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
@@ -6220,6 +7694,18 @@ export interface NexusGenInputs {
     create: NexusGenInputs['UserCreateWithoutDiscoveredImageVoteInput']; // UserCreateWithoutDiscoveredImageVoteInput!
     where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
   }
+  UserCreateOrConnectWithoutGuessingGameGuessesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutGuessingGameGuessesInput']; // UserCreateWithoutGuessingGameGuessesInput!
+    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+  }
+  UserCreateOrConnectWithoutGuessingGameParticipationsInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutGuessingGameParticipationsInput']; // UserCreateWithoutGuessingGameParticipationsInput!
+    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+  }
+  UserCreateOrConnectWithoutGuessingGamesHostedInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutGuessingGamesHostedInput']; // UserCreateWithoutGuessingGamesHostedInput!
+    where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+  }
   UserCreateOrConnectWithoutImageLikesInput: { // input type
     create: NexusGenInputs['UserCreateWithoutImageLikesInput']; // UserCreateWithoutImageLikesInput!
     where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
@@ -6270,6 +7756,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6296,6 +7785,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6322,6 +7814,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6348,6 +7843,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6374,6 +7872,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6400,6 +7901,96 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
+    image?: string | null; // String
+    imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
+    imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
+    images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceCreateNestedManyWithoutAddedByInput'] | null; // FaceCreateNestedManyWithoutAddedByInput
+    name?: string | null; // String
+    placedRestrictions?: NexusGenInputs['UserRestrictionCreateNestedManyWithoutAddedByInput'] | null; // UserRestrictionCreateNestedManyWithoutAddedByInput
+    reportedImages?: NexusGenInputs['ImageReportCreateNestedManyWithoutReportedByInput'] | null; // ImageReportCreateNestedManyWithoutReportedByInput
+    restrictions?: NexusGenInputs['UserRestrictionCreateNestedManyWithoutUserInput'] | null; // UserRestrictionCreateNestedManyWithoutUserInput
+    roles?: NexusGenInputs['RoleCreateNestedManyWithoutUserInput'] | null; // RoleCreateNestedManyWithoutUserInput
+    tagAliases?: NexusGenInputs['TagAliasCreateNestedManyWithoutAddedByInput'] | null; // TagAliasCreateNestedManyWithoutAddedByInput
+    tagCategories?: NexusGenInputs['TagCategoryCreateNestedManyWithoutAddedByInput'] | null; // TagCategoryCreateNestedManyWithoutAddedByInput
+    taggedAppearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutAddedByInput'] | null; // AppearanceCreateNestedManyWithoutAddedByInput
+    token?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  UserCreateWithoutGuessingGameGuessesInput: { // input type
+    DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteCreateNestedManyWithoutUserInput'] | null; // DiscoveredImageVoteCreateNestedManyWithoutUserInput
+    actionedReportedImages?: NexusGenInputs['ImageReportCreateNestedManyWithoutActionedByInput'] | null; // ImageReportCreateNestedManyWithoutActionedByInput
+    appearanceTags?: NexusGenInputs['AppearanceTagCreateNestedManyWithoutAddedByInput'] | null; // AppearanceTagCreateNestedManyWithoutAddedByInput
+    avatar?: NexusGenInputs['ImageCreateNestedOneWithoutUserAvatarOfInput'] | null; // ImageCreateNestedOneWithoutUserAvatarOfInput
+    banner?: NexusGenInputs['ImageCreateNestedOneWithoutUserBannerOfInput'] | null; // ImageCreateNestedOneWithoutUserBannerOfInput
+    bot?: boolean | null; // Boolean
+    cratedTags?: NexusGenInputs['TagCreateNestedManyWithoutAddedByInput'] | null; // TagCreateNestedManyWithoutAddedByInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
+    image?: string | null; // String
+    imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
+    imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
+    images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceCreateNestedManyWithoutAddedByInput'] | null; // FaceCreateNestedManyWithoutAddedByInput
+    name?: string | null; // String
+    placedRestrictions?: NexusGenInputs['UserRestrictionCreateNestedManyWithoutAddedByInput'] | null; // UserRestrictionCreateNestedManyWithoutAddedByInput
+    reportedImages?: NexusGenInputs['ImageReportCreateNestedManyWithoutReportedByInput'] | null; // ImageReportCreateNestedManyWithoutReportedByInput
+    restrictions?: NexusGenInputs['UserRestrictionCreateNestedManyWithoutUserInput'] | null; // UserRestrictionCreateNestedManyWithoutUserInput
+    roles?: NexusGenInputs['RoleCreateNestedManyWithoutUserInput'] | null; // RoleCreateNestedManyWithoutUserInput
+    tagAliases?: NexusGenInputs['TagAliasCreateNestedManyWithoutAddedByInput'] | null; // TagAliasCreateNestedManyWithoutAddedByInput
+    tagCategories?: NexusGenInputs['TagCategoryCreateNestedManyWithoutAddedByInput'] | null; // TagCategoryCreateNestedManyWithoutAddedByInput
+    taggedAppearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutAddedByInput'] | null; // AppearanceCreateNestedManyWithoutAddedByInput
+    token?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  UserCreateWithoutGuessingGameParticipationsInput: { // input type
+    DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteCreateNestedManyWithoutUserInput'] | null; // DiscoveredImageVoteCreateNestedManyWithoutUserInput
+    actionedReportedImages?: NexusGenInputs['ImageReportCreateNestedManyWithoutActionedByInput'] | null; // ImageReportCreateNestedManyWithoutActionedByInput
+    appearanceTags?: NexusGenInputs['AppearanceTagCreateNestedManyWithoutAddedByInput'] | null; // AppearanceTagCreateNestedManyWithoutAddedByInput
+    avatar?: NexusGenInputs['ImageCreateNestedOneWithoutUserAvatarOfInput'] | null; // ImageCreateNestedOneWithoutUserAvatarOfInput
+    banner?: NexusGenInputs['ImageCreateNestedOneWithoutUserBannerOfInput'] | null; // ImageCreateNestedOneWithoutUserBannerOfInput
+    bot?: boolean | null; // Boolean
+    cratedTags?: NexusGenInputs['TagCreateNestedManyWithoutAddedByInput'] | null; // TagCreateNestedManyWithoutAddedByInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
+    image?: string | null; // String
+    imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
+    imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
+    images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceCreateNestedManyWithoutAddedByInput'] | null; // FaceCreateNestedManyWithoutAddedByInput
+    name?: string | null; // String
+    placedRestrictions?: NexusGenInputs['UserRestrictionCreateNestedManyWithoutAddedByInput'] | null; // UserRestrictionCreateNestedManyWithoutAddedByInput
+    reportedImages?: NexusGenInputs['ImageReportCreateNestedManyWithoutReportedByInput'] | null; // ImageReportCreateNestedManyWithoutReportedByInput
+    restrictions?: NexusGenInputs['UserRestrictionCreateNestedManyWithoutUserInput'] | null; // UserRestrictionCreateNestedManyWithoutUserInput
+    roles?: NexusGenInputs['RoleCreateNestedManyWithoutUserInput'] | null; // RoleCreateNestedManyWithoutUserInput
+    tagAliases?: NexusGenInputs['TagAliasCreateNestedManyWithoutAddedByInput'] | null; // TagAliasCreateNestedManyWithoutAddedByInput
+    tagCategories?: NexusGenInputs['TagCategoryCreateNestedManyWithoutAddedByInput'] | null; // TagCategoryCreateNestedManyWithoutAddedByInput
+    taggedAppearances?: NexusGenInputs['AppearanceCreateNestedManyWithoutAddedByInput'] | null; // AppearanceCreateNestedManyWithoutAddedByInput
+    token?: string | null; // String
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
+  UserCreateWithoutGuessingGamesHostedInput: { // input type
+    DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteCreateNestedManyWithoutUserInput'] | null; // DiscoveredImageVoteCreateNestedManyWithoutUserInput
+    actionedReportedImages?: NexusGenInputs['ImageReportCreateNestedManyWithoutActionedByInput'] | null; // ImageReportCreateNestedManyWithoutActionedByInput
+    appearanceTags?: NexusGenInputs['AppearanceTagCreateNestedManyWithoutAddedByInput'] | null; // AppearanceTagCreateNestedManyWithoutAddedByInput
+    avatar?: NexusGenInputs['ImageCreateNestedOneWithoutUserAvatarOfInput'] | null; // ImageCreateNestedOneWithoutUserAvatarOfInput
+    banner?: NexusGenInputs['ImageCreateNestedOneWithoutUserBannerOfInput'] | null; // ImageCreateNestedOneWithoutUserBannerOfInput
+    bot?: boolean | null; // Boolean
+    cratedTags?: NexusGenInputs['TagCreateNestedManyWithoutAddedByInput'] | null; // TagCreateNestedManyWithoutAddedByInput
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    email?: string | null; // String
+    emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6427,6 +8018,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
     images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
@@ -6453,6 +8047,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     images?: NexusGenInputs['ImageCreateNestedManyWithoutUserInput'] | null; // ImageCreateNestedManyWithoutUserInput
@@ -6479,6 +8076,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6505,6 +8105,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6531,6 +8134,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6557,6 +8163,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6583,6 +8192,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6609,6 +8221,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6635,6 +8250,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6661,6 +8279,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: string | null; // String
     emailVerified?: NexusGenScalars['DateTime'] | null; // DateTime
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessCreateNestedManyWithoutUserInput'] | null; // GuessingGameGuessCreateNestedManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantCreateNestedManyWithoutUserInput'] | null; // GuessingGameParticipantCreateNestedManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameCreateNestedManyWithoutOwnerInput'] | null; // GuessingGameCreateNestedManyWithoutOwnerInput
     image?: string | null; // String
     imageLikes?: NexusGenInputs['ImageLikeCreateNestedManyWithoutUserInput'] | null; // ImageLikeCreateNestedManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagCreateNestedManyWithoutAddedByInput'] | null; // ImageTagCreateNestedManyWithoutAddedByInput
@@ -6689,6 +8310,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     email?: NexusGenEnums['SortOrder'] | null; // SortOrder
     emailVerified?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessOrderByRelationAggregateInput'] | null; // GuessingGameGuessOrderByRelationAggregateInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantOrderByRelationAggregateInput'] | null; // GuessingGameParticipantOrderByRelationAggregateInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameOrderByRelationAggregateInput'] | null; // GuessingGameOrderByRelationAggregateInput
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
     image?: NexusGenEnums['SortOrder'] | null; // SortOrder
     imageLikes?: NexusGenInputs['ImageLikeOrderByRelationAggregateInput'] | null; // ImageLikeOrderByRelationAggregateInput
@@ -6885,6 +8509,13 @@ export interface NexusGenInputs {
     update?: NexusGenInputs['UserUpdateWithoutDiscoveredImageVoteInput'] | null; // UserUpdateWithoutDiscoveredImageVoteInput
     upsert?: NexusGenInputs['UserUpsertWithoutDiscoveredImageVoteInput'] | null; // UserUpsertWithoutDiscoveredImageVoteInput
   }
+  UserUpdateOneRequiredWithoutGuessingGamesHostedInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutGuessingGamesHostedInput'] | null; // UserCreateOrConnectWithoutGuessingGamesHostedInput
+    create?: NexusGenInputs['UserCreateWithoutGuessingGamesHostedInput'] | null; // UserCreateWithoutGuessingGamesHostedInput
+    update?: NexusGenInputs['UserUpdateWithoutGuessingGamesHostedInput'] | null; // UserUpdateWithoutGuessingGamesHostedInput
+    upsert?: NexusGenInputs['UserUpsertWithoutGuessingGamesHostedInput'] | null; // UserUpsertWithoutGuessingGamesHostedInput
+  }
   UserUpdateOneRequiredWithoutImageLikesInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutImageLikesInput'] | null; // UserCreateOrConnectWithoutImageLikesInput
@@ -6950,6 +8581,24 @@ export interface NexusGenInputs {
     disconnect?: boolean | null; // Boolean
     update?: NexusGenInputs['UserUpdateWithoutCratedTagsInput'] | null; // UserUpdateWithoutCratedTagsInput
     upsert?: NexusGenInputs['UserUpsertWithoutCratedTagsInput'] | null; // UserUpsertWithoutCratedTagsInput
+  }
+  UserUpdateOneWithoutGuessingGameGuessesInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutGuessingGameGuessesInput'] | null; // UserCreateOrConnectWithoutGuessingGameGuessesInput
+    create?: NexusGenInputs['UserCreateWithoutGuessingGameGuessesInput'] | null; // UserCreateWithoutGuessingGameGuessesInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['UserUpdateWithoutGuessingGameGuessesInput'] | null; // UserUpdateWithoutGuessingGameGuessesInput
+    upsert?: NexusGenInputs['UserUpsertWithoutGuessingGameGuessesInput'] | null; // UserUpsertWithoutGuessingGameGuessesInput
+  }
+  UserUpdateOneWithoutGuessingGameParticipationsInput: { // input type
+    connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutGuessingGameParticipationsInput'] | null; // UserCreateOrConnectWithoutGuessingGameParticipationsInput
+    create?: NexusGenInputs['UserCreateWithoutGuessingGameParticipationsInput'] | null; // UserCreateWithoutGuessingGameParticipationsInput
+    delete?: boolean | null; // Boolean
+    disconnect?: boolean | null; // Boolean
+    update?: NexusGenInputs['UserUpdateWithoutGuessingGameParticipationsInput'] | null; // UserUpdateWithoutGuessingGameParticipationsInput
+    upsert?: NexusGenInputs['UserUpsertWithoutGuessingGameParticipationsInput'] | null; // UserUpsertWithoutGuessingGameParticipationsInput
   }
   UserUpdateOneWithoutImageTagsInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
@@ -7024,6 +8673,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7050,6 +8702,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7076,6 +8731,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7102,6 +8760,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7128,6 +8789,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7154,6 +8818,96 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
+    image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
+    imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
+    images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceUpdateManyWithoutAddedByInput'] | null; // FaceUpdateManyWithoutAddedByInput
+    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    placedRestrictions?: NexusGenInputs['UserRestrictionUpdateManyWithoutAddedByInput'] | null; // UserRestrictionUpdateManyWithoutAddedByInput
+    reportedImages?: NexusGenInputs['ImageReportUpdateManyWithoutReportedByInput'] | null; // ImageReportUpdateManyWithoutReportedByInput
+    restrictions?: NexusGenInputs['UserRestrictionUpdateManyWithoutUserInput'] | null; // UserRestrictionUpdateManyWithoutUserInput
+    roles?: NexusGenInputs['RoleUpdateManyWithoutUserInput'] | null; // RoleUpdateManyWithoutUserInput
+    tagAliases?: NexusGenInputs['TagAliasUpdateManyWithoutAddedByInput'] | null; // TagAliasUpdateManyWithoutAddedByInput
+    tagCategories?: NexusGenInputs['TagCategoryUpdateManyWithoutAddedByInput'] | null; // TagCategoryUpdateManyWithoutAddedByInput
+    taggedAppearances?: NexusGenInputs['AppearanceUpdateManyWithoutAddedByInput'] | null; // AppearanceUpdateManyWithoutAddedByInput
+    token?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  UserUpdateWithoutGuessingGameGuessesInput: { // input type
+    DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteUpdateManyWithoutUserInput'] | null; // DiscoveredImageVoteUpdateManyWithoutUserInput
+    actionedReportedImages?: NexusGenInputs['ImageReportUpdateManyWithoutActionedByInput'] | null; // ImageReportUpdateManyWithoutActionedByInput
+    appearanceTags?: NexusGenInputs['AppearanceTagUpdateManyWithoutAddedByInput'] | null; // AppearanceTagUpdateManyWithoutAddedByInput
+    avatar?: NexusGenInputs['ImageUpdateOneWithoutUserAvatarOfInput'] | null; // ImageUpdateOneWithoutUserAvatarOfInput
+    banner?: NexusGenInputs['ImageUpdateOneWithoutUserBannerOfInput'] | null; // ImageUpdateOneWithoutUserBannerOfInput
+    bot?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    cratedTags?: NexusGenInputs['TagUpdateManyWithoutAddedByInput'] | null; // TagUpdateManyWithoutAddedByInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
+    image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
+    imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
+    images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceUpdateManyWithoutAddedByInput'] | null; // FaceUpdateManyWithoutAddedByInput
+    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    placedRestrictions?: NexusGenInputs['UserRestrictionUpdateManyWithoutAddedByInput'] | null; // UserRestrictionUpdateManyWithoutAddedByInput
+    reportedImages?: NexusGenInputs['ImageReportUpdateManyWithoutReportedByInput'] | null; // ImageReportUpdateManyWithoutReportedByInput
+    restrictions?: NexusGenInputs['UserRestrictionUpdateManyWithoutUserInput'] | null; // UserRestrictionUpdateManyWithoutUserInput
+    roles?: NexusGenInputs['RoleUpdateManyWithoutUserInput'] | null; // RoleUpdateManyWithoutUserInput
+    tagAliases?: NexusGenInputs['TagAliasUpdateManyWithoutAddedByInput'] | null; // TagAliasUpdateManyWithoutAddedByInput
+    tagCategories?: NexusGenInputs['TagCategoryUpdateManyWithoutAddedByInput'] | null; // TagCategoryUpdateManyWithoutAddedByInput
+    taggedAppearances?: NexusGenInputs['AppearanceUpdateManyWithoutAddedByInput'] | null; // AppearanceUpdateManyWithoutAddedByInput
+    token?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  UserUpdateWithoutGuessingGameParticipationsInput: { // input type
+    DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteUpdateManyWithoutUserInput'] | null; // DiscoveredImageVoteUpdateManyWithoutUserInput
+    actionedReportedImages?: NexusGenInputs['ImageReportUpdateManyWithoutActionedByInput'] | null; // ImageReportUpdateManyWithoutActionedByInput
+    appearanceTags?: NexusGenInputs['AppearanceTagUpdateManyWithoutAddedByInput'] | null; // AppearanceTagUpdateManyWithoutAddedByInput
+    avatar?: NexusGenInputs['ImageUpdateOneWithoutUserAvatarOfInput'] | null; // ImageUpdateOneWithoutUserAvatarOfInput
+    banner?: NexusGenInputs['ImageUpdateOneWithoutUserBannerOfInput'] | null; // ImageUpdateOneWithoutUserBannerOfInput
+    bot?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    cratedTags?: NexusGenInputs['TagUpdateManyWithoutAddedByInput'] | null; // TagUpdateManyWithoutAddedByInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
+    image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
+    imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
+    images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
+    markedFaces?: NexusGenInputs['FaceUpdateManyWithoutAddedByInput'] | null; // FaceUpdateManyWithoutAddedByInput
+    name?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    placedRestrictions?: NexusGenInputs['UserRestrictionUpdateManyWithoutAddedByInput'] | null; // UserRestrictionUpdateManyWithoutAddedByInput
+    reportedImages?: NexusGenInputs['ImageReportUpdateManyWithoutReportedByInput'] | null; // ImageReportUpdateManyWithoutReportedByInput
+    restrictions?: NexusGenInputs['UserRestrictionUpdateManyWithoutUserInput'] | null; // UserRestrictionUpdateManyWithoutUserInput
+    roles?: NexusGenInputs['RoleUpdateManyWithoutUserInput'] | null; // RoleUpdateManyWithoutUserInput
+    tagAliases?: NexusGenInputs['TagAliasUpdateManyWithoutAddedByInput'] | null; // TagAliasUpdateManyWithoutAddedByInput
+    tagCategories?: NexusGenInputs['TagCategoryUpdateManyWithoutAddedByInput'] | null; // TagCategoryUpdateManyWithoutAddedByInput
+    taggedAppearances?: NexusGenInputs['AppearanceUpdateManyWithoutAddedByInput'] | null; // AppearanceUpdateManyWithoutAddedByInput
+    token?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+  }
+  UserUpdateWithoutGuessingGamesHostedInput: { // input type
+    DiscoveredImageVote?: NexusGenInputs['DiscoveredImageVoteUpdateManyWithoutUserInput'] | null; // DiscoveredImageVoteUpdateManyWithoutUserInput
+    actionedReportedImages?: NexusGenInputs['ImageReportUpdateManyWithoutActionedByInput'] | null; // ImageReportUpdateManyWithoutActionedByInput
+    appearanceTags?: NexusGenInputs['AppearanceTagUpdateManyWithoutAddedByInput'] | null; // AppearanceTagUpdateManyWithoutAddedByInput
+    avatar?: NexusGenInputs['ImageUpdateOneWithoutUserAvatarOfInput'] | null; // ImageUpdateOneWithoutUserAvatarOfInput
+    banner?: NexusGenInputs['ImageUpdateOneWithoutUserBannerOfInput'] | null; // ImageUpdateOneWithoutUserBannerOfInput
+    bot?: NexusGenInputs['BoolFieldUpdateOperationsInput'] | null; // BoolFieldUpdateOperationsInput
+    cratedTags?: NexusGenInputs['TagUpdateManyWithoutAddedByInput'] | null; // TagUpdateManyWithoutAddedByInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
+    emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7181,6 +8935,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
     images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
@@ -7207,6 +8964,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     images?: NexusGenInputs['ImageUpdateManyWithoutUserInput'] | null; // ImageUpdateManyWithoutUserInput
@@ -7233,6 +8993,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7259,6 +9022,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7285,6 +9051,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7311,6 +9080,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7337,6 +9109,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7363,6 +9138,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7389,6 +9167,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7415,6 +9196,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     email?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     emailVerified?: NexusGenInputs['NullableDateTimeFieldUpdateOperationsInput'] | null; // NullableDateTimeFieldUpdateOperationsInput
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessUpdateManyWithoutUserInput'] | null; // GuessingGameGuessUpdateManyWithoutUserInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantUpdateManyWithoutUserInput'] | null; // GuessingGameParticipantUpdateManyWithoutUserInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameUpdateManyWithoutOwnerInput'] | null; // GuessingGameUpdateManyWithoutOwnerInput
     image?: NexusGenInputs['NullableStringFieldUpdateOperationsInput'] | null; // NullableStringFieldUpdateOperationsInput
     imageLikes?: NexusGenInputs['ImageLikeUpdateManyWithoutUserInput'] | null; // ImageLikeUpdateManyWithoutUserInput
     imageTags?: NexusGenInputs['ImageTagUpdateManyWithoutAddedByInput'] | null; // ImageTagUpdateManyWithoutAddedByInput
@@ -7453,6 +9237,18 @@ export interface NexusGenInputs {
   UserUpsertWithoutDiscoveredImageVoteInput: { // input type
     create: NexusGenInputs['UserCreateWithoutDiscoveredImageVoteInput']; // UserCreateWithoutDiscoveredImageVoteInput!
     update: NexusGenInputs['UserUpdateWithoutDiscoveredImageVoteInput']; // UserUpdateWithoutDiscoveredImageVoteInput!
+  }
+  UserUpsertWithoutGuessingGameGuessesInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutGuessingGameGuessesInput']; // UserCreateWithoutGuessingGameGuessesInput!
+    update: NexusGenInputs['UserUpdateWithoutGuessingGameGuessesInput']; // UserUpdateWithoutGuessingGameGuessesInput!
+  }
+  UserUpsertWithoutGuessingGameParticipationsInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutGuessingGameParticipationsInput']; // UserCreateWithoutGuessingGameParticipationsInput!
+    update: NexusGenInputs['UserUpdateWithoutGuessingGameParticipationsInput']; // UserUpdateWithoutGuessingGameParticipationsInput!
+  }
+  UserUpsertWithoutGuessingGamesHostedInput: { // input type
+    create: NexusGenInputs['UserCreateWithoutGuessingGamesHostedInput']; // UserCreateWithoutGuessingGamesHostedInput!
+    update: NexusGenInputs['UserUpdateWithoutGuessingGamesHostedInput']; // UserUpdateWithoutGuessingGamesHostedInput!
   }
   UserUpsertWithoutImageLikesInput: { // input type
     create: NexusGenInputs['UserCreateWithoutImageLikesInput']; // UserCreateWithoutImageLikesInput!
@@ -7510,6 +9306,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     email?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     emailVerified?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantListRelationFilter'] | null; // GuessingGameParticipantListRelationFilter
+    guessingGamesHosted?: NexusGenInputs['GuessingGameListRelationFilter'] | null; // GuessingGameListRelationFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     image?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     imageLikes?: NexusGenInputs['ImageLikeListRelationFilter'] | null; // ImageLikeListRelationFilter
@@ -7538,7 +9337,9 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   FaceSource: PrismaClient.FaceSource
+  GameParticipantKind: PrismaClient.GameParticipantKind
   Gender: PrismaClient.Gender
+  GuessingGameHints: PrismaClient.GuessingGameHints
   ImageConnectionEdge: "IMAGE_TO_PERSON" | "PERSON_TO_IMAGE"
   ImageReportAction: PrismaClient.ImageReportAction
   MimeType: PrismaClient.MimeType

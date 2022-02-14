@@ -1,5 +1,5 @@
 import { prisma } from "./db"
-import { Prisma } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
 
 export type SimilarImage = {
   type: "image" | "discovered"
@@ -31,7 +31,7 @@ export const similarImagesQuery = async (
 
 export type HomepageRaw = { id: number }
 
-export const homepageQuery = (): Promise<HomepageRaw[]> => {
+export const homepageQuery = (prisma: PrismaClient): Promise<HomepageRaw[]> => {
   return prisma.$queryRaw`SELECT p.id, p.name FROM persons p
   INNER JOIN appearances a on p.id = a.person_id
   INNER JOIN images i on a.image_id = i.id

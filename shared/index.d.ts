@@ -314,11 +314,23 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumFaceSourceFilter'] | null; // NestedEnumFaceSourceFilter
     notIn?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
   }
+  EnumGameParticipantKindFilter: { // input type
+    equals?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    in?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+    not?: NexusGenInputs['NestedEnumGameParticipantKindFilter'] | null; // NestedEnumGameParticipantKindFilter
+    notIn?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+  }
   EnumGenderNullableFilter: { // input type
     equals?: NexusGenEnums['Gender'] | null; // Gender
     in?: NexusGenEnums['Gender'][] | null; // [Gender!]
     not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
     notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
+  }
+  EnumGuessingGameHintsFilter: { // input type
+    equals?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    in?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
+    not?: NexusGenInputs['NestedEnumGuessingGameHintsFilter'] | null; // NestedEnumGuessingGameHintsFilter
+    notIn?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
   }
   EnumImageReportActionNullableFilter: { // input type
     equals?: NexusGenEnums['ImageReportAction'] | null; // ImageReportAction
@@ -497,6 +509,119 @@ export interface NexusGenInputs {
     bannerId?: number | null; // Int
     id?: number | null; // Int
     ireneBotId?: number | null; // Int
+  }
+  GuessingGameGuessListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameGuessWhereInput'] | null; // GuessingGameGuessWhereInput
+    none?: NexusGenInputs['GuessingGameGuessWhereInput'] | null; // GuessingGameGuessWhereInput
+    some?: NexusGenInputs['GuessingGameGuessWhereInput'] | null; // GuessingGameGuessWhereInput
+  }
+  GuessingGameGuessOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameGuessWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameGuessWhereInput'][] | null; // [GuessingGameGuessWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameGuessWhereInput'][] | null; // [GuessingGameGuessWhereInput!]
+    OR?: NexusGenInputs['GuessingGameGuessWhereInput'][] | null; // [GuessingGameGuessWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    guessMs?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    guessedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    hintUsed?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    personGuess?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    personGuessId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    round?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    roundId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    target?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+    targetId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+  }
+  GuessingGameListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    none?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    some?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+  }
+  GuessingGameOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameParticipantListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameParticipantWhereInput'] | null; // GuessingGameParticipantWhereInput
+    none?: NexusGenInputs['GuessingGameParticipantWhereInput'] | null; // GuessingGameParticipantWhereInput
+    some?: NexusGenInputs['GuessingGameParticipantWhereInput'] | null; // GuessingGameParticipantWhereInput
+  }
+  GuessingGameParticipantOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameParticipantWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameParticipantWhereInput'][] | null; // [GuessingGameParticipantWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameParticipantWhereInput'][] | null; // [GuessingGameParticipantWhereInput!]
+    OR?: NexusGenInputs['GuessingGameParticipantWhereInput'][] | null; // [GuessingGameParticipantWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    game?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    gameId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    type?: NexusGenInputs['EnumGameParticipantKindFilter'] | null; // EnumGameParticipantKindFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+  }
+  GuessingGameRoundListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    none?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    some?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+  }
+  GuessingGameRoundWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameRoundWhereInput'][] | null; // [GuessingGameRoundWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameRoundWhereInput'][] | null; // [GuessingGameRoundWhereInput!]
+    OR?: NexusGenInputs['GuessingGameRoundWhereInput'][] | null; // [GuessingGameRoundWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    game?: NexusGenInputs['GuessingGameWhereInput'] | null; // GuessingGameWhereInput
+    gameId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    guesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    startedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    targets?: NexusGenInputs['GuessingGameTargetListRelationFilter'] | null; // GuessingGameTargetListRelationFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameTargetListRelationFilter: { // input type
+    every?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+    none?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+    some?: NexusGenInputs['GuessingGameTargetWhereInput'] | null; // GuessingGameTargetWhereInput
+  }
+  GuessingGameTargetOrderByRelationAggregateInput: { // input type
+    _count?: NexusGenEnums['SortOrder'] | null; // SortOrder
+  }
+  GuessingGameTargetWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameTargetWhereInput'][] | null; // [GuessingGameTargetWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameTargetWhereInput'][] | null; // [GuessingGameTargetWhereInput!]
+    OR?: NexusGenInputs['GuessingGameTargetWhereInput'][] | null; // [GuessingGameTargetWhereInput!]
+    answer?: NexusGenInputs['PersonWhereInput'] | null; // PersonWhereInput
+    answerId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    guesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    round?: NexusGenInputs['GuessingGameRoundWhereInput'] | null; // GuessingGameRoundWhereInput
+    roundId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+  }
+  GuessingGameWhereInput: { // input type
+    AND?: NexusGenInputs['GuessingGameWhereInput'][] | null; // [GuessingGameWhereInput!]
+    NOT?: NexusGenInputs['GuessingGameWhereInput'][] | null; // [GuessingGameWhereInput!]
+    OR?: NexusGenInputs['GuessingGameWhereInput'][] | null; // [GuessingGameWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    finishDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    hints?: NexusGenInputs['EnumGuessingGameHintsFilter'] | null; // EnumGuessingGameHintsFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    name?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    owner?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    ownerId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    participants?: NexusGenInputs['GuessingGameParticipantListRelationFilter'] | null; // GuessingGameParticipantListRelationFilter
+    rounds?: NexusGenInputs['GuessingGameRoundListRelationFilter'] | null; // GuessingGameRoundListRelationFilter
+    secondsPerRound?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    startDate?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   ImageLikeListRelationFilter: { // input type
     every?: NexusGenInputs['ImageLikeWhereInput'] | null; // ImageLikeWhereInput
@@ -750,11 +875,23 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumFaceSourceFilter'] | null; // NestedEnumFaceSourceFilter
     notIn?: NexusGenEnums['FaceSource'][] | null; // [FaceSource!]
   }
+  NestedEnumGameParticipantKindFilter: { // input type
+    equals?: NexusGenEnums['GameParticipantKind'] | null; // GameParticipantKind
+    in?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+    not?: NexusGenInputs['NestedEnumGameParticipantKindFilter'] | null; // NestedEnumGameParticipantKindFilter
+    notIn?: NexusGenEnums['GameParticipantKind'][] | null; // [GameParticipantKind!]
+  }
   NestedEnumGenderNullableFilter: { // input type
     equals?: NexusGenEnums['Gender'] | null; // Gender
     in?: NexusGenEnums['Gender'][] | null; // [Gender!]
     not?: NexusGenInputs['NestedEnumGenderNullableFilter'] | null; // NestedEnumGenderNullableFilter
     notIn?: NexusGenEnums['Gender'][] | null; // [Gender!]
+  }
+  NestedEnumGuessingGameHintsFilter: { // input type
+    equals?: NexusGenEnums['GuessingGameHints'] | null; // GuessingGameHints
+    in?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
+    not?: NexusGenInputs['NestedEnumGuessingGameHintsFilter'] | null; // NestedEnumGuessingGameHintsFilter
+    notIn?: NexusGenEnums['GuessingGameHints'][] | null; // [GuessingGameHints!]
   }
   NestedEnumImageReportActionNullableFilter: { // input type
     equals?: NexusGenEnums['ImageReportAction'] | null; // ImageReportAction
@@ -862,6 +999,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     description?: NexusGenEnums['SortOrder'] | null; // SortOrder
     gender?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessOrderByRelationAggregateInput'] | null; // GuessingGameGuessOrderByRelationAggregateInput
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetOrderByRelationAggregateInput'] | null; // GuessingGameTargetOrderByRelationAggregateInput
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
     ireneBotId?: NexusGenEnums['SortOrder'] | null; // SortOrder
     memberOf?: NexusGenInputs['GroupMemberOrderByRelationAggregateInput'] | null; // GroupMemberOrderByRelationAggregateInput
@@ -887,6 +1026,8 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     description?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     gender?: NexusGenInputs['EnumGenderNullableFilter'] | null; // EnumGenderNullableFilter
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    guessingGameTargets?: NexusGenInputs['GuessingGameTargetListRelationFilter'] | null; // GuessingGameTargetListRelationFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     ireneBotId?: NexusGenInputs['IntNullableFilter'] | null; // IntNullableFilter
     memberOf?: NexusGenInputs['GroupMemberListRelationFilter'] | null; // GroupMemberListRelationFilter
@@ -1050,6 +1191,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
     email?: NexusGenEnums['SortOrder'] | null; // SortOrder
     emailVerified?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessOrderByRelationAggregateInput'] | null; // GuessingGameGuessOrderByRelationAggregateInput
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantOrderByRelationAggregateInput'] | null; // GuessingGameParticipantOrderByRelationAggregateInput
+    guessingGamesHosted?: NexusGenInputs['GuessingGameOrderByRelationAggregateInput'] | null; // GuessingGameOrderByRelationAggregateInput
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
     image?: NexusGenEnums['SortOrder'] | null; // SortOrder
     imageLikes?: NexusGenInputs['ImageLikeOrderByRelationAggregateInput'] | null; // ImageLikeOrderByRelationAggregateInput
@@ -1105,6 +1249,9 @@ export interface NexusGenInputs {
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     email?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     emailVerified?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
+    guessingGameGuesses?: NexusGenInputs['GuessingGameGuessListRelationFilter'] | null; // GuessingGameGuessListRelationFilter
+    guessingGameParticipations?: NexusGenInputs['GuessingGameParticipantListRelationFilter'] | null; // GuessingGameParticipantListRelationFilter
+    guessingGamesHosted?: NexusGenInputs['GuessingGameListRelationFilter'] | null; // GuessingGameListRelationFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     image?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     imageLikes?: NexusGenInputs['ImageLikeListRelationFilter'] | null; // ImageLikeListRelationFilter
@@ -1126,7 +1273,9 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   FaceSource: PrismaClient.FaceSource
+  GameParticipantKind: PrismaClient.GameParticipantKind
   Gender: PrismaClient.Gender
+  GuessingGameHints: PrismaClient.GuessingGameHints
   ImageConnectionEdge: "IMAGE_TO_PERSON" | "PERSON_TO_IMAGE"
   ImageReportAction: PrismaClient.ImageReportAction
   MimeType: PrismaClient.MimeType

@@ -625,6 +625,11 @@ enum FaceSource {
   Manual
 }
 
+enum UploadDestination {
+  Local,
+  S3
+}
+
 enum MimeType {
   PNG
   JPG

@@ -23,8 +23,11 @@ import { toClickableGridImage } from "@/client/data/image-mappers"
 import { personPreferredName } from "@/client/data/person-mappers"
 import { Routing } from "@/client/routing"
 import NextLink from "next/link"
+import sample from "lodash/sample"
 
 const AnimatedImage = motion(Image)
+
+const homepageSplash = ["https://img.kiyomi.io/K2BFZ4GQKM9-SP8f.webp"]
 
 type HomepageProps = {}
 
@@ -32,10 +35,9 @@ const magicGradient =
   "linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.908) 0%, rgba(0, 0, 0, 1) 19%, rgba(0, 0, 0, 0.841) 34%, rgba(0, 0, 0, 0.782) 47%, rgba(0, 0, 0, 0.498) 56.5%, rgba(0, 0, 0, 0.324) 65%, rgba(0, 0, 0, 0.256) 73%, rgba(0, 0, 0, 0.135) 80.2%, rgba(0, 0, 0, 0.102) 86.1%, rgba(0, 0, 0, 0.051) 91%, rgba(0, 0, 0, 0.015) 95.2%, rgba(0, 0, 0, 0.010) 98.2%, transparent 100%);"
 
 const PER_PAGE = 100
-const fetchParams = (skip: number, id: number = 1) => ({
+const fetchParams = (skip: number) => ({
   take: PER_PAGE,
   skip,
-  id,
 })
 
 const homepagePersonKey = (index: number, results: any[] = []) => [
@@ -46,11 +48,6 @@ const homepagePersonKey = (index: number, results: any[] = []) => [
 
 function HomeContent() {
   const pageRef = React.useRef(null)
-  const { data: trending } = useHomepageQuery(
-    {},
-    { keepPreviousData: true, refetchOnMount: false }
-  )
-
   const [selected, setSelected] = React.useState(0)
   const {
     data,
@@ -58,24 +55,20 @@ function HomeContent() {
     fetchNextPage,
     refetch,
   } = useInfiniteQuery<HomepagePersonQuery>(
-    homepagePersonKey(selected, trending?.homepage ?? []),
+    homepagePersonKey(selected, []),
     ({ pageParam = 0 }) => {
-      if (!trending) {
-        // not ready to fetch
-        throw Error("not ready to fetch")
-      }
       return fetcher<HomepagePersonQuery, unknown>(
         HomepagePersonDocument,
-        fetchParams(pageParam, trending.homepage[selected]?.id)
+        fetchParams(pageParam)
       )()
     },
     {
-      enabled: Boolean(trending?.homepage),
       refetchOnMount: false,
       getNextPageParam: paginateBySkip(PER_PAGE),
     }
   )
-  const splash = trending?.homepage[selected]?.banner
+  // const splash = trending?.homepage[selected]?.banner
+  console.log({ data })
 
   async function loadMore() {
     if (isFetching) {
@@ -98,14 +91,14 @@ function HomeContent() {
             maxHeight="90vh"
             zIndex={0}
             position="absolute"
-            objectPosition={splash ? focusToObjectPosition(splash) : ""}
+            // objectPosition={splash ? focusToObjectPosition(splash) : ""}
             objectFit="cover"
             width="100%"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.45 }}
             exit={{ opacity: 0 }}
-            key={splash ? splash.rawUrl : ""}
-            src={splash ? splash.rawUrl : ""}
+            // key={splash ? splash.rawUrl : ""}
+            src={sample(homepageSplash)}
             transition={{ duration: 0.15 }}
             sx={{ WebkitMaskImage: magicGradient }}
           />
@@ -121,12 +114,12 @@ function HomeContent() {
         >
           <Box flexDirection="column" width="100%">
             <Flex
-              justifyContent="space-between"
-              align={["flex-start", null, "flex-end"]}
+              justifyContent="center"
+              align="center"
               flexDirection={["column", null, "row"]}
               mb={2}
             >
-              <Box>
+              <Box textAlign="center">
                 <Heading
                   fontSize={["lg", "2xl", "4xl"]}
                   as="h1"
@@ -148,79 +141,29 @@ function HomeContent() {
                   An image database for Kpop
                 </Text>
               </Box>
-              {splash && (
-                <Link href={splash.url}>
-                  <Flex fontSize="xs" align="center" mt={2}>
-                    <Box mr={1}>
-                      <RiLink />
-                    </Box>
-                    View Cover Photo
-                  </Flex>
-                </Link>
-              )}
+              {/*{splash && (*/}
+              {/*  <Link href={splash.url}>*/}
+              {/*    <Flex fontSize="xs" align="center" mt={2}>*/}
+              {/*      <Box mr={1}>*/}
+              {/*        <RiLink />*/}
+              {/*      </Box>*/}
+              {/*      View Cover Photo*/}
+              {/*    </Flex>*/}
+              {/*  </Link>*/}
+              {/*)}*/}
             </Flex>
           </Box>
         </Flex>
       </Box>
-      <VStack
-        as="section"
-        maxW="7xl"
-        w="full"
-        margin="0 auto"
-        px={5}
-        p={4}
-        alignItems="flex-start"
-        overflow="hidden"
-      >
-        <Text textStyle="heading" color="text.200">
-          Latest Updated
-        </Text>
-        <Grid
-          templateColumns="repeat(auto-fill, minmax(180px, 1fr))"
-          w="full"
-          gap={6}
-        >
-          {trending?.homepage.map((trend, i) => {
-            const opacity = i === selected ? 1 : 0.4
-            const name = personPreferredName(trend)
-            return (
-              <Portrait
-                opacity={opacity}
-                height="320px"
-                width="180px"
-                onClick={() => setSelected(i)}
-                src={
-                  trend.avatar
-                    ? trend.avatar.thumbnail.small
-                    : "https://placewaifu.com/image/200/320"
-                }
-                name={
-                  <NextLink href={Routing.toPerson(trend.id, name)} passHref>
-                    <Link>{name}</Link>
-                  </NextLink>
-                }
-              />
-            )
-          })}
-        </Grid>
-      </VStack>
       <Flex
         position="relative"
         flex={1}
         w="full"
         flexDir="row"
         justifyContent="center"
-        className="relative flex-1 flex-row flex justify-center"
         ref={pageRef}
       >
-        <Flex
-          px={5}
-          flexDir="column"
-          h="full"
-          justify="flex-start"
-          flex={1}
-          maxWidth="7xl"
-        >
+        <Flex px={5} flexDir="column" h="full" justify="flex-start" flex={1}>
           {data && (
             <ImageGrid
               images={data.pages.flatMap((data) =>

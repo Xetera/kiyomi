@@ -506,11 +506,25 @@ export type EnumFaceSourceFilter = {
   notIn?: Maybe<Array<FaceSource>>;
 };
 
+export type EnumGameParticipantKindFilter = {
+  equals?: Maybe<GameParticipantKind>;
+  in?: Maybe<Array<GameParticipantKind>>;
+  not?: Maybe<NestedEnumGameParticipantKindFilter>;
+  notIn?: Maybe<Array<GameParticipantKind>>;
+};
+
 export type EnumGenderNullableFilter = {
   equals?: Maybe<Gender>;
   in?: Maybe<Array<Gender>>;
   not?: Maybe<NestedEnumGenderNullableFilter>;
   notIn?: Maybe<Array<Gender>>;
+};
+
+export type EnumGuessingGameHintsFilter = {
+  equals?: Maybe<GuessingGameHints>;
+  in?: Maybe<Array<GuessingGameHints>>;
+  not?: Maybe<NestedEnumGuessingGameHintsFilter>;
+  notIn?: Maybe<Array<GuessingGameHints>>;
 };
 
 export type EnumImageReportActionNullableFilter = {
@@ -617,6 +631,11 @@ export type FloatFilter = {
   not?: Maybe<NestedFloatFilter>;
   notIn?: Maybe<Array<Scalars['Float']>>;
 };
+
+export enum GameParticipantKind {
+  Player = 'Player',
+  Spectator = 'Spectator'
+}
 
 export enum Gender {
   Female = 'FEMALE',
@@ -786,6 +805,140 @@ export type GroupWhereUniqueInput = {
   bannerId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   ireneBotId?: Maybe<Scalars['Int']>;
+};
+
+export type GuessingGameGuessListRelationFilter = {
+  every?: Maybe<GuessingGameGuessWhereInput>;
+  none?: Maybe<GuessingGameGuessWhereInput>;
+  some?: Maybe<GuessingGameGuessWhereInput>;
+};
+
+export type GuessingGameGuessOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type GuessingGameGuessWhereInput = {
+  AND?: Maybe<Array<GuessingGameGuessWhereInput>>;
+  NOT?: Maybe<Array<GuessingGameGuessWhereInput>>;
+  OR?: Maybe<Array<GuessingGameGuessWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  guessMs?: Maybe<IntFilter>;
+  guessedAt?: Maybe<DateTimeFilter>;
+  hintUsed?: Maybe<BoolFilter>;
+  id?: Maybe<IntFilter>;
+  personGuess?: Maybe<PersonWhereInput>;
+  personGuessId?: Maybe<IntNullableFilter>;
+  round?: Maybe<GuessingGameRoundWhereInput>;
+  roundId?: Maybe<IntFilter>;
+  target?: Maybe<GuessingGameTargetWhereInput>;
+  targetId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  user?: Maybe<UserWhereInput>;
+  userId?: Maybe<IntNullableFilter>;
+};
+
+export enum GuessingGameHints {
+  AlwaysOn = 'ALWAYS_ON',
+  Disabled = 'DISABLED',
+  Limited = 'LIMITED',
+  PointCost = 'POINT_COST'
+}
+
+export type GuessingGameListRelationFilter = {
+  every?: Maybe<GuessingGameWhereInput>;
+  none?: Maybe<GuessingGameWhereInput>;
+  some?: Maybe<GuessingGameWhereInput>;
+};
+
+export type GuessingGameOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type GuessingGameParticipantListRelationFilter = {
+  every?: Maybe<GuessingGameParticipantWhereInput>;
+  none?: Maybe<GuessingGameParticipantWhereInput>;
+  some?: Maybe<GuessingGameParticipantWhereInput>;
+};
+
+export type GuessingGameParticipantOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type GuessingGameParticipantWhereInput = {
+  AND?: Maybe<Array<GuessingGameParticipantWhereInput>>;
+  NOT?: Maybe<Array<GuessingGameParticipantWhereInput>>;
+  OR?: Maybe<Array<GuessingGameParticipantWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  game?: Maybe<GuessingGameWhereInput>;
+  gameId?: Maybe<IntFilter>;
+  id?: Maybe<IntFilter>;
+  type?: Maybe<EnumGameParticipantKindFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+  user?: Maybe<UserWhereInput>;
+  userId?: Maybe<IntNullableFilter>;
+};
+
+export type GuessingGameRoundListRelationFilter = {
+  every?: Maybe<GuessingGameRoundWhereInput>;
+  none?: Maybe<GuessingGameRoundWhereInput>;
+  some?: Maybe<GuessingGameRoundWhereInput>;
+};
+
+export type GuessingGameRoundWhereInput = {
+  AND?: Maybe<Array<GuessingGameRoundWhereInput>>;
+  NOT?: Maybe<Array<GuessingGameRoundWhereInput>>;
+  OR?: Maybe<Array<GuessingGameRoundWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  game?: Maybe<GuessingGameWhereInput>;
+  gameId?: Maybe<IntFilter>;
+  guesses?: Maybe<GuessingGameGuessListRelationFilter>;
+  id?: Maybe<IntFilter>;
+  startDate?: Maybe<DateTimeFilter>;
+  startedAt?: Maybe<DateTimeFilter>;
+  targets?: Maybe<GuessingGameTargetListRelationFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type GuessingGameTargetListRelationFilter = {
+  every?: Maybe<GuessingGameTargetWhereInput>;
+  none?: Maybe<GuessingGameTargetWhereInput>;
+  some?: Maybe<GuessingGameTargetWhereInput>;
+};
+
+export type GuessingGameTargetOrderByRelationAggregateInput = {
+  _count?: Maybe<SortOrder>;
+};
+
+export type GuessingGameTargetWhereInput = {
+  AND?: Maybe<Array<GuessingGameTargetWhereInput>>;
+  NOT?: Maybe<Array<GuessingGameTargetWhereInput>>;
+  OR?: Maybe<Array<GuessingGameTargetWhereInput>>;
+  answer?: Maybe<PersonWhereInput>;
+  answerId?: Maybe<IntNullableFilter>;
+  createdAt?: Maybe<DateTimeFilter>;
+  guesses?: Maybe<GuessingGameGuessListRelationFilter>;
+  id?: Maybe<IntFilter>;
+  round?: Maybe<GuessingGameRoundWhereInput>;
+  roundId?: Maybe<IntFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
+};
+
+export type GuessingGameWhereInput = {
+  AND?: Maybe<Array<GuessingGameWhereInput>>;
+  NOT?: Maybe<Array<GuessingGameWhereInput>>;
+  OR?: Maybe<Array<GuessingGameWhereInput>>;
+  createdAt?: Maybe<DateTimeFilter>;
+  finishDate?: Maybe<DateTimeFilter>;
+  hints?: Maybe<EnumGuessingGameHintsFilter>;
+  id?: Maybe<IntFilter>;
+  name?: Maybe<StringFilter>;
+  owner?: Maybe<UserWhereInput>;
+  ownerId?: Maybe<IntFilter>;
+  participants?: Maybe<GuessingGameParticipantListRelationFilter>;
+  rounds?: Maybe<GuessingGameRoundListRelationFilter>;
+  secondsPerRound?: Maybe<IntFilter>;
+  startDate?: Maybe<DateTimeFilter>;
+  updatedAt?: Maybe<DateTimeFilter>;
 };
 
 export type Homepage = {
@@ -1356,11 +1509,25 @@ export type NestedEnumFaceSourceFilter = {
   notIn?: Maybe<Array<FaceSource>>;
 };
 
+export type NestedEnumGameParticipantKindFilter = {
+  equals?: Maybe<GameParticipantKind>;
+  in?: Maybe<Array<GameParticipantKind>>;
+  not?: Maybe<NestedEnumGameParticipantKindFilter>;
+  notIn?: Maybe<Array<GameParticipantKind>>;
+};
+
 export type NestedEnumGenderNullableFilter = {
   equals?: Maybe<Gender>;
   in?: Maybe<Array<Gender>>;
   not?: Maybe<NestedEnumGenderNullableFilter>;
   notIn?: Maybe<Array<Gender>>;
+};
+
+export type NestedEnumGuessingGameHintsFilter = {
+  equals?: Maybe<GuessingGameHints>;
+  in?: Maybe<Array<GuessingGameHints>>;
+  not?: Maybe<NestedEnumGuessingGameHintsFilter>;
+  notIn?: Maybe<Array<GuessingGameHints>>;
 };
 
 export type NestedEnumImageReportActionNullableFilter = {
@@ -1526,6 +1693,8 @@ export type PersonOrderByWithRelationInput = {
   createdAt?: Maybe<SortOrder>;
   description?: Maybe<SortOrder>;
   gender?: Maybe<SortOrder>;
+  guessingGameGuesses?: Maybe<GuessingGameGuessOrderByRelationAggregateInput>;
+  guessingGameTargets?: Maybe<GuessingGameTargetOrderByRelationAggregateInput>;
   id?: Maybe<SortOrder>;
   ireneBotId?: Maybe<SortOrder>;
   memberOf?: Maybe<GroupMemberOrderByRelationAggregateInput>;
@@ -1552,6 +1721,8 @@ export type PersonWhereInput = {
   createdAt?: Maybe<DateTimeFilter>;
   description?: Maybe<StringNullableFilter>;
   gender?: Maybe<EnumGenderNullableFilter>;
+  guessingGameGuesses?: Maybe<GuessingGameGuessListRelationFilter>;
+  guessingGameTargets?: Maybe<GuessingGameTargetListRelationFilter>;
   id?: Maybe<IntFilter>;
   ireneBotId?: Maybe<IntNullableFilter>;
   memberOf?: Maybe<GroupMemberListRelationFilter>;
@@ -1986,6 +2157,9 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Maybe<SortOrder>;
   email?: Maybe<SortOrder>;
   emailVerified?: Maybe<SortOrder>;
+  guessingGameGuesses?: Maybe<GuessingGameGuessOrderByRelationAggregateInput>;
+  guessingGameParticipations?: Maybe<GuessingGameParticipantOrderByRelationAggregateInput>;
+  guessingGamesHosted?: Maybe<GuessingGameOrderByRelationAggregateInput>;
   id?: Maybe<SortOrder>;
   image?: Maybe<SortOrder>;
   imageLikes?: Maybe<ImageLikeOrderByRelationAggregateInput>;
@@ -2045,6 +2219,9 @@ export type UserWhereInput = {
   createdAt?: Maybe<DateTimeFilter>;
   email?: Maybe<StringNullableFilter>;
   emailVerified?: Maybe<DateTimeNullableFilter>;
+  guessingGameGuesses?: Maybe<GuessingGameGuessListRelationFilter>;
+  guessingGameParticipations?: Maybe<GuessingGameParticipantListRelationFilter>;
+  guessingGamesHosted?: Maybe<GuessingGameListRelationFilter>;
   id?: Maybe<IntFilter>;
   image?: Maybe<StringNullableFilter>;
   imageLikes?: Maybe<ImageLikeListRelationFilter>;
@@ -2482,7 +2659,7 @@ export type OneImageQuery = (
   { __typename?: 'Query' }
   & { image?: Maybe<(
     { __typename?: 'Image' }
-    & Pick<Image, 'liked' | 'faceScanDate' | 'public' | 'reported' | 'hiddenAt'>
+    & Pick<Image, 'mimetype' | 'liked' | 'faceScanDate' | 'public' | 'reported' | 'hiddenAt'>
     & { unknownFaces: Array<(
       { __typename?: 'Face' }
       & { appearance?: Maybe<(
@@ -2687,7 +2864,6 @@ export type FaceDataFragment = (
 export type HomepagePersonQueryVariables = Exact<{
   take: Scalars['Int'];
   skip: Scalars['Int'];
-  id: Scalars['Int'];
 }>;
 
 
@@ -3624,6 +3800,7 @@ export const useUserDataQuery = <
 export const OneImageDocument = `
     query OneImage($slug: String!) {
   image(slug: $slug) {
+    mimetype
     unknownFaces {
       ...FaceData
       appearance {
@@ -3850,13 +4027,8 @@ export const useVoteDiscoveryPostMutation = <
       options
     );
 export const HomepagePersonDocument = `
-    query HomepagePerson($take: Int!, $skip: Int!, $id: Int!) {
-  images(
-    where: {appearances: {some: {person: {id: {equals: $id}}}}}
-    take: $take
-    skip: $skip
-    orderBy: {createdAt: desc}
-  ) {
+    query HomepagePerson($take: Int!, $skip: Int!) {
+  images(take: $take, skip: $skip, orderBy: {createdAt: desc}) {
     ...GridImage
   }
 }

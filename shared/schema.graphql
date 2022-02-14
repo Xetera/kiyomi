@@ -447,11 +447,25 @@ input EnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input EnumGameParticipantKindFilter {
+  equals: GameParticipantKind
+  in: [GameParticipantKind!]
+  not: NestedEnumGameParticipantKindFilter
+  notIn: [GameParticipantKind!]
+}
+
 input EnumGenderNullableFilter {
   equals: Gender
   in: [Gender!]
   not: NestedEnumGenderNullableFilter
   notIn: [Gender!]
+}
+
+input EnumGuessingGameHintsFilter {
+  equals: GuessingGameHints
+  in: [GuessingGameHints!]
+  not: NestedEnumGuessingGameHintsFilter
+  notIn: [GuessingGameHints!]
 }
 
 input EnumImageReportActionNullableFilter {
@@ -555,6 +569,11 @@ input FloatFilter {
   lte: Float
   not: NestedFloatFilter
   notIn: [Float!]
+}
+
+enum GameParticipantKind {
+  Player
+  Spectator
 }
 
 enum Gender {
@@ -708,6 +727,140 @@ input GroupWhereUniqueInput {
   bannerId: Int
   id: Int
   ireneBotId: Int
+}
+
+input GuessingGameGuessListRelationFilter {
+  every: GuessingGameGuessWhereInput
+  none: GuessingGameGuessWhereInput
+  some: GuessingGameGuessWhereInput
+}
+
+input GuessingGameGuessOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameGuessWhereInput {
+  AND: [GuessingGameGuessWhereInput!]
+  NOT: [GuessingGameGuessWhereInput!]
+  OR: [GuessingGameGuessWhereInput!]
+  createdAt: DateTimeFilter
+  guessMs: IntFilter
+  guessedAt: DateTimeFilter
+  hintUsed: BoolFilter
+  id: IntFilter
+  personGuess: PersonWhereInput
+  personGuessId: IntNullableFilter
+  round: GuessingGameRoundWhereInput
+  roundId: IntFilter
+  target: GuessingGameTargetWhereInput
+  targetId: IntFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntNullableFilter
+}
+
+enum GuessingGameHints {
+  ALWAYS_ON
+  DISABLED
+  LIMITED
+  POINT_COST
+}
+
+input GuessingGameListRelationFilter {
+  every: GuessingGameWhereInput
+  none: GuessingGameWhereInput
+  some: GuessingGameWhereInput
+}
+
+input GuessingGameOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameParticipantListRelationFilter {
+  every: GuessingGameParticipantWhereInput
+  none: GuessingGameParticipantWhereInput
+  some: GuessingGameParticipantWhereInput
+}
+
+input GuessingGameParticipantOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameParticipantWhereInput {
+  AND: [GuessingGameParticipantWhereInput!]
+  NOT: [GuessingGameParticipantWhereInput!]
+  OR: [GuessingGameParticipantWhereInput!]
+  createdAt: DateTimeFilter
+  game: GuessingGameWhereInput
+  gameId: IntFilter
+  id: IntFilter
+  type: EnumGameParticipantKindFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntNullableFilter
+}
+
+input GuessingGameRoundListRelationFilter {
+  every: GuessingGameRoundWhereInput
+  none: GuessingGameRoundWhereInput
+  some: GuessingGameRoundWhereInput
+}
+
+input GuessingGameRoundWhereInput {
+  AND: [GuessingGameRoundWhereInput!]
+  NOT: [GuessingGameRoundWhereInput!]
+  OR: [GuessingGameRoundWhereInput!]
+  createdAt: DateTimeFilter
+  game: GuessingGameWhereInput
+  gameId: IntFilter
+  guesses: GuessingGameGuessListRelationFilter
+  id: IntFilter
+  startDate: DateTimeFilter
+  startedAt: DateTimeFilter
+  targets: GuessingGameTargetListRelationFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameTargetListRelationFilter {
+  every: GuessingGameTargetWhereInput
+  none: GuessingGameTargetWhereInput
+  some: GuessingGameTargetWhereInput
+}
+
+input GuessingGameTargetOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameTargetWhereInput {
+  AND: [GuessingGameTargetWhereInput!]
+  NOT: [GuessingGameTargetWhereInput!]
+  OR: [GuessingGameTargetWhereInput!]
+  answer: PersonWhereInput
+  answerId: IntNullableFilter
+  createdAt: DateTimeFilter
+  guesses: GuessingGameGuessListRelationFilter
+  id: IntFilter
+  round: GuessingGameRoundWhereInput
+  roundId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameWhereInput {
+  AND: [GuessingGameWhereInput!]
+  NOT: [GuessingGameWhereInput!]
+  OR: [GuessingGameWhereInput!]
+  createdAt: DateTimeFilter
+  finishDate: DateTimeFilter
+  hints: EnumGuessingGameHintsFilter
+  id: IntFilter
+  name: StringFilter
+  owner: UserWhereInput
+  ownerId: IntFilter
+  participants: GuessingGameParticipantListRelationFilter
+  rounds: GuessingGameRoundListRelationFilter
+  secondsPerRound: IntFilter
+  startDate: DateTimeFilter
+  updatedAt: DateTimeFilter
 }
 
 type Homepage {
@@ -1172,11 +1325,25 @@ input NestedEnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input NestedEnumGameParticipantKindFilter {
+  equals: GameParticipantKind
+  in: [GameParticipantKind!]
+  not: NestedEnumGameParticipantKindFilter
+  notIn: [GameParticipantKind!]
+}
+
 input NestedEnumGenderNullableFilter {
   equals: Gender
   in: [Gender!]
   not: NestedEnumGenderNullableFilter
   notIn: [Gender!]
+}
+
+input NestedEnumGuessingGameHintsFilter {
+  equals: GuessingGameHints
+  in: [GuessingGameHints!]
+  not: NestedEnumGuessingGameHintsFilter
+  notIn: [GuessingGameHints!]
 }
 
 input NestedEnumImageReportActionNullableFilter {
@@ -1313,6 +1480,8 @@ input PersonOrderByWithRelationInput {
   createdAt: SortOrder
   description: SortOrder
   gender: SortOrder
+  guessingGameGuesses: GuessingGameGuessOrderByRelationAggregateInput
+  guessingGameTargets: GuessingGameTargetOrderByRelationAggregateInput
   id: SortOrder
   ireneBotId: SortOrder
   memberOf: GroupMemberOrderByRelationAggregateInput
@@ -1339,6 +1508,8 @@ input PersonWhereInput {
   createdAt: DateTimeFilter
   description: StringNullableFilter
   gender: EnumGenderNullableFilter
+  guessingGameGuesses: GuessingGameGuessListRelationFilter
+  guessingGameTargets: GuessingGameTargetListRelationFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
   memberOf: GroupMemberListRelationFilter
@@ -1643,6 +1814,9 @@ input UserOrderByWithRelationInput {
   createdAt: SortOrder
   email: SortOrder
   emailVerified: SortOrder
+  guessingGameGuesses: GuessingGameGuessOrderByRelationAggregateInput
+  guessingGameParticipations: GuessingGameParticipantOrderByRelationAggregateInput
+  guessingGamesHosted: GuessingGameOrderByRelationAggregateInput
   id: SortOrder
   image: SortOrder
   imageLikes: ImageLikeOrderByRelationAggregateInput
@@ -1702,6 +1876,9 @@ input UserWhereInput {
   createdAt: DateTimeFilter
   email: StringNullableFilter
   emailVerified: DateTimeNullableFilter
+  guessingGameGuesses: GuessingGameGuessListRelationFilter
+  guessingGameParticipations: GuessingGameParticipantListRelationFilter
+  guessingGamesHosted: GuessingGameListRelationFilter
   id: IntFilter
   image: StringNullableFilter
   imageLikes: ImageLikeListRelationFilter

@@ -261,6 +261,12 @@ input AppearanceCreateNestedManyWithoutPersonInput {
   createMany: AppearanceCreateManyPersonInputEnvelope
 }
 
+input AppearanceCreateNestedOneWithoutFacesInput {
+  connect: AppearanceWhereUniqueInput
+  connectOrCreate: AppearanceCreateOrConnectWithoutFacesInput
+  create: AppearanceCreateWithoutFacesInput
+}
+
 input AppearanceCreateNestedOneWithoutTagsInput {
   connect: AppearanceWhereUniqueInput
   connectOrCreate: AppearanceCreateOrConnectWithoutTagsInput
@@ -1881,11 +1887,33 @@ input EnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input EnumGameParticipantKindFieldUpdateOperationsInput {
+  set: GameParticipantKind
+}
+
+input EnumGameParticipantKindFilter {
+  equals: GameParticipantKind
+  in: [GameParticipantKind!]
+  not: NestedEnumGameParticipantKindFilter
+  notIn: [GameParticipantKind!]
+}
+
 input EnumGenderNullableFilter {
   equals: Gender
   in: [Gender!]
   not: NestedEnumGenderNullableFilter
   notIn: [Gender!]
+}
+
+input EnumGuessingGameHintsFieldUpdateOperationsInput {
+  set: GuessingGameHints
+}
+
+input EnumGuessingGameHintsFilter {
+  equals: GuessingGameHints
+  in: [GuessingGameHints!]
+  not: NestedEnumGuessingGameHintsFilter
+  notIn: [GuessingGameHints!]
 }
 
 input EnumImageReportActionNullableFilter {
@@ -1954,25 +1982,192 @@ type Face {
   y: Float!
 }
 
+input FaceCreateManyAddedByInput {
+  appearanceId: Int
+  createdAt: DateTime
+  height: Float!
+  id: Int
+  imageId: Int!
+  personId: Int
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
+input FaceCreateManyAddedByInputEnvelope {
+  data: [FaceCreateManyAddedByInput!]
+  skipDuplicates: Boolean
+}
+
+input FaceCreateManyAppearanceInput {
+  addedById: Int
+  createdAt: DateTime
+  height: Float!
+  id: Int
+  imageId: Int!
+  personId: Int
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
+input FaceCreateManyAppearanceInputEnvelope {
+  data: [FaceCreateManyAppearanceInput!]
+  skipDuplicates: Boolean
+}
+
+input FaceCreateManyImageInput {
+  addedById: Int
+  appearanceId: Int
+  createdAt: DateTime
+  height: Float!
+  id: Int
+  personId: Int
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
+input FaceCreateManyImageInputEnvelope {
+  data: [FaceCreateManyImageInput!]
+  skipDuplicates: Boolean
+}
+
+input FaceCreateManyPersonInput {
+  addedById: Int
+  appearanceId: Int
+  createdAt: DateTime
+  height: Float!
+  id: Int
+  imageId: Int!
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
+input FaceCreateManyPersonInputEnvelope {
+  data: [FaceCreateManyPersonInput!]
+  skipDuplicates: Boolean
+}
+
 input FaceCreateNestedManyWithoutAddedByInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutAddedByInput!]
+  create: [FaceCreateWithoutAddedByInput!]
+  createMany: FaceCreateManyAddedByInputEnvelope
 }
 
 input FaceCreateNestedManyWithoutAppearanceInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutAppearanceInput!]
+  create: [FaceCreateWithoutAppearanceInput!]
+  createMany: FaceCreateManyAppearanceInputEnvelope
 }
 
 input FaceCreateNestedManyWithoutImageInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutImageInput!]
+  create: [FaceCreateWithoutImageInput!]
+  createMany: FaceCreateManyImageInputEnvelope
 }
 
 input FaceCreateNestedManyWithoutPersonInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutPersonInput!]
+  create: [FaceCreateWithoutPersonInput!]
+  createMany: FaceCreateManyPersonInputEnvelope
+}
+
+input FaceCreateOrConnectWithoutAddedByInput {
+  create: FaceCreateWithoutAddedByInput!
+  where: FaceWhereUniqueInput!
+}
+
+input FaceCreateOrConnectWithoutAppearanceInput {
+  create: FaceCreateWithoutAppearanceInput!
+  where: FaceWhereUniqueInput!
+}
+
+input FaceCreateOrConnectWithoutImageInput {
+  create: FaceCreateWithoutImageInput!
+  where: FaceWhereUniqueInput!
+}
+
+input FaceCreateOrConnectWithoutPersonInput {
+  create: FaceCreateWithoutPersonInput!
+  where: FaceWhereUniqueInput!
+}
+
+input FaceCreateWithoutAddedByInput {
+  appearance: AppearanceCreateNestedOneWithoutFacesInput
+  createdAt: DateTime
+  height: Float!
+  image: ImageCreateNestedOneWithoutFacesInput!
+  person: PersonCreateNestedOneWithoutAppearsInInput
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
+input FaceCreateWithoutAppearanceInput {
+  addedBy: UserCreateNestedOneWithoutMarkedFacesInput
+  createdAt: DateTime
+  height: Float!
+  image: ImageCreateNestedOneWithoutFacesInput!
+  person: PersonCreateNestedOneWithoutAppearsInInput
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
+input FaceCreateWithoutImageInput {
+  addedBy: UserCreateNestedOneWithoutMarkedFacesInput
+  appearance: AppearanceCreateNestedOneWithoutFacesInput
+  createdAt: DateTime
+  height: Float!
+  person: PersonCreateNestedOneWithoutAppearsInInput
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
+}
+
+input FaceCreateWithoutPersonInput {
+  addedBy: UserCreateNestedOneWithoutMarkedFacesInput
+  appearance: AppearanceCreateNestedOneWithoutFacesInput
+  createdAt: DateTime
+  height: Float!
+  image: ImageCreateNestedOneWithoutFacesInput!
+  score: Float
+  source: FaceSource
+  updatedAt: DateTime
+  width: Float!
+  x: Float!
+  y: Float!
 }
 
 input FaceInput {
   certainty: Float!
-  descriptor: [Float!]!
   height: Float!
   width: Float!
   x: Float!
@@ -2046,42 +2241,58 @@ input FaceUpdateManyWithWhereWithoutPersonInput {
 
 input FaceUpdateManyWithoutAddedByInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutAddedByInput!]
+  create: [FaceCreateWithoutAddedByInput!]
+  createMany: FaceCreateManyAddedByInputEnvelope
   delete: [FaceWhereUniqueInput!]
   deleteMany: [FaceScalarWhereInput!]
   disconnect: [FaceWhereUniqueInput!]
   set: [FaceWhereUniqueInput!]
   update: [FaceUpdateWithWhereUniqueWithoutAddedByInput!]
   updateMany: [FaceUpdateManyWithWhereWithoutAddedByInput!]
+  upsert: [FaceUpsertWithWhereUniqueWithoutAddedByInput!]
 }
 
 input FaceUpdateManyWithoutAppearanceInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutAppearanceInput!]
+  create: [FaceCreateWithoutAppearanceInput!]
+  createMany: FaceCreateManyAppearanceInputEnvelope
   delete: [FaceWhereUniqueInput!]
   deleteMany: [FaceScalarWhereInput!]
   disconnect: [FaceWhereUniqueInput!]
   set: [FaceWhereUniqueInput!]
   update: [FaceUpdateWithWhereUniqueWithoutAppearanceInput!]
   updateMany: [FaceUpdateManyWithWhereWithoutAppearanceInput!]
+  upsert: [FaceUpsertWithWhereUniqueWithoutAppearanceInput!]
 }
 
 input FaceUpdateManyWithoutImageInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutImageInput!]
+  create: [FaceCreateWithoutImageInput!]
+  createMany: FaceCreateManyImageInputEnvelope
   delete: [FaceWhereUniqueInput!]
   deleteMany: [FaceScalarWhereInput!]
   disconnect: [FaceWhereUniqueInput!]
   set: [FaceWhereUniqueInput!]
   update: [FaceUpdateWithWhereUniqueWithoutImageInput!]
   updateMany: [FaceUpdateManyWithWhereWithoutImageInput!]
+  upsert: [FaceUpsertWithWhereUniqueWithoutImageInput!]
 }
 
 input FaceUpdateManyWithoutPersonInput {
   connect: [FaceWhereUniqueInput!]
+  connectOrCreate: [FaceCreateOrConnectWithoutPersonInput!]
+  create: [FaceCreateWithoutPersonInput!]
+  createMany: FaceCreateManyPersonInputEnvelope
   delete: [FaceWhereUniqueInput!]
   deleteMany: [FaceScalarWhereInput!]
   disconnect: [FaceWhereUniqueInput!]
   set: [FaceWhereUniqueInput!]
   update: [FaceUpdateWithWhereUniqueWithoutPersonInput!]
   updateMany: [FaceUpdateManyWithWhereWithoutPersonInput!]
+  upsert: [FaceUpsertWithWhereUniqueWithoutPersonInput!]
 }
 
 input FaceUpdateWithWhereUniqueWithoutAddedByInput {
@@ -2160,6 +2371,30 @@ input FaceUpdateWithoutPersonInput {
   y: FloatFieldUpdateOperationsInput
 }
 
+input FaceUpsertWithWhereUniqueWithoutAddedByInput {
+  create: FaceCreateWithoutAddedByInput!
+  update: FaceUpdateWithoutAddedByInput!
+  where: FaceWhereUniqueInput!
+}
+
+input FaceUpsertWithWhereUniqueWithoutAppearanceInput {
+  create: FaceCreateWithoutAppearanceInput!
+  update: FaceUpdateWithoutAppearanceInput!
+  where: FaceWhereUniqueInput!
+}
+
+input FaceUpsertWithWhereUniqueWithoutImageInput {
+  create: FaceCreateWithoutImageInput!
+  update: FaceUpdateWithoutImageInput!
+  where: FaceWhereUniqueInput!
+}
+
+input FaceUpsertWithWhereUniqueWithoutPersonInput {
+  create: FaceCreateWithoutPersonInput!
+  update: FaceUpdateWithoutPersonInput!
+  where: FaceWhereUniqueInput!
+}
+
 input FaceWhereInput {
   AND: [FaceWhereInput!]
   NOT: [FaceWhereInput!]
@@ -2204,6 +2439,11 @@ input FloatFilter {
   lte: Float
   not: NestedFloatFilter
   notIn: [Float!]
+}
+
+enum GameParticipantKind {
+  Player
+  Spectator
 }
 
 enum Gender {
@@ -2812,6 +3052,1239 @@ input GroupWhereUniqueInput {
   ireneBotId: Int
 }
 
+input GuessingGameCreateManyOwnerInput {
+  createdAt: DateTime
+  finishDate: DateTime!
+  hints: GuessingGameHints
+  id: Int
+  name: String!
+  secondsPerRound: Int!
+  startDate: DateTime!
+  updatedAt: DateTime
+}
+
+input GuessingGameCreateManyOwnerInputEnvelope {
+  data: [GuessingGameCreateManyOwnerInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameCreateNestedManyWithoutOwnerInput {
+  connect: [GuessingGameWhereUniqueInput!]
+  connectOrCreate: [GuessingGameCreateOrConnectWithoutOwnerInput!]
+  create: [GuessingGameCreateWithoutOwnerInput!]
+  createMany: GuessingGameCreateManyOwnerInputEnvelope
+}
+
+input GuessingGameCreateNestedOneWithoutParticipantsInput {
+  connect: GuessingGameWhereUniqueInput
+  connectOrCreate: GuessingGameCreateOrConnectWithoutParticipantsInput
+  create: GuessingGameCreateWithoutParticipantsInput
+}
+
+input GuessingGameCreateNestedOneWithoutRoundsInput {
+  connect: GuessingGameWhereUniqueInput
+  connectOrCreate: GuessingGameCreateOrConnectWithoutRoundsInput
+  create: GuessingGameCreateWithoutRoundsInput
+}
+
+input GuessingGameCreateOrConnectWithoutOwnerInput {
+  create: GuessingGameCreateWithoutOwnerInput!
+  where: GuessingGameWhereUniqueInput!
+}
+
+input GuessingGameCreateOrConnectWithoutParticipantsInput {
+  create: GuessingGameCreateWithoutParticipantsInput!
+  where: GuessingGameWhereUniqueInput!
+}
+
+input GuessingGameCreateOrConnectWithoutRoundsInput {
+  create: GuessingGameCreateWithoutRoundsInput!
+  where: GuessingGameWhereUniqueInput!
+}
+
+input GuessingGameCreateWithoutOwnerInput {
+  createdAt: DateTime
+  finishDate: DateTime!
+  hints: GuessingGameHints
+  name: String!
+  participants: GuessingGameParticipantCreateNestedManyWithoutGameInput
+  rounds: GuessingGameRoundCreateNestedManyWithoutGameInput
+  secondsPerRound: Int!
+  startDate: DateTime!
+  updatedAt: DateTime
+}
+
+input GuessingGameCreateWithoutParticipantsInput {
+  createdAt: DateTime
+  finishDate: DateTime!
+  hints: GuessingGameHints
+  name: String!
+  owner: UserCreateNestedOneWithoutGuessingGamesHostedInput!
+  rounds: GuessingGameRoundCreateNestedManyWithoutGameInput
+  secondsPerRound: Int!
+  startDate: DateTime!
+  updatedAt: DateTime
+}
+
+input GuessingGameCreateWithoutRoundsInput {
+  createdAt: DateTime
+  finishDate: DateTime!
+  hints: GuessingGameHints
+  name: String!
+  owner: UserCreateNestedOneWithoutGuessingGamesHostedInput!
+  participants: GuessingGameParticipantCreateNestedManyWithoutGameInput
+  secondsPerRound: Int!
+  startDate: DateTime!
+  updatedAt: DateTime
+}
+
+input GuessingGameGuessCreateManyPersonGuessInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  id: Int
+  roundId: Int!
+  targetId: Int!
+  updatedAt: DateTime
+  userId: Int
+}
+
+input GuessingGameGuessCreateManyPersonGuessInputEnvelope {
+  data: [GuessingGameGuessCreateManyPersonGuessInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameGuessCreateManyRoundInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  id: Int
+  personGuessId: Int
+  targetId: Int!
+  updatedAt: DateTime
+  userId: Int
+}
+
+input GuessingGameGuessCreateManyRoundInputEnvelope {
+  data: [GuessingGameGuessCreateManyRoundInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameGuessCreateManyTargetInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  id: Int
+  personGuessId: Int
+  roundId: Int!
+  updatedAt: DateTime
+  userId: Int
+}
+
+input GuessingGameGuessCreateManyTargetInputEnvelope {
+  data: [GuessingGameGuessCreateManyTargetInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameGuessCreateManyUserInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  id: Int
+  personGuessId: Int
+  roundId: Int!
+  targetId: Int!
+  updatedAt: DateTime
+}
+
+input GuessingGameGuessCreateManyUserInputEnvelope {
+  data: [GuessingGameGuessCreateManyUserInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameGuessCreateNestedManyWithoutPersonGuessInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutPersonGuessInput!]
+  create: [GuessingGameGuessCreateWithoutPersonGuessInput!]
+  createMany: GuessingGameGuessCreateManyPersonGuessInputEnvelope
+}
+
+input GuessingGameGuessCreateNestedManyWithoutRoundInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutRoundInput!]
+  create: [GuessingGameGuessCreateWithoutRoundInput!]
+  createMany: GuessingGameGuessCreateManyRoundInputEnvelope
+}
+
+input GuessingGameGuessCreateNestedManyWithoutTargetInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutTargetInput!]
+  create: [GuessingGameGuessCreateWithoutTargetInput!]
+  createMany: GuessingGameGuessCreateManyTargetInputEnvelope
+}
+
+input GuessingGameGuessCreateNestedManyWithoutUserInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutUserInput!]
+  create: [GuessingGameGuessCreateWithoutUserInput!]
+  createMany: GuessingGameGuessCreateManyUserInputEnvelope
+}
+
+input GuessingGameGuessCreateOrConnectWithoutPersonGuessInput {
+  create: GuessingGameGuessCreateWithoutPersonGuessInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessCreateOrConnectWithoutRoundInput {
+  create: GuessingGameGuessCreateWithoutRoundInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessCreateOrConnectWithoutTargetInput {
+  create: GuessingGameGuessCreateWithoutTargetInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessCreateOrConnectWithoutUserInput {
+  create: GuessingGameGuessCreateWithoutUserInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessCreateWithoutPersonGuessInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  round: GuessingGameRoundCreateNestedOneWithoutGuessesInput!
+  target: GuessingGameTargetCreateNestedOneWithoutGuessesInput!
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutGuessingGameGuessesInput
+}
+
+input GuessingGameGuessCreateWithoutRoundInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  personGuess: PersonCreateNestedOneWithoutGuessingGameGuessesInput
+  target: GuessingGameTargetCreateNestedOneWithoutGuessesInput!
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutGuessingGameGuessesInput
+}
+
+input GuessingGameGuessCreateWithoutTargetInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  personGuess: PersonCreateNestedOneWithoutGuessingGameGuessesInput
+  round: GuessingGameRoundCreateNestedOneWithoutGuessesInput!
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutGuessingGameGuessesInput
+}
+
+input GuessingGameGuessCreateWithoutUserInput {
+  createdAt: DateTime
+  guessMs: Int!
+  guessedAt: DateTime!
+  hintUsed: Boolean
+  personGuess: PersonCreateNestedOneWithoutGuessingGameGuessesInput
+  round: GuessingGameRoundCreateNestedOneWithoutGuessesInput!
+  target: GuessingGameTargetCreateNestedOneWithoutGuessesInput!
+  updatedAt: DateTime
+}
+
+input GuessingGameGuessListRelationFilter {
+  every: GuessingGameGuessWhereInput
+  none: GuessingGameGuessWhereInput
+  some: GuessingGameGuessWhereInput
+}
+
+input GuessingGameGuessOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameGuessScalarWhereInput {
+  AND: [GuessingGameGuessScalarWhereInput!]
+  NOT: [GuessingGameGuessScalarWhereInput!]
+  OR: [GuessingGameGuessScalarWhereInput!]
+  createdAt: DateTimeFilter
+  guessMs: IntFilter
+  guessedAt: DateTimeFilter
+  hintUsed: BoolFilter
+  id: IntFilter
+  personGuessId: IntNullableFilter
+  roundId: IntFilter
+  targetId: IntFilter
+  updatedAt: DateTimeFilter
+  userId: IntNullableFilter
+}
+
+input GuessingGameGuessUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guessMs: IntFieldUpdateOperationsInput
+  guessedAt: DateTimeFieldUpdateOperationsInput
+  hintUsed: BoolFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameGuessUpdateManyWithWhereWithoutPersonGuessInput {
+  data: GuessingGameGuessUpdateManyMutationInput!
+  where: GuessingGameGuessScalarWhereInput!
+}
+
+input GuessingGameGuessUpdateManyWithWhereWithoutRoundInput {
+  data: GuessingGameGuessUpdateManyMutationInput!
+  where: GuessingGameGuessScalarWhereInput!
+}
+
+input GuessingGameGuessUpdateManyWithWhereWithoutTargetInput {
+  data: GuessingGameGuessUpdateManyMutationInput!
+  where: GuessingGameGuessScalarWhereInput!
+}
+
+input GuessingGameGuessUpdateManyWithWhereWithoutUserInput {
+  data: GuessingGameGuessUpdateManyMutationInput!
+  where: GuessingGameGuessScalarWhereInput!
+}
+
+input GuessingGameGuessUpdateManyWithoutPersonGuessInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutPersonGuessInput!]
+  create: [GuessingGameGuessCreateWithoutPersonGuessInput!]
+  createMany: GuessingGameGuessCreateManyPersonGuessInputEnvelope
+  delete: [GuessingGameGuessWhereUniqueInput!]
+  deleteMany: [GuessingGameGuessScalarWhereInput!]
+  disconnect: [GuessingGameGuessWhereUniqueInput!]
+  set: [GuessingGameGuessWhereUniqueInput!]
+  update: [GuessingGameGuessUpdateWithWhereUniqueWithoutPersonGuessInput!]
+  updateMany: [GuessingGameGuessUpdateManyWithWhereWithoutPersonGuessInput!]
+  upsert: [GuessingGameGuessUpsertWithWhereUniqueWithoutPersonGuessInput!]
+}
+
+input GuessingGameGuessUpdateManyWithoutRoundInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutRoundInput!]
+  create: [GuessingGameGuessCreateWithoutRoundInput!]
+  createMany: GuessingGameGuessCreateManyRoundInputEnvelope
+  delete: [GuessingGameGuessWhereUniqueInput!]
+  deleteMany: [GuessingGameGuessScalarWhereInput!]
+  disconnect: [GuessingGameGuessWhereUniqueInput!]
+  set: [GuessingGameGuessWhereUniqueInput!]
+  update: [GuessingGameGuessUpdateWithWhereUniqueWithoutRoundInput!]
+  updateMany: [GuessingGameGuessUpdateManyWithWhereWithoutRoundInput!]
+  upsert: [GuessingGameGuessUpsertWithWhereUniqueWithoutRoundInput!]
+}
+
+input GuessingGameGuessUpdateManyWithoutTargetInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutTargetInput!]
+  create: [GuessingGameGuessCreateWithoutTargetInput!]
+  createMany: GuessingGameGuessCreateManyTargetInputEnvelope
+  delete: [GuessingGameGuessWhereUniqueInput!]
+  deleteMany: [GuessingGameGuessScalarWhereInput!]
+  disconnect: [GuessingGameGuessWhereUniqueInput!]
+  set: [GuessingGameGuessWhereUniqueInput!]
+  update: [GuessingGameGuessUpdateWithWhereUniqueWithoutTargetInput!]
+  updateMany: [GuessingGameGuessUpdateManyWithWhereWithoutTargetInput!]
+  upsert: [GuessingGameGuessUpsertWithWhereUniqueWithoutTargetInput!]
+}
+
+input GuessingGameGuessUpdateManyWithoutUserInput {
+  connect: [GuessingGameGuessWhereUniqueInput!]
+  connectOrCreate: [GuessingGameGuessCreateOrConnectWithoutUserInput!]
+  create: [GuessingGameGuessCreateWithoutUserInput!]
+  createMany: GuessingGameGuessCreateManyUserInputEnvelope
+  delete: [GuessingGameGuessWhereUniqueInput!]
+  deleteMany: [GuessingGameGuessScalarWhereInput!]
+  disconnect: [GuessingGameGuessWhereUniqueInput!]
+  set: [GuessingGameGuessWhereUniqueInput!]
+  update: [GuessingGameGuessUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [GuessingGameGuessUpdateManyWithWhereWithoutUserInput!]
+  upsert: [GuessingGameGuessUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input GuessingGameGuessUpdateWithWhereUniqueWithoutPersonGuessInput {
+  data: GuessingGameGuessUpdateWithoutPersonGuessInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessUpdateWithWhereUniqueWithoutRoundInput {
+  data: GuessingGameGuessUpdateWithoutRoundInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessUpdateWithWhereUniqueWithoutTargetInput {
+  data: GuessingGameGuessUpdateWithoutTargetInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessUpdateWithWhereUniqueWithoutUserInput {
+  data: GuessingGameGuessUpdateWithoutUserInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessUpdateWithoutPersonGuessInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guessMs: IntFieldUpdateOperationsInput
+  guessedAt: DateTimeFieldUpdateOperationsInput
+  hintUsed: BoolFieldUpdateOperationsInput
+  round: GuessingGameRoundUpdateOneRequiredWithoutGuessesInput
+  target: GuessingGameTargetUpdateOneRequiredWithoutGuessesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutGuessingGameGuessesInput
+}
+
+input GuessingGameGuessUpdateWithoutRoundInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guessMs: IntFieldUpdateOperationsInput
+  guessedAt: DateTimeFieldUpdateOperationsInput
+  hintUsed: BoolFieldUpdateOperationsInput
+  personGuess: PersonUpdateOneWithoutGuessingGameGuessesInput
+  target: GuessingGameTargetUpdateOneRequiredWithoutGuessesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutGuessingGameGuessesInput
+}
+
+input GuessingGameGuessUpdateWithoutTargetInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guessMs: IntFieldUpdateOperationsInput
+  guessedAt: DateTimeFieldUpdateOperationsInput
+  hintUsed: BoolFieldUpdateOperationsInput
+  personGuess: PersonUpdateOneWithoutGuessingGameGuessesInput
+  round: GuessingGameRoundUpdateOneRequiredWithoutGuessesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutGuessingGameGuessesInput
+}
+
+input GuessingGameGuessUpdateWithoutUserInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guessMs: IntFieldUpdateOperationsInput
+  guessedAt: DateTimeFieldUpdateOperationsInput
+  hintUsed: BoolFieldUpdateOperationsInput
+  personGuess: PersonUpdateOneWithoutGuessingGameGuessesInput
+  round: GuessingGameRoundUpdateOneRequiredWithoutGuessesInput
+  target: GuessingGameTargetUpdateOneRequiredWithoutGuessesInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameGuessUpsertWithWhereUniqueWithoutPersonGuessInput {
+  create: GuessingGameGuessCreateWithoutPersonGuessInput!
+  update: GuessingGameGuessUpdateWithoutPersonGuessInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessUpsertWithWhereUniqueWithoutRoundInput {
+  create: GuessingGameGuessCreateWithoutRoundInput!
+  update: GuessingGameGuessUpdateWithoutRoundInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessUpsertWithWhereUniqueWithoutTargetInput {
+  create: GuessingGameGuessCreateWithoutTargetInput!
+  update: GuessingGameGuessUpdateWithoutTargetInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessUpsertWithWhereUniqueWithoutUserInput {
+  create: GuessingGameGuessCreateWithoutUserInput!
+  update: GuessingGameGuessUpdateWithoutUserInput!
+  where: GuessingGameGuessWhereUniqueInput!
+}
+
+input GuessingGameGuessWhereInput {
+  AND: [GuessingGameGuessWhereInput!]
+  NOT: [GuessingGameGuessWhereInput!]
+  OR: [GuessingGameGuessWhereInput!]
+  createdAt: DateTimeFilter
+  guessMs: IntFilter
+  guessedAt: DateTimeFilter
+  hintUsed: BoolFilter
+  id: IntFilter
+  personGuess: PersonWhereInput
+  personGuessId: IntNullableFilter
+  round: GuessingGameRoundWhereInput
+  roundId: IntFilter
+  target: GuessingGameTargetWhereInput
+  targetId: IntFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntNullableFilter
+}
+
+input GuessingGameGuessWhereUniqueInput {
+  id: Int
+}
+
+enum GuessingGameHints {
+  ALWAYS_ON
+  DISABLED
+  LIMITED
+  POINT_COST
+}
+
+input GuessingGameListRelationFilter {
+  every: GuessingGameWhereInput
+  none: GuessingGameWhereInput
+  some: GuessingGameWhereInput
+}
+
+input GuessingGameOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameParticipantCreateManyGameInput {
+  createdAt: DateTime
+  id: Int
+  type: GameParticipantKind
+  updatedAt: DateTime
+  userId: Int
+}
+
+input GuessingGameParticipantCreateManyGameInputEnvelope {
+  data: [GuessingGameParticipantCreateManyGameInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameParticipantCreateManyUserInput {
+  createdAt: DateTime
+  gameId: Int!
+  id: Int
+  type: GameParticipantKind
+  updatedAt: DateTime
+}
+
+input GuessingGameParticipantCreateManyUserInputEnvelope {
+  data: [GuessingGameParticipantCreateManyUserInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameParticipantCreateNestedManyWithoutGameInput {
+  connect: [GuessingGameParticipantWhereUniqueInput!]
+  connectOrCreate: [GuessingGameParticipantCreateOrConnectWithoutGameInput!]
+  create: [GuessingGameParticipantCreateWithoutGameInput!]
+  createMany: GuessingGameParticipantCreateManyGameInputEnvelope
+}
+
+input GuessingGameParticipantCreateNestedManyWithoutUserInput {
+  connect: [GuessingGameParticipantWhereUniqueInput!]
+  connectOrCreate: [GuessingGameParticipantCreateOrConnectWithoutUserInput!]
+  create: [GuessingGameParticipantCreateWithoutUserInput!]
+  createMany: GuessingGameParticipantCreateManyUserInputEnvelope
+}
+
+input GuessingGameParticipantCreateOrConnectWithoutGameInput {
+  create: GuessingGameParticipantCreateWithoutGameInput!
+  where: GuessingGameParticipantWhereUniqueInput!
+}
+
+input GuessingGameParticipantCreateOrConnectWithoutUserInput {
+  create: GuessingGameParticipantCreateWithoutUserInput!
+  where: GuessingGameParticipantWhereUniqueInput!
+}
+
+input GuessingGameParticipantCreateWithoutGameInput {
+  createdAt: DateTime
+  type: GameParticipantKind
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutGuessingGameParticipationsInput
+}
+
+input GuessingGameParticipantCreateWithoutUserInput {
+  createdAt: DateTime
+  game: GuessingGameCreateNestedOneWithoutParticipantsInput!
+  type: GameParticipantKind
+  updatedAt: DateTime
+}
+
+input GuessingGameParticipantListRelationFilter {
+  every: GuessingGameParticipantWhereInput
+  none: GuessingGameParticipantWhereInput
+  some: GuessingGameParticipantWhereInput
+}
+
+input GuessingGameParticipantOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameParticipantScalarWhereInput {
+  AND: [GuessingGameParticipantScalarWhereInput!]
+  NOT: [GuessingGameParticipantScalarWhereInput!]
+  OR: [GuessingGameParticipantScalarWhereInput!]
+  createdAt: DateTimeFilter
+  gameId: IntFilter
+  id: IntFilter
+  type: EnumGameParticipantKindFilter
+  updatedAt: DateTimeFilter
+  userId: IntNullableFilter
+}
+
+input GuessingGameParticipantUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  type: EnumGameParticipantKindFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameParticipantUpdateManyWithWhereWithoutGameInput {
+  data: GuessingGameParticipantUpdateManyMutationInput!
+  where: GuessingGameParticipantScalarWhereInput!
+}
+
+input GuessingGameParticipantUpdateManyWithWhereWithoutUserInput {
+  data: GuessingGameParticipantUpdateManyMutationInput!
+  where: GuessingGameParticipantScalarWhereInput!
+}
+
+input GuessingGameParticipantUpdateManyWithoutGameInput {
+  connect: [GuessingGameParticipantWhereUniqueInput!]
+  connectOrCreate: [GuessingGameParticipantCreateOrConnectWithoutGameInput!]
+  create: [GuessingGameParticipantCreateWithoutGameInput!]
+  createMany: GuessingGameParticipantCreateManyGameInputEnvelope
+  delete: [GuessingGameParticipantWhereUniqueInput!]
+  deleteMany: [GuessingGameParticipantScalarWhereInput!]
+  disconnect: [GuessingGameParticipantWhereUniqueInput!]
+  set: [GuessingGameParticipantWhereUniqueInput!]
+  update: [GuessingGameParticipantUpdateWithWhereUniqueWithoutGameInput!]
+  updateMany: [GuessingGameParticipantUpdateManyWithWhereWithoutGameInput!]
+  upsert: [GuessingGameParticipantUpsertWithWhereUniqueWithoutGameInput!]
+}
+
+input GuessingGameParticipantUpdateManyWithoutUserInput {
+  connect: [GuessingGameParticipantWhereUniqueInput!]
+  connectOrCreate: [GuessingGameParticipantCreateOrConnectWithoutUserInput!]
+  create: [GuessingGameParticipantCreateWithoutUserInput!]
+  createMany: GuessingGameParticipantCreateManyUserInputEnvelope
+  delete: [GuessingGameParticipantWhereUniqueInput!]
+  deleteMany: [GuessingGameParticipantScalarWhereInput!]
+  disconnect: [GuessingGameParticipantWhereUniqueInput!]
+  set: [GuessingGameParticipantWhereUniqueInput!]
+  update: [GuessingGameParticipantUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [GuessingGameParticipantUpdateManyWithWhereWithoutUserInput!]
+  upsert: [GuessingGameParticipantUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input GuessingGameParticipantUpdateWithWhereUniqueWithoutGameInput {
+  data: GuessingGameParticipantUpdateWithoutGameInput!
+  where: GuessingGameParticipantWhereUniqueInput!
+}
+
+input GuessingGameParticipantUpdateWithWhereUniqueWithoutUserInput {
+  data: GuessingGameParticipantUpdateWithoutUserInput!
+  where: GuessingGameParticipantWhereUniqueInput!
+}
+
+input GuessingGameParticipantUpdateWithoutGameInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  type: EnumGameParticipantKindFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneWithoutGuessingGameParticipationsInput
+}
+
+input GuessingGameParticipantUpdateWithoutUserInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  game: GuessingGameUpdateOneRequiredWithoutParticipantsInput
+  type: EnumGameParticipantKindFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameParticipantUpsertWithWhereUniqueWithoutGameInput {
+  create: GuessingGameParticipantCreateWithoutGameInput!
+  update: GuessingGameParticipantUpdateWithoutGameInput!
+  where: GuessingGameParticipantWhereUniqueInput!
+}
+
+input GuessingGameParticipantUpsertWithWhereUniqueWithoutUserInput {
+  create: GuessingGameParticipantCreateWithoutUserInput!
+  update: GuessingGameParticipantUpdateWithoutUserInput!
+  where: GuessingGameParticipantWhereUniqueInput!
+}
+
+input GuessingGameParticipantUserIdGameIdCompoundUniqueInput {
+  gameId: Int!
+  userId: Int!
+}
+
+input GuessingGameParticipantWhereInput {
+  AND: [GuessingGameParticipantWhereInput!]
+  NOT: [GuessingGameParticipantWhereInput!]
+  OR: [GuessingGameParticipantWhereInput!]
+  createdAt: DateTimeFilter
+  game: GuessingGameWhereInput
+  gameId: IntFilter
+  id: IntFilter
+  type: EnumGameParticipantKindFilter
+  updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntNullableFilter
+}
+
+input GuessingGameParticipantWhereUniqueInput {
+  id: Int
+  userId_gameId: GuessingGameParticipantUserIdGameIdCompoundUniqueInput
+}
+
+input GuessingGameRoundCreateManyGameInput {
+  createdAt: DateTime
+  id: Int
+  startDate: DateTime!
+  startedAt: DateTime!
+  updatedAt: DateTime
+}
+
+input GuessingGameRoundCreateManyGameInputEnvelope {
+  data: [GuessingGameRoundCreateManyGameInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameRoundCreateNestedManyWithoutGameInput {
+  connect: [GuessingGameRoundWhereUniqueInput!]
+  connectOrCreate: [GuessingGameRoundCreateOrConnectWithoutGameInput!]
+  create: [GuessingGameRoundCreateWithoutGameInput!]
+  createMany: GuessingGameRoundCreateManyGameInputEnvelope
+}
+
+input GuessingGameRoundCreateNestedOneWithoutGuessesInput {
+  connect: GuessingGameRoundWhereUniqueInput
+  connectOrCreate: GuessingGameRoundCreateOrConnectWithoutGuessesInput
+  create: GuessingGameRoundCreateWithoutGuessesInput
+}
+
+input GuessingGameRoundCreateNestedOneWithoutTargetsInput {
+  connect: GuessingGameRoundWhereUniqueInput
+  connectOrCreate: GuessingGameRoundCreateOrConnectWithoutTargetsInput
+  create: GuessingGameRoundCreateWithoutTargetsInput
+}
+
+input GuessingGameRoundCreateOrConnectWithoutGameInput {
+  create: GuessingGameRoundCreateWithoutGameInput!
+  where: GuessingGameRoundWhereUniqueInput!
+}
+
+input GuessingGameRoundCreateOrConnectWithoutGuessesInput {
+  create: GuessingGameRoundCreateWithoutGuessesInput!
+  where: GuessingGameRoundWhereUniqueInput!
+}
+
+input GuessingGameRoundCreateOrConnectWithoutTargetsInput {
+  create: GuessingGameRoundCreateWithoutTargetsInput!
+  where: GuessingGameRoundWhereUniqueInput!
+}
+
+input GuessingGameRoundCreateWithoutGameInput {
+  createdAt: DateTime
+  guesses: GuessingGameGuessCreateNestedManyWithoutRoundInput
+  startDate: DateTime!
+  startedAt: DateTime!
+  targets: GuessingGameTargetCreateNestedManyWithoutRoundInput
+  updatedAt: DateTime
+}
+
+input GuessingGameRoundCreateWithoutGuessesInput {
+  createdAt: DateTime
+  game: GuessingGameCreateNestedOneWithoutRoundsInput!
+  startDate: DateTime!
+  startedAt: DateTime!
+  targets: GuessingGameTargetCreateNestedManyWithoutRoundInput
+  updatedAt: DateTime
+}
+
+input GuessingGameRoundCreateWithoutTargetsInput {
+  createdAt: DateTime
+  game: GuessingGameCreateNestedOneWithoutRoundsInput!
+  guesses: GuessingGameGuessCreateNestedManyWithoutRoundInput
+  startDate: DateTime!
+  startedAt: DateTime!
+  updatedAt: DateTime
+}
+
+input GuessingGameRoundListRelationFilter {
+  every: GuessingGameRoundWhereInput
+  none: GuessingGameRoundWhereInput
+  some: GuessingGameRoundWhereInput
+}
+
+input GuessingGameRoundScalarWhereInput {
+  AND: [GuessingGameRoundScalarWhereInput!]
+  NOT: [GuessingGameRoundScalarWhereInput!]
+  OR: [GuessingGameRoundScalarWhereInput!]
+  createdAt: DateTimeFilter
+  gameId: IntFilter
+  id: IntFilter
+  startDate: DateTimeFilter
+  startedAt: DateTimeFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameRoundUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  startedAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameRoundUpdateManyWithWhereWithoutGameInput {
+  data: GuessingGameRoundUpdateManyMutationInput!
+  where: GuessingGameRoundScalarWhereInput!
+}
+
+input GuessingGameRoundUpdateManyWithoutGameInput {
+  connect: [GuessingGameRoundWhereUniqueInput!]
+  connectOrCreate: [GuessingGameRoundCreateOrConnectWithoutGameInput!]
+  create: [GuessingGameRoundCreateWithoutGameInput!]
+  createMany: GuessingGameRoundCreateManyGameInputEnvelope
+  delete: [GuessingGameRoundWhereUniqueInput!]
+  deleteMany: [GuessingGameRoundScalarWhereInput!]
+  disconnect: [GuessingGameRoundWhereUniqueInput!]
+  set: [GuessingGameRoundWhereUniqueInput!]
+  update: [GuessingGameRoundUpdateWithWhereUniqueWithoutGameInput!]
+  updateMany: [GuessingGameRoundUpdateManyWithWhereWithoutGameInput!]
+  upsert: [GuessingGameRoundUpsertWithWhereUniqueWithoutGameInput!]
+}
+
+input GuessingGameRoundUpdateOneRequiredWithoutGuessesInput {
+  connect: GuessingGameRoundWhereUniqueInput
+  connectOrCreate: GuessingGameRoundCreateOrConnectWithoutGuessesInput
+  create: GuessingGameRoundCreateWithoutGuessesInput
+  update: GuessingGameRoundUpdateWithoutGuessesInput
+  upsert: GuessingGameRoundUpsertWithoutGuessesInput
+}
+
+input GuessingGameRoundUpdateOneRequiredWithoutTargetsInput {
+  connect: GuessingGameRoundWhereUniqueInput
+  connectOrCreate: GuessingGameRoundCreateOrConnectWithoutTargetsInput
+  create: GuessingGameRoundCreateWithoutTargetsInput
+  update: GuessingGameRoundUpdateWithoutTargetsInput
+  upsert: GuessingGameRoundUpsertWithoutTargetsInput
+}
+
+input GuessingGameRoundUpdateWithWhereUniqueWithoutGameInput {
+  data: GuessingGameRoundUpdateWithoutGameInput!
+  where: GuessingGameRoundWhereUniqueInput!
+}
+
+input GuessingGameRoundUpdateWithoutGameInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guesses: GuessingGameGuessUpdateManyWithoutRoundInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  startedAt: DateTimeFieldUpdateOperationsInput
+  targets: GuessingGameTargetUpdateManyWithoutRoundInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameRoundUpdateWithoutGuessesInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  game: GuessingGameUpdateOneRequiredWithoutRoundsInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  startedAt: DateTimeFieldUpdateOperationsInput
+  targets: GuessingGameTargetUpdateManyWithoutRoundInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameRoundUpdateWithoutTargetsInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  game: GuessingGameUpdateOneRequiredWithoutRoundsInput
+  guesses: GuessingGameGuessUpdateManyWithoutRoundInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  startedAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameRoundUpsertWithWhereUniqueWithoutGameInput {
+  create: GuessingGameRoundCreateWithoutGameInput!
+  update: GuessingGameRoundUpdateWithoutGameInput!
+  where: GuessingGameRoundWhereUniqueInput!
+}
+
+input GuessingGameRoundUpsertWithoutGuessesInput {
+  create: GuessingGameRoundCreateWithoutGuessesInput!
+  update: GuessingGameRoundUpdateWithoutGuessesInput!
+}
+
+input GuessingGameRoundUpsertWithoutTargetsInput {
+  create: GuessingGameRoundCreateWithoutTargetsInput!
+  update: GuessingGameRoundUpdateWithoutTargetsInput!
+}
+
+input GuessingGameRoundWhereInput {
+  AND: [GuessingGameRoundWhereInput!]
+  NOT: [GuessingGameRoundWhereInput!]
+  OR: [GuessingGameRoundWhereInput!]
+  createdAt: DateTimeFilter
+  game: GuessingGameWhereInput
+  gameId: IntFilter
+  guesses: GuessingGameGuessListRelationFilter
+  id: IntFilter
+  startDate: DateTimeFilter
+  startedAt: DateTimeFilter
+  targets: GuessingGameTargetListRelationFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameRoundWhereUniqueInput {
+  id: Int
+}
+
+input GuessingGameScalarWhereInput {
+  AND: [GuessingGameScalarWhereInput!]
+  NOT: [GuessingGameScalarWhereInput!]
+  OR: [GuessingGameScalarWhereInput!]
+  createdAt: DateTimeFilter
+  finishDate: DateTimeFilter
+  hints: EnumGuessingGameHintsFilter
+  id: IntFilter
+  name: StringFilter
+  ownerId: IntFilter
+  secondsPerRound: IntFilter
+  startDate: DateTimeFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameTargetCreateManyAnswerInput {
+  createdAt: DateTime
+  id: Int
+  roundId: Int!
+  updatedAt: DateTime
+}
+
+input GuessingGameTargetCreateManyAnswerInputEnvelope {
+  data: [GuessingGameTargetCreateManyAnswerInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameTargetCreateManyRoundInput {
+  answerId: Int
+  createdAt: DateTime
+  id: Int
+  updatedAt: DateTime
+}
+
+input GuessingGameTargetCreateManyRoundInputEnvelope {
+  data: [GuessingGameTargetCreateManyRoundInput!]
+  skipDuplicates: Boolean
+}
+
+input GuessingGameTargetCreateNestedManyWithoutAnswerInput {
+  connect: [GuessingGameTargetWhereUniqueInput!]
+  connectOrCreate: [GuessingGameTargetCreateOrConnectWithoutAnswerInput!]
+  create: [GuessingGameTargetCreateWithoutAnswerInput!]
+  createMany: GuessingGameTargetCreateManyAnswerInputEnvelope
+}
+
+input GuessingGameTargetCreateNestedManyWithoutRoundInput {
+  connect: [GuessingGameTargetWhereUniqueInput!]
+  connectOrCreate: [GuessingGameTargetCreateOrConnectWithoutRoundInput!]
+  create: [GuessingGameTargetCreateWithoutRoundInput!]
+  createMany: GuessingGameTargetCreateManyRoundInputEnvelope
+}
+
+input GuessingGameTargetCreateNestedOneWithoutGuessesInput {
+  connect: GuessingGameTargetWhereUniqueInput
+  connectOrCreate: GuessingGameTargetCreateOrConnectWithoutGuessesInput
+  create: GuessingGameTargetCreateWithoutGuessesInput
+}
+
+input GuessingGameTargetCreateOrConnectWithoutAnswerInput {
+  create: GuessingGameTargetCreateWithoutAnswerInput!
+  where: GuessingGameTargetWhereUniqueInput!
+}
+
+input GuessingGameTargetCreateOrConnectWithoutGuessesInput {
+  create: GuessingGameTargetCreateWithoutGuessesInput!
+  where: GuessingGameTargetWhereUniqueInput!
+}
+
+input GuessingGameTargetCreateOrConnectWithoutRoundInput {
+  create: GuessingGameTargetCreateWithoutRoundInput!
+  where: GuessingGameTargetWhereUniqueInput!
+}
+
+input GuessingGameTargetCreateWithoutAnswerInput {
+  createdAt: DateTime
+  guesses: GuessingGameGuessCreateNestedManyWithoutTargetInput
+  round: GuessingGameRoundCreateNestedOneWithoutTargetsInput!
+  updatedAt: DateTime
+}
+
+input GuessingGameTargetCreateWithoutGuessesInput {
+  answer: PersonCreateNestedOneWithoutGuessingGameTargetsInput
+  createdAt: DateTime
+  round: GuessingGameRoundCreateNestedOneWithoutTargetsInput!
+  updatedAt: DateTime
+}
+
+input GuessingGameTargetCreateWithoutRoundInput {
+  answer: PersonCreateNestedOneWithoutGuessingGameTargetsInput
+  createdAt: DateTime
+  guesses: GuessingGameGuessCreateNestedManyWithoutTargetInput
+  updatedAt: DateTime
+}
+
+input GuessingGameTargetListRelationFilter {
+  every: GuessingGameTargetWhereInput
+  none: GuessingGameTargetWhereInput
+  some: GuessingGameTargetWhereInput
+}
+
+input GuessingGameTargetOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input GuessingGameTargetScalarWhereInput {
+  AND: [GuessingGameTargetScalarWhereInput!]
+  NOT: [GuessingGameTargetScalarWhereInput!]
+  OR: [GuessingGameTargetScalarWhereInput!]
+  answerId: IntNullableFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  roundId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameTargetUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameTargetUpdateManyWithWhereWithoutAnswerInput {
+  data: GuessingGameTargetUpdateManyMutationInput!
+  where: GuessingGameTargetScalarWhereInput!
+}
+
+input GuessingGameTargetUpdateManyWithWhereWithoutRoundInput {
+  data: GuessingGameTargetUpdateManyMutationInput!
+  where: GuessingGameTargetScalarWhereInput!
+}
+
+input GuessingGameTargetUpdateManyWithoutAnswerInput {
+  connect: [GuessingGameTargetWhereUniqueInput!]
+  connectOrCreate: [GuessingGameTargetCreateOrConnectWithoutAnswerInput!]
+  create: [GuessingGameTargetCreateWithoutAnswerInput!]
+  createMany: GuessingGameTargetCreateManyAnswerInputEnvelope
+  delete: [GuessingGameTargetWhereUniqueInput!]
+  deleteMany: [GuessingGameTargetScalarWhereInput!]
+  disconnect: [GuessingGameTargetWhereUniqueInput!]
+  set: [GuessingGameTargetWhereUniqueInput!]
+  update: [GuessingGameTargetUpdateWithWhereUniqueWithoutAnswerInput!]
+  updateMany: [GuessingGameTargetUpdateManyWithWhereWithoutAnswerInput!]
+  upsert: [GuessingGameTargetUpsertWithWhereUniqueWithoutAnswerInput!]
+}
+
+input GuessingGameTargetUpdateManyWithoutRoundInput {
+  connect: [GuessingGameTargetWhereUniqueInput!]
+  connectOrCreate: [GuessingGameTargetCreateOrConnectWithoutRoundInput!]
+  create: [GuessingGameTargetCreateWithoutRoundInput!]
+  createMany: GuessingGameTargetCreateManyRoundInputEnvelope
+  delete: [GuessingGameTargetWhereUniqueInput!]
+  deleteMany: [GuessingGameTargetScalarWhereInput!]
+  disconnect: [GuessingGameTargetWhereUniqueInput!]
+  set: [GuessingGameTargetWhereUniqueInput!]
+  update: [GuessingGameTargetUpdateWithWhereUniqueWithoutRoundInput!]
+  updateMany: [GuessingGameTargetUpdateManyWithWhereWithoutRoundInput!]
+  upsert: [GuessingGameTargetUpsertWithWhereUniqueWithoutRoundInput!]
+}
+
+input GuessingGameTargetUpdateOneRequiredWithoutGuessesInput {
+  connect: GuessingGameTargetWhereUniqueInput
+  connectOrCreate: GuessingGameTargetCreateOrConnectWithoutGuessesInput
+  create: GuessingGameTargetCreateWithoutGuessesInput
+  update: GuessingGameTargetUpdateWithoutGuessesInput
+  upsert: GuessingGameTargetUpsertWithoutGuessesInput
+}
+
+input GuessingGameTargetUpdateWithWhereUniqueWithoutAnswerInput {
+  data: GuessingGameTargetUpdateWithoutAnswerInput!
+  where: GuessingGameTargetWhereUniqueInput!
+}
+
+input GuessingGameTargetUpdateWithWhereUniqueWithoutRoundInput {
+  data: GuessingGameTargetUpdateWithoutRoundInput!
+  where: GuessingGameTargetWhereUniqueInput!
+}
+
+input GuessingGameTargetUpdateWithoutAnswerInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guesses: GuessingGameGuessUpdateManyWithoutTargetInput
+  round: GuessingGameRoundUpdateOneRequiredWithoutTargetsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameTargetUpdateWithoutGuessesInput {
+  answer: PersonUpdateOneWithoutGuessingGameTargetsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  round: GuessingGameRoundUpdateOneRequiredWithoutTargetsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameTargetUpdateWithoutRoundInput {
+  answer: PersonUpdateOneWithoutGuessingGameTargetsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  guesses: GuessingGameGuessUpdateManyWithoutTargetInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameTargetUpsertWithWhereUniqueWithoutAnswerInput {
+  create: GuessingGameTargetCreateWithoutAnswerInput!
+  update: GuessingGameTargetUpdateWithoutAnswerInput!
+  where: GuessingGameTargetWhereUniqueInput!
+}
+
+input GuessingGameTargetUpsertWithWhereUniqueWithoutRoundInput {
+  create: GuessingGameTargetCreateWithoutRoundInput!
+  update: GuessingGameTargetUpdateWithoutRoundInput!
+  where: GuessingGameTargetWhereUniqueInput!
+}
+
+input GuessingGameTargetUpsertWithoutGuessesInput {
+  create: GuessingGameTargetCreateWithoutGuessesInput!
+  update: GuessingGameTargetUpdateWithoutGuessesInput!
+}
+
+input GuessingGameTargetWhereInput {
+  AND: [GuessingGameTargetWhereInput!]
+  NOT: [GuessingGameTargetWhereInput!]
+  OR: [GuessingGameTargetWhereInput!]
+  answer: PersonWhereInput
+  answerId: IntNullableFilter
+  createdAt: DateTimeFilter
+  guesses: GuessingGameGuessListRelationFilter
+  id: IntFilter
+  round: GuessingGameRoundWhereInput
+  roundId: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameTargetWhereUniqueInput {
+  id: Int
+}
+
+input GuessingGameUpdateManyMutationInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  finishDate: DateTimeFieldUpdateOperationsInput
+  hints: EnumGuessingGameHintsFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  secondsPerRound: IntFieldUpdateOperationsInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameUpdateManyWithWhereWithoutOwnerInput {
+  data: GuessingGameUpdateManyMutationInput!
+  where: GuessingGameScalarWhereInput!
+}
+
+input GuessingGameUpdateManyWithoutOwnerInput {
+  connect: [GuessingGameWhereUniqueInput!]
+  connectOrCreate: [GuessingGameCreateOrConnectWithoutOwnerInput!]
+  create: [GuessingGameCreateWithoutOwnerInput!]
+  createMany: GuessingGameCreateManyOwnerInputEnvelope
+  delete: [GuessingGameWhereUniqueInput!]
+  deleteMany: [GuessingGameScalarWhereInput!]
+  disconnect: [GuessingGameWhereUniqueInput!]
+  set: [GuessingGameWhereUniqueInput!]
+  update: [GuessingGameUpdateWithWhereUniqueWithoutOwnerInput!]
+  updateMany: [GuessingGameUpdateManyWithWhereWithoutOwnerInput!]
+  upsert: [GuessingGameUpsertWithWhereUniqueWithoutOwnerInput!]
+}
+
+input GuessingGameUpdateOneRequiredWithoutParticipantsInput {
+  connect: GuessingGameWhereUniqueInput
+  connectOrCreate: GuessingGameCreateOrConnectWithoutParticipantsInput
+  create: GuessingGameCreateWithoutParticipantsInput
+  update: GuessingGameUpdateWithoutParticipantsInput
+  upsert: GuessingGameUpsertWithoutParticipantsInput
+}
+
+input GuessingGameUpdateOneRequiredWithoutRoundsInput {
+  connect: GuessingGameWhereUniqueInput
+  connectOrCreate: GuessingGameCreateOrConnectWithoutRoundsInput
+  create: GuessingGameCreateWithoutRoundsInput
+  update: GuessingGameUpdateWithoutRoundsInput
+  upsert: GuessingGameUpsertWithoutRoundsInput
+}
+
+input GuessingGameUpdateWithWhereUniqueWithoutOwnerInput {
+  data: GuessingGameUpdateWithoutOwnerInput!
+  where: GuessingGameWhereUniqueInput!
+}
+
+input GuessingGameUpdateWithoutOwnerInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  finishDate: DateTimeFieldUpdateOperationsInput
+  hints: EnumGuessingGameHintsFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  participants: GuessingGameParticipantUpdateManyWithoutGameInput
+  rounds: GuessingGameRoundUpdateManyWithoutGameInput
+  secondsPerRound: IntFieldUpdateOperationsInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameUpdateWithoutParticipantsInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  finishDate: DateTimeFieldUpdateOperationsInput
+  hints: EnumGuessingGameHintsFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  owner: UserUpdateOneRequiredWithoutGuessingGamesHostedInput
+  rounds: GuessingGameRoundUpdateManyWithoutGameInput
+  secondsPerRound: IntFieldUpdateOperationsInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameUpdateWithoutRoundsInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  finishDate: DateTimeFieldUpdateOperationsInput
+  hints: EnumGuessingGameHintsFieldUpdateOperationsInput
+  name: StringFieldUpdateOperationsInput
+  owner: UserUpdateOneRequiredWithoutGuessingGamesHostedInput
+  participants: GuessingGameParticipantUpdateManyWithoutGameInput
+  secondsPerRound: IntFieldUpdateOperationsInput
+  startDate: DateTimeFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input GuessingGameUpsertWithWhereUniqueWithoutOwnerInput {
+  create: GuessingGameCreateWithoutOwnerInput!
+  update: GuessingGameUpdateWithoutOwnerInput!
+  where: GuessingGameWhereUniqueInput!
+}
+
+input GuessingGameUpsertWithoutParticipantsInput {
+  create: GuessingGameCreateWithoutParticipantsInput!
+  update: GuessingGameUpdateWithoutParticipantsInput!
+}
+
+input GuessingGameUpsertWithoutRoundsInput {
+  create: GuessingGameCreateWithoutRoundsInput!
+  update: GuessingGameUpdateWithoutRoundsInput!
+}
+
+input GuessingGameWhereInput {
+  AND: [GuessingGameWhereInput!]
+  NOT: [GuessingGameWhereInput!]
+  OR: [GuessingGameWhereInput!]
+  createdAt: DateTimeFilter
+  finishDate: DateTimeFilter
+  hints: EnumGuessingGameHintsFilter
+  id: IntFilter
+  name: StringFilter
+  owner: UserWhereInput
+  ownerId: IntFilter
+  participants: GuessingGameParticipantListRelationFilter
+  rounds: GuessingGameRoundListRelationFilter
+  secondsPerRound: IntFilter
+  startDate: DateTimeFilter
+  updatedAt: DateTimeFilter
+}
+
+input GuessingGameWhereUniqueInput {
+  id: Int
+}
+
 type Homepage {
   trending: [[HomepageTrendingPerson!]!]!
 }
@@ -2969,6 +4442,12 @@ input ImageCreateNestedOneWithoutDiscoverySourceInput {
   connect: ImageWhereUniqueInput
   connectOrCreate: ImageCreateOrConnectWithoutDiscoverySourceInput
   create: ImageCreateWithoutDiscoverySourceInput
+}
+
+input ImageCreateNestedOneWithoutFacesInput {
+  connect: ImageWhereUniqueInput
+  connectOrCreate: ImageCreateOrConnectWithoutFacesInput
+  create: ImageCreateWithoutFacesInput
 }
 
 input ImageCreateNestedOneWithoutGroupAvatarOfInput {
@@ -5589,11 +7068,25 @@ input NestedEnumFaceSourceFilter {
   notIn: [FaceSource!]
 }
 
+input NestedEnumGameParticipantKindFilter {
+  equals: GameParticipantKind
+  in: [GameParticipantKind!]
+  not: NestedEnumGameParticipantKindFilter
+  notIn: [GameParticipantKind!]
+}
+
 input NestedEnumGenderNullableFilter {
   equals: Gender
   in: [Gender!]
   not: NestedEnumGenderNullableFilter
   notIn: [Gender!]
+}
+
+input NestedEnumGuessingGameHintsFilter {
+  equals: GuessingGameHints
+  in: [GuessingGameHints!]
+  not: NestedEnumGuessingGameHintsFilter
+  notIn: [GuessingGameHints!]
 }
 
 input NestedEnumImageReportActionNullableFilter {
@@ -5742,6 +7235,8 @@ input PersonCreateInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -5788,6 +7283,12 @@ input PersonCreateNestedOneWithoutAppearancesInput {
   create: PersonCreateWithoutAppearancesInput
 }
 
+input PersonCreateNestedOneWithoutAppearsInInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutAppearsInInput
+  create: PersonCreateWithoutAppearsInInput
+}
+
 input PersonCreateNestedOneWithoutAvatarInput {
   connect: PersonWhereUniqueInput
   connectOrCreate: PersonCreateOrConnectWithoutAvatarInput
@@ -5798,6 +7299,18 @@ input PersonCreateNestedOneWithoutBannerInput {
   connect: PersonWhereUniqueInput
   connectOrCreate: PersonCreateOrConnectWithoutBannerInput
   create: PersonCreateWithoutBannerInput
+}
+
+input PersonCreateNestedOneWithoutGuessingGameGuessesInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutGuessingGameGuessesInput
+  create: PersonCreateWithoutGuessingGameGuessesInput
+}
+
+input PersonCreateNestedOneWithoutGuessingGameTargetsInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutGuessingGameTargetsInput
+  create: PersonCreateWithoutGuessingGameTargetsInput
 }
 
 input PersonCreateNestedOneWithoutMemberOfInput {
@@ -5837,6 +7350,16 @@ input PersonCreateOrConnectWithoutBannerInput {
   where: PersonWhereUniqueInput!
 }
 
+input PersonCreateOrConnectWithoutGuessingGameGuessesInput {
+  create: PersonCreateWithoutGuessingGameGuessesInput!
+  where: PersonWhereUniqueInput!
+}
+
+input PersonCreateOrConnectWithoutGuessingGameTargetsInput {
+  create: PersonCreateWithoutGuessingGameTargetsInput!
+  where: PersonWhereUniqueInput!
+}
+
 input PersonCreateOrConnectWithoutMemberOfInput {
   create: PersonCreateWithoutMemberOfInput!
   where: PersonWhereUniqueInput!
@@ -5861,6 +7384,8 @@ input PersonCreateWithoutAliasesInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -5878,6 +7403,8 @@ input PersonCreateWithoutAppearancesInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -5895,6 +7422,8 @@ input PersonCreateWithoutAppearsInInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -5912,6 +7441,8 @@ input PersonCreateWithoutAvatarInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -5929,6 +7460,46 @@ input PersonCreateWithoutBannerInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
+  ireneBotId: Int
+  memberOf: GroupMemberCreateNestedManyWithoutPersonInput
+  name: String!
+  preferredAlias: AliasCreateNestedOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberCreateNestedOneWithoutPreferredMemberships_Input
+  updatedAt: DateTime
+}
+
+input PersonCreateWithoutGuessingGameGuessesInput {
+  aliases: AliasCreateNestedManyWithoutPersonInput
+  appearances: AppearanceCreateNestedManyWithoutPersonInput
+  appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
+  createdAt: DateTime
+  description: String
+  gender: Gender
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
+  ireneBotId: Int
+  memberOf: GroupMemberCreateNestedManyWithoutPersonInput
+  name: String!
+  preferredAlias: AliasCreateNestedOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberCreateNestedOneWithoutPreferredMemberships_Input
+  updatedAt: DateTime
+}
+
+input PersonCreateWithoutGuessingGameTargetsInput {
+  aliases: AliasCreateNestedManyWithoutPersonInput
+  appearances: AppearanceCreateNestedManyWithoutPersonInput
+  appearsIn: FaceCreateNestedManyWithoutPersonInput
+  avatar: ImageCreateNestedOneWithoutPersonAvatarOfInput
+  banner: ImageCreateNestedOneWithoutPersonBannerOfInput
+  birthDate: DateTime
+  createdAt: DateTime
+  description: String
+  gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -5947,6 +7518,8 @@ input PersonCreateWithoutMemberOfInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   name: String!
   preferredAlias: AliasCreateNestedOneWithoutPreferredAliasOfInput
@@ -5964,6 +7537,8 @@ input PersonCreateWithoutPreferredAliasInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -5981,6 +7556,8 @@ input PersonCreateWithoutPreferredMembershipInput {
   createdAt: DateTime
   description: String
   gender: Gender
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetCreateNestedManyWithoutAnswerInput
   ireneBotId: Int
   memberOf: GroupMemberCreateNestedManyWithoutPersonInput
   name: String!
@@ -6010,6 +7587,8 @@ input PersonOrderByWithRelationInput {
   createdAt: SortOrder
   description: SortOrder
   gender: SortOrder
+  guessingGameGuesses: GuessingGameGuessOrderByRelationAggregateInput
+  guessingGameTargets: GuessingGameTargetOrderByRelationAggregateInput
   id: SortOrder
   ireneBotId: SortOrder
   memberOf: GroupMemberOrderByRelationAggregateInput
@@ -6049,6 +7628,8 @@ input PersonUpdateInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6140,6 +7721,26 @@ input PersonUpdateOneWithoutBannerInput {
   upsert: PersonUpsertWithoutBannerInput
 }
 
+input PersonUpdateOneWithoutGuessingGameGuessesInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutGuessingGameGuessesInput
+  create: PersonCreateWithoutGuessingGameGuessesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: PersonUpdateWithoutGuessingGameGuessesInput
+  upsert: PersonUpsertWithoutGuessingGameGuessesInput
+}
+
+input PersonUpdateOneWithoutGuessingGameTargetsInput {
+  connect: PersonWhereUniqueInput
+  connectOrCreate: PersonCreateOrConnectWithoutGuessingGameTargetsInput
+  create: PersonCreateWithoutGuessingGameTargetsInput
+  delete: Boolean
+  disconnect: Boolean
+  update: PersonUpdateWithoutGuessingGameTargetsInput
+  upsert: PersonUpsertWithoutGuessingGameTargetsInput
+}
+
 input PersonUpdateOneWithoutPreferredAliasInput {
   connect: PersonWhereUniqueInput
   connectOrCreate: PersonCreateOrConnectWithoutPreferredAliasInput
@@ -6164,6 +7765,8 @@ input PersonUpdateWithoutAliasesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6181,6 +7784,8 @@ input PersonUpdateWithoutAppearancesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6198,6 +7803,8 @@ input PersonUpdateWithoutAppearsInInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6215,6 +7822,8 @@ input PersonUpdateWithoutAvatarInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6232,6 +7841,46 @@ input PersonUpdateWithoutBannerInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  memberOf: GroupMemberUpdateManyWithoutPersonInput
+  name: StringFieldUpdateOperationsInput
+  preferredAlias: AliasUpdateOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberUpdateOneWithoutPreferredMemberships_Input
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input PersonUpdateWithoutGuessingGameGuessesInput {
+  aliases: AliasUpdateManyWithoutPersonInput
+  appearances: AppearanceUpdateManyWithoutPersonInput
+  appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
+  ireneBotId: NullableIntFieldUpdateOperationsInput
+  memberOf: GroupMemberUpdateManyWithoutPersonInput
+  name: StringFieldUpdateOperationsInput
+  preferredAlias: AliasUpdateOneWithoutPreferredAliasOfInput
+  preferredMembership: GroupMemberUpdateOneWithoutPreferredMemberships_Input
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input PersonUpdateWithoutGuessingGameTargetsInput {
+  aliases: AliasUpdateManyWithoutPersonInput
+  appearances: AppearanceUpdateManyWithoutPersonInput
+  appearsIn: FaceUpdateManyWithoutPersonInput
+  avatar: ImageUpdateOneWithoutPersonAvatarOfInput
+  banner: ImageUpdateOneWithoutPersonBannerOfInput
+  birthDate: NullableDateTimeFieldUpdateOperationsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  description: NullableStringFieldUpdateOperationsInput
+  gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6250,6 +7899,8 @@ input PersonUpdateWithoutMemberOfInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   name: StringFieldUpdateOperationsInput
   preferredAlias: AliasUpdateOneWithoutPreferredAliasOfInput
@@ -6267,6 +7918,8 @@ input PersonUpdateWithoutPreferredAliasInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6284,6 +7937,8 @@ input PersonUpdateWithoutPreferredMembershipInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   description: NullableStringFieldUpdateOperationsInput
   gender: NullableEnumGenderFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutPersonGuessInput
+  guessingGameTargets: GuessingGameTargetUpdateManyWithoutAnswerInput
   ireneBotId: NullableIntFieldUpdateOperationsInput
   memberOf: GroupMemberUpdateManyWithoutPersonInput
   name: StringFieldUpdateOperationsInput
@@ -6322,6 +7977,16 @@ input PersonUpsertWithoutBannerInput {
   update: PersonUpdateWithoutBannerInput!
 }
 
+input PersonUpsertWithoutGuessingGameGuessesInput {
+  create: PersonCreateWithoutGuessingGameGuessesInput!
+  update: PersonUpdateWithoutGuessingGameGuessesInput!
+}
+
+input PersonUpsertWithoutGuessingGameTargetsInput {
+  create: PersonCreateWithoutGuessingGameTargetsInput!
+  update: PersonUpdateWithoutGuessingGameTargetsInput!
+}
+
 input PersonUpsertWithoutMemberOfInput {
   create: PersonCreateWithoutMemberOfInput!
   update: PersonUpdateWithoutMemberOfInput!
@@ -6347,6 +8012,8 @@ input PersonWhereInput {
   createdAt: DateTimeFilter
   description: StringNullableFilter
   gender: EnumGenderNullableFilter
+  guessingGameGuesses: GuessingGameGuessListRelationFilter
+  guessingGameTargets: GuessingGameTargetListRelationFilter
   id: IntFilter
   ireneBotId: IntNullableFilter
   memberOf: GroupMemberListRelationFilter
@@ -7373,6 +9040,24 @@ input UserCreateNestedOneWithoutDiscoveredImageVoteInput {
   create: UserCreateWithoutDiscoveredImageVoteInput
 }
 
+input UserCreateNestedOneWithoutGuessingGameGuessesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutGuessingGameGuessesInput
+  create: UserCreateWithoutGuessingGameGuessesInput
+}
+
+input UserCreateNestedOneWithoutGuessingGameParticipationsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutGuessingGameParticipationsInput
+  create: UserCreateWithoutGuessingGameParticipationsInput
+}
+
+input UserCreateNestedOneWithoutGuessingGamesHostedInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutGuessingGamesHostedInput
+  create: UserCreateWithoutGuessingGamesHostedInput
+}
+
 input UserCreateNestedOneWithoutImageLikesInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutImageLikesInput
@@ -7389,6 +9074,12 @@ input UserCreateNestedOneWithoutImagesInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutImagesInput
   create: UserCreateWithoutImagesInput
+}
+
+input UserCreateNestedOneWithoutMarkedFacesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutMarkedFacesInput
+  create: UserCreateWithoutMarkedFacesInput
 }
 
 input UserCreateNestedOneWithoutPlacedRestrictionsInput {
@@ -7457,6 +9148,21 @@ input UserCreateOrConnectWithoutDiscoveredImageVoteInput {
   where: UserWhereUniqueInput!
 }
 
+input UserCreateOrConnectWithoutGuessingGameGuessesInput {
+  create: UserCreateWithoutGuessingGameGuessesInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutGuessingGameParticipationsInput {
+  create: UserCreateWithoutGuessingGameParticipationsInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutGuessingGamesHostedInput {
+  create: UserCreateWithoutGuessingGamesHostedInput!
+  where: UserWhereUniqueInput!
+}
+
 input UserCreateOrConnectWithoutImageLikesInput {
   create: UserCreateWithoutImageLikesInput!
   where: UserWhereUniqueInput!
@@ -7517,6 +9223,9 @@ input UserCreateWithoutActionedReportedImagesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7544,6 +9253,9 @@ input UserCreateWithoutAppearanceTagsInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7571,6 +9283,9 @@ input UserCreateWithoutAvatarInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7598,6 +9313,9 @@ input UserCreateWithoutBannerInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7625,6 +9343,9 @@ input UserCreateWithoutCratedTagsInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7652,6 +9373,99 @@ input UserCreateWithoutDiscoveredImageVoteInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
+  image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  imageTags: ImageTagCreateNestedManyWithoutAddedByInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  placedRestrictions: UserRestrictionCreateNestedManyWithoutAddedByInput
+  reportedImages: ImageReportCreateNestedManyWithoutReportedByInput
+  restrictions: UserRestrictionCreateNestedManyWithoutUserInput
+  roles: RoleCreateNestedManyWithoutUserInput
+  tagAliases: TagAliasCreateNestedManyWithoutAddedByInput
+  tagCategories: TagCategoryCreateNestedManyWithoutAddedByInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
+input UserCreateWithoutGuessingGameGuessesInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
+  appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
+  image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  imageTags: ImageTagCreateNestedManyWithoutAddedByInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  placedRestrictions: UserRestrictionCreateNestedManyWithoutAddedByInput
+  reportedImages: ImageReportCreateNestedManyWithoutReportedByInput
+  restrictions: UserRestrictionCreateNestedManyWithoutUserInput
+  roles: RoleCreateNestedManyWithoutUserInput
+  tagAliases: TagAliasCreateNestedManyWithoutAddedByInput
+  tagCategories: TagCategoryCreateNestedManyWithoutAddedByInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
+input UserCreateWithoutGuessingGameParticipationsInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
+  appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
+  image: String
+  imageLikes: ImageLikeCreateNestedManyWithoutUserInput
+  imageTags: ImageTagCreateNestedManyWithoutAddedByInput
+  images: ImageCreateNestedManyWithoutUserInput
+  markedFaces: FaceCreateNestedManyWithoutAddedByInput
+  name: String
+  placedRestrictions: UserRestrictionCreateNestedManyWithoutAddedByInput
+  reportedImages: ImageReportCreateNestedManyWithoutReportedByInput
+  restrictions: UserRestrictionCreateNestedManyWithoutUserInput
+  roles: RoleCreateNestedManyWithoutUserInput
+  tagAliases: TagAliasCreateNestedManyWithoutAddedByInput
+  tagCategories: TagCategoryCreateNestedManyWithoutAddedByInput
+  taggedAppearances: AppearanceCreateNestedManyWithoutAddedByInput
+  token: String
+  updatedAt: DateTime
+}
+
+input UserCreateWithoutGuessingGamesHostedInput {
+  DiscoveredImageVote: DiscoveredImageVoteCreateNestedManyWithoutUserInput
+  actionedReportedImages: ImageReportCreateNestedManyWithoutActionedByInput
+  appearanceTags: AppearanceTagCreateNestedManyWithoutAddedByInput
+  avatar: ImageCreateNestedOneWithoutUserAvatarOfInput
+  banner: ImageCreateNestedOneWithoutUserBannerOfInput
+  bot: Boolean
+  cratedTags: TagCreateNestedManyWithoutAddedByInput
+  createdAt: DateTime
+  email: String
+  emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7680,6 +9494,9 @@ input UserCreateWithoutImageLikesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
   images: ImageCreateNestedManyWithoutUserInput
@@ -7707,6 +9524,9 @@ input UserCreateWithoutImageTagsInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   images: ImageCreateNestedManyWithoutUserInput
@@ -7734,6 +9554,9 @@ input UserCreateWithoutImagesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7761,6 +9584,9 @@ input UserCreateWithoutMarkedFacesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7788,6 +9614,9 @@ input UserCreateWithoutPlacedRestrictionsInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7815,6 +9644,9 @@ input UserCreateWithoutReportedImagesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7842,6 +9674,9 @@ input UserCreateWithoutRestrictionsInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7869,6 +9704,9 @@ input UserCreateWithoutTagAliasesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7896,6 +9734,9 @@ input UserCreateWithoutTagCategoriesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7923,6 +9764,9 @@ input UserCreateWithoutTaggedAppearancesInput {
   createdAt: DateTime
   email: String
   emailVerified: DateTime
+  guessingGameGuesses: GuessingGameGuessCreateNestedManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantCreateNestedManyWithoutUserInput
+  guessingGamesHosted: GuessingGameCreateNestedManyWithoutOwnerInput
   image: String
   imageLikes: ImageLikeCreateNestedManyWithoutUserInput
   imageTags: ImageTagCreateNestedManyWithoutAddedByInput
@@ -7956,6 +9800,9 @@ input UserOrderByWithRelationInput {
   createdAt: SortOrder
   email: SortOrder
   emailVerified: SortOrder
+  guessingGameGuesses: GuessingGameGuessOrderByRelationAggregateInput
+  guessingGameParticipations: GuessingGameParticipantOrderByRelationAggregateInput
+  guessingGamesHosted: GuessingGameOrderByRelationAggregateInput
   id: SortOrder
   image: SortOrder
   imageLikes: ImageLikeOrderByRelationAggregateInput
@@ -8181,6 +10028,14 @@ input UserUpdateOneRequiredWithoutDiscoveredImageVoteInput {
   upsert: UserUpsertWithoutDiscoveredImageVoteInput
 }
 
+input UserUpdateOneRequiredWithoutGuessingGamesHostedInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutGuessingGamesHostedInput
+  create: UserCreateWithoutGuessingGamesHostedInput
+  update: UserUpdateWithoutGuessingGamesHostedInput
+  upsert: UserUpsertWithoutGuessingGamesHostedInput
+}
+
 input UserUpdateOneRequiredWithoutImageLikesInput {
   connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutImageLikesInput
@@ -8253,6 +10108,26 @@ input UserUpdateOneWithoutCratedTagsInput {
   disconnect: Boolean
   update: UserUpdateWithoutCratedTagsInput
   upsert: UserUpsertWithoutCratedTagsInput
+}
+
+input UserUpdateOneWithoutGuessingGameGuessesInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutGuessingGameGuessesInput
+  create: UserCreateWithoutGuessingGameGuessesInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutGuessingGameGuessesInput
+  upsert: UserUpsertWithoutGuessingGameGuessesInput
+}
+
+input UserUpdateOneWithoutGuessingGameParticipationsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutGuessingGameParticipationsInput
+  create: UserCreateWithoutGuessingGameParticipationsInput
+  delete: Boolean
+  disconnect: Boolean
+  update: UserUpdateWithoutGuessingGameParticipationsInput
+  upsert: UserUpsertWithoutGuessingGameParticipationsInput
 }
 
 input UserUpdateOneWithoutImageTagsInput {
@@ -8335,6 +10210,9 @@ input UserUpdateWithoutActionedReportedImagesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8362,6 +10240,9 @@ input UserUpdateWithoutAppearanceTagsInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8389,6 +10270,9 @@ input UserUpdateWithoutAvatarInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8416,6 +10300,9 @@ input UserUpdateWithoutBannerInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8443,6 +10330,9 @@ input UserUpdateWithoutCratedTagsInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8470,6 +10360,99 @@ input UserUpdateWithoutDiscoveredImageVoteInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
+  image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  imageTags: ImageTagUpdateManyWithoutAddedByInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  placedRestrictions: UserRestrictionUpdateManyWithoutAddedByInput
+  reportedImages: ImageReportUpdateManyWithoutReportedByInput
+  restrictions: UserRestrictionUpdateManyWithoutUserInput
+  roles: RoleUpdateManyWithoutUserInput
+  tagAliases: TagAliasUpdateManyWithoutAddedByInput
+  tagCategories: TagCategoryUpdateManyWithoutAddedByInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserUpdateWithoutGuessingGameGuessesInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
+  appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
+  image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  imageTags: ImageTagUpdateManyWithoutAddedByInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  placedRestrictions: UserRestrictionUpdateManyWithoutAddedByInput
+  reportedImages: ImageReportUpdateManyWithoutReportedByInput
+  restrictions: UserRestrictionUpdateManyWithoutUserInput
+  roles: RoleUpdateManyWithoutUserInput
+  tagAliases: TagAliasUpdateManyWithoutAddedByInput
+  tagCategories: TagCategoryUpdateManyWithoutAddedByInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserUpdateWithoutGuessingGameParticipationsInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
+  appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
+  image: NullableStringFieldUpdateOperationsInput
+  imageLikes: ImageLikeUpdateManyWithoutUserInput
+  imageTags: ImageTagUpdateManyWithoutAddedByInput
+  images: ImageUpdateManyWithoutUserInput
+  markedFaces: FaceUpdateManyWithoutAddedByInput
+  name: NullableStringFieldUpdateOperationsInput
+  placedRestrictions: UserRestrictionUpdateManyWithoutAddedByInput
+  reportedImages: ImageReportUpdateManyWithoutReportedByInput
+  restrictions: UserRestrictionUpdateManyWithoutUserInput
+  roles: RoleUpdateManyWithoutUserInput
+  tagAliases: TagAliasUpdateManyWithoutAddedByInput
+  tagCategories: TagCategoryUpdateManyWithoutAddedByInput
+  taggedAppearances: AppearanceUpdateManyWithoutAddedByInput
+  token: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input UserUpdateWithoutGuessingGamesHostedInput {
+  DiscoveredImageVote: DiscoveredImageVoteUpdateManyWithoutUserInput
+  actionedReportedImages: ImageReportUpdateManyWithoutActionedByInput
+  appearanceTags: AppearanceTagUpdateManyWithoutAddedByInput
+  avatar: ImageUpdateOneWithoutUserAvatarOfInput
+  banner: ImageUpdateOneWithoutUserBannerOfInput
+  bot: BoolFieldUpdateOperationsInput
+  cratedTags: TagUpdateManyWithoutAddedByInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  email: NullableStringFieldUpdateOperationsInput
+  emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8498,6 +10481,9 @@ input UserUpdateWithoutImageLikesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
   images: ImageUpdateManyWithoutUserInput
@@ -8525,6 +10511,9 @@ input UserUpdateWithoutImageTagsInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   images: ImageUpdateManyWithoutUserInput
@@ -8552,6 +10541,9 @@ input UserUpdateWithoutImagesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8579,6 +10571,9 @@ input UserUpdateWithoutMarkedFacesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8606,6 +10601,9 @@ input UserUpdateWithoutPlacedRestrictionsInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8633,6 +10631,9 @@ input UserUpdateWithoutReportedImagesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8660,6 +10661,9 @@ input UserUpdateWithoutRestrictionsInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8687,6 +10691,9 @@ input UserUpdateWithoutTagAliasesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8714,6 +10721,9 @@ input UserUpdateWithoutTagCategoriesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8741,6 +10751,9 @@ input UserUpdateWithoutTaggedAppearancesInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: NullableStringFieldUpdateOperationsInput
   emailVerified: NullableDateTimeFieldUpdateOperationsInput
+  guessingGameGuesses: GuessingGameGuessUpdateManyWithoutUserInput
+  guessingGameParticipations: GuessingGameParticipantUpdateManyWithoutUserInput
+  guessingGamesHosted: GuessingGameUpdateManyWithoutOwnerInput
   image: NullableStringFieldUpdateOperationsInput
   imageLikes: ImageLikeUpdateManyWithoutUserInput
   imageTags: ImageTagUpdateManyWithoutAddedByInput
@@ -8785,6 +10798,21 @@ input UserUpsertWithoutCratedTagsInput {
 input UserUpsertWithoutDiscoveredImageVoteInput {
   create: UserCreateWithoutDiscoveredImageVoteInput!
   update: UserUpdateWithoutDiscoveredImageVoteInput!
+}
+
+input UserUpsertWithoutGuessingGameGuessesInput {
+  create: UserCreateWithoutGuessingGameGuessesInput!
+  update: UserUpdateWithoutGuessingGameGuessesInput!
+}
+
+input UserUpsertWithoutGuessingGameParticipationsInput {
+  create: UserCreateWithoutGuessingGameParticipationsInput!
+  update: UserUpdateWithoutGuessingGameParticipationsInput!
+}
+
+input UserUpsertWithoutGuessingGamesHostedInput {
+  create: UserCreateWithoutGuessingGamesHostedInput!
+  update: UserUpdateWithoutGuessingGamesHostedInput!
 }
 
 input UserUpsertWithoutImageLikesInput {
@@ -8853,6 +10881,9 @@ input UserWhereInput {
   createdAt: DateTimeFilter
   email: StringNullableFilter
   emailVerified: DateTimeNullableFilter
+  guessingGameGuesses: GuessingGameGuessListRelationFilter
+  guessingGameParticipations: GuessingGameParticipantListRelationFilter
+  guessingGamesHosted: GuessingGameListRelationFilter
   id: IntFilter
   image: StringNullableFilter
   imageLikes: ImageLikeListRelationFilter
