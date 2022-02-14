@@ -16,7 +16,6 @@ export function hashStringToCube(hash: string): Uint8Array {
         ","
       )}]) WHERE slug = '${image.slug}' RETURNING id
     `)}`
-    console.log({ a })
   }
   console.log("assigning all images phashes")
   for (const image of images.filter((a) => !a.p_hash)) {

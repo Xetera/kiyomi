@@ -301,6 +301,7 @@ model Image {
   userBannerOf        User?                @relation("user_banner")
   reports             ImageReport[]
   hiddenAt            DateTime?            @map("hidden_at")
+  destination         UploadDestination    @default(S3)
 
   @@index([pHash2], map: "images.p_hash_2")
   @@index([slug], map: "images.slug_index")

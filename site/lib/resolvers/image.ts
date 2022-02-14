@@ -73,6 +73,7 @@ export const Image = objectType({
         alias: "uploadedBy",
       })
       .imageTags()
+      .destination({ description: "Where the image is stored" })
       .appearanceTags()
       .slug({
         description: "The unique url identifier of the image.",

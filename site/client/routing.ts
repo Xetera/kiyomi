@@ -1,5 +1,5 @@
 import { encodeUriFriendly } from "@/client/data/encoders"
-import type { Image } from "@prisma/client"
+import { Image, UploadDestination } from "@prisma/client"
 
 const base = process.env.NEXT_PUBLIC_BASE_URL
 const f = (url: string) => `${base}${url}`
@@ -18,9 +18,11 @@ export const Routing = {
     return f(`/image/${slug}`)
   },
   toRawImage(image: Image) {
-    return `${process.env.NEXT_PUBLIC_BASE_URL_CDN}/${
-      image.slug
-    }.${image.mimetype.toLowerCase()}`
+    const imageKey = `${image.slug}.${image.mimetype.toLowerCase()}`
+    if (image.destination === UploadDestination.Local) {
+      return `${process.env.NEXT_PUBLIC_BASE_URL}/_images/${imageKey}`
+    }
+    return `${process.env.NEXT_PUBLIC_BASE_URL_CDN}/${imageKey}`
   },
   toDiscoveredImageDownload(id: number) {
     const params = new URLSearchParams({ discoveredImageId: id.toString() })

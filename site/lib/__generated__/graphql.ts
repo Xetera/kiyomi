@@ -555,6 +555,13 @@ export type EnumTagSourceFilter = {
   notIn?: Maybe<Array<TagSource>>;
 };
 
+export type EnumUploadDestinationFilter = {
+  equals?: Maybe<UploadDestination>;
+  in?: Maybe<Array<UploadDestination>>;
+  not?: Maybe<NestedEnumUploadDestinationFilter>;
+  notIn?: Maybe<Array<UploadDestination>>;
+};
+
 export type EnumUploadTypeFilter = {
   equals?: Maybe<UploadType>;
   in?: Maybe<Array<UploadType>>;
@@ -962,6 +969,8 @@ export type Image = {
   /** A graph of connections people in this image share with others based on images they appear together in up to a depth of 4 */
   connections: ImageConnections;
   createdAt: Scalars['DateTime'];
+  /** Where the image is stored */
+  destination: UploadDestination;
   faceScanDate?: Maybe<Scalars['DateTime']>;
   /** The name the image file was uploaded with. */
   fileName?: Maybe<Scalars['String']>;
@@ -1096,6 +1105,7 @@ export type ImageOrderByWithRelationInput = {
   bytes?: Maybe<SortOrder>;
   caption?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
+  destination?: Maybe<SortOrder>;
   discoverySource?: Maybe<DiscoveredImageOrderByWithRelationInput>;
   faceScanDate?: Maybe<SortOrder>;
   faceScanRequestDate?: Maybe<SortOrder>;
@@ -1258,6 +1268,7 @@ export type ImageWhereInput = {
   bytes?: Maybe<IntFilter>;
   caption?: Maybe<StringNullableFilter>;
   createdAt?: Maybe<DateTimeFilter>;
+  destination?: Maybe<EnumUploadDestinationFilter>;
   discoverySource?: Maybe<DiscoveredImageWhereInput>;
   faceScanDate?: Maybe<DateTimeNullableFilter>;
   faceScanRequestDate?: Maybe<DateTimeNullableFilter>;
@@ -1558,6 +1569,13 @@ export type NestedEnumTagSourceFilter = {
   notIn?: Maybe<Array<TagSource>>;
 };
 
+export type NestedEnumUploadDestinationFilter = {
+  equals?: Maybe<UploadDestination>;
+  in?: Maybe<Array<UploadDestination>>;
+  not?: Maybe<NestedEnumUploadDestinationFilter>;
+  notIn?: Maybe<Array<UploadDestination>>;
+};
+
 export type NestedEnumUploadTypeFilter = {
   equals?: Maybe<UploadType>;
   in?: Maybe<Array<UploadType>>;
@@ -1773,7 +1791,6 @@ export type Query = {
   discoveryStats: Array<DiscoveryStatistic>;
   group?: Maybe<Group>;
   groups: Array<Group>;
-  homepage: Array<Person>;
   /** Find a single image by its slug. */
   image?: Maybe<Image>;
   imageConnections?: Maybe<ImageConnections>;
@@ -2111,6 +2128,11 @@ export type UpdatePersonInputs = {
   preferredAliasId?: Maybe<Scalars['Int']>;
   preferredMembershipId?: Maybe<Scalars['Int']>;
 };
+
+export enum UploadDestination {
+  Local = 'Local',
+  S3 = 'S3'
+}
 
 export enum UploadType {
   AutoDiscovery = 'AUTO_DISCOVERY',
@@ -2875,41 +2897,6 @@ export type HomepagePersonQuery = (
   )> }
 );
 
-export type HomepageQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type HomepageQuery = (
-  { __typename?: 'Query' }
-  & { homepage: Array<(
-    { __typename?: 'Person' }
-    & Pick<Person, 'id' | 'name'>
-    & { preferredAlias?: Maybe<(
-      { __typename?: 'Alias' }
-      & Pick<Alias, 'name'>
-    )>, preferredMembership?: Maybe<(
-      { __typename?: 'GroupMember' }
-      & { group: (
-        { __typename?: 'Group' }
-        & Pick<Group, 'name'>
-      ) }
-    )>, avatar?: Maybe<(
-      { __typename?: 'Image' }
-      & Pick<Image, 'url' | 'createdAt'>
-      & { thumbnail: (
-        { __typename?: 'Thumbnail' }
-        & Pick<Thumbnail, 'small'>
-      ) }
-    )>, banner?: Maybe<(
-      { __typename?: 'Image' }
-      & Pick<Image, 'url' | 'rawUrl' | 'width' | 'height'>
-      & { focus: (
-        { __typename?: 'ImageCoordinate' }
-        & Pick<ImageCoordinate, 'x' | 'y'>
-      ) }
-    )> }
-  )> }
-);
-
 export type FocusFragment = (
   { __typename?: 'Image' }
   & Pick<Image, 'width' | 'height'>
@@ -2921,7 +2908,7 @@ export type FocusFragment = (
 
 export type ImageDataFragment = (
   { __typename?: 'Image' }
-  & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette'>
+  & Pick<Image, 'id' | 'height' | 'width' | 'isNsfw' | 'url' | 'rawUrl' | 'createdAt' | 'caption' | 'public' | 'source' | 'slug' | 'bytes' | 'mimetype' | 'palette' | 'destination'>
   & { imageTags: Array<(
     { __typename?: 'ImageTag' }
     & { tag: (
@@ -3223,6 +3210,7 @@ export const ImageDataFragmentDoc = `
   bytes
   mimetype
   palette
+  destination
   imageTags {
     tag {
       name
@@ -4043,51 +4031,6 @@ export const useHomepagePersonQuery = <
     useQuery<HomepagePersonQuery, TError, TData>(
       ['HomepagePerson', variables],
       fetcher<HomepagePersonQuery, HomepagePersonQueryVariables>(HomepagePersonDocument, variables),
-      options
-    );
-export const HomepageDocument = `
-    query Homepage {
-  homepage {
-    id
-    name
-    preferredAlias {
-      name
-    }
-    preferredMembership {
-      group {
-        name
-      }
-    }
-    avatar {
-      url
-      createdAt
-      thumbnail {
-        small
-      }
-    }
-    banner {
-      url
-      rawUrl
-      width
-      height
-      focus {
-        x
-        y
-      }
-    }
-  }
-}
-    `;
-export const useHomepageQuery = <
-      TData = HomepageQuery,
-      TError = unknown
-    >(
-      variables?: HomepageQueryVariables, 
-      options?: UseQueryOptions<HomepageQuery, TError, TData>
-    ) => 
-    useQuery<HomepageQuery, TError, TData>(
-      ['Homepage', variables],
-      fetcher<HomepageQuery, HomepageQueryVariables>(HomepageDocument, variables),
       options
     );
 export const AddAppearanceDocument = `

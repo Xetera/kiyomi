@@ -322,7 +322,6 @@ function prepareForRound(ctx: CommandContext) {
     console.log(seat.player.username, seat.player.sock.getTopics())
   })
   const imagePrepareTopic = topics.prepareImages(ctx.room.id)
-  console.log(imagePrepareTopic)
   publish(ctx.app, imagePrepareTopic, {
     t: "image_prepare",
     round: serializeRound(ctx.room, {

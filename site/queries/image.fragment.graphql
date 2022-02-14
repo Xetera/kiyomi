@@ -22,6 +22,7 @@ fragment ImageData on Image {
   bytes
   mimetype
   palette
+  destination
   imageTags {
     tag {
       name

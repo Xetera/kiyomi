@@ -356,6 +356,12 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedEnumTagSourceFilter'] | null; // NestedEnumTagSourceFilter
     notIn?: NexusGenEnums['TagSource'][] | null; // [TagSource!]
   }
+  EnumUploadDestinationFilter: { // input type
+    equals?: NexusGenEnums['UploadDestination'] | null; // UploadDestination
+    in?: NexusGenEnums['UploadDestination'][] | null; // [UploadDestination!]
+    not?: NexusGenInputs['NestedEnumUploadDestinationFilter'] | null; // NestedEnumUploadDestinationFilter
+    notIn?: NexusGenEnums['UploadDestination'][] | null; // [UploadDestination!]
+  }
   EnumUploadTypeFilter: { // input type
     equals?: NexusGenEnums['UploadType'] | null; // UploadType
     in?: NexusGenEnums['UploadType'][] | null; // [UploadType!]
@@ -657,6 +663,7 @@ export interface NexusGenInputs {
     bytes?: NexusGenEnums['SortOrder'] | null; // SortOrder
     caption?: NexusGenEnums['SortOrder'] | null; // SortOrder
     createdAt?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    destination?: NexusGenEnums['SortOrder'] | null; // SortOrder
     discoverySource?: NexusGenInputs['DiscoveredImageOrderByWithRelationInput'] | null; // DiscoveredImageOrderByWithRelationInput
     faceScanDate?: NexusGenEnums['SortOrder'] | null; // SortOrder
     faceScanRequestDate?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -778,6 +785,7 @@ export interface NexusGenInputs {
     bytes?: NexusGenInputs['IntFilter'] | null; // IntFilter
     caption?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    destination?: NexusGenInputs['EnumUploadDestinationFilter'] | null; // EnumUploadDestinationFilter
     discoverySource?: NexusGenInputs['DiscoveredImageWhereInput'] | null; // DiscoveredImageWhereInput
     faceScanDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
     faceScanRequestDate?: NexusGenInputs['DateTimeNullableFilter'] | null; // DateTimeNullableFilter
@@ -916,6 +924,12 @@ export interface NexusGenInputs {
     in?: NexusGenEnums['TagSource'][] | null; // [TagSource!]
     not?: NexusGenInputs['NestedEnumTagSourceFilter'] | null; // NestedEnumTagSourceFilter
     notIn?: NexusGenEnums['TagSource'][] | null; // [TagSource!]
+  }
+  NestedEnumUploadDestinationFilter: { // input type
+    equals?: NexusGenEnums['UploadDestination'] | null; // UploadDestination
+    in?: NexusGenEnums['UploadDestination'][] | null; // [UploadDestination!]
+    not?: NexusGenInputs['NestedEnumUploadDestinationFilter'] | null; // NestedEnumUploadDestinationFilter
+    notIn?: NexusGenEnums['UploadDestination'][] | null; // [UploadDestination!]
   }
   NestedEnumUploadTypeFilter: { // input type
     equals?: NexusGenEnums['UploadType'] | null; // UploadType
@@ -1283,6 +1297,7 @@ export interface NexusGenEnums {
   RestrictionKind: PrismaClient.RestrictionKind
   SortOrder: PrismaClient.SortOrder
   TagSource: PrismaClient.TagSource
+  UploadDestination: PrismaClient.UploadDestination
   UploadType: PrismaClient.UploadType
 }
 
@@ -1534,6 +1549,7 @@ export interface NexusGenFieldTypes {
     caption: string | null; // String
     connections: NexusGenRootTypes['ImageConnections']; // ImageConnections!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    destination: NexusGenEnums['UploadDestination']; // UploadDestination!
     faceScanDate: NexusGenScalars['DateTime'] | null; // DateTime
     fileName: string | null; // String
     fileSize: string; // String!
@@ -1658,7 +1674,6 @@ export interface NexusGenFieldTypes {
     discoveryStats: NexusGenRootTypes['DiscoveryStatistic'][]; // [DiscoveryStatistic!]!
     group: NexusGenRootTypes['Group'] | null; // Group
     groups: NexusGenRootTypes['Group'][]; // [Group!]!
-    homepage: NexusGenRootTypes['Person'][]; // [Person!]!
     image: NexusGenRootTypes['Image'] | null; // Image
     imageConnections: NexusGenRootTypes['ImageConnections'] | null; // ImageConnections
     imageReports: NexusGenRootTypes['ImageReport'][]; // [ImageReport!]!
@@ -1854,6 +1869,7 @@ export interface NexusGenFieldTypeNames {
     caption: 'String'
     connections: 'ImageConnections'
     createdAt: 'DateTime'
+    destination: 'UploadDestination'
     faceScanDate: 'DateTime'
     fileName: 'String'
     fileSize: 'String'
@@ -1978,7 +1994,6 @@ export interface NexusGenFieldTypeNames {
     discoveryStats: 'DiscoveryStatistic'
     group: 'Group'
     groups: 'Group'
-    homepage: 'Person'
     image: 'Image'
     imageConnections: 'ImageConnections'
     imageReports: 'ImageReport'

@@ -496,6 +496,13 @@ input EnumTagSourceFilter {
   notIn: [TagSource!]
 }
 
+input EnumUploadDestinationFilter {
+  equals: UploadDestination
+  in: [UploadDestination!]
+  not: NestedEnumUploadDestinationFilter
+  notIn: [UploadDestination!]
+}
+
 input EnumUploadTypeFilter {
   equals: UploadType
   in: [UploadType!]
@@ -885,6 +892,9 @@ type Image {
   """
   connections(depth: Int! = 2): ImageConnections!
   createdAt: DateTime!
+
+  """Where the image is stored"""
+  destination: UploadDestination!
   faceScanDate: DateTime
 
   """The name the image file was uploaded with."""
@@ -1007,6 +1017,7 @@ input ImageOrderByWithRelationInput {
   bytes: SortOrder
   caption: SortOrder
   createdAt: SortOrder
+  destination: SortOrder
   discoverySource: DiscoveredImageOrderByWithRelationInput
   faceScanDate: SortOrder
   faceScanRequestDate: SortOrder
@@ -1167,6 +1178,7 @@ input ImageWhereInput {
   bytes: IntFilter
   caption: StringNullableFilter
   createdAt: DateTimeFilter
+  destination: EnumUploadDestinationFilter
   discoverySource: DiscoveredImageWhereInput
   faceScanDate: DateTimeNullableFilter
   faceScanRequestDate: DateTimeNullableFilter
@@ -1374,6 +1386,13 @@ input NestedEnumTagSourceFilter {
   notIn: [TagSource!]
 }
 
+input NestedEnumUploadDestinationFilter {
+  equals: UploadDestination
+  in: [UploadDestination!]
+  not: NestedEnumUploadDestinationFilter
+  notIn: [UploadDestination!]
+}
+
 input NestedEnumUploadTypeFilter {
   equals: UploadType
   in: [UploadType!]
@@ -1558,7 +1577,6 @@ type Query {
   discoveryStats: [DiscoveryStatistic!]!
   group(where: GroupWhereUniqueInput!): Group
   groups(cursor: GroupWhereUniqueInput, orderBy: [GroupOrderByWithRelationInput!], skip: Int, take: Int, where: GroupWhereInput): [Group!]!
-  homepage: [Person!]!
 
   """Find a single image by its slug."""
   image(slug: String!): Image
@@ -1778,6 +1796,11 @@ input UpdatePersonInputs {
   name: String!
   preferredAliasId: Int
   preferredMembershipId: Int
+}
+
+enum UploadDestination {
+  Local
+  S3
 }
 
 enum UploadType {
