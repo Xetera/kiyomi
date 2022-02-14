@@ -626,7 +626,7 @@ enum FaceSource {
 }
 
 enum UploadDestination {
-  Local,
+  Local
   S3
 }
 
