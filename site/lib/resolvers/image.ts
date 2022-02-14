@@ -18,7 +18,6 @@ import { formatDuration, intervalToDuration, sub } from "date-fns"
 import { imageConnections } from "../graph"
 import centroid from "@turf/centroid"
 import { points } from "@turf/helpers"
-import { homepageQuery } from "../db-queries"
 import { Routing } from "@/client/routing"
 import { imageVisibleFor } from "@/client/data/image-mappers"
 
@@ -337,22 +336,6 @@ export const Query = queryField((t) => {
         throw Error("Invalid image slug")
       }
       return imageConnections(base, maxDepth, prisma)
-    },
-  })
-  t.field("homepage", {
-    type: nonNull(list(nonNull("Person"))),
-    async resolve(t, _, { prisma }) {
-      const result = await homepageQuery()
-      const people = await prisma.person.findMany({
-        where: {
-          id: {
-            in: result.map((res) => res.id),
-          },
-        },
-      })
-      return result.map((person) => {
-        return people.find((p) => p.id === person.id)
-      })
     },
   })
 })
