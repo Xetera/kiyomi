@@ -1,0 +1,34 @@
+gateway:
+  enabled: true
+
+loki:
+  enabled: true
+#  persistence:
+#    size: 2Gi
+#    storageClass: null
+#    enabled: true
+
+promtail:
+  enabled: true
+
+fluent-bit:
+  enabled: false
+
+grafana:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 1Gi
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.kiyomi.io
+
+prometheus:
+  enabled: true
+  server:
+    persistentVolume:
+      enabled: true
+  alertmanager:
+    persistentVolume:
+      enabled: false
