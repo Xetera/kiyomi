@@ -1,7 +1,18 @@
 quality: 90
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-  path: /
-  host: img.mamamoo.solar
+
+features:
+  prometheus:
+    enabled: true
+    namespace: imgproxy
+
+resources:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - thumbnail.kiyomi.io
+  pod:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8081"
