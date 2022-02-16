@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "faces" ADD COLUMN     "score" DECIMAL(65,30) NOT NULL DEFAULT 0;
