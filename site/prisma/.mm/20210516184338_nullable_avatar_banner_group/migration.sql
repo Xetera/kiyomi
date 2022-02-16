@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "groups" ALTER COLUMN "bannerId" DROP NOT NULL,
-ALTER COLUMN "avatarId" DROP NOT NULL;

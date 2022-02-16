@@ -6,7 +6,7 @@
     "nodemon": "nodemon",
     "dev": "TS_NODE_TRANSPILE_ONLY=true ts-node --files -r tsconfig-paths/register -r dotenv/config -P tsconfig.server.json index.ts",
     "tf": "npm rebuild @tensorflow/tfjs-node build-addon-from-source",
-    "generate": "prisma generate",
+    "generate": "api/prisma generate",
     "codegen": "SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node -r tsconfig-paths/register -P tsconfig.generator.json --transpile-only lib/schema.ts",
     "build": "next build",
     "build:server": "tsc -P tsconfig.server.json",
@@ -15,6 +15,7 @@
     "ts-node": "ts-node -r tsconfig-paths/register -P tsconfig.generator.json"
   },
   "dependencies": {
+
     "@apollo/client": "^3.5.4",
     "@aws-sdk/client-s3": "^3.45.0",
     "@chakra-ui/react": "^1.7.2",
