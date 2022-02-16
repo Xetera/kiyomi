@@ -1,0 +1,15 @@
+fragment GroupData on Group {
+    id
+    name
+    aliases {
+        id
+        name
+    }
+    banner {
+        id
+        rawUrl
+        thumbnail {
+            large
+        }
+    }
+}

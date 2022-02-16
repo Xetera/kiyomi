@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/navbar"
 import { prefetchQuery } from "@/lib/client-helpers"
+import { wrapRequest } from "@/lib/data-fetching"
 import { usePersonPageQuery } from "@/lib/__generated__/graphql"
 import { Stack } from "@chakra-ui/layout"
 import { GetServerSideProps } from "next"
@@ -18,15 +19,17 @@ export default function Person() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const personId = ctx.params?.personId
-  if (!personId) {
-    throw Error("No person")
-  }
-  const id = Number(personId)
+export const getServerSideProps: GetServerSideProps = wrapRequest(
+  async (ctx) => {
+    const personId = ctx.params?.personId
+    if (!personId) {
+      throw Error("No person")
+    }
+    const id = Number(personId)
 
-  const dehydratedState = await prefetchQuery("PersonPage", { id })
-  return {
-    props: { dehydratedState },
+    const dehydratedState = await ctx.prefetch("PersonPage", { id })
+    return {
+      props: { dehydratedState },
+    }
   }
-}
+)

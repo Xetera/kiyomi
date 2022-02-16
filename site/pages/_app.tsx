@@ -2,6 +2,7 @@ import React from "react"
 import { Provider } from "next-auth/client"
 import { Provider as ReduxProvider } from "react-redux"
 import "focus-visible/dist/focus-visible"
+import NextProgress from "next-progress"
 // Import our CSS
 import "../styles/tailwind.css"
 import "../styles/globals.css"
@@ -41,6 +42,7 @@ const CustomApp = ({ Component, pageProps, ...rest }: AppProps) => {
           </Provider>
         </ReduxProvider>
       </Hydrate>
+      <NextProgress />
     </QueryClientProvider>
   )
 }

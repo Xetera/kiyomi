@@ -3,7 +3,10 @@ import makeCors from "micro-cors"
 import { schema } from "@/lib/schema"
 import { contextResolver } from "@/lib/context"
 import { IncomingMessage, ServerResponse } from "http"
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core"
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  GraphQLResponse,
+} from "apollo-server-core"
 
 export const config = {
   api: {
@@ -44,7 +47,7 @@ query Idol($name: String!) {
 }
 `.trim()
 
-const apolloServer = new ApolloServer({
+export const apolloServer = new ApolloServer({
   introspection: true,
   plugins: [
     ApolloServerPluginLandingPageGraphQLPlayground({
@@ -70,6 +73,17 @@ const apolloServer = new ApolloServer({
 })
 
 const promise = apolloServer.start()
+
+/**
+ * Used for server side rendering without sending an http request
+ * @param args
+ */
+export const callGraphqlServer = async (
+  ...args: Parameters<typeof apolloServer.executeOperation>
+): Promise<GraphQLResponse> => {
+  return apolloServer.executeOperation(...args)
+}
+
 export default async (req, res) => {
   if (req.method === "OPTIONS") {
     return res.end()

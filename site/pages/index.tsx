@@ -61,7 +61,6 @@ function HomeContent() {
     }
   )
   // const splash = trending?.homepage[selected]?.banner
-  console.log({ data })
 
   async function loadMore() {
     if (isFetching) {

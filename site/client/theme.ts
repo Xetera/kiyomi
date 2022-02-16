@@ -54,12 +54,17 @@ const theme = extendTheme({
       600: "#a5a5a5",
     },
     text: {
-      100: "white",
+      100: "rgba(255, 255, 255, 1)",
+      // legacy
       200: "#eeeeee",
       300: "#e5e5e5",
       400: "#cdcdcd",
       500: "#b7b7b7",
       600: "#a5a5a5",
+      // new styles
+      80: "rgba(255, 255, 255, 0.8)",
+      60: "rgba(255, 255, 255, 0.6)",
+      40: "rgba(255, 255, 255, 0.4)",
     },
     // ...colors,
     lightTransparent: "rgba(60, 60, 60, 0.5)",

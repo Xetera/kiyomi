@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react"
 import ImageGrid from "../data-grids/image-grid"
 import { LargeBanner } from "../large-banner"
-import { LinkedTabs } from "../linked-tabs"
+import { LinkedTabs, makeLinkedTabWrapper } from "../linked-tabs"
 import NextLink from "next/link"
 import { Portrait } from "../portrait"
 import { toClickableGridImage } from "@/client/data/image-mappers"
@@ -179,7 +179,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                     ? personPreferredName(data.person)
                     : undefined
                 ),
-                component: <Text textStyle="heading">Images</Text>,
+                component: makeLinkedTabWrapper("Images"),
               },
             ]}
           />

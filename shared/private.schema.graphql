@@ -4318,8 +4318,6 @@ type Image {
   """
   connections(depth: Int! = 2): ImageConnections!
   createdAt: DateTime!
-
-  """Where the image is stored"""
   destination: UploadDestination!
   faceScanDate: DateTime
 

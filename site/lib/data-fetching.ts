@@ -5,9 +5,18 @@ import {
   GetServerSideProps,
   GetServerSidePropsContext,
   GetServerSidePropsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+  NextPage,
+  NextPageContext,
 } from "next"
 import { getSession } from "next-auth/client"
 import { Session } from "next-auth"
+import {
+  buildPrefetcher,
+  buildStaticPrefetcher,
+  prefetchQuery,
+} from "@/lib/client-helpers"
 
 export const client = new GraphQLClient(
   `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal`
@@ -70,28 +79,52 @@ export const getImage = (slug: string, db: PrismaClient) => {
 
 export type ExtraServerSideProps = {
   session?: Session
+  prefetch: typeof prefetchQuery
 }
 
 export type ServerSideProps = (
   ctx: ExtraServerSideProps & GetServerSidePropsContext
 ) => ReturnType<GetServerSideProps>
 
+export type CheapServerSideProps<T = any> = (
+  // Cheap queries should not be doing any kind of prefetching
+  ctx: Omit<ExtraServerSideProps, "prefetch" | "session"> &
+    GetServerSidePropsContext
+) => GetServerSidePropsResult<T>
+
+export const wrapStatic = (
+  f: (
+    opts: { prefetch: typeof prefetchQuery } & GetStaticPropsContext
+  ) => Promise<GetStaticPropsResult<any>>
+) => {
+  return async (ctx: GetStaticPropsContext) => {
+    const prefetch = buildStaticPrefetcher()
+    const data: GetServerSidePropsResult<any> = await f({ prefetch, ...ctx })
+    return data
+  }
+}
+
 export function wrapRequest<T>(
-  f: ServerSideProps
+  f: ServerSideProps,
+  cheapFetcher?: CheapServerSideProps
 ): GetServerSideProps<T & ExtraServerSideProps> {
   return async (ctx) => {
     const { req, res, ...rest } = ctx
 
+    if (req.url?.startsWith("/_next")) {
+      if (cheapFetcher) {
+        return cheapFetcher({ req, res, ...rest })
+      }
+      return { props: {} }
+    }
     const session = (await getSession(ctx)) ?? undefined
-    // if (req.url?.startsWith("/_next")) {
-    //   return {
-    //     props: { session },
-    //   }
-    // }
+
+    const prefetch = buildPrefetcher(req, res)
     const data: GetServerSidePropsResult<any> = await f({
       req,
       res,
       session,
+      prefetch,
       ...rest,
     })
     if (!("props" in data)) {

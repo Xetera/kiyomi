@@ -231,7 +231,7 @@ export const getServerSideProps = wrapRequest(async (ctx) => {
       },
     })
     .catch(console.error)
-  const dehydratedState = await prefetchQuery("OneImage", { slug })
+  const dehydratedState = await ctx.prefetch("OneImage", { slug })
   return {
     props: {
       slug,

@@ -2513,6 +2513,19 @@ export type DiscoveryHistoryQuery = (
   )> }
 );
 
+export type OneGroupQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type OneGroupQuery = (
+  { __typename?: 'Query' }
+  & { group?: Maybe<(
+    { __typename?: 'Group' }
+    & GroupDataFragment
+  )> }
+);
+
 export type ReportImageMutationVariables = Exact<{
   imageId: Scalars['Int'];
   reason?: Maybe<Scalars['String']>;
@@ -2883,6 +2896,22 @@ export type FaceDataFragment = (
   & Pick<Face, 'id' | 'x' | 'y' | 'width' | 'height'>
 );
 
+export type GroupDataFragment = (
+  { __typename?: 'Group' }
+  & Pick<Group, 'id' | 'name'>
+  & { aliases: Array<(
+    { __typename?: 'GroupAlias' }
+    & Pick<GroupAlias, 'id' | 'name'>
+  )>, banner?: Maybe<(
+    { __typename?: 'Image' }
+    & Pick<Image, 'id' | 'rawUrl'>
+    & { thumbnail: (
+      { __typename?: 'Thumbnail' }
+      & Pick<Thumbnail, 'large'>
+    ) }
+  )> }
+);
+
 export type HomepagePersonQueryVariables = Exact<{
   take: Scalars['Int'];
   skip: Scalars['Int'];
@@ -3180,6 +3209,23 @@ export const DiscoveryPostListableFragmentDoc = `
     duplicateImage {
       url
       rawUrl
+    }
+  }
+}
+    `;
+export const GroupDataFragmentDoc = `
+    fragment GroupData on Group {
+  id
+  name
+  aliases {
+    id
+    name
+  }
+  banner {
+    id
+    rawUrl
+    thumbnail {
+      large
     }
   }
 }
@@ -3605,6 +3651,25 @@ export const useDiscoveryHistoryQuery = <
     useQuery<DiscoveryHistoryQuery, TError, TData>(
       ['DiscoveryHistory', variables],
       fetcher<DiscoveryHistoryQuery, DiscoveryHistoryQueryVariables>(DiscoveryHistoryDocument, variables),
+      options
+    );
+export const OneGroupDocument = `
+    query OneGroup($id: Int!) {
+  group(where: {id: $id}) {
+    ...GroupData
+  }
+}
+    ${GroupDataFragmentDoc}`;
+export const useOneGroupQuery = <
+      TData = OneGroupQuery,
+      TError = unknown
+    >(
+      variables: OneGroupQueryVariables, 
+      options?: UseQueryOptions<OneGroupQuery, TError, TData>
+    ) => 
+    useQuery<OneGroupQuery, TError, TData>(
+      ['OneGroup', variables],
+      fetcher<OneGroupQuery, OneGroupQueryVariables>(OneGroupDocument, variables),
       options
     );
 export const ReportImageDocument = `

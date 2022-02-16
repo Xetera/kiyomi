@@ -1,5 +1,5 @@
 import { VStack } from "@chakra-ui/react"
-import { LinkedTabs } from "../linked-tabs"
+import { LinkedTabs, makeLinkedTabWrapper } from "../linked-tabs"
 
 export const ModerationTabs = ({ children }) => {
   return (
@@ -16,7 +16,7 @@ export const ModerationTabs = ({ children }) => {
         tabs={[
           {
             path: "/moderation",
-            component: <h1>Reports</h1>,
+            component: makeLinkedTabWrapper("Reports"),
           },
         ]}
       >

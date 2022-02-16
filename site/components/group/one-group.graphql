@@ -1,0 +1,5 @@
+query OneGroup($id: Int!) {
+    group(where: { id: $id }) {
+        ...GroupData
+    }
+}

@@ -31,6 +31,5 @@ export function hashStringToCube(hash: string): Uint8Array {
     //     ","
     //   )}]) WHERE slug = '${image.slug}' RETURNING id
     // `)}`
-    // console.log({ a })
   }
 })()

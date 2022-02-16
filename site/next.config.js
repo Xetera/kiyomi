@@ -21,6 +21,8 @@ module.exports = withBundleAnalyzer({
     //   lodash: "lodash-es",
     // }
     config.resolve.fallback = {
+      fs: false,
+      path: false,
       bufferutil: false,
       "utf-8-validate": false,
     }
