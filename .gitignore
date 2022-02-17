@@ -46,3 +46,7 @@ labeler/**/*.webp
 **/.idea
 game/dist
 **/__pycache__
+
+client/public/build
+client/build
+client/.cache
