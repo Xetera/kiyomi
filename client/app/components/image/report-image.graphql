@@ -1,0 +1,5 @@
+mutation ReportImage($imageId: Int!, $reason: String) {
+    reportImage(reason: $reason, imageId: $imageId) {
+        id
+    }
+}

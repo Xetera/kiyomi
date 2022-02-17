@@ -1,0 +1,39 @@
+fragment PersonGridData on Person {
+        id  
+        avatar {
+            thumbnail {
+                medium
+            }
+        }
+        name
+        preferredMembership {
+            group {
+                name
+            }
+        }
+        preferredAlias {
+            name
+        }
+}
+
+query BrowsePageIdolsWithFilter($skip: Int!, $take: Int!, $groups: [Int!]!) {
+    people(
+        skip: $skip,
+        take: $take,
+        orderBy: [{ updatedAt: asc }]
+        where: { memberOf: { some: {  group: {  id: {  in: $groups }}} } }
+    ) {
+        ...PersonGridData
+    }
+}
+
+
+query BrowsePageIdols($skip: Int!, $take: Int!) {
+    people(
+        skip: $skip,
+        take: $take,
+        orderBy: [{ updatedAt: asc }]
+    ) {
+        ...PersonGridData
+    }
+}

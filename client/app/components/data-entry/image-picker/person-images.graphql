@@ -1,0 +1,5 @@
+query PersonImages($id: Int!, $skip: Int!, $take: Int!) {
+    images(where: { appearances: { some: { personId: { equals: $id } } } }, skip: $skip, take: $take) {
+        ...GridImage
+    }
+}

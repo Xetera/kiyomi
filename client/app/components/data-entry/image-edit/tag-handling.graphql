@@ -1,0 +1,21 @@
+mutation AddAppearanceTag($name: String!, $appearanceId: Int!) {
+    createAppearanceTag(
+        name: $name
+        appearanceId: $appearanceId
+    ) {
+        tag {
+            name
+        }
+    }
+}
+
+mutation DeleteAppearanceTag($name: String!, $appearanceId: Int!) {
+    deleteAppearanceTag(
+        name: $name
+        appearanceId: $appearanceId
+    ) {
+        tag {
+            name
+        }
+    }
+}
