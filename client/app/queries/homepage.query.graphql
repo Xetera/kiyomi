@@ -1,0 +1,5 @@
+query HomepageImages($take: Int!, $skip: Int!) {
+    images(take: $take, skip: $skip, orderBy: { createdAt: desc }) {
+        ...GridImage
+    }
+}

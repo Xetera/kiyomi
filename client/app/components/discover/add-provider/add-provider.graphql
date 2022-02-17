@@ -1,0 +1,3 @@
+mutation AddProvider($provider: AddProviderInput!) {
+    addProvider(provider: $provider)
+}

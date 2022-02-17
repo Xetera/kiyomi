@@ -1,0 +1,5 @@
+mutation addToQueue($slug: String!) {
+  scanFaces(slug: $slug) {
+    queueSize
+  }
+}

@@ -1,0 +1,15 @@
+query DiscoveryProviders {
+    discoveryProviders {
+        name
+        destination
+        defaultName
+        enabled
+        lastScrape
+        scrapeCount
+        lastPost
+        discoveredImages
+        official
+        url
+        createdAt
+    }
+}

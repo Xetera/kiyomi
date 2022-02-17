@@ -1,0 +1,5 @@
+query DiscoveryHistory($take: Int!, $skip: Int! = 0) {
+    discoveryHistory(take: $take, skip: $skip) {
+        ...DiscoveryPostListable
+    }
+}

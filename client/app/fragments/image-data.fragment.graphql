@@ -1,0 +1,58 @@
+
+fragment Focus on Image {
+  width
+  height
+  focus {
+    x
+    y
+  }
+}
+
+fragment ImageData on Image {
+  id
+  height
+  width
+  url
+  rawUrl
+  createdAt
+  caption
+  public
+  source
+  slug
+  bytes
+  mimetype
+  palette
+  destination
+  imageTags {
+    tag {
+      name
+    }
+  }
+}
+
+fragment GridImage on Image {
+  id
+  url
+  height
+  width
+  focus {
+    x
+    y
+  }
+  thumbnail {
+    small
+  }
+  rawUrl
+  aspectRatio
+  uploadedBy {
+    id
+    name
+  }
+  appearances {
+    id
+    person {
+      name
+    }
+  }
+  createdAt
+}
