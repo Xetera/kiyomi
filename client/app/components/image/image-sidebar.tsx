@@ -1,19 +1,16 @@
-import { humanFileSize } from "~/shared"
-import React, { useState } from "react"
+import React, { ReactNode, useContext, useState } from "react"
 import { Palette } from "../palette-color"
 import { Tags } from "../tags"
-import { CascadeChildren } from "../animations/cascade-children"
 import {
   RiAlarmWarningLine,
   RiHeartFill,
-  RiKnifeBloodLine,
   RiQuestionLine,
   RiScan2Line,
   RiUser3Fill,
 } from "react-icons/ri"
 import { format } from "date-fns"
 import { User } from "../user"
-import { ImageContext } from "@/models/contexts"
+import { GraphqlClientContext, ImageContext } from "~/models/contexts"
 import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/layout"
 import {
   Button,
@@ -22,17 +19,14 @@ import {
   useToast,
   UseToastOptions,
 } from "@chakra-ui/react"
-import { useSession } from "next-auth/client"
-import {
-  useToggleLikeMutation,
-  useReportImageMutation,
-} from "~/__generated__/graphql"
 import useQueue from "../queue-button"
-import { useRouter } from "next/router"
-import { useQueryClient } from "react-query"
 import { ReportModal } from "~/components/data-entry/report-modal"
+import { useParams } from "remix"
 
-function SidebarSection({ title, children }) {
+const SidebarSection: React.FC<{ title: ReactNode }> = ({
+  title,
+  children,
+}) => {
   return (
     <>
       <Heading
@@ -102,16 +96,17 @@ export function InteractableButton({
 }
 
 export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
+  const sdk = useContext(GraphqlClientContext)
   const toast = useToast()
-  const image = React.useContext(ImageContext)
-  const router = useRouter()
-  const { data, mutate } = useToggleLikeMutation()
+  const image = useContext(ImageContext)
+  const params = useParams()
+  const [liked, setLiked] = useState(image?.liked ?? false)
   const [reportOpen, setReportOpen] = useState(false)
   if (!image) {
     return null
   }
 
-  function toggleLike() {
+  async function toggleLike() {
     if (!image) {
       return
     }
@@ -132,13 +127,13 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         title: "You liked this image",
       })
     }
-    mutate({ id: image.id })
+
+    const result = await sdk.ToggleLike({ id: image.id })
+    setLiked(result.toggleLike.liked ?? false)
   }
 
-  const client = useQueryClient()
-  const liked = data?.toggleLike.liked ?? image.liked
   const uploadDate = new Date(image.createdAt)
-  const slug = router.query.slug as string
+  const slug = params.slug as string
   const reScan = useQueue({ slug })
   return (
     <Stack
@@ -156,7 +151,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         isOpen={reportOpen}
         onClose={() => setReportOpen(false)}
       />
-      <CascadeChildren className="grid gap-4 text-sm">
+      <Grid>
         <Flex flexFlow="row wrap">
           <InteractableButton
             icon={<RiHeartFill />}
@@ -205,9 +200,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           <SidebarSection title={"Dimensions"}>
             {image.width}x{image.height}
           </SidebarSection>
-          <SidebarSection title={"Size"}>
-            {humanFileSize(image.bytes)}
-          </SidebarSection>
+          <SidebarSection title={"Size"}>{image.bytes}</SidebarSection>
           <SidebarSection title={"Type"}>
             {image.mimetype.toUpperCase()}
           </SidebarSection>
@@ -267,7 +260,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           </Button>
           <QueueButton slug={image.slug} scanDate={image.faceScanDate} />
         </Grid> */}
-      </CascadeChildren>
+      </Grid>
     </Stack>
   )
 }

@@ -6,9 +6,12 @@ import {
   InputLeftElement,
   ModalCloseButton,
   VStack,
+  Tab,
+  TabList,
+  TabPanels,
+  Tabs,
 } from "@chakra-ui/react"
 import { RiSearchLine } from "react-icons/ri"
-import { Tab, TabList, TabPanels, Tabs } from "@chakra-ui/tabs"
 import { PropsWithChildren } from "react"
 
 export type QuickSearchProps = {

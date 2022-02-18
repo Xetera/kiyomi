@@ -1,19 +1,17 @@
-import { useAddToQueueMutation } from "~/__generated__/graphql"
 import { Button, useToast } from "@chakra-ui/react"
-import { useQueryClient } from "react-query"
+import { useContext } from "react"
+import { GraphqlClientContext } from "~/models/contexts"
 
 type QueueButtonProps = {
   slug: string
 }
 
 export default function useQueue({ slug }: QueueButtonProps) {
-  const client = useQueryClient()
-  const { mutateAsync } = useAddToQueueMutation()
+  const sdk = useContext(GraphqlClientContext)
   const toast = useToast()
   async function addToQueue() {
     try {
-      await mutateAsync({ slug })
-      await client.invalidateQueries(["OneImage", { slug }])
+      await sdk.addToQueue({ slug })
       toast({
         status: "success",
         title: "Image scanned",

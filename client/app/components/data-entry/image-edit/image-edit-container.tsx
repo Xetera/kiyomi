@@ -1,4 +1,4 @@
-import { ImageContext } from "~/models/contexts"
+import { GraphqlClientContext, ImageContext } from "~/models/contexts"
 import React, { memo, useCallback, useContext, useMemo, useState } from "react"
 import {
   Box,
@@ -19,15 +19,7 @@ import {
   QuickSearchSection,
 } from "~/components/search/QuickSearchSection"
 import { useBoolean, useMap } from "react-use"
-import {
-  FaceDataFragment,
-  useAddAppearanceMutation,
-  useAddAppearanceTagMutation,
-  useDeleteAppearanceTagMutation,
-  useLinkFaceMutation,
-  useRemoveAppearanceMutation,
-  useUnlinkFaceMutation,
-} from "~/__generated__/graphql"
+import { FaceDataFragment, getSdk } from "~/__generated__/graphql"
 import { DraggableFace } from "~/components/image-edit-modal"
 import {
   DragDropContext,
@@ -43,6 +35,10 @@ import { TagSelect, useTagSelect } from "~/components/data-entry/tag-select"
 import useQueue from "~/components/queue-button"
 import Hr from "~/components/hr"
 import { EditModal } from "~/components/data-entry/edit-modal"
+import { ActionFunction } from "remix"
+import { sdk } from "~/client/graphql"
+
+export const action: ActionFunction = () => {}
 
 const SearchBar = memo(
   ({ addPerson }: { addPerson: (num: number) => void }) => {
@@ -87,7 +83,7 @@ const SearchBar = memo(
               setSearchString={setSearch}
               onSearch={performSearch}
               placeholder="Search people"
-              debounce={50}
+              debounceTime={50}
             />
           </Box>
           <VStack overflow="auto" w="full" px={5} spacing={3} pb={5}>
@@ -123,18 +119,17 @@ const AppearanceColumn = ({
   tags,
   removeAppearance,
 }: AppearanceItem & { removeAppearance: (id: number) => void }) => {
+  const sdk = useContext(GraphqlClientContext)
   const image = useContext(ImageContext)
   const select = useTagSelect(tags.map((tag) => tag.tag.name))
-  const { mutateAsync: addAppearanceTag } = useAddAppearanceTagMutation()
-  const { mutateAsync: deleteAppearanceTag } = useDeleteAppearanceTagMutation()
 
   async function onCreate(name: string) {
-    const result = await addAppearanceTag({ appearanceId: id, name })
+    const result = await sdk.AddAppearanceTag({ appearanceId: id, name })
     console.log(result)
   }
 
   async function onDelete(name: string) {
-    const result = await deleteAppearanceTag({ appearanceId: id, name })
+    const result = await sdk.DeleteAppearanceTag({ appearanceId: id, name })
     console.log(result)
   }
 
@@ -189,7 +184,7 @@ const AppearanceColumn = ({
                     <DraggableFace
                       src={image?.rawUrl ?? "/"}
                       maxPortraitHeight={80}
-                      borderRadius="lg"
+                      // borderRadius="lg"
                       overflow="hidden"
                       mb={2}
                       mr={2}
@@ -343,14 +338,15 @@ type AppearanceItem = {
 type AppearanceMap = Record<number, AppearanceItem>
 
 export const ImageEditEditor = () => {
+  const sdk = useContext(GraphqlClientContext)
   const image = useContext(ImageContext)
   if (!image) {
     throw Error("Cannot use an image editor without an Image context")
   }
-  const { mutateAsync: removeAppearance } = useRemoveAppearanceMutation()
-  const { mutateAsync: linkFace } = useLinkFaceMutation()
-  const { mutateAsync: unlinkFace } = useUnlinkFaceMutation()
-  const { mutateAsync: addAppearance } = useAddAppearanceMutation()
+  // const { mutateAsync: removeAppearance } = useRemoveAppearanceMutation()
+  // const { mutateAsync: linkFace } = useLinkFaceMutation()
+  // const { mutateAsync: unlinkFace } = useUnlinkFaceMutation()
+  // const { mutateAsync: addAppearance } = useAddAppearanceMutation()
   const appearanceMap: Record<number, AppearanceItem> = mapValues(
     keyBy(image.appearances, (f) => f.id),
     (f) => ({
@@ -375,7 +371,7 @@ export const ImageEditEditor = () => {
   }>(unknownFacesMap)
 
   async function removeAppearance_(appearanceId: number) {
-    await removeAppearance({ appearanceId })
+    await sdk.RemoveAppearance({ appearanceId })
     const appearance = appearanceAction.get(appearanceId)
     // TODO: check here?
     appearanceAction.remove(appearanceId)
@@ -400,7 +396,7 @@ export const ImageEditEditor = () => {
       ...appearance,
       faces: appearance.faces.concat([face]),
     })
-    await linkFace({ faceId, appearanceId })
+    await sdk.LinkFace({ faceId, appearanceId })
   }
 
   async function onDragEnd(result: DropResult) {
@@ -442,7 +438,7 @@ export const ImageEditEditor = () => {
 
   const addAppearance_ = useCallback(async (personId: number) => {
     if (!image) return
-    const { appearance } = await addAppearance({
+    const { appearance } = await sdk.AddAppearance({
       imageId: image.id,
       personId,
     })
@@ -460,7 +456,7 @@ export const ImageEditEditor = () => {
       ...appearance,
       faces,
     })
-    await unlinkFace({ faceId, appearanceId })
+    await sdk.UnlinkFace({ faceId, appearanceId })
   }
 
   return (

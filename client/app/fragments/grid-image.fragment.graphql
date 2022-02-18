@@ -1,5 +1,6 @@
 fragment GridImage on Image {
   id
+  slug
   url
   height
   width

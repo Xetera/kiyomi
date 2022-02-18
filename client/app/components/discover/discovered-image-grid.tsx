@@ -26,11 +26,11 @@ import {
   RiDownload2Line,
   RiFullscreenLine,
 } from "react-icons/ri"
-import NextLink from "next/link"
 import { useMemo, useState } from "react"
-import { Verdict } from "~/shared"
-import { Maybe } from "~/__generated__/graphql"
+import { Maybe, DiscoveredImageVerdict } from "~/__generated__/graphql"
 import { Routing } from "~/client/routing"
+
+enum Verdict {}
 
 type Images = DiscoveredPostProps["post"]["images"]
 

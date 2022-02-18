@@ -2,21 +2,13 @@ import { personPreferredName } from "~/client/data-mappers/person"
 import { magicGradientDark } from "~/client/jsx-helpers"
 import { Routing } from "~/client/routing"
 import { useOnePersonQuery } from "~/__generated__/graphql"
-import {
-  Link,
-  Text,
-  Flex,
-  VStack,
-  Stack,
-  Button,
-  HStack,
-} from "@chakra-ui/react"
+import { Link } from "remix"
+import { Text, Flex, VStack, Stack, Button, HStack } from "@chakra-ui/react"
 import ImageGrid from "../data-grids/image-grid"
 import { LargeBanner } from "../large-banner"
 import { LinkedTabs } from "../linked-tabs"
-import NextLink from "next/link"
 import { Portrait } from "../portrait"
-import { toClickableGridImage } from "~/client/data/image-mappers"
+import { toClickableGridImage } from "~/client/data-mappers/image"
 
 export const personPortraitDimensions = {
   width: "250px",
@@ -89,17 +81,16 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                   {group.name}
                 </Text>
               )}
-              <NextLink
-                href={Routing.toPersonEdit(
+              <Link
+                to={Routing.toPersonEdit(
                   id,
                   data?.person ? personPreferredName(data?.person) : undefined
                 )}
-                passHref
               >
-                <Link w="full" mt={4}>
+                <Flex w="full" mt={4}>
                   <Button w="full">Edit</Button>
-                </Link>
-              </NextLink>
+                </Flex>
+              </Link>
             </VStack>
             <VStack spacing={4} w="full">
               <VStack>
@@ -140,8 +131,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                 {data?.person?.memberOf.map((membership) => {
                   const avatar = membership.group.avatar
                   return (
-                    <NextLink
-                      href={Routing.toGroup(
+                    <Link
+                      to={Routing.toGroup(
                         membership.group.id,
                         membership.group.name
                       )}
@@ -157,7 +148,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         name={membership.group.name}
                         focus={avatar}
                       />
-                    </NextLink>
+                    </Link>
                   )
                 })}
               </Flex>

@@ -16,7 +16,6 @@ import {
   SearchResponse,
   SearchResponseHit,
 } from "typesense/lib/Typesense/Documents"
-import { RootState, store } from "@/models/store"
 import { useSelector } from "react-redux"
 import { SearchFilterHandle } from "~/hooks/useSearchFilter"
 

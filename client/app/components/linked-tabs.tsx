@@ -1,4 +1,5 @@
 import {
+  Flex,
   forwardRef,
   HStack,
   Link as ChakraLink,
@@ -32,7 +33,7 @@ export const makeLinkedTabWrapper = (name: string): TabGenerator => {
 export const LinkedTabWrapper = forwardRef<PropsWithChildren<any>, "a">(
   ({ children, ...rest }, ref) => {
     return (
-      <ChakraLink
+      <Flex
         _hover={{ textDecoration: "none" }}
         py={2}
         fontWeight="medium"
@@ -41,7 +42,7 @@ export const LinkedTabWrapper = forwardRef<PropsWithChildren<any>, "a">(
         {...rest}
       >
         {children}
-      </ChakraLink>
+      </Flex>
     )
   }
 )
@@ -54,7 +55,7 @@ export const LinkedTabs = (props: PropsWithChildren<LinkedTabsProps>) => {
       <HStack spacing={props.spacing ?? 0} overflow="hidden">
         {props.tabs.map((tab, i) => {
           return (
-            <NavLink to={tab.path} key={i}>
+            <NavLink to={tab.path} key={tab.path}>
               {({ isActive }) => tab.component({ selected: isActive })}
             </NavLink>
           )

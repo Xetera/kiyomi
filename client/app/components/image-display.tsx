@@ -1,5 +1,5 @@
 import React from "react"
-import { FaceContext, ImageContext } from "@/models/contexts"
+import { FaceContext, ImageContext } from "~/models/contexts"
 import { AnimatePresence, motion } from "framer-motion"
 import { useToggle } from "react-use"
 import { FaCompress, FaExpand } from "react-icons/fa"
@@ -7,11 +7,11 @@ import {
   AppearanceDataFragment,
   FaceDataFragment,
 } from "~/__generated__/graphql"
-import { Box, Flex, Image, Link } from "@chakra-ui/react"
+import { Link } from "remix"
+import { Box, Flex, Image } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/layout"
 import { Routing } from "~/client/routing"
-import NextLink from "next/link"
-import { personPreferredName } from "~/client/data/person-mappers"
+import { personPreferredName } from "~/client/data-mappers/person"
 
 type FaceProps = React.HTMLProps<HTMLDivElement> & {
   appearance?: AppearanceDataFragment
@@ -325,15 +325,15 @@ export default function ImageDisplay() {
         return faceComponent
       }
       return (
-        <NextLink
-          passHref
-          href={Routing.toPerson(
+        <Link
+          target="_blank"
+          to={Routing.toPerson(
             appearance?.person.id,
             personPreferredName(appearance.person)
           )}
         >
-          <Link target="_blank">{faceComponent}</Link>
-        </NextLink>
+          {faceComponent}
+        </Link>
       )
     })
   }

@@ -9,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { FaceAppearance } from "~/components/face-appearance"
-import { GraphDisplay } from "~/components/graph-display"
+// import { GraphDisplay } from "~/components/graph-display"
 import { ImageEditContainer } from "~/components/data-entry/image-edit/image-edit-container"
 import { format } from "date-fns"
 import React, { useState, useRef, useEffect } from "react"
@@ -22,25 +22,51 @@ import {
   SidebarItem,
 } from "~/components/layouts/context-sidebar"
 import { WithNavbar } from "~/components/navbar/navbar-wrapper"
-import { LoaderFunction } from "remix"
+import {
+  LoaderFunction,
+  MetaFunction,
+  useFetcher,
+  useLoaderData,
+  useParams,
+} from "remix"
 import { sdk } from "~/client/graphql"
+import { OneImageQuery } from "~/__generated__/graphql"
+import { FaceContext, ImageContext } from "~/models/contexts"
+import { Routing } from "~/client/routing"
 
-export const loader: LoaderFunction = ({ request }) => {
-  return sdk.On
+const fallbackImage = "/"
+
+export const meta: MetaFunction = ({ data }) => {
+  return {
+    "twitter:card": "summary_large_image",
+    "twitter:creator": "@_Xetera",
+    "twitter:image": data.image?.rawUrl ?? fallbackImage,
+  }
+}
+
+type LoaderContext = OneImageQuery
+
+export const loader: LoaderFunction = async ({
+  params,
+}): Promise<LoaderContext> => {
+  if (typeof params.slug === "undefined") {
+    throw Error("invalid image")
+  }
+  return sdk.OneImage({ slug: params.slug })
 }
 
 const Image = () => {
   const [isEditOpen, setEditOpen] = useState(false)
-  const router = useRouter()
-  const slug = router.query.slug as string
+  const data = useLoaderData<LoaderContext>()
+  const { slug } = useParams()
+  const fetcher = useFetcher()
   const [face, setFace] = useState("")
   // best approximation for width
   const [containerWidth, setContainerWidth] = useState(600)
   const containerRef = useRef<HTMLDivElement>(null)
-  const { data, refetch } = useOneImageQuery({ slug })
 
   function closeModal() {
-    refetch()
+    // fetcher.load(Routing.toImage())
     setEditOpen(false)
   }
 
@@ -52,6 +78,9 @@ const Image = () => {
       classList.remove("overflow-hidden")
     }
   }, [isEditOpen])
+  if (!slug) {
+    throw Error("Invalid image")
+  }
 
   React.useEffect(() => {
     const dimensions = containerRef.current?.getBoundingClientRect()
@@ -81,12 +110,6 @@ const Image = () => {
 
   return (
     <FaceContext.Provider value={{ face, setFace }}>
-      <NextHead>
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:creator" content="@_Xetera" />
-        <meta property="twitter:image" content={image.rawUrl} />
-      </NextHead>
-
       <ImageContext.Provider value={image}>
         <WithNavbar>
           <WithSidebar
@@ -191,11 +214,11 @@ const Image = () => {
                       <Flex maxWidth="600px" mx="auto" width="100%">
                         <Heading fontSize="sm">Image Graph</Heading>
                       </Flex>
-                      <GraphDisplay
+                      {/* <GraphDisplay
                         slug={slug}
                         width={containerWidth}
                         currentPersonIds={personIds}
-                      />
+                      /> */}
                     </article>
                   </div>
                 </Box>

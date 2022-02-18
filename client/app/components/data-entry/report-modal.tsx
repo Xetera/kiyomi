@@ -7,11 +7,10 @@ import {
   Button,
   ButtonGroup,
 } from "@chakra-ui/react"
-import { useState } from "react"
-import { useReportImageMutation } from "~/__generated__/graphql"
+import { useContext, useState } from "react"
 import useToast from "~/hooks/useToast"
 import { useForm } from "react-hook-form"
-import { useQueryClient } from "react-query"
+import { GraphqlClientContext } from "~/models/contexts"
 
 export type ReportModalProps = {
   id: number
@@ -28,9 +27,8 @@ export const ReportModal = ({
   onClose,
   isOpen,
 }: ReportModalProps) => {
+  const sdk = useContext(GraphqlClientContext)
   const toast = useToast("error")
-  const { mutateAsync } = useReportImageMutation()
-  const client = useQueryClient()
   const { handleSubmit, register } = useForm({
     reValidateMode: "onBlur",
     defaultValues: {
@@ -39,7 +37,7 @@ export const ReportModal = ({
   })
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await mutateAsync({
+      await sdk.ReportImage({
         imageId: id,
         reason: data.reason,
       })
@@ -48,7 +46,6 @@ export const ReportModal = ({
         title: "You reported this image",
         description: "Our moderators will take a look at this shortly",
       })
-      await client.invalidateQueries(["OneImage", { slug }])
       onClose()
     } catch (err) {
       if (err instanceof Error) {
