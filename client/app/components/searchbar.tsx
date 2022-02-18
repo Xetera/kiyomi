@@ -5,11 +5,11 @@ import {
   InputLeftElement,
   InputRightAddon,
   Spinner,
+  Input,
 } from "@chakra-ui/react"
 import { useDebounce } from "react-use"
 import { Flex } from "@chakra-ui/layout"
 import { RiCloseCircleLine, RiSearch2Line } from "react-icons/ri"
-import { Input } from "@chakra-ui/input"
 import React from "react"
 
 type SearchProps = {

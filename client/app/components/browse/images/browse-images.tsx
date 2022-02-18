@@ -1,36 +1,37 @@
-import {
-  BrowsePageDocument,
-  BrowsePageQuery,
-  BrowsePageQueryVariables,
-} from "~/__generated__/graphql"
+// @ts-ignore
+import { InfiniteScroll } from "react-simple-infinite-scroll"
 import ImageGrid from "~/components/data-grids/image-grid"
 import React from "react"
 import { Box, VStack } from "@chakra-ui/react"
 import { usePaginated } from "~/hooks/use-paginated"
 import { toClickableGridImage } from "~/client/data-mappers/image"
+import { useFetcher } from "remix"
+import { ImageBrowseLoaderContext } from "~/routes/browse/__browse-context/index"
 
 const PER_PAGE = 30
 
 export const BrowseImages = () => {
-  const { data, waypoint } = usePaginated<
-    BrowsePageQuery,
-    BrowsePageQueryVariables
-  >({
+  const fetcher = useFetcher<ImageBrowseLoaderContext>()
+  const pagination = usePaginated(fetcher, {
+    href: "/browse",
+    transform: (data) => data.images,
     perPage: PER_PAGE,
-    document: BrowsePageDocument,
-    queryKey: "BrowsePageImages",
   })
-  if (!data) return null
+
   return (
     <VStack w="full">
-      <ImageGrid
-        w="full"
-        images={data.pages.flatMap((page) =>
-          page.images.map(toClickableGridImage)
-        )}
-      />
-
-      <Box height="800px">{waypoint}</Box>
+      <InfiniteScroll
+        throttle={100}
+        threshold={3000}
+        isLoading={pagination.fetcher.state === "loading"}
+        hasMore={true}
+        onLoadMore={pagination.loadMore}
+      >
+        <ImageGrid
+          width="full"
+          images={pagination.data.map(toClickableGridImage)}
+        />
+      </InfiniteScroll>
     </VStack>
   )
 }

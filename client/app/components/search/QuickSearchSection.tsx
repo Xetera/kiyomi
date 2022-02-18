@@ -9,11 +9,9 @@ import {
 } from "@chakra-ui/react"
 import { IoPricetag } from "react-icons/io5"
 import { Box, Flex } from "@chakra-ui/layout"
-import NextLink from "next/link"
 import { useEffect, useState } from "react"
 import { IoIosReturnLeft } from "react-icons/io"
 import { useKeyPress } from "react-use"
-import { useRouter } from "next/router"
 import { FaUserCircle } from "react-icons/fa"
 import { RiAccountPinCircleLine } from "react-icons/ri"
 import { intersperse } from "~/client/jsx-helpers"
@@ -21,7 +19,7 @@ import { SearchResponseHit } from "typesense/lib/Typesense/Documents"
 import { SearchGroup, SearchIdol } from "~/client/typesense"
 import { Routing } from "~/client/routing"
 import { defaultIdolHitMapper } from "~/client/data-mappers/person"
-import { defaultGroupHitMapper } from "~/client/data/group-mappers"
+import { defaultGroupHitMapper } from "~/client/data-mappers/group"
 
 export type QuickSearchTag = {
   href: string

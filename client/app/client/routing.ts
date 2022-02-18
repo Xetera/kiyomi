@@ -1,8 +1,7 @@
-import { encodeUriFriendly } from "~/client/data/encoders"
-import { Image, UploadDestination } from "@prisma/client"
+import { encodeUriFriendly } from "~/client/data-mappers/encoding"
+import { Image, UploadDestination } from "~/__generated__/graphql"
 
-const base = process.env.NEXT_PUBLIC_BASE_URL
-const f = (url: string) => `${base}${url}`
+const f = (url: string) => url
 
 export const Routing = {
   toGroup(id: number, name?: string) {

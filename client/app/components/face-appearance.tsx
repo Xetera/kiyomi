@@ -4,7 +4,7 @@ import { Flex, Text } from "@chakra-ui/layout"
 import { Grid, Box, useBreakpointValue, VStack } from "@chakra-ui/react"
 import { Link } from "remix"
 import { EditableTag } from "~/components/data-entry/editable-tag"
-import { personPreferredName } from "~/client/data/person-mappers"
+import { personPreferredName } from "~/client/data-mappers/person"
 import { Routing } from "~/client/routing"
 
 type PartialPerson = Pick<Person, "name" | "id">

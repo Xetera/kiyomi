@@ -1,11 +1,7 @@
 import { Box, VStack } from "@chakra-ui/react"
 import { WithBrowsePageSidebar } from "~/components/browse/browse-base"
-import {
-  BrowsePageIdolsDocument,
-  BrowsePageIdolsQuery,
-  BrowsePageIdolsQueryVariables,
-  BrowsePageIdolsWithFilterDocument,
-} from "~/__generated__/graphql"
+// @ts-ignore
+import { InfiniteScroll } from "react-simple-infinite-scroll"
 import { usePaginated } from "~/hooks/use-paginated"
 import React, { useState } from "react"
 import IdolGrid from "~/components/data-grids/idol-grid"
@@ -14,6 +10,8 @@ import {
   SidebarSearch,
 } from "~/components/discover/sidebar-search"
 import { SearchFilterHandle, useSearchFilter } from "~/hooks/useSearchFilter"
+import { useFetcher } from "remix"
+import { IdolBrowseLoaderContext } from "~/routes/browse/__browse-context/idols"
 
 const BrowseIdolsSidebar = (props: SearchFilterHandle) => {
   const [hits, setHits] = useState<GroupSearchResult[]>([])
@@ -30,39 +28,40 @@ const BrowseIdolsSidebar = (props: SearchFilterHandle) => {
 
 export const BrowseIdols = () => {
   const filters = useSearchFilter()
-  const groupIds = filters.filters.map((f) => f.id)
-  const { data, waypoint } = usePaginated<
-    BrowsePageIdolsQuery,
-    BrowsePageIdolsQueryVariables
-  >({
-    queryKey:
-      groupIds.length > 0
-        ? ["BrowsePageIdolsWithFilter", groupIds]
-        : ["BrowsePageIdols"],
-    document:
-      groupIds.length > 0
-        ? BrowsePageIdolsWithFilterDocument
-        : BrowsePageIdolsDocument,
-    perPage: 30,
-    variables() {
-      return {
-        groups: groupIds,
-      }
-    },
+  const fetcher = useFetcher<IdolBrowseLoaderContext>()
+  const pagination = usePaginated(fetcher, {
+    href: "/browse/idols",
+    transform: (data) => data.people,
+    // queryKey:
+    //   groupIds.length > 0
+    //     ? ["BrowsePageIdolsWithFilter", groupIds]
+    //     : ["BrowsePageIdols"],
+    // document:
+    //   groupIds.length > 0
+    //     ? BrowsePageIdolsWithFilterDocument
+    //     : BrowsePageIdolsDocument,
+    // : 30,
+    // variables() {
+    //   return {
+    //     groups: groupIds,
+    //   }
   })
   return (
-    <WithBrowsePageSidebar>
+    <>
       <VStack>
         <BrowseIdolsSidebar {...filters} />
       </VStack>
       <VStack w="full">
-        <IdolGrid
-          w="full"
-          people={data?.pages.flatMap((page) => page.people) ?? []}
-        />
-
-        <Box height="800px">{waypoint}</Box>
+        <InfiniteScroll
+          throttle={100}
+          threshold={3000}
+          isLoading={pagination.fetcher.state === "loading"}
+          hasMore={true}
+          onLoadMore={pagination.loadMore}
+        >
+          <IdolGrid width="full" people={pagination.data?.flat() ?? []} />
+        </InfiniteScroll>
       </VStack>
-    </WithBrowsePageSidebar>
+    </>
   )
 }

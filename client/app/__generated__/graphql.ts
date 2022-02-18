@@ -537,6 +537,13 @@ export type EnumTagSourceFilter = {
   notIn?: InputMaybe<Array<TagSource>>;
 };
 
+export type EnumUploadDestinationFilter = {
+  equals?: InputMaybe<UploadDestination>;
+  in?: InputMaybe<Array<UploadDestination>>;
+  not?: InputMaybe<NestedEnumUploadDestinationFilter>;
+  notIn?: InputMaybe<Array<UploadDestination>>;
+};
+
 export type EnumUploadTypeFilter = {
   equals?: InputMaybe<UploadType>;
   in?: InputMaybe<Array<UploadType>>;
@@ -944,6 +951,7 @@ export type Image = {
   /** A graph of connections people in this image share with others based on images they appear together in up to a depth of 4 */
   connections: ImageConnections;
   createdAt: Scalars['DateTime'];
+  destination: UploadDestination;
   faceScanDate?: Maybe<Scalars['DateTime']>;
   /** The name the image file was uploaded with. */
   fileName?: Maybe<Scalars['String']>;
@@ -1078,6 +1086,7 @@ export type ImageOrderByWithRelationInput = {
   bytes?: InputMaybe<SortOrder>;
   caption?: InputMaybe<SortOrder>;
   createdAt?: InputMaybe<SortOrder>;
+  destination?: InputMaybe<SortOrder>;
   discoverySource?: InputMaybe<DiscoveredImageOrderByWithRelationInput>;
   faceScanDate?: InputMaybe<SortOrder>;
   faceScanRequestDate?: InputMaybe<SortOrder>;
@@ -1240,6 +1249,7 @@ export type ImageWhereInput = {
   bytes?: InputMaybe<IntFilter>;
   caption?: InputMaybe<StringNullableFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
+  destination?: InputMaybe<EnumUploadDestinationFilter>;
   discoverySource?: InputMaybe<DiscoveredImageWhereInput>;
   faceScanDate?: InputMaybe<DateTimeNullableFilter>;
   faceScanRequestDate?: InputMaybe<DateTimeNullableFilter>;
@@ -1538,6 +1548,13 @@ export type NestedEnumTagSourceFilter = {
   in?: InputMaybe<Array<TagSource>>;
   not?: InputMaybe<NestedEnumTagSourceFilter>;
   notIn?: InputMaybe<Array<TagSource>>;
+};
+
+export type NestedEnumUploadDestinationFilter = {
+  equals?: InputMaybe<UploadDestination>;
+  in?: InputMaybe<Array<UploadDestination>>;
+  not?: InputMaybe<NestedEnumUploadDestinationFilter>;
+  notIn?: InputMaybe<Array<UploadDestination>>;
 };
 
 export type NestedEnumUploadTypeFilter = {
@@ -2093,6 +2110,11 @@ export type UpdatePersonInputs = {
   preferredMembershipId?: InputMaybe<Scalars['Int']>;
 };
 
+export enum UploadDestination {
+  Local = 'Local',
+  S3 = 'S3'
+}
+
 export enum UploadType {
   AutoDiscovery = 'AUTO_DISCOVERY',
   Token = 'TOKEN',
@@ -2246,9 +2268,175 @@ export type BrowsePageQueryVariables = Exact<{
 }>;
 
 
-export type BrowsePageQuery = { __typename?: 'Query', images: Array<{ __typename?: 'Image', id: number, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> }> };
+export type BrowsePageQuery = { __typename?: 'Query', images: Array<{ __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> }> };
 
-export type GridImageFragment = { __typename?: 'Image', id: number, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> };
+export type AddAppearanceTagMutationVariables = Exact<{
+  name: Scalars['String'];
+  appearanceId: Scalars['Int'];
+}>;
+
+
+export type AddAppearanceTagMutation = { __typename?: 'Mutation', createAppearanceTag: { __typename?: 'AppearanceTag', tag: { __typename?: 'Tag', name: string } } };
+
+export type DeleteAppearanceTagMutationVariables = Exact<{
+  name: Scalars['String'];
+  appearanceId: Scalars['Int'];
+}>;
+
+
+export type DeleteAppearanceTagMutation = { __typename?: 'Mutation', deleteAppearanceTag?: { __typename?: 'AppearanceTag', tag: { __typename?: 'Tag', name: string } } | null };
+
+export type PersonImagesQueryVariables = Exact<{
+  id: Scalars['Int'];
+  skip: Scalars['Int'];
+  take: Scalars['Int'];
+}>;
+
+
+export type PersonImagesQuery = { __typename?: 'Query', images: Array<{ __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> }> };
+
+export type PersonEditDataQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type PersonEditDataQuery = { __typename?: 'Query', person?: { __typename?: 'Person', birthDate?: any | null, memberOf: Array<{ __typename?: 'GroupMember', group: { __typename?: 'Group', id: number, name: string } }>, preferredMembership?: { __typename?: 'GroupMember', group: { __typename?: 'Group', id: number, name: string } } | null, aliases: Array<{ __typename?: 'Alias', name: string }>, preferredAlias?: { __typename?: 'Alias', name: string } | null, banner?: { __typename?: 'Image', id: number, rawUrl: string, thumbnail: { __typename?: 'Thumbnail', medium: string } } | null, avatar?: { __typename?: 'Image', id: number, rawUrl: string, thumbnail: { __typename?: 'Thumbnail', medium: string } } | null } | null };
+
+export type PersonEditMutationVariables = Exact<{
+  id: Scalars['Int'];
+  input: UpdatePersonInputs;
+}>;
+
+
+export type PersonEditMutation = { __typename?: 'Mutation', updatePerson?: { __typename?: 'Person', id: number, name: string, birthDate?: any | null, appearances: Array<{ __typename?: 'Appearance', id: number, image: { __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> } }>, memberOf: Array<{ __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } }>, preferredMembership?: { __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } } | null, aliases: Array<{ __typename?: 'Alias', id: number, name: string }>, avatar?: { __typename?: 'Image', width: number, height: number, id: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null, preferredAlias?: { __typename?: 'Alias', id: number, name: string } | null, banner?: { __typename?: 'Image', id: number, rawUrl: string, width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number } } | null } | null };
+
+export type AddProviderMutationVariables = Exact<{
+  provider: AddProviderInput;
+}>;
+
+
+export type AddProviderMutation = { __typename?: 'Mutation', addProvider: string };
+
+export type DiscoveryProvidersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveryProvidersQuery = { __typename?: 'Query', discoveryProviders: Array<{ __typename?: 'ProviderStatistic', name: string, destination: string, defaultName?: string | null, enabled: boolean, lastScrape?: any | null, scrapeCount: number, lastPost?: any | null, discoveredImages: number, official: boolean, url: string, createdAt?: any | null }> };
+
+export type DiscoveryLeaderboardQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveryLeaderboardQuery = { __typename?: 'Query', discoveryLeaderboard: Array<{ __typename?: 'LeaderboardUser', rank: number, xp: number, user: { __typename?: 'User', id: number, avatar?: string | null, name?: string | null, bot: boolean } }> };
+
+export type DiscoveryHistoryQueryVariables = Exact<{
+  take: Scalars['Int'];
+  skip?: Scalars['Int'];
+}>;
+
+
+export type DiscoveryHistoryQuery = { __typename?: 'Query', discoveryHistory: Array<{ __typename?: 'DiscoveredPost', id: number, providerType: string, uniqueIdentifier: string, body?: string | null, accountName: string, accountAvatarUrl?: string | null, postUrl?: string | null, createdAt: any, originalPostDate?: any | null, referencingGroups: Array<{ __typename?: 'Group', id: number, name: string }>, images: Array<{ __typename?: 'DiscoveredImage', thumbnail: string, url: string, id: number, vote?: { __typename?: 'DiscoveredImageVote', verdict: string } | null, duplicateImage?: { __typename?: 'Image', url: string, rawUrl: string } | null }> }> };
+
+export type ReportImageMutationVariables = Exact<{
+  imageId: Scalars['Int'];
+  reason?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ReportImageMutation = { __typename?: 'Mutation', reportImage?: { __typename?: 'ImageReport', id: number } | null };
+
+export type ImageReportActionMutationVariables = Exact<{
+  id: Scalars['Int'];
+  action: ImageReportAction;
+}>;
+
+
+export type ImageReportActionMutation = { __typename?: 'Mutation', imageReportAction?: { __typename?: 'ImageReport', id: number } | null };
+
+export type ImageReportsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ImageReportsQuery = { __typename?: 'Query', imageReports: Array<{ __typename?: 'ImageReport', id: number, reason?: string | null, createdAt: any, image: { __typename?: 'Image', id: number, url: string, slug: string, width: number, height: number, thumbnail: { __typename?: 'Thumbnail', medium: string } }, reportedBy: { __typename?: 'User', avatar?: string | null, name?: string | null } }> };
+
+export type OnePersonRelationshipImageFragment = { __typename?: 'Image', id: number, thumbnail: { __typename?: 'Thumbnail', small: string } };
+
+export type OnePersonRelationshipMembershipFragment = { __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } };
+
+export type OnePersonQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type OnePersonQuery = { __typename?: 'Query', person?: { __typename?: 'Person', id: number, name: string, birthDate?: any | null, appearances: Array<{ __typename?: 'Appearance', id: number, image: { __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> } }>, memberOf: Array<{ __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } }>, preferredMembership?: { __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } } | null, aliases: Array<{ __typename?: 'Alias', id: number, name: string }>, avatar?: { __typename?: 'Image', width: number, height: number, id: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null, preferredAlias?: { __typename?: 'Alias', id: number, name: string } | null, banner?: { __typename?: 'Image', id: number, rawUrl: string, width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number } } | null } | null };
+
+export type AddToQueueMutationVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type AddToQueueMutation = { __typename?: 'Mutation', scanFaces: { __typename?: 'QueueInfo', queueSize: number } };
+
+export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserDataQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, name?: string | null, avatar?: string | null, xp?: number | null, createdAt: any, roles: Array<{ __typename?: 'Role', name: string }> } | null };
+
+export type AppearanceDataFragment = { __typename?: 'Appearance', id: number, person: { __typename?: 'Person', id: number, name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null } };
+
+export type DiscoveryPostListableFragment = { __typename?: 'DiscoveredPost', id: number, providerType: string, uniqueIdentifier: string, body?: string | null, accountName: string, accountAvatarUrl?: string | null, postUrl?: string | null, createdAt: any, originalPostDate?: any | null, referencingGroups: Array<{ __typename?: 'Group', id: number, name: string }>, images: Array<{ __typename?: 'DiscoveredImage', thumbnail: string, url: string, id: number, vote?: { __typename?: 'DiscoveredImageVote', verdict: string } | null, duplicateImage?: { __typename?: 'Image', url: string, rawUrl: string } | null }> };
+
+export type FaceDataFragment = { __typename?: 'Face', id: number, x: number, y: number, width: number, height: number };
+
+export type GridImageFragment = { __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> };
+
+export type FocusFragment = { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number } };
+
+export type ImageDataFragment = { __typename?: 'Image', id: number, height: number, width: number, url: string, rawUrl: string, createdAt: any, caption?: string | null, public: boolean, source?: string | null, slug: string, bytes: number, mimetype: MimeType, palette: Array<number>, destination: UploadDestination, imageTags: Array<{ __typename?: 'ImageTag', tag: { __typename?: 'Tag', name: string } }> };
+
+export type UserDataFragment = { __typename?: 'User', id: number, name?: string | null, avatar?: string | null, bot: boolean };
+
+export type UserRoleDataFragment = { __typename?: 'Role', name: string };
+
+export type AppearanceWithFacesFragment = { __typename?: 'Appearance', id: number, faces: Array<{ __typename?: 'Face', id: number, x: number, y: number, width: number, height: number }>, person: { __typename?: 'Person', name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null }, tags: Array<{ __typename?: 'AppearanceTag', tag: { __typename?: 'Tag', name: string } }> };
+
+export type AddAppearanceMutationVariables = Exact<{
+  imageId: Scalars['Int'];
+  personId: Scalars['Int'];
+}>;
+
+
+export type AddAppearanceMutation = { __typename?: 'Mutation', appearance: { __typename?: 'Appearance', id: number, faces: Array<{ __typename?: 'Face', id: number, x: number, y: number, width: number, height: number }>, person: { __typename?: 'Person', name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null }, tags: Array<{ __typename?: 'AppearanceTag', tag: { __typename?: 'Tag', name: string } }> } };
+
+export type RemoveAppearanceMutationVariables = Exact<{
+  appearanceId: Scalars['Int'];
+}>;
+
+
+export type RemoveAppearanceMutation = { __typename?: 'Mutation', appearance: { __typename?: 'Appearance', id: number } };
+
+export type LinkFaceMutationVariables = Exact<{
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
+}>;
+
+
+export type LinkFaceMutation = { __typename?: 'Mutation', appearance: { __typename?: 'Appearance', id: number, faces: Array<{ __typename?: 'Face', id: number, x: number, y: number, width: number, height: number }>, person: { __typename?: 'Person', name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null }, tags: Array<{ __typename?: 'AppearanceTag', tag: { __typename?: 'Tag', name: string } }> } };
+
+export type UnlinkFaceMutationVariables = Exact<{
+  appearanceId: Scalars['Int'];
+  faceId: Scalars['Int'];
+}>;
+
+
+export type UnlinkFaceMutation = { __typename?: 'Mutation', unlinkFace: number };
+
+export type DiscoveryScheduleQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveryScheduleQuery = { __typename?: 'Query', discoverySchedule: Array<{ __typename?: 'DiscoveryProvider', destination: string, name?: string | null, waitDays: number, url: string, provider: string, official: boolean }> };
+
+export type DiscoveryStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DiscoveryStatsQuery = { __typename?: 'Query', discoveryStats: Array<{ __typename?: 'DiscoveryStatistic', count: number, verdict: string }> };
 
 export type GroupMembersQueryVariables = Exact<{
   groupId: Scalars['Int'];
@@ -2270,7 +2458,26 @@ export type HomepageImagesQueryVariables = Exact<{
 }>;
 
 
-export type HomepageImagesQuery = { __typename?: 'Query', images: Array<{ __typename?: 'Image', id: number, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> }> };
+export type HomepageImagesQuery = { __typename?: 'Query', images: Array<{ __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> }> };
+
+export type OneImageQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type OneImageQuery = { __typename?: 'Query', image?: { __typename?: 'Image', mimetype: MimeType, liked?: boolean | null, faceScanDate?: any | null, public: boolean, reported: boolean, hiddenAt?: any | null, id: number, height: number, width: number, url: string, rawUrl: string, createdAt: any, caption?: string | null, source?: string | null, slug: string, bytes: number, palette: Array<number>, destination: UploadDestination, unknownFaces: Array<{ __typename?: 'Face', id: number, x: number, y: number, width: number, height: number, appearance?: { __typename?: 'Appearance', id: number, person: { __typename?: 'Person', id: number, name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null } } | null }>, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', id: number, name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null }, tags: Array<{ __typename?: 'AppearanceTag', tag: { __typename?: 'Tag', name: string } }>, faces: Array<{ __typename?: 'Face', id: number, x: number, y: number, width: number, height: number }> }>, uploadedBy?: { __typename?: 'User', id: number, name?: string | null, avatar?: string | null, bot: boolean, roles: Array<{ __typename?: 'Role', name: string }> } | null, imageTags: Array<{ __typename?: 'ImageTag', tag: { __typename?: 'Tag', name: string } }> } | null };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, name?: string | null, avatar?: string | null, bot: boolean, images: Array<{ __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> }>, roles: Array<{ __typename?: 'Role', name: string }> } | null };
+
+export type ToggleLikeMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type ToggleLikeMutation = { __typename?: 'Mutation', toggleLike: { __typename?: 'Image', liked?: boolean | null } };
 
 export const PersonGridDataFragmentDoc = gql`
     fragment PersonGridData on Person {
@@ -2291,9 +2498,80 @@ export const PersonGridDataFragmentDoc = gql`
   }
 }
     `;
+export const OnePersonRelationshipImageFragmentDoc = gql`
+    fragment OnePersonRelationshipImage on Image {
+  id
+  thumbnail {
+    small
+  }
+}
+    `;
+export const OnePersonRelationshipMembershipFragmentDoc = gql`
+    fragment OnePersonRelationshipMembership on GroupMember {
+  id
+  startDate
+  group {
+    id
+    avatar {
+      width
+      height
+      focus {
+        x
+        y
+      }
+      thumbnail {
+        small
+      }
+    }
+    name
+  }
+}
+    `;
+export const AppearanceDataFragmentDoc = gql`
+    fragment AppearanceData on Appearance {
+  id
+  person {
+    id
+    name
+    preferredAlias {
+      name
+    }
+  }
+}
+    `;
+export const DiscoveryPostListableFragmentDoc = gql`
+    fragment DiscoveryPostListable on DiscoveredPost {
+  id
+  providerType
+  uniqueIdentifier
+  body
+  accountName
+  accountAvatarUrl
+  postUrl
+  createdAt
+  originalPostDate
+  referencingGroups {
+    id
+    name
+  }
+  images {
+    thumbnail
+    url
+    id
+    vote {
+      verdict
+    }
+    duplicateImage {
+      url
+      rawUrl
+    }
+  }
+}
+    `;
 export const GridImageFragmentDoc = gql`
     fragment GridImage on Image {
   id
+  slug
   url
   height
   width
@@ -2317,6 +2595,80 @@ export const GridImageFragmentDoc = gql`
     }
   }
   createdAt
+}
+    `;
+export const FocusFragmentDoc = gql`
+    fragment Focus on Image {
+  width
+  height
+  focus {
+    x
+    y
+  }
+}
+    `;
+export const ImageDataFragmentDoc = gql`
+    fragment ImageData on Image {
+  id
+  height
+  width
+  url
+  rawUrl
+  createdAt
+  caption
+  public
+  source
+  slug
+  bytes
+  mimetype
+  palette
+  destination
+  imageTags {
+    tag {
+      name
+    }
+  }
+}
+    `;
+export const UserDataFragmentDoc = gql`
+    fragment UserData on User {
+  id
+  name
+  avatar
+  bot
+}
+    `;
+export const UserRoleDataFragmentDoc = gql`
+    fragment UserRoleData on Role {
+  name
+}
+    `;
+export const FaceDataFragmentDoc = gql`
+    fragment FaceData on Face {
+  id
+  x
+  y
+  width
+  height
+}
+    `;
+export const AppearanceWithFacesFragmentDoc = gql`
+    fragment AppearanceWithFaces on Appearance {
+  id
+  faces {
+    ...FaceData
+  }
+  person {
+    preferredAlias {
+      name
+    }
+    name
+  }
+  tags {
+    tag {
+      name
+    }
+  }
 }
     `;
 export const BrowsePageIdolsWithFilterDocument = gql`
@@ -2345,6 +2697,305 @@ export const BrowsePageDocument = gql`
   }
 }
     ${GridImageFragmentDoc}`;
+export const AddAppearanceTagDocument = gql`
+    mutation AddAppearanceTag($name: String!, $appearanceId: Int!) {
+  createAppearanceTag(name: $name, appearanceId: $appearanceId) {
+    tag {
+      name
+    }
+  }
+}
+    `;
+export const DeleteAppearanceTagDocument = gql`
+    mutation DeleteAppearanceTag($name: String!, $appearanceId: Int!) {
+  deleteAppearanceTag(name: $name, appearanceId: $appearanceId) {
+    tag {
+      name
+    }
+  }
+}
+    `;
+export const PersonImagesDocument = gql`
+    query PersonImages($id: Int!, $skip: Int!, $take: Int!) {
+  images(
+    where: {appearances: {some: {personId: {equals: $id}}}}
+    skip: $skip
+    take: $take
+  ) {
+    ...GridImage
+  }
+}
+    ${GridImageFragmentDoc}`;
+export const PersonEditDataDocument = gql`
+    query PersonEditData($id: Int!) {
+  person(where: {id: $id}) {
+    birthDate
+    memberOf {
+      group {
+        id
+        name
+      }
+    }
+    preferredMembership {
+      group {
+        id
+        name
+      }
+    }
+    aliases {
+      name
+    }
+    preferredAlias {
+      name
+    }
+    banner {
+      id
+      rawUrl
+      thumbnail {
+        medium
+      }
+    }
+    avatar {
+      id
+      rawUrl
+      thumbnail {
+        medium
+      }
+    }
+  }
+}
+    `;
+export const PersonEditDocument = gql`
+    mutation PersonEdit($id: Int!, $input: UpdatePersonInputs!) {
+  updatePerson(id: $id, update: $input) {
+    id
+    name
+    birthDate
+    appearances {
+      id
+      image {
+        ...GridImage
+      }
+    }
+    memberOf {
+      ...OnePersonRelationshipMembership
+    }
+    preferredMembership {
+      ...OnePersonRelationshipMembership
+    }
+    aliases {
+      id
+      name
+    }
+    avatar {
+      ...Focus
+      ...OnePersonRelationshipImage
+    }
+    preferredAlias {
+      id
+      name
+    }
+    banner {
+      id
+      ...Focus
+      rawUrl
+    }
+  }
+}
+    ${GridImageFragmentDoc}
+${OnePersonRelationshipMembershipFragmentDoc}
+${FocusFragmentDoc}
+${OnePersonRelationshipImageFragmentDoc}`;
+export const AddProviderDocument = gql`
+    mutation AddProvider($provider: AddProviderInput!) {
+  addProvider(provider: $provider)
+}
+    `;
+export const DiscoveryProvidersDocument = gql`
+    query DiscoveryProviders {
+  discoveryProviders {
+    name
+    destination
+    defaultName
+    enabled
+    lastScrape
+    scrapeCount
+    lastPost
+    discoveredImages
+    official
+    url
+    createdAt
+  }
+}
+    `;
+export const DiscoveryLeaderboardDocument = gql`
+    query DiscoveryLeaderboard {
+  discoveryLeaderboard {
+    rank
+    xp
+    user {
+      id
+      avatar
+      name
+      bot
+    }
+  }
+}
+    `;
+export const DiscoveryHistoryDocument = gql`
+    query DiscoveryHistory($take: Int!, $skip: Int! = 0) {
+  discoveryHistory(take: $take, skip: $skip) {
+    ...DiscoveryPostListable
+  }
+}
+    ${DiscoveryPostListableFragmentDoc}`;
+export const ReportImageDocument = gql`
+    mutation ReportImage($imageId: Int!, $reason: String) {
+  reportImage(reason: $reason, imageId: $imageId) {
+    id
+  }
+}
+    `;
+export const ImageReportActionDocument = gql`
+    mutation ImageReportAction($id: Int!, $action: ImageReportAction!) {
+  imageReportAction(action: $action, reportId: $id) {
+    id
+  }
+}
+    `;
+export const ImageReportsDocument = gql`
+    query ImageReports {
+  imageReports(orderBy: [{createdAt: desc}], where: {action: {equals: null}}) {
+    id
+    reason
+    image {
+      id
+      url
+      slug
+      width
+      height
+      thumbnail {
+        medium
+      }
+    }
+    reportedBy {
+      avatar
+      name
+    }
+    createdAt
+  }
+}
+    `;
+export const OnePersonDocument = gql`
+    query OnePerson($id: Int!) {
+  person(where: {id: $id}) {
+    id
+    name
+    birthDate
+    appearances(take: 20) {
+      id
+      image {
+        ...GridImage
+      }
+    }
+    memberOf {
+      ...OnePersonRelationshipMembership
+    }
+    preferredMembership {
+      ...OnePersonRelationshipMembership
+    }
+    aliases {
+      id
+      name
+    }
+    avatar {
+      ...Focus
+      ...OnePersonRelationshipImage
+    }
+    preferredAlias {
+      id
+      name
+    }
+    banner {
+      id
+      ...Focus
+      rawUrl
+    }
+  }
+}
+    ${GridImageFragmentDoc}
+${OnePersonRelationshipMembershipFragmentDoc}
+${FocusFragmentDoc}
+${OnePersonRelationshipImageFragmentDoc}`;
+export const AddToQueueDocument = gql`
+    mutation addToQueue($slug: String!) {
+  scanFaces(slug: $slug) {
+    queueSize
+  }
+}
+    `;
+export const UserDataDocument = gql`
+    query UserData {
+  me {
+    id
+    name
+    avatar
+    xp
+    createdAt
+    roles {
+      name
+    }
+  }
+}
+    `;
+export const AddAppearanceDocument = gql`
+    mutation AddAppearance($imageId: Int!, $personId: Int!) {
+  appearance: addAppearance(imageId: $imageId, personId: $personId) {
+    ...AppearanceWithFaces
+  }
+}
+    ${AppearanceWithFacesFragmentDoc}
+${FaceDataFragmentDoc}`;
+export const RemoveAppearanceDocument = gql`
+    mutation RemoveAppearance($appearanceId: Int!) {
+  appearance: removeAppearance(appearanceId: $appearanceId) {
+    id
+  }
+}
+    `;
+export const LinkFaceDocument = gql`
+    mutation LinkFace($appearanceId: Int!, $faceId: Int!) {
+  appearance: linkFace(faceId: $faceId, appearanceId: $appearanceId) {
+    ...AppearanceWithFaces
+  }
+}
+    ${AppearanceWithFacesFragmentDoc}
+${FaceDataFragmentDoc}`;
+export const UnlinkFaceDocument = gql`
+    mutation UnlinkFace($appearanceId: Int!, $faceId: Int!) {
+  unlinkFace(faceId: $faceId, appearanceId: $appearanceId)
+}
+    `;
+export const DiscoveryScheduleDocument = gql`
+    query DiscoverySchedule {
+  discoverySchedule {
+    destination
+    name
+    waitDays
+    url
+    provider
+    official
+  }
+}
+    `;
+export const DiscoveryStatsDocument = gql`
+    query DiscoveryStats {
+  discoveryStats {
+    count
+    verdict
+  }
+}
+    `;
 export const GroupMembersDocument = gql`
     query GroupMembers($groupId: Int!) {
   group(where: {id: $groupId}) {
@@ -2387,6 +3038,75 @@ export const HomepageImagesDocument = gql`
   }
 }
     ${GridImageFragmentDoc}`;
+export const OneImageDocument = gql`
+    query OneImage($slug: String!) {
+  image(slug: $slug) {
+    mimetype
+    unknownFaces {
+      ...FaceData
+      appearance {
+        ...AppearanceData
+      }
+    }
+    appearances {
+      id
+      person {
+        id
+        name
+        preferredAlias {
+          name
+        }
+      }
+      tags {
+        tag {
+          name
+        }
+      }
+      faces {
+        ...FaceData
+      }
+    }
+    liked
+    uploadedBy {
+      ...UserData
+      roles {
+        ...UserRoleData
+      }
+    }
+    ...ImageData
+    faceScanDate
+    public
+    reported
+    hiddenAt
+  }
+}
+    ${FaceDataFragmentDoc}
+${AppearanceDataFragmentDoc}
+${UserDataFragmentDoc}
+${UserRoleDataFragmentDoc}
+${ImageDataFragmentDoc}`;
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...UserData
+    images(orderBy: {createdAt: asc}) {
+      ...GridImage
+    }
+    roles {
+      ...UserRoleData
+    }
+  }
+}
+    ${UserDataFragmentDoc}
+${GridImageFragmentDoc}
+${UserRoleDataFragmentDoc}`;
+export const ToggleLikeDocument = gql`
+    mutation ToggleLike($id: Int!) {
+  toggleLike(imageId: $id) {
+    liked
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
@@ -2404,6 +3124,69 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     BrowsePage(variables: BrowsePageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<BrowsePageQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<BrowsePageQuery>(BrowsePageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'BrowsePage');
     },
+    AddAppearanceTag(variables: AddAppearanceTagMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddAppearanceTagMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddAppearanceTagMutation>(AddAppearanceTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddAppearanceTag');
+    },
+    DeleteAppearanceTag(variables: DeleteAppearanceTagMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteAppearanceTagMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteAppearanceTagMutation>(DeleteAppearanceTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DeleteAppearanceTag');
+    },
+    PersonImages(variables: PersonImagesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<PersonImagesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PersonImagesQuery>(PersonImagesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'PersonImages');
+    },
+    PersonEditData(variables: PersonEditDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<PersonEditDataQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PersonEditDataQuery>(PersonEditDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'PersonEditData');
+    },
+    PersonEdit(variables: PersonEditMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<PersonEditMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PersonEditMutation>(PersonEditDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'PersonEdit');
+    },
+    AddProvider(variables: AddProviderMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddProviderMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddProviderMutation>(AddProviderDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddProvider');
+    },
+    DiscoveryProviders(variables?: DiscoveryProvidersQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DiscoveryProvidersQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DiscoveryProvidersQuery>(DiscoveryProvidersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DiscoveryProviders');
+    },
+    DiscoveryLeaderboard(variables?: DiscoveryLeaderboardQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DiscoveryLeaderboardQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DiscoveryLeaderboardQuery>(DiscoveryLeaderboardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DiscoveryLeaderboard');
+    },
+    DiscoveryHistory(variables: DiscoveryHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DiscoveryHistoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DiscoveryHistoryQuery>(DiscoveryHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DiscoveryHistory');
+    },
+    ReportImage(variables: ReportImageMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ReportImageMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ReportImageMutation>(ReportImageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ReportImage');
+    },
+    ImageReportAction(variables: ImageReportActionMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ImageReportActionMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ImageReportActionMutation>(ImageReportActionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ImageReportAction');
+    },
+    ImageReports(variables?: ImageReportsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ImageReportsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ImageReportsQuery>(ImageReportsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ImageReports');
+    },
+    OnePerson(variables: OnePersonQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OnePersonQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OnePersonQuery>(OnePersonDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OnePerson');
+    },
+    addToQueue(variables: AddToQueueMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddToQueueMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddToQueueMutation>(AddToQueueDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addToQueue');
+    },
+    UserData(variables?: UserDataQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserDataQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserDataQuery>(UserDataDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UserData');
+    },
+    AddAppearance(variables: AddAppearanceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddAppearanceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddAppearanceMutation>(AddAppearanceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AddAppearance');
+    },
+    RemoveAppearance(variables: RemoveAppearanceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RemoveAppearanceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RemoveAppearanceMutation>(RemoveAppearanceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RemoveAppearance');
+    },
+    LinkFace(variables: LinkFaceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LinkFaceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<LinkFaceMutation>(LinkFaceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'LinkFace');
+    },
+    UnlinkFace(variables: UnlinkFaceMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UnlinkFaceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UnlinkFaceMutation>(UnlinkFaceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UnlinkFace');
+    },
+    DiscoverySchedule(variables?: DiscoveryScheduleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DiscoveryScheduleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DiscoveryScheduleQuery>(DiscoveryScheduleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DiscoverySchedule');
+    },
+    DiscoveryStats(variables?: DiscoveryStatsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DiscoveryStatsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DiscoveryStatsQuery>(DiscoveryStatsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'DiscoveryStats');
+    },
     GroupMembers(variables: GroupMembersQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GroupMembersQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GroupMembersQuery>(GroupMembersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GroupMembers');
     },
@@ -2412,6 +3195,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     HomepageImages(variables: HomepageImagesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<HomepageImagesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<HomepageImagesQuery>(HomepageImagesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'HomepageImages');
+    },
+    OneImage(variables: OneImageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OneImageQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OneImageQuery>(OneImageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OneImage');
+    },
+    Me(variables?: MeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MeQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MeQuery>(MeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Me');
+    },
+    ToggleLike(variables: ToggleLikeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ToggleLikeMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ToggleLikeMutation>(ToggleLikeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ToggleLike');
     }
   };
 }

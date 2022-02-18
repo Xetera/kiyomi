@@ -1,10 +1,21 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/tabs"
-import { Flex, forwardRef, Grid, Spinner, Tag } from "@chakra-ui/react"
-import React, { PropsWithChildren } from "react"
-import { useDiscoveryStatsQuery } from "~/__generated__/graphql"
+import {
+  Flex,
+  forwardRef,
+  Grid,
+  Spinner,
+  Tag,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react"
+import React, { PropsWithChildren, useEffect, useState } from "react"
+import { DiscoveryStatsQuery } from "~/__generated__/graphql"
 import DiscoverSidebar from "~/components/discover/sidebar"
 import { DiscoveryHistorySidebar } from "~/components/discover/discovery-history-sidebar"
 import { AddProvider } from "~/components/discover/add-provider"
+import { useSdk } from "~/hooks/useSdk"
 
 export const SidebarGrid = forwardRef<PropsWithChildren<any>, "main">(
   (props, ref) => (
@@ -28,7 +39,13 @@ type DiscoverTabsOptions = {
 }
 
 export default function DiscoverTabs(props: DiscoverTabsOptions) {
-  const { data } = useDiscoveryStatsQuery()
+  const sdk = useSdk()
+  const [data, setData] = useState<DiscoveryStatsQuery | undefined>()
+  useEffect(() => {
+    async function get() {
+      setData(await sdk.DiscoveryStats())
+    }
+  }, [])
   const totalVerdicts = data
     ? data.discoveryStats.reduce((total, stat) => stat.count + total, 0)
     : undefined

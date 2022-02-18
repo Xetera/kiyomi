@@ -1,12 +1,23 @@
 import { UserPortrait } from "~/components/discover/user-portrait"
 import { useSelector } from "react-redux"
-import { RootState } from "@/models/store"
-import { useDiscoveryLeaderboardQuery } from "~/__generated__/graphql"
+import { RootState } from "~/models/store"
+import { DiscoveryLeaderboardQuery } from "~/__generated__/graphql"
 import { Flex, HStack, Text, VStack } from "@chakra-ui/react"
+import { useSdk } from "~/hooks/useSdk"
+import { useEffect, useState } from "react"
 
 export const DiscoveryHistorySidebar = () => {
+  const sdk = useSdk()
   const me = useSelector((root: RootState) => root.user?.cache)
-  const { data } = useDiscoveryLeaderboardQuery()
+  const [data, setData] = useState<DiscoveryLeaderboardQuery | undefined>(
+    undefined
+  )
+  useEffect(() => {
+    async function get() {
+      setData(await sdk.DiscoveryLeaderboard())
+    }
+    get()
+  }, [])
 
   return (
     <VStack spacing={8}>

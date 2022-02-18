@@ -22,11 +22,7 @@ import {
   Tbody,
 } from "@chakra-ui/react"
 import { z } from "zod"
-import {
-  AddProviderInput,
-  useAddProviderMutation,
-  useDiscoveryProvidersQuery,
-} from "~/__generated__/graphql"
+import { DiscoveryProvidersQuery } from "~/__generated__/graphql"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Grid } from "@chakra-ui/layout"
 import { RiLink } from "react-icons/ri"
@@ -38,19 +34,19 @@ import {
 } from "~/components/discover/sidebar-search"
 import { SearchTag } from "~/components/discover/search-tags"
 import { searchGroup } from "~/client/typesense"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ProviderTag } from "~/components/discover/provider-tag"
 import groupBy from "lodash/groupBy"
 import { decideProvider } from "~/components/discover/discovered-post"
 import Hr from "~/components/hr"
-import { useQueryClient } from "react-query"
 import { useSelector } from "react-redux"
-import { RootState } from "@/models/store"
+import { RootState } from "~/models/store"
 import { HiBadgeCheck } from "react-icons/hi"
 import format from "date-fns/format"
-import cls from "classnames"
 import { useSearchFilter } from "~/hooks/useSearchFilter"
 import { ProviderFilterGroup } from "~/components/discover/add-provider/provider-filters"
+import { GraphqlClientContext } from "~/models/contexts"
+import { useSdk } from "~/hooks/useSdk"
 
 const resolver = z.object({
   name: z.string(),
@@ -69,7 +65,16 @@ const getFormattedJson = (input: any) => {
 }
 
 const ProviderList = () => {
-  const { data: providers } = useDiscoveryProvidersQuery()
+  const sdk = useSdk()
+  const [providers, setProviders] = useState<
+    DiscoveryProvidersQuery["discoveryProviders"]
+  >([])
+  async function getProviders() {
+    setProviders((await sdk.DiscoveryProviders()).discoveryProviders)
+  }
+  useEffect(() => {
+    getProviders()
+  }, [])
   if (!providers) {
     return <Spinner />
   }
@@ -157,14 +162,13 @@ export const AddProvider = () => {
     name: "groups",
     keyName: "id",
   })
-  const { mutateAsync } = useAddProviderMutation()
-  const client = useQueryClient()
+  const sdk = useContext(GraphqlClientContext)
   const [response, setResponse] = useState("")
   const { errors } = formState
 
   const onSubmit = handleSubmit(async ({ groups, ...form }) => {
     const groupIds = groups.map((g) => g.groupId)
-    const result = await mutateAsync({
+    const result = await sdk.AddProvider({
       provider: {
         ...form,
         groups: groupIds,
@@ -172,7 +176,6 @@ export const AddProvider = () => {
       },
     })
     setResponse(result.addProvider)
-    client.invalidateQueries(["DiscoveryProviders"])
   })
 
   return (

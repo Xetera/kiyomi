@@ -1,7 +1,4 @@
-import {
-  useDiscoveryProvidersQuery,
-  useDiscoveryScheduleQuery,
-} from "~/__generated__/graphql"
+import type { DiscoveryScheduleQuery } from "~/__generated__/graphql"
 import {
   Accordion,
   AccordionButton,
@@ -24,10 +21,12 @@ import {
 } from "~/components/discover/sidebar-search"
 import { HiBadgeCheck } from "react-icons/hi"
 import { useState } from "react"
-import { RootState, store } from "@/models/store"
+import { RootState, store } from "~/models/store"
 import { useSelector } from "react-redux"
 import { searchGroup } from "~/client/typesense"
 import { ProviderTag } from "~/components/discover/provider-tag"
+import { LoaderFunction, useFetcher } from "remix"
+import { sdk } from "~/client/graphql"
 
 function isGraphQlError(error: any): error is { message: string } {
   return error && "message" in error
@@ -49,21 +48,28 @@ const DiscoverySidebarSearch = () => {
   )
 }
 
+export type LoaderContext = DiscoveryScheduleQuery
+
+export const loader: LoaderFunction = (): Promise<LoaderContext> => {
+  return sdk.DiscoverySchedule()
+}
+
 export default function DiscoverSidebar() {
-  const { data, isFetching, error, isLoading } = useDiscoveryScheduleQuery()
-  const providers = data?.discoverySchedule
+  const fetcher = useFetcher<LoaderContext>()
+  // const { data, isFetching, error, isLoading } = useDiscoveryScheduleQuery()
+  const providers = fetcher.data?.discoverySchedule
   const groups = groupBy(providers ?? [], (e) => e.provider)
   return (
     <VStack align="flex-start" spacing={8}>
-      {isLoading && <Spinner />}
+      {fetcher.state === "loading" && <Spinner />}
       <DiscoverySidebarSearch />
-      {!isLoading && isGraphQlError(error) && (
+      {fetcher.state === "idle" && isGraphQlError(fetcher.data) && (
         <>
           <Text color="pink.300" fontWeight="regular">
             There was an error getting a response from the JiU server
           </Text>
           <Text as="pre" whiteSpace="break-spaces">
-            {error.message}
+            {fetcher.data.message}
           </Text>
         </>
       )}

@@ -1,0 +1,17 @@
+query DiscoverySchedule {
+    discoverySchedule {
+        destination
+        name
+        waitDays
+        url
+        provider
+        official
+    }
+}
+
+query DiscoveryStats {
+    discoveryStats {
+        count
+        verdict
+    }
+}

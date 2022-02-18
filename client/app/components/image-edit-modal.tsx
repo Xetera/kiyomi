@@ -3,46 +3,19 @@ import {
   AppearanceWithFacesFragment,
   FaceDataFragment,
   OneImageQuery,
-  useAddAppearanceMutation,
-  useLinkFaceMutation,
-  useRemoveAppearanceMutation,
-  useUnlinkFaceMutation,
 } from "~/__generated__/graphql"
-import React, { useMemo, useRef, useState } from "react"
-import { maxPortraitHeight, PersonPortrait } from "./person-preview"
-import dynamic from "next/dynamic"
+import React, { useContext, useMemo, useRef, useState } from "react"
+import { maxPortraitHeight } from "./person-preview"
 import { Box, Flex, Heading, Text } from "@chakra-ui/layout"
-import { Input } from "@chakra-ui/input"
 import { PersonSearchbar } from "./search"
 import keyBy from "lodash/keyBy"
 import mapValues from "lodash/mapValues"
 import flatMap from "lodash/flatMap"
 import { DropResult } from "react-beautiful-dnd"
 import { RiDeleteBin2Fill } from "react-icons/ri"
-import useOnClickOutside from "~/hooks/useOnClickOutside"
 import { forwardRef } from "@chakra-ui/react"
-
-const DragDropContext = dynamic(
-  () => {
-    const promise = import("react-beautiful-dnd").then((r) => r.DragDropContext)
-    return promise
-  },
-  { ssr: false }
-)
-const Droppable = dynamic(
-  () => {
-    const a = import("react-beautiful-dnd").then((r) => r.Droppable)
-    return a
-  },
-  { ssr: false }
-)
-const Draggable = dynamic(
-  () => {
-    const a = import("react-beautiful-dnd").then((r) => r.Draggable)
-    return a
-  },
-  { ssr: false }
-)
+import { GraphqlClientContext } from "~/models/contexts"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 export type ImageEditModalProps = {
   image: NonNullable<OneImageQuery["image"]>
@@ -54,6 +27,7 @@ type DraggablePersonProps = {
   smaller?: boolean
   maxPortraitHeight?: number
 }
+
 export const DraggableFace = forwardRef<DraggablePersonProps, "div">(
   ({ src, maxPortraitHeight: maxPortraitHeightLocal, face, ...rest }, ref) => {
     const faceSlice = useImageSlice({
@@ -80,7 +54,7 @@ export const DraggableFace = forwardRef<DraggablePersonProps, "div">(
   }
 )
 
-function ModalHeading({ children }) {
+const ModalHeading: React.FC = ({ children }) => {
   return (
     <Heading mb={2} size="md" color="gray.300">
       {children}
@@ -91,6 +65,7 @@ function ModalHeading({ children }) {
 export function ImageEditEditor(props: ImageEditModalProps) {}
 
 export function ImageEditModal(props: ImageEditModalProps) {
+  const sdk = useContext(GraphqlClientContext)
   const appearanceMap = mapValues(
     keyBy(props.image.appearances, (f) => f.id),
     (f) => ({
@@ -118,19 +93,16 @@ export function ImageEditModal(props: ImageEditModalProps) {
   const [unknownFaces, setUnknownFaces] = useState<{
     [id: number]: FaceDataFragment
   }>(unknownFacesMap)
-  const { mutateAsync: addAppearance } = useAddAppearanceMutation()
-  const { mutateAsync: removeAppearance } = useRemoveAppearanceMutation()
-  const { mutateAsync: linkFace } = useLinkFaceMutation()
-  const { mutateAsync: unlinkFace } = useUnlinkFaceMutation()
+
   async function addAppearance_(personId: number) {
-    const { appearance } = await addAppearance({
+    const { appearance } = await sdk.AddAppearance({
       imageId: props.image.id,
       personId,
     })
     setAppearances((prev) => ({ ...prev, [appearance.id]: appearance }))
   }
   async function removeAppearance_(appearanceId: number) {
-    await removeAppearance({ appearanceId })
+    await sdk.RemoveAppearance({ appearanceId })
     setAppearances((prev) => {
       delete prev[appearanceId]
       return prev
@@ -147,7 +119,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
         faces: appearance.faces.concat([face]),
       },
     }))
-    await linkFace({ faceId, appearanceId })
+    await sdk.LinkFace({ faceId, appearanceId })
   }
   async function unlinkFace_(faceId: number, appearanceId: number) {
     const appearance = appearances[appearanceId]
@@ -160,7 +132,7 @@ export function ImageEditModal(props: ImageEditModalProps) {
         faces,
       },
     }))
-    await unlinkFace({ faceId, appearanceId })
+    await sdk.UnlinkFace({ faceId, appearanceId })
   }
   async function onDragEnd(result: DropResult) {
     const { destination, source, draggableId } = result

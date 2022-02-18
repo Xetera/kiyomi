@@ -1,21 +1,17 @@
 import {
   queryFieldsBy,
   SEARCH_ENGINE_RESULT_PER_PAGE,
-} from "@/../shared/search"
+} from "../../../shared/search"
 import { SearchClient } from "typesense"
 import type { NodeConfiguration } from "typesense/lib/Typesense/Configuration"
-import type {
-  SearchOptions,
-  SearchParams,
-  SearchResponse,
-} from "typesense/lib/Typesense/Documents"
+import type { SearchResponse } from "typesense/lib/Typesense/Documents"
 import type { MultiSearchRequestSchema } from "typesense/lib/Typesense/MultiSearch"
 
 export const typesense = new SearchClient({
-  apiKey: process.env.NEXT_PUBLIC_TYPESENSE_KEY!,
+  apiKey: globalThis.ENV.TYPESENSE_KEY!,
   nodes: [
     {
-      url: process.env.NEXT_PUBLIC_TYPESENSE_URL,
+      url: globalThis.ENV.TYPESENSE_URL,
     } as NodeConfiguration,
   ],
 })

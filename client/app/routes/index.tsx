@@ -15,9 +15,9 @@ import ImageGrid from "~/components/data-grids/image-grid"
 import { WithNavbar } from "~/components/navbar/navbar-wrapper"
 import { HomepageImagesQuery } from "~/__generated__/graphql"
 import { motion } from "framer-motion"
-import { useVirtual } from "react-virtual"
 // @ts-ignore
 import { InfiniteScroll } from "react-simple-infinite-scroll"
+import { usePaginated } from "~/hooks/use-paginated"
 
 const AnimatedImage = motion(Image)
 
@@ -25,7 +25,6 @@ type LoaderContext = HomepageImagesQuery
 const homepageSplash = ["https://img.kiyomi.io/K2BFZ4GQKM9-SP8f.webp"]
 
 const LIMIT = 40
-const DATA_OVERSCAN = 10
 type HomepageProps = {}
 
 const magicGradient =
@@ -42,41 +41,13 @@ export const loader: LoaderFunction = ({ request }): Promise<LoaderContext> => {
 
 function IndexView() {
   const pageRef = useRef(null)
-  const data = useLoaderData<LoaderContext>()
   const fetcher = useFetcher<LoaderContext>()
-  const startRef = useRef(data.images.length)
-
-  const parentRef = useRef<HTMLDivElement>(null)
-  const [images, setImages] = useState(data.images)
-
-  const transition = useTransition()
-  const isLoading = transition.state === "loading"
-  const rowVirtualizer = useVirtual({
-    size: 20,
-    parentRef,
-    estimateSize: useCallback(() => 300, []),
-    initialRect: { width: 0, height: 800 },
+  const pagination = usePaginated(fetcher, {
+    href: "/",
+    transform: (data) => data.images,
+    perPage: 100,
   })
 
-  useEffect(() => {
-    if (fetcher.data) {
-      console.log("updating total data")
-      setImages((prevItems) => [...prevItems, ...(fetcher.data?.images ?? [])])
-    }
-  }, [fetcher.data])
-
-  function loadMore() {
-    if (fetcher.state === "loading") return
-    const newStart = startRef.current
-
-    const qs = new URLSearchParams([
-      ["start", String(newStart)],
-      ["limit", String(LIMIT)],
-    ])
-    console.log("getting new data", Object.fromEntries(qs.entries()))
-    fetcher.load(`/?${qs}`)
-    startRef.current += LIMIT
-  }
   return (
     <VStack w="full" alignItems="center">
       <Box
@@ -170,17 +141,16 @@ function IndexView() {
           flex={1}
           position="relative"
         >
-          {data && (
+          {pagination.data && (
             <InfiniteScroll
               throttle={100}
               threshold={3000}
-              isLoading={isLoading}
+              isLoading={pagination.fetcher.state === "loading"}
               hasMore={true}
-              onLoadMore={loadMore}
+              onLoadMore={pagination.loadMore}
             >
               <ImageGrid
-                ref={parentRef}
-                images={images.map((image) => {
+                images={pagination.data.map((image) => {
                   return toClickableGridImage(image)
                 })}
               />

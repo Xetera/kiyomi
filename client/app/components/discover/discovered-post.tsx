@@ -5,11 +5,11 @@ import {
   RiTwitterLine,
 } from "react-icons/ri"
 import {
-  DiscoveredPostsQuery,
+  // DiscoveredPostsQuery,
   DiscoveryPostListableFragment,
   Maybe,
-  useVoteDiscoveryImageMutation,
-  useVoteDiscoveryPostMutation,
+  // useVoteDiscoveryImageMutation,
+  // useVoteDiscoveryPostMutation,
 } from "~/__generated__/graphql"
 import {
   Box,
@@ -24,12 +24,12 @@ import {
 import { Flex, Text } from "@chakra-ui/layout"
 import formatDistance from "date-fns/formatDistance"
 import { DiscoveredImageGrid } from "./discovered-image-grid"
-import { useState } from "react"
-import { Verdict } from "~/shared"
+import { useContext, useState } from "react"
+import { Verdict } from "~/client/shared"
 import keyBy from "lodash/keyBy"
 import mapValues from "lodash/mapValues"
-import type { DiscoveredImageVote } from "@prisma/client"
 import useToast from "~/hooks/useToast"
+import { useSdk } from "~/hooks/useSdk"
 
 export type ProviderIconProps = {
   providerType: string
@@ -95,211 +95,213 @@ function PostBody({ text, providerType }: PostBodyProps) {
 
 export const MAX_IMAGE_DISPLAY = 4
 
-export type ImageVerdictVote = Maybe<Pick<DiscoveredImageVote, "verdict">>
+// export type ImageVerdictVote = Maybe<Pick<DiscoveredImageVote, "verdict">>
 
 export type ImageVerdict = {
   id: number
-  vote?: ImageVerdictVote
+  vote?: any //  ImageVerdictVote
 }
 
 export function DiscoveredPost({ post }: DiscoveredPostProps) {
-  const [showingAll, showMore] = useState(
-    post.images.length <= MAX_IMAGE_DISPLAY
-  )
+  return null
+  // const sdk = useSdk()
+  // const [showingAll, showMore] = useState(
+  //   post.images.length <= MAX_IMAGE_DISPLAY
+  // )
 
-  function toVerdicts(images: ImageVerdict[]) {
-    return mapValues(
-      keyBy(
-        images.filter((image) => image.vote),
-        (e) => e.id
-      ),
-      (a) => a.vote
-    ) as Record<string, ImageVerdictVote>
-  }
+  // function toVerdicts(images: ImageVerdict[]) {
+  //   return mapValues(
+  //     keyBy(
+  //       images.filter((image) => image.vote),
+  //       (e) => e.id
+  //     ),
+  //     (a) => a.vote
+  //   ) as Record<string, ImageVerdictVote>
+  // }
 
-  const [verdicts, setVerdicts] = useState(() => toVerdicts(post.images))
-  const { component, label } = decideProvider(post.providerType)
-  const { mutateAsync: runVotePost } = useVoteDiscoveryPostMutation()
-  const { mutateAsync: runVoteImage } = useVoteDiscoveryImageMutation()
-  const toast = useToast("error")
+  // const [verdicts, setVerdicts] = useState(() => toVerdicts(post.images))
+  // const { component, label } = decideProvider(post.providerType)
+  // const { mutateAsync: runVotePost } = useVoteDiscoveryPostMutation()
+  // const { mutateAsync: runVoteImage } = useVoteDiscoveryImageMutation()
+  // const toast = useToast("error")
 
-  async function votePost(verdict: Verdict, reason?: string) {
-    const result = await runVotePost({
-      postId: post.id,
-      reason,
-      verdict,
-    })
-    setVerdicts((prev) => ({
-      ...prev,
-      ...toVerdicts(result.discoveredPostVote),
-    }))
-  }
+  // async function votePost(verdict: Verdict, reason?: string) {
+  //   const result = await runVotePost({
+  //     postId: post.id,
+  //     reason,
+  //     verdict,
+  //   })
+  //   setVerdicts((prev) => ({
+  //     ...prev,
+  //     ...toVerdicts(result.discoveredPostVote),
+  //   }))
+  // }
 
-  async function voteImage(verdict: string, imageId: number, reason?: string) {
-    try {
-      setVerdicts((prev) => ({
-        ...prev,
-        [imageId]: { verdict },
-      }))
-      await runVoteImage({ imageId, reason, verdict })
-    } catch (err) {
-      if (err instanceof Error) {
-        toast({
-          title: "Error voting",
-          description: err.message,
-        })
-      }
-      setVerdicts(verdicts)
-    }
-  }
+  // async function voteImage(verdict: string, imageId: number, reason?: string) {
+  //   try {
+  //     setVerdicts((prev) => ({
+  //       ...prev,
+  //       [imageId]: { verdict },
+  //     }))
+  //     await runVoteImage({ imageId, reason, verdict })
+  //   } catch (err) {
+  //     if (err instanceof Error) {
+  //       toast({
+  //         title: "Error voting",
+  //         description: err.message,
+  //       })
+  //     }
+  //     setVerdicts(verdicts)
+  //   }
+  // }
 
-  const hasImageNeedsMerging = Object.values(post.images).some(
-    (e) => e.duplicateImage
-  )
+  // const hasImageNeedsMerging = Object.values(post.images).some(
+  //   (e) => e.duplicateImage
+  // )
 
-  return (
-    <Grid
-      autoFlow="row"
-      p={8}
-      gap={5}
-      background="rgba(0, 0, 0, 0.1)"
-      backdropFilter="blur(15px)"
-      borderRadius="md"
-      borderColor="borderSubtle"
-      borderWidth="1px"
-      data-provider-type={post.providerType}
-      zIndex={1}
-    >
-      <Flex
-        justify="space-between"
-        direction={["column", null, "row"]}
-        w="full"
-        sx={{ gap: 4 }}
-        flex={1}
-      >
-        <HStack spacing={3}>
-          <HStack align="center" spacing={3}>
-            <Flex
-              align="center"
-              justify="center"
-              borderRadius="full"
-              borderColor="borderSubtle"
-              overflow="hidden"
-              borderWidth="1px"
-              h={12}
-              w={12}
-            >
-              {post.accountAvatarUrl && <Image src={post.accountAvatarUrl} />}
-            </Flex>
-            <VStack spacing={0} align="flex-start" justify="center">
-              <HStack spacing={2}>
-                <Text textStyle="heading-sm">{post.accountName}</Text>
-              </HStack>
-              <Text textStyle="text-sm" color="text.500">
-                Posted{" "}
-                {formatDistance(new Date(post.originalPostDate), new Date(), {
-                  addSuffix: true,
-                })}
-              </Text>
-            </VStack>
-          </HStack>
-        </HStack>
-        <HStack align="center" spacing={1} justify="flex-end">
-          <VStack spacing={0} align="flex-start" textAlign="right">
-            <Text
-              fontSize="sm"
-              fontWeight="medium"
-              width="full"
-              textAlign="right"
-            >
-              {label}
-            </Text>
-            {post.postUrl && (
-              <Link
-                fontSize="xs"
-                href={post.postUrl}
-                textAlign="right"
-                color="text.500"
-                width="100%"
-              >
-                Go to source
-              </Link>
-            )}
-          </VStack>
-          <Flex
-            w={9}
-            h={9}
-            overflow="hidden"
-            marginInlineEnd={2}
-            align="center"
-            justify="center"
-          >
-            {component}
-          </Flex>
-        </HStack>
-      </Flex>
-      {post.body && (
-        <PostBody text={post.body} providerType={post.providerType} />
-      )}
-      <DiscoveredImageGrid
-        images={post.images}
-        showingMore={showingAll}
-        verdicts={verdicts}
-        voteImage={voteImage}
-      />
-      {!showingAll && (
-        <Button
-          bg="bgPrimary"
-          borderColor="borderSubtle"
-          borderWidth="1px"
-          onClick={() => showMore(true)}
-        >
-          Show {post.images.length - MAX_IMAGE_DISPLAY} more images
-        </Button>
-      )}
-      {/* show approve all only if all images are visible */}
-      {showingAll && (
-        <HStack justify="flex-start">
-          <ButtonGroup spacing={3} size="sm">
-            {hasImageNeedsMerging && (
-              <Button
-                borderWidth="1px"
-                bg="inherit"
-                borderRadius="4"
-                borderColor="lightTransparent"
-                _hover={{
-                  bg: "green.600",
-                }}
-                leftIcon={<RiAddBoxFill />}
-                onClick={() => votePost(Verdict.Merge)}
-              >
-                <Text fontWeight="medium">Merge All Pending</Text>
-              </Button>
-            )}
-            <Button
-              borderWidth="1px"
-              bg="inherit"
-              borderRadius="4"
-              borderColor="lightTransparent"
-              _hover={{
-                bg: "cyan.600",
-              }}
-              leftIcon={<RiCheckLine />}
-              onClick={() => votePost(Verdict.Approve)}
-            >
-              <Text fontWeight="medium">Approve All</Text>
-            </Button>
-          </ButtonGroup>
-        </HStack>
-      )}
-      {post.referencingGroups[0] && (
-        <Text textStyle="text-sm" color="text.500" fontWeight="medium">
-          This account normally posts about{" "}
-          <Box as="span" fontWeight="bold" color="text.100">
-            {post.referencingGroups[0].name}
-          </Box>
-        </Text>
-      )}
-    </Grid>
-  )
+  // return (
+  //   <Grid
+  //     autoFlow="row"
+  //     p={8}
+  //     gap={5}
+  //     background="rgba(0, 0, 0, 0.1)"
+  //     backdropFilter="blur(15px)"
+  //     borderRadius="md"
+  //     borderColor="borderSubtle"
+  //     borderWidth="1px"
+  //     data-provider-type={post.providerType}
+  //     zIndex={1}
+  //   >
+  //     <Flex
+  //       justify="space-between"
+  //       direction={["column", null, "row"]}
+  //       w="full"
+  //       sx={{ gap: 4 }}
+  //       flex={1}
+  //     >
+  //       <HStack spacing={3}>
+  //         <HStack align="center" spacing={3}>
+  //           <Flex
+  //             align="center"
+  //             justify="center"
+  //             borderRadius="full"
+  //             borderColor="borderSubtle"
+  //             overflow="hidden"
+  //             borderWidth="1px"
+  //             h={12}
+  //             w={12}
+  //           >
+  //             {post.accountAvatarUrl && <Image src={post.accountAvatarUrl} />}
+  //           </Flex>
+  //           <VStack spacing={0} align="flex-start" justify="center">
+  //             <HStack spacing={2}>
+  //               <Text textStyle="heading-sm">{post.accountName}</Text>
+  //             </HStack>
+  //             <Text textStyle="text-sm" color="text.500">
+  //               Posted{" "}
+  //               {formatDistance(new Date(post.originalPostDate), new Date(), {
+  //                 addSuffix: true,
+  //               })}
+  //             </Text>
+  //           </VStack>
+  //         </HStack>
+  //       </HStack>
+  //       <HStack align="center" spacing={1} justify="flex-end">
+  //         <VStack spacing={0} align="flex-start" textAlign="right">
+  //           <Text
+  //             fontSize="sm"
+  //             fontWeight="medium"
+  //             width="full"
+  //             textAlign="right"
+  //           >
+  //             {label}
+  //           </Text>
+  //           {post.postUrl && (
+  //             <Link
+  //               fontSize="xs"
+  //               href={post.postUrl}
+  //               textAlign="right"
+  //               color="text.500"
+  //               width="100%"
+  //             >
+  //               Go to source
+  //             </Link>
+  //           )}
+  //         </VStack>
+  //         <Flex
+  //           w={9}
+  //           h={9}
+  //           overflow="hidden"
+  //           marginInlineEnd={2}
+  //           align="center"
+  //           justify="center"
+  //         >
+  //           {component}
+  //         </Flex>
+  //       </HStack>
+  //     </Flex>
+  //     {post.body && (
+  //       <PostBody text={post.body} providerType={post.providerType} />
+  //     )}
+  //     <DiscoveredImageGrid
+  //       images={post.images}
+  //       showingMore={showingAll}
+  //       verdicts={verdicts}
+  //       voteImage={voteImage}
+  //     />
+  //     {!showingAll && (
+  //       <Button
+  //         bg="bgPrimary"
+  //         borderColor="borderSubtle"
+  //         borderWidth="1px"
+  //         onClick={() => showMore(true)}
+  //       >
+  //         Show {post.images.length - MAX_IMAGE_DISPLAY} more images
+  //       </Button>
+  //     )}
+  //     {/* show approve all only if all images are visible */}
+  //     {showingAll && (
+  //       <HStack justify="flex-start">
+  //         <ButtonGroup spacing={3} size="sm">
+  //           {hasImageNeedsMerging && (
+  //             <Button
+  //               borderWidth="1px"
+  //               bg="inherit"
+  //               borderRadius="4"
+  //               borderColor="lightTransparent"
+  //               _hover={{
+  //                 bg: "green.600",
+  //               }}
+  //               leftIcon={<RiAddBoxFill />}
+  //               onClick={() => votePost(Verdict.Merge)}
+  //             >
+  //               <Text fontWeight="medium">Merge All Pending</Text>
+  //             </Button>
+  //           )}
+  //           <Button
+  //             borderWidth="1px"
+  //             bg="inherit"
+  //             borderRadius="4"
+  //             borderColor="lightTransparent"
+  //             _hover={{
+  //               bg: "cyan.600",
+  //             }}
+  //             leftIcon={<RiCheckLine />}
+  //             onClick={() => votePost(Verdict.Approve)}
+  //           >
+  //             <Text fontWeight="medium">Approve All</Text>
+  //           </Button>
+  //         </ButtonGroup>
+  //       </HStack>
+  //     )}
+  //     {post.referencingGroups[0] && (
+  //       <Text textStyle="text-sm" color="text.500" fontWeight="medium">
+  //         This account normally posts about{" "}
+  //         <Box as="span" fontWeight="bold" color="text.100">
+  //           {post.referencingGroups[0].name}
+  //         </Box>
+  //       </Text>
+  //     )}
+  //   </Grid>
+  // )
 }

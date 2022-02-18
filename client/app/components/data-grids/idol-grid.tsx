@@ -12,7 +12,7 @@ import { Routing } from "~/client/routing"
 const IdolGrid = forwardRef<{ people: PersonGridImageFragment[] }, "div">(
   ({ people, ...rest }, ref) => {
     return (
-      <GenericAutoTiledGrid w="full">
+      <GenericAutoTiledGrid w="full" ref={ref} {...rest}>
         {people.map((person) => {
           return (
             <VStack maxHeight="385px" key={person.id}>

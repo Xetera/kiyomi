@@ -45,15 +45,17 @@ export function PersonSearchbar(props: PersonSearchbarProps) {
   const [isModalForceClosed, setModalForceClosed] = useState(false)
   // Call hook passing in the ref and a function to call on outside click
   useOnClickOutside(ref, () => setModalForceClosed(true))
-  const { data, refetch, isLoading } = useQuery<SearchResponse<SearchIdol>>(
-    "idols",
-    (a) => searchIdol(name),
-    { enabled: false }
-  )
+
+  // const { data, refetch, isLoading } = useQuery<SearchResponse<SearchIdol>>(
+  //   "idols",
+  //   (a) => searchIdol(name),
+  //   { enabled: false }
+  // )
+  const data = {}
   useDebounce(
     () => {
       if (name !== "") {
-        refetch()
+        // refetch()
       }
     },
     400,
