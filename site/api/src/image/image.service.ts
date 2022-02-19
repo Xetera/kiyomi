@@ -1,10 +1,9 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {PrismaService} from "../prisma.service";
-import {Routing} from "../../../client/routing";
+import {PrismaService} from "../prisma/prisma.service";
 
 @Injectable()
 export class ImageService {
-  constructor(private prismaService: PrismaService) {
+  constructor(private readonly prismaService: PrismaService) {
     prismaService.$use(async (params, next) => {
       const before = Date.now()
       const result = await next(params)
