@@ -13,7 +13,7 @@ import { TabGenerator } from "./linked-tabs"
 export const PageBannerTopic: React.FC = ({ children }) => (
   <Text
     as="h2"
-    fontSize={["12px", null, "18px", "24px"]}
+    fontSize={["16px", "18px", "24px"]}
     color="text.80"
     fontWeight="semibold"
   >
@@ -39,17 +39,26 @@ export const makePageBannerRoute = (text: string): TabGenerator => ({
       py={3}
     >
       {text}
+      {selected && (
+        <Flex
+          position="absolute"
+          bottom="0"
+          left={0}
+          right={0}
+          h="4px"
+          w="full"
+          bg="#5e99f5"
+          w="full"
+        />
+      )}
     </Flex>
-    {selected && (
-      <Flex position="absolute" bottom="0" h="2px" w="full" bg="red" />
-    )}
   </>
 )
 
 export const PageBannerTitle: React.FC = ({ children }) => (
   <Text
     as="h1"
-    fontSize={["24px", "36px", "48px", "56px"]}
+    fontSize={["36px", "48px", "56px"]}
     color="text.100"
     fontWeight="bold"
   >
@@ -80,31 +89,33 @@ export const PageBanner = ({
   router,
   backgroundUrl,
   actions,
-  height = ["400px", null, "50vh", null, "65vh"],
+  height = ["300px", null, "50vh", null, "65vh"],
 }: PageBannerProps) => {
   return (
     <Flex
       as="header"
-      maxH={height}
+      maxH={backgroundUrl ? height : "30%"}
       h="full"
       w="full"
       position="relative"
       overflow="hidden"
     >
-      <Image
-        src={backgroundUrl}
-        w="full"
-        position="absolute"
-        opacity={0.5}
-        objectFit="cover"
-        height="full"
-        objectPosition="50% 10%"
-        sx={{
-          WebkitMaskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.25) 100%)",
-          // "linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 2%, rgba(0, 0, 0, 0.7) 10%, rgba(0, 0,0, 0.8) 18%, rgba(0, 0, 0, 1) 24%, rgba(0, 0, 0, 0.841) 34%, rgba(0, 0, 0, 0.782) 47%, rgba(0, 0, 0, 0.498) 56.5%, rgba(0, 0, 0, 0.324) 65%, rgba(0, 0, 0, 0.256) 73%, rgba(0, 0, 0, 0.135) 80.2%, rgba(0, 0, 0, 0.102) 86.1%, rgba(0, 0, 0, 0.051) 91%, rgba(0, 0, 0, 0.015) 95.2%, rgba(0, 0, 0, 0.010) 98.2%, transparent 100%);",
-        }}
-      />
+      {backgroundUrl && (
+        <Image
+          src={backgroundUrl}
+          w="full"
+          position="absolute"
+          opacity={0.5}
+          objectFit="cover"
+          height="full"
+          objectPosition="50% 10%"
+          sx={{
+            WebkitMaskImage:
+              "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.25) 100%)",
+            // "linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 2%, rgba(0, 0, 0, 0.7) 10%, rgba(0, 0,0, 0.8) 18%, rgba(0, 0, 0, 1) 24%, rgba(0, 0, 0, 0.841) 34%, rgba(0, 0, 0, 0.782) 47%, rgba(0, 0, 0, 0.498) 56.5%, rgba(0, 0, 0, 0.324) 65%, rgba(0, 0, 0, 0.256) 73%, rgba(0, 0, 0, 0.135) 80.2%, rgba(0, 0, 0, 0.102) 86.1%, rgba(0, 0, 0, 0.051) 91%, rgba(0, 0, 0, 0.015) 95.2%, rgba(0, 0, 0, 0.010) 98.2%, transparent 100%);",
+          }}
+        />
+      )}
       <Flex
         // maxW="7xl"
         w="full"

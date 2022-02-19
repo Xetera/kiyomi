@@ -28,6 +28,7 @@ export const searchModel = createModel<RootModel>()({
   } as SearchModel,
   reducers: {
     toggleSearch(state) {
+      console.log("tottling aserch")
       state.open = !state.open
       return state
     },

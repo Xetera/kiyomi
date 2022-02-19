@@ -20,10 +20,17 @@ import {
 import { useRef, PropsWithChildren } from "react"
 import { NavLink } from "remix"
 import { RiSearchLine, RiStackLine } from "react-icons/ri"
+import { store } from "~/models/store"
 
 const NavbarLink = forwardRef(
   (
-    { children, href, as = undefined, ...rest }: PropsWithChildren<any>,
+    {
+      children,
+      href,
+      as = undefined,
+      prefetch,
+      ...rest
+    }: PropsWithChildren<any>,
     ref
   ) => {
     const Component = ({ children, active }: any) => (
@@ -43,9 +50,22 @@ const NavbarLink = forwardRef(
         {children}
       </Flex>
     )
+    if (href.startsWith("http")) {
+      return (
+        <ChakraLink
+          _hover={{ textDecoration: "none" }}
+          href={href}
+          {...rest}
+          ref={ref}
+        >
+          <Component>{children}</Component>
+        </ChakraLink>
+      )
+    }
     return (
       <ChakraLink
         as={NavLink}
+        prefetch={prefetch ?? "intent"}
         _hover={{ textDecoration: "none" }}
         to={href}
         {...rest}
@@ -77,15 +97,14 @@ export const Navbar = forwardRef(({ ...rest }, ref) => {
   //   signOut()
   // }
 
-  // function openSearch() {
-  //   store.dispatch.search.toggleSearch()
-  // }
+  function openSearch() {
+    console.log("opening search")
+    console.log(store.dispatch.search.toggleSearch())
+  }
 
-  // const discord = (
-  //   <NavLink href={DISCORD_INVITE_URL}>
-  //     Discord
-  //   </NavLink>
-  // )
+  const discord = (
+    <NavbarLink href={globalThis.ENV.DISCORD_INVITE_URL}>Discord</NavbarLink>
+  )
 
   // const moderation = (
   //   <NavLink href="/moderation" w="full">
@@ -133,8 +152,8 @@ export const Navbar = forwardRef(({ ...rest }, ref) => {
             <NavbarLink href="/browse">Browse</NavbarLink>
             <NavbarLink href="/discover">Discover</NavbarLink>
             {/* {isModerator && moderation} */}
-            <NavbarLink href="/games">Games</NavbarLink>
-            {/* {discord} */}
+            {/* <NavbarLink href="/games">Games</NavbarLink> */}
+            {discord}
           </HStack>
         </Box>
         <Flex display={["flex", null, null, "none"]}>
@@ -145,7 +164,7 @@ export const Navbar = forwardRef(({ ...rest }, ref) => {
         <HStack spacing={3} display={["none", null, null, "flex"]}>
           <HStack
             align="center"
-            // onClick={openSearch}
+            onClick={openSearch}
             cursor="pointer"
             borderRadius="md"
             spacing={4}
@@ -200,10 +219,10 @@ export const Navbar = forwardRef(({ ...rest }, ref) => {
                   Discover
                 </NavbarLink>
                 {/* {isModerator && moderation} */}
-                <NavbarLink href="/games" w="full">
+                {/* <NavbarLink href="/games" w="full">
                   Games
-                </NavbarLink>
-                {/* {discord} */}
+                </NavbarLink> */}
+                {discord}
               </VStack>
             </VStack>
           </DrawerBody>

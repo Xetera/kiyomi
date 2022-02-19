@@ -48,16 +48,24 @@ export const LinkedTabWrapper = forwardRef<PropsWithChildren<any>, "a">(
 )
 
 export const LinkedTabs = (props: PropsWithChildren<LinkedTabsProps>) => {
-  const router = useMatches()
-  console.log(router)
   return (
     <VStack spacing={8} w="full">
       <HStack spacing={props.spacing ?? 0} overflow="hidden">
         {props.tabs.map((tab, i) => {
           return (
-            <NavLink to={tab.path} key={tab.path}>
-              {({ isActive }) => tab.component({ selected: isActive })}
-            </NavLink>
+            <ChakraLink
+              as={NavLink}
+              to={tab.path}
+              key={tab.path}
+              end
+              prefetch="intent"
+              lineHeight={1.1}
+              _hover={{ textDecoration: "none" }}
+            >
+              {({ isActive }: { isActive: boolean }) =>
+                tab.component({ selected: isActive })
+              }
+            </ChakraLink>
           )
         })}
       </HStack>

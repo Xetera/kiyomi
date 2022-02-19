@@ -4,6 +4,7 @@ export interface RemixCustomConfig {
   GRAPHQL_API: string
   TYPESENSE_KEY: string
   TYPESENSE_URL: string
+  DISCORD_INVITE_URL: string
 }
 
 declare global {

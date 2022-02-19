@@ -1,4 +1,4 @@
-export const pagination = (req: Request, limit = 100) => {
+export const pagination = (req: Request, limit = 30) => {
   const params = new URL(req.url).searchParams
   const skip = Number(params.get("skip") ?? 0)
   const take = Number(params.get("take") ?? limit)

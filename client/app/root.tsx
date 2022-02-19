@@ -10,12 +10,16 @@ import {
 } from "remix"
 import { ChakraProvider } from "@chakra-ui/react"
 import type { MetaFunction } from "remix"
+import { Provider as ReduxProvider } from "react-redux"
 import theme from "./client/theme"
 import { useRef } from "react"
 import { GraphQLClient } from "graphql-request"
 import { GraphqlClientContext } from "./models/contexts"
 import { getSdk } from "./__generated__/graphql"
 import { getEnv } from "./server/config"
+import { AppWrapper } from "./components/layouts/app-wrapper"
+import { store } from "./models/store"
+import "focus-visible/dist/focus-visible"
 
 export const meta: MetaFunction = () => {
   return { title: "New Remix App" }
@@ -39,11 +43,17 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <ChakraProvider theme={theme}>
-          <GraphqlClientContext.Provider value={getSdk(graphqlClient.current)}>
-            <Outlet />
-          </GraphqlClientContext.Provider>
-        </ChakraProvider>
+        <ReduxProvider store={store}>
+          <ChakraProvider theme={theme}>
+            <GraphqlClientContext.Provider
+              value={getSdk(graphqlClient.current)}
+            >
+              <AppWrapper>
+                <Outlet />
+              </AppWrapper>
+            </GraphqlClientContext.Provider>
+          </ChakraProvider>
+        </ReduxProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(data.ENV)}`,

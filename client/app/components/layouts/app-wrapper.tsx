@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux"
-import { RootState, store } from "@/models/store"
+import { RootState, store } from "~/models/store"
 import { QuickSearch } from "~/components/search/QuickSearch"
 import { useCallback, useEffect } from "react"
 
-export function AppWrapper({ children }) {
+export const AppWrapper: React.FC = ({ children }) => {
   const isOpen = useSelector((root: RootState) => root.search?.open)
 
   useEffect(() => {
@@ -20,13 +20,10 @@ export function AppWrapper({ children }) {
     store.dispatch.search.toggleSearch()
   }, [])
 
-  if (isOpen) {
-    return (
-      <>
-        {children}
-        <QuickSearch onClose={toggleSearch} />
-      </>
-    )
-  }
-  return children
+  return (
+    <>
+      {children}
+      {isOpen && <QuickSearch onClose={toggleSearch} />}
+    </>
+  )
 }
