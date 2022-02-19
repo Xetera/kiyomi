@@ -2,6 +2,7 @@ import {BadRequestException, Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
 import {PasswordService} from "../auth/passwordService";
 import {ChangePasswordInput} from "./dto/change-password.input";
+import {Prisma, User as UserModel} from '@prisma/client';
 
 
 @Injectable()
@@ -25,6 +26,14 @@ export class UsersService {
         })
 
     }
+    async getUserById(userWhereUniqueInput: Prisma.UserWhereUniqueInput) : Promise<UserModel> {
+        return await this.prismaService.user.findUnique({
+            where: {
+                id: userWhereUniqueInput.id
+            }
+        })
+    }
+
     // updateUser(userId: string, newUserData: UpdateUserInput) {
     //     return this.prismaService.user.update({
     //         data: newUserData,
