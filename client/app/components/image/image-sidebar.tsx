@@ -151,7 +151,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
         isOpen={reportOpen}
         onClose={() => setReportOpen(false)}
       />
-      <Grid>
+      <Grid gap={6}>
         <Flex flexFlow="row wrap">
           <InteractableButton
             icon={<RiHeartFill />}
@@ -190,13 +190,8 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
             }
           />
         </Flex>
-        <hr className="border-theme-subtle" />
-        <Grid
-          gap={2}
-          className="grid gap-2"
-          color="gray.300"
-          gridTemplateColumns="min-content 1fr"
-        >
+        <Box as="hr" borderColor="borderSuble" />
+        <Grid gap={2} color="gray.300" gridTemplateColumns="min-content 1fr">
           <SidebarSection title={"Dimensions"}>
             {image.width}x{image.height}
           </SidebarSection>
@@ -208,9 +203,12 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
             title={
               <>
                 Scan Date
-                <div data-tip="Last date this image was scanned for faces">
-                  <RiQuestionLine className="ml-2" />
-                </div>
+                <Box
+                  ml={2}
+                  data-tip="Last date this image was scanned for faces"
+                >
+                  <RiQuestionLine />
+                </Box>
               </>
             }
           >

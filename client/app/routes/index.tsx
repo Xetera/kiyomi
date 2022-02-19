@@ -18,6 +18,7 @@ import { motion } from "framer-motion"
 // @ts-ignore
 import { InfiniteScroll } from "react-simple-infinite-scroll"
 import { usePaginated } from "~/hooks/use-paginated"
+import { pagination } from "~/client/pagination"
 
 const AnimatedImage = motion(Image)
 
@@ -31,12 +32,9 @@ const magicGradient =
   "linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.908) 0%, rgba(0, 0, 0, 1) 19%, rgba(0, 0, 0, 0.841) 34%, rgba(0, 0, 0, 0.782) 47%, rgba(0, 0, 0, 0.498) 56.5%, rgba(0, 0, 0, 0.324) 65%, rgba(0, 0, 0, 0.256) 73%, rgba(0, 0, 0, 0.135) 80.2%, rgba(0, 0, 0, 0.102) 86.1%, rgba(0, 0, 0, 0.051) 91%, rgba(0, 0, 0, 0.015) 95.2%, rgba(0, 0, 0, 0.010) 98.2%, transparent 100%);"
 
 export const loader: LoaderFunction = ({ request }): Promise<LoaderContext> => {
-  const params = new URL(request.url).searchParams
-  console.log(params, params.get("skip"))
-  return sdk.HomepageImages({
-    skip: Number(params.get("start") ?? "0"),
-    take: LIMIT,
-  })
+  const p = pagination(request)
+  console.log(p)
+  return sdk.HomepageImages(p)
 }
 
 function IndexView() {

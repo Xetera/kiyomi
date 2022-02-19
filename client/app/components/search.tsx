@@ -15,7 +15,6 @@ import {
 import flatMap from "lodash/flatMap"
 import capitalize from "lodash/capitalize"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useQuery } from "react-query"
 import { useDebounce } from "react-use"
 import { SearchIdol, searchIdol } from "~/client/typesense"
 import { SearchResponse } from "typesense/lib/Typesense/Documents"

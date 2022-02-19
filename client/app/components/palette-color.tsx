@@ -53,7 +53,6 @@ export function Palette({
   return (
     <Grid
       gridAutoFlow="column"
-      mt={2}
       as="section"
       {...rest}
       border="1px solid"

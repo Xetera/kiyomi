@@ -1,7 +1,9 @@
 import { Box, BoxProps, Flex, forwardRef, Image, Text } from "@chakra-ui/react"
 import React from "react"
-import type { FocusableImage } from "~/components/data-grids/generic-grid-element"
-import { focusToObjectPosition } from "~/components/data-grids/generic-grid-element"
+import {
+  focusToObjectPosition,
+  FocusableImage,
+} from "~/components/data-grids/generic"
 import { Maybe } from "~/__generated__/graphql"
 
 export type PortraitProps = {

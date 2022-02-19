@@ -1,8 +1,11 @@
 import { EditModal } from "~/components/data-entry/edit-modal"
+// @ts-ignore
+import { InfiniteScroll } from "react-simple-infinite-scroll"
 import ImageGrid, {
   DisplayableGridImage,
 } from "~/components/data-grids/image-grid"
-import { ModalCloseButton } from "@chakra-ui/react"
+import { Box, ModalCloseButton } from "@chakra-ui/react"
+import { usePaginated } from "~/hooks/use-paginated"
 
 type SelectableImage = Omit<DisplayableGridImage, "href" | "onClick">
 
@@ -28,7 +31,7 @@ const ImagePickerContainer = ({ onSelect, images }: ImagePickerProps) => {
 }
 
 export const ImagePicker = (
-  props: ImagePickerProps & { waypoint: React.ReactNode }
+  props: ImagePickerProps & { pagination: usePaginated }
 ) => {
   return (
     <EditModal p={4} w="full">
@@ -39,8 +42,18 @@ export const ImagePicker = (
         zIndex={8}
         bg="rgba(0, 0, 0, 0.5)"
       />
-      <ImagePickerContainer {...props} />
-      {props.waypoint}
+
+      <Box w="full">
+        <InfiniteScroll
+          throttle={100}
+          threshold={300}
+          isLoading={props.pagination.fetcher.state === "loading"}
+          hasMore={true}
+          onLoadMore={props.pagination.loadMore}
+        >
+          <ImagePickerContainer {...props} />
+        </InfiniteScroll>
+      </Box>
     </EditModal>
   )
 }

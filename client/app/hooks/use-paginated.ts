@@ -2,17 +2,19 @@ import { Fetcher } from "@remix-run/react/transition"
 import React, { ReactNode, useEffect, useRef, useState } from "react"
 import { useLoaderData } from "remix"
 
-const defaultFetchOptions = (page: number, limit: number): URLSearchParams => {
+const DEFAULT_TAKE = 40
+
+const defaultFetchOptions = (skip: number, take: number): URLSearchParams => {
   return new URLSearchParams([
-    ["skip", String(page)],
-    ["take", String(limit)],
+    ["skip", String(skip)],
+    ["take", String(take)],
   ])
 }
 
 export type UsePaginatedOptions<T, K> = {
-  initialData?: T
+  forceFetch?: boolean
   perPage?: number
-  fetchOptions?: (page: number) => URLSearchParams
+  fetchOptions?: (skip: number) => URLSearchParams
   href: string
   transform: (comp: T) => K[]
 }
@@ -25,19 +27,18 @@ export const usePaginated = <T, K>(
   fetcher: FetcherWithComponents<T>,
   opts: UsePaginatedOptions<T, K>
 ) => {
-  const transformedLoader = opts.transform(
-    opts.initialData ?? useLoaderData<T>()
-  )
-  const [data, setData] = useState(transformedLoader)
+  const transformedLoader = useLoaderData<T>()
+
+  const [data, setData] = useState(opts.transform(transformedLoader))
   const page = useRef(0)
   function loadMore() {
     if (fetcher.state === "loading") return
     const options = opts.fetchOptions ?? defaultFetchOptions
-    const perPage = opts.perPage ?? 40
-    const qs = options(page.current, perPage)
+    const perPage = opts.perPage ?? DEFAULT_TAKE
+    const qs = options(page.current * perPage, perPage)
 
     fetcher.load(`${opts.href}?${qs}`)
-    page.current += perPage
+    page.current += 1
   }
   useEffect(() => {
     if (fetcher.data) {
@@ -45,5 +46,12 @@ export const usePaginated = <T, K>(
       setData(data.concat(nextItems))
     }
   }, [fetcher.data])
+  useEffect(() => {
+    if (opts.forceFetch) {
+      loadMore()
+    }
+  }, [])
   return { data, loadMore, fetcher }
 }
+
+export type usePaginated = ReturnType<typeof usePaginated>
