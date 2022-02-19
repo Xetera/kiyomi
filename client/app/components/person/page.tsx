@@ -1,14 +1,28 @@
 import { personPreferredName } from "~/client/data-mappers/person"
 import { magicGradientDark } from "~/client/jsx-helpers"
 import { Routing } from "~/client/routing"
-import { useOnePersonQuery } from "~/__generated__/graphql"
-import { Link } from "remix"
-import { Text, Flex, VStack, Stack, Button, HStack } from "@chakra-ui/react"
+// @ts-ignore
+import { InfiniteScroll } from "react-simple-infinite-scroll"
+// import { useOnePersonQuery } from "~/__generated__/graphql"
+import { Link, useFetcher, useLoaderData, useParams } from "remix"
+import {
+  Text,
+  Flex,
+  VStack,
+  Stack,
+  Button,
+  HStack,
+  Box,
+} from "@chakra-ui/react"
 import ImageGrid from "../data-grids/image-grid"
 import { LargeBanner } from "../large-banner"
-import { LinkedTabs } from "../linked-tabs"
+import { LinkedTabs, makeLinkedTabWrapper } from "../linked-tabs"
 import { Portrait } from "../portrait"
 import { toClickableGridImage } from "~/client/data-mappers/image"
+import { OnePersonImagesQuery, OnePersonQuery } from "~/__generated__/graphql"
+import { usePaginated } from "~/hooks/use-paginated"
+import { useContext } from "react"
+import { PersonContext } from "~/models/contexts"
 
 export const personPortraitDimensions = {
   width: "250px",
@@ -19,10 +33,13 @@ export type PersonPageProps = {
   id: number
 }
 
-export const PersonPage = ({ id }: PersonPageProps) => {
-  const { data } = useOnePersonQuery({
-    id,
-  })
+export const PersonPage = () => {
+  const { id } = useParams()
+  if (!id) {
+    throw Error("$id parameter not found")
+  }
+  const data = useContext(PersonContext)
+  console.log(data)
   const group = data?.person?.preferredMembership?.group
   const preferredAlias = data?.person?.preferredAlias
   const title = data?.person ? personPreferredName(data.person) : "Loading..."
@@ -165,29 +182,48 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             tabs={[
               {
                 path: Routing.toPerson(
-                  id,
+                  Number(id),
                   data?.person?.name
                     ? personPreferredName(data.person)
                     : undefined
                 ),
-                component: <Text textStyle="heading">Images</Text>,
+                component: makeLinkedTabWrapper("Images"), // <Text textStyle="heading">Images</Text>,
               },
             ]}
           />
         </VStack>
       </Flex>
       <Flex w="full" justify="center" bg="rgba(0, 0, 0, 0.8)" h="full" p={6}>
-        <VStack w="full" maxW="7xl" margin="0 auto" py={3} spacing={4}>
-          {data?.person && (
-            <ImageGrid
-              w="full"
-              images={data.person.appearances.map((app) =>
-                toClickableGridImage(app.image)
-              )}
-            />
-          )}
-        </VStack>
+        <Box w="full" maxW="7xl" margin="0 auto" py={3}>
+          <InfiniteScrollImages />
+        </Box>
       </Flex>
     </VStack>
+  )
+}
+
+const InfiniteScrollImages = () => {
+  const fetcher = useFetcher<OnePersonImagesQuery>()
+  const params = useParams()
+  const pagination = usePaginated(fetcher, {
+    href: `/idol/${params.id}`,
+    transform: (data) => data.person?.appearances ?? [],
+    perPage: 40,
+  })
+  console.log({ pagination })
+
+  return (
+    <InfiniteScroll
+      throttle={100}
+      threshold={3000}
+      isLoading={pagination.fetcher.state === "loading"}
+      hasMore={true}
+      onLoadMore={pagination.loadMore}
+    >
+      <ImageGrid
+        w="full"
+        images={pagination.data.map((app) => toClickableGridImage(app.image))}
+      />
+    </InfiniteScroll>
   )
 }

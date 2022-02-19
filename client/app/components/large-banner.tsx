@@ -2,7 +2,7 @@ import { Box, forwardRef, Image } from "@chakra-ui/react"
 import {
   FocusableImage,
   focusToObjectPosition,
-} from "~/components/data-grids/generic-grid-element"
+} from "~/components/data-grids/generic"
 import React from "react"
 import { magicGradient } from "~/client/jsx-helpers"
 

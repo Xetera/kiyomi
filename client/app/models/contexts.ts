@@ -1,8 +1,7 @@
-import { OneImageQuery } from "~/__generated__/graphql"
+import { OneImageQuery, OnePersonQuery, Sdk } from "~/__generated__/graphql"
 import React from "react"
 import { WebSocketHook } from "react-use-websocket/dist/lib/types"
 import { IncomingMessage } from "../../../shared/game"
-import { GraphQLClient } from "graphql-request"
 
 export const FaceContext = React.createContext({
   setFace: (() => {}) as React.Dispatch<React.SetStateAction<string>>,
@@ -27,6 +26,6 @@ export const GameServerContext = React.createContext<GameServerContextData>({
   },
 })
 
-export const GraphqlClientContext = React.createContext<GraphQLClient>(
-  undefined!
-)
+export const GraphqlClientContext = React.createContext<Sdk>(undefined!)
+
+export const PersonContext = React.createContext<OnePersonQuery>(undefined!)

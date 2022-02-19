@@ -51,7 +51,7 @@ export const BrowseIdols = () => {
       <VStack>
         <BrowseIdolsSidebar {...filters} />
       </VStack>
-      <VStack w="full">
+      <Box>
         <InfiniteScroll
           throttle={100}
           threshold={3000}
@@ -61,7 +61,7 @@ export const BrowseIdols = () => {
         >
           <IdolGrid width="full" people={pagination.data?.flat() ?? []} />
         </InfiniteScroll>
-      </VStack>
+      </Box>
     </>
   )
 }

@@ -22,7 +22,7 @@ export const GenericModal = (
         minH="80vh"
         {...modalContentProps}
       >
-        <ModalBody>{children}</ModalBody>
+        <ModalBody display="flex">{children}</ModalBody>
       </ModalContent>
     </Modal>
   )

@@ -10,12 +10,12 @@ import {
 } from "@chakra-ui/react"
 import { FaceAppearance } from "~/components/face-appearance"
 // import { GraphDisplay } from "~/components/graph-display"
-import { ImageEditContainer } from "~/components/data-entry/image-edit/image-edit-container"
+// import { ImageEditContainer } from "~/components/data-entry/image-edit/image-edit-container"
 import { format } from "date-fns"
 import React, { useState, useRef, useEffect } from "react"
 import { RiAlarmWarningLine, RiSpyLine } from "react-icons/ri"
 import ImageDisplay from "~/components/image-display"
-import ImageSidebar from "~/components/image/image-sidebar"
+// import ImageSidebar from "~/components/image/image-sidebar"
 import {
   WithSidebar,
   ContextSidebar,
@@ -33,6 +33,7 @@ import { sdk } from "~/client/graphql"
 import { OneImageQuery } from "~/__generated__/graphql"
 import { FaceContext, ImageContext } from "~/models/contexts"
 import { Routing } from "~/client/routing"
+import ImageSidebar from "~/components/image/image-sidebar"
 
 const fallbackImage = "/"
 
@@ -201,12 +202,19 @@ const Image = () => {
                   </Box>
                 )}
                 <Box w="full" display="relative" overflow="hidden">
-                  <div className="justify-center mx-auto max-w-7xl px-4 lg:mb-12 mb-4">
-                    <article
-                      className="flex gap-8 justify-center flex-col"
+                  <Flex justifyContent="center" mx="auto" maxW="7xl" px={4}>
+                    <Flex
+                      as="article"
+                      gap={8}
+                      justifyContent="center"
+                      flexDir="column"
                       ref={containerRef}
                     >
-                      <Flex mt={[4, null, 6]} mb={[0, null, 6]}>
+                      <Flex
+                        mt={[4, null, 6]}
+                        mb={[0, null, 6]}
+                        justifyContent="center"
+                      >
                         {image.caption && <Text>{image.caption}</Text>}
                         <ImageDisplay />
                       </Flex>
@@ -219,8 +227,8 @@ const Image = () => {
                         width={containerWidth}
                         currentPersonIds={personIds}
                       /> */}
-                    </article>
-                  </div>
+                    </Flex>
+                  </Flex>
                 </Box>
               </Box>
             </Flex>
@@ -233,9 +241,7 @@ const Image = () => {
           >
             <ModalOverlay />
             <ModalContent maxW="8xl" bg="inherit" boxShadow="none" minH="80vh">
-              <ModalBody>
-                <ImageEditContainer />
-              </ModalBody>
+              <ModalBody>{/* <ImageEditContainer /> */}</ModalBody>
             </ModalContent>
           </Modal>
         </WithNavbar>

@@ -25,17 +25,22 @@ fragment OnePersonRelationshipMembership on GroupMember {
     }
 }
 
-query OnePerson($id: Int!) {
+query OnePersonImages($id: Int!, $skip: Int!, $take: Int) {
     person(where: {id: $id}) {
-        id
-        name
-        birthDate
-        appearances(take: 20) {
+        appearances(take: $take, skip: $skip) {
             id
             image {
                 ...GridImage
             }
         }
+    }
+}
+
+query OnePerson($id: Int!) {
+    person(where: {id: $id}) {
+        id
+        name
+        birthDate
         memberOf {
             ...OnePersonRelationshipMembership
         }

@@ -2356,17 +2356,6 @@ export type ImageReportsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ImageReportsQuery = { __typename?: 'Query', imageReports: Array<{ __typename?: 'ImageReport', id: number, reason?: string | null, createdAt: any, image: { __typename?: 'Image', id: number, url: string, slug: string, width: number, height: number, thumbnail: { __typename?: 'Thumbnail', medium: string } }, reportedBy: { __typename?: 'User', avatar?: string | null, name?: string | null } }> };
 
-export type OnePersonRelationshipImageFragment = { __typename?: 'Image', id: number, thumbnail: { __typename?: 'Thumbnail', small: string } };
-
-export type OnePersonRelationshipMembershipFragment = { __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } };
-
-export type OnePersonQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type OnePersonQuery = { __typename?: 'Query', person?: { __typename?: 'Person', id: number, name: string, birthDate?: any | null, appearances: Array<{ __typename?: 'Appearance', id: number, image: { __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> } }>, memberOf: Array<{ __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } }>, preferredMembership?: { __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } } | null, aliases: Array<{ __typename?: 'Alias', id: number, name: string }>, avatar?: { __typename?: 'Image', width: number, height: number, id: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null, preferredAlias?: { __typename?: 'Alias', id: number, name: string } | null, banner?: { __typename?: 'Image', id: number, rawUrl: string, width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number } } | null } | null };
-
 export type AddToQueueMutationVariables = Exact<{
   slug: Scalars['String'];
 }>;
@@ -2386,6 +2375,8 @@ export type DiscoveryPostListableFragment = { __typename?: 'DiscoveredPost', id:
 export type FaceDataFragment = { __typename?: 'Face', id: number, x: number, y: number, width: number, height: number };
 
 export type GridImageFragment = { __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> };
+
+export type PersonGridImageFragment = { __typename?: 'Person', id: number, name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null, avatar?: { __typename?: 'Image', thumbnail: { __typename?: 'Thumbnail', medium: string } } | null };
 
 export type FocusFragment = { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number } };
 
@@ -2467,6 +2458,26 @@ export type OneImageQueryVariables = Exact<{
 
 export type OneImageQuery = { __typename?: 'Query', image?: { __typename?: 'Image', mimetype: MimeType, liked?: boolean | null, faceScanDate?: any | null, public: boolean, reported: boolean, hiddenAt?: any | null, id: number, height: number, width: number, url: string, rawUrl: string, createdAt: any, caption?: string | null, source?: string | null, slug: string, bytes: number, palette: Array<number>, destination: UploadDestination, unknownFaces: Array<{ __typename?: 'Face', id: number, x: number, y: number, width: number, height: number, appearance?: { __typename?: 'Appearance', id: number, person: { __typename?: 'Person', id: number, name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null } } | null }>, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', id: number, name: string, preferredAlias?: { __typename?: 'Alias', name: string } | null }, tags: Array<{ __typename?: 'AppearanceTag', tag: { __typename?: 'Tag', name: string } }>, faces: Array<{ __typename?: 'Face', id: number, x: number, y: number, width: number, height: number }> }>, uploadedBy?: { __typename?: 'User', id: number, name?: string | null, avatar?: string | null, bot: boolean, roles: Array<{ __typename?: 'Role', name: string }> } | null, imageTags: Array<{ __typename?: 'ImageTag', tag: { __typename?: 'Tag', name: string } }> } | null };
 
+export type OnePersonRelationshipImageFragment = { __typename?: 'Image', id: number, thumbnail: { __typename?: 'Thumbnail', small: string } };
+
+export type OnePersonRelationshipMembershipFragment = { __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } };
+
+export type OnePersonImagesQueryVariables = Exact<{
+  id: Scalars['Int'];
+  skip: Scalars['Int'];
+  take?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type OnePersonImagesQuery = { __typename?: 'Query', person?: { __typename?: 'Person', appearances: Array<{ __typename?: 'Appearance', id: number, image: { __typename?: 'Image', id: number, slug: string, url: string, height: number, width: number, rawUrl: string, aspectRatio: number, createdAt: any, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string }, uploadedBy?: { __typename?: 'User', id: number, name?: string | null } | null, appearances: Array<{ __typename?: 'Appearance', id: number, person: { __typename?: 'Person', name: string } }> } }> } | null };
+
+export type OnePersonQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type OnePersonQuery = { __typename?: 'Query', person?: { __typename?: 'Person', id: number, name: string, birthDate?: any | null, memberOf: Array<{ __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } }>, preferredMembership?: { __typename?: 'GroupMember', id: number, startDate?: any | null, group: { __typename?: 'Group', id: number, name: string, avatar?: { __typename?: 'Image', width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null } } | null, aliases: Array<{ __typename?: 'Alias', id: number, name: string }>, avatar?: { __typename?: 'Image', width: number, height: number, id: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number }, thumbnail: { __typename?: 'Thumbnail', small: string } } | null, preferredAlias?: { __typename?: 'Alias', id: number, name: string } | null, banner?: { __typename?: 'Image', id: number, rawUrl: string, width: number, height: number, focus: { __typename?: 'ImageCoordinate', x: number, y: number } } | null } | null };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2494,35 +2505,6 @@ export const PersonGridDataFragmentDoc = gql`
     }
   }
   preferredAlias {
-    name
-  }
-}
-    `;
-export const OnePersonRelationshipImageFragmentDoc = gql`
-    fragment OnePersonRelationshipImage on Image {
-  id
-  thumbnail {
-    small
-  }
-}
-    `;
-export const OnePersonRelationshipMembershipFragmentDoc = gql`
-    fragment OnePersonRelationshipMembership on GroupMember {
-  id
-  startDate
-  group {
-    id
-    avatar {
-      width
-      height
-      focus {
-        x
-        y
-      }
-      thumbnail {
-        small
-      }
-    }
     name
   }
 }
@@ -2597,6 +2579,20 @@ export const GridImageFragmentDoc = gql`
   createdAt
 }
     `;
+export const PersonGridImageFragmentDoc = gql`
+    fragment PersonGridImage on Person {
+  id
+  name
+  preferredAlias {
+    name
+  }
+  avatar {
+    thumbnail {
+      medium
+    }
+  }
+}
+    `;
 export const FocusFragmentDoc = gql`
     fragment Focus on Image {
   width
@@ -2668,6 +2664,35 @@ export const AppearanceWithFacesFragmentDoc = gql`
     tag {
       name
     }
+  }
+}
+    `;
+export const OnePersonRelationshipImageFragmentDoc = gql`
+    fragment OnePersonRelationshipImage on Image {
+  id
+  thumbnail {
+    small
+  }
+}
+    `;
+export const OnePersonRelationshipMembershipFragmentDoc = gql`
+    fragment OnePersonRelationshipMembership on GroupMember {
+  id
+  startDate
+  group {
+    id
+    avatar {
+      width
+      height
+      focus {
+        x
+        y
+      }
+      thumbnail {
+        small
+      }
+    }
+    name
   }
 }
     `;
@@ -2886,47 +2911,6 @@ export const ImageReportsDocument = gql`
   }
 }
     `;
-export const OnePersonDocument = gql`
-    query OnePerson($id: Int!) {
-  person(where: {id: $id}) {
-    id
-    name
-    birthDate
-    appearances(take: 20) {
-      id
-      image {
-        ...GridImage
-      }
-    }
-    memberOf {
-      ...OnePersonRelationshipMembership
-    }
-    preferredMembership {
-      ...OnePersonRelationshipMembership
-    }
-    aliases {
-      id
-      name
-    }
-    avatar {
-      ...Focus
-      ...OnePersonRelationshipImage
-    }
-    preferredAlias {
-      id
-      name
-    }
-    banner {
-      id
-      ...Focus
-      rawUrl
-    }
-  }
-}
-    ${GridImageFragmentDoc}
-${OnePersonRelationshipMembershipFragmentDoc}
-${FocusFragmentDoc}
-${OnePersonRelationshipImageFragmentDoc}`;
 export const AddToQueueDocument = gql`
     mutation addToQueue($slug: String!) {
   scanFaces(slug: $slug) {
@@ -3085,6 +3069,52 @@ ${AppearanceDataFragmentDoc}
 ${UserDataFragmentDoc}
 ${UserRoleDataFragmentDoc}
 ${ImageDataFragmentDoc}`;
+export const OnePersonImagesDocument = gql`
+    query OnePersonImages($id: Int!, $skip: Int!, $take: Int) {
+  person(where: {id: $id}) {
+    appearances(take: $take, skip: $skip) {
+      id
+      image {
+        ...GridImage
+      }
+    }
+  }
+}
+    ${GridImageFragmentDoc}`;
+export const OnePersonDocument = gql`
+    query OnePerson($id: Int!) {
+  person(where: {id: $id}) {
+    id
+    name
+    birthDate
+    memberOf {
+      ...OnePersonRelationshipMembership
+    }
+    preferredMembership {
+      ...OnePersonRelationshipMembership
+    }
+    aliases {
+      id
+      name
+    }
+    avatar {
+      ...Focus
+      ...OnePersonRelationshipImage
+    }
+    preferredAlias {
+      id
+      name
+    }
+    banner {
+      id
+      ...Focus
+      rawUrl
+    }
+  }
+}
+    ${OnePersonRelationshipMembershipFragmentDoc}
+${FocusFragmentDoc}
+${OnePersonRelationshipImageFragmentDoc}`;
 export const MeDocument = gql`
     query Me {
   me {
@@ -3160,9 +3190,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     ImageReports(variables?: ImageReportsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ImageReportsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ImageReportsQuery>(ImageReportsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ImageReports');
     },
-    OnePerson(variables: OnePersonQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OnePersonQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<OnePersonQuery>(OnePersonDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OnePerson');
-    },
     addToQueue(variables: AddToQueueMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddToQueueMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<AddToQueueMutation>(AddToQueueDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addToQueue');
     },
@@ -3198,6 +3225,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     OneImage(variables: OneImageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OneImageQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OneImageQuery>(OneImageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OneImage');
+    },
+    OnePersonImages(variables: OnePersonImagesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OnePersonImagesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OnePersonImagesQuery>(OnePersonImagesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OnePersonImages');
+    },
+    OnePerson(variables: OnePersonQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OnePersonQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OnePersonQuery>(OnePersonDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'OnePerson');
     },
     Me(variables?: MeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MeQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MeQuery>(MeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Me');

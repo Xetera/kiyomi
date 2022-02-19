@@ -1,4 +1,5 @@
-import React from "react"
+import { Box, Flex } from "@chakra-ui/react"
+
 function Tag({ tag }: { tag: string }) {
   return (
     <a
@@ -12,12 +13,12 @@ function Tag({ tag }: { tag: string }) {
 
 export function Tags({ tags }: { tags: string[] }) {
   return (
-    <section className="flex flex-row flex-wrap text-gray-300">
+    <Flex as="section" flexFlow="row wrap">
       {tags.map((tag) => (
-        <div key={tag} className="mb-1 mr-1">
+        <Box key={tag} mb={1} mr={1}>
           <Tag tag={tag} />
-        </div>
+        </Box>
       ))}
-    </section>
+    </Flex>
   )
 }
