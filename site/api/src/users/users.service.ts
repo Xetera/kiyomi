@@ -1,24 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
+import {PrismaService} from "../prisma.service";
+import {PasswordService} from "../auth/passwordService";
+import {ChangePasswordInput} from "./dto/change-password.input";
 
-// This should be a real class/interface representing a user entity
-export type User = any;
 
 @Injectable()
 export class UsersService {
-    private readonly users = [
-        {
-            userId: 1,
-            username: 'john',
-            password: 'changeme',
-        },
-        {
-            userId: 2,
-            username: 'maria',
-            password: 'guess',
-        },
-    ];
+    constructor(
+        private prismaService: PrismaService,
+        private passwordService: PasswordService) {
+        prismaService.$use(async (params, next) => {
+            const before = Date.now()
+            const result = await next(params)
+            const after = Date.now()
+            console.log(`Query ${params.model}.${params.action} took ${after - before}ms`)
+            return result
+        })
+        // @ts-ignore
+        prismaService.$on('query', e => {
+            // @ts-ignore
+            console.log("Query: " + e.query)
+            // @ts-ignore
+            console.log("Duration: " + e.duration + "ms")
+        })
 
-    async findOne(username: string): Promise<User | undefined> {
-        return this.users.find(user => user.username === username);
     }
+    // updateUser(userId: string, newUserData: UpdateUserInput) {
+    //     return this.prismaService.user.update({
+    //         data: newUserData,
+    //         where: {
+    //             id: userId,
+    //         },
+    //     });
+    // }
+
+    // async changePassword(
+    //     userId: string,
+    //     userPassword: string,
+    //     changePassword: ChangePasswordInput
+    // ) {
+    //     const passwordValid = await this.passwordService.validatePassword(
+    //         changePassword.oldPassword,
+    //         userPassword
+    //     );
+    //
+    //     if (!passwordValid) {
+    //         throw new BadRequestException('Invalid password');
+    //     }
+    //
+    //     const hashedPassword = await this.passwordService.hashPassword(
+    //         changePassword.newPassword
+    //     );
+    //
+    //     return this.prismaService.user.update({
+    //         data: {
+    //             password: hashedPassword,
+    //         },
+    //         where: { id: userId },
+    //     });
+    // }
 }
