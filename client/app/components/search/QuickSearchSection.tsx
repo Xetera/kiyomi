@@ -3,10 +3,11 @@ import {
   forwardRef,
   HStack,
   Image,
-  Link,
+  Link as ChakraLink,
   Text,
   VStack,
 } from "@chakra-ui/react"
+import { Link } from "remix"
 import { IoPricetag } from "react-icons/io5"
 import { Box, Flex } from "@chakra-ui/layout"
 import { useEffect, useState } from "react"
@@ -101,7 +102,7 @@ export function groupsSearchToQuickSearchSection(
   }))
 }
 
-function QuickSearchSectionGeneric(props) {
+function QuickSearchSectionGeneric(props: any) {
   const [hovering, isHovering] = useState(false)
 
   const component = (
@@ -161,22 +162,22 @@ function QuickSearchSectionGeneric(props) {
     )
   }
   return (
-    <NextLink href={props.href} passHref>
-      <Link
-        className="highlight-em"
-        w="full"
-        cursor="pointer"
-        onClick={props.onClick}
-        _hover={{
-          textDecoration: "none",
-          borderColor: "hsla(228,26%,16%,0.7)",
-        }}
-        onFocusCapture={() => isHovering(true)}
-        onBlur={() => isHovering(false)}
-      >
-        {component}
-      </Link>
-    </NextLink>
+    <ChakraLink
+      as={Link}
+      to={props.href}
+      className="highlight-em"
+      w="full"
+      cursor="pointer"
+      onClick={props.onClick}
+      _hover={{
+        textDecoration: "none",
+        borderColor: "hsla(228,26%,16%,0.7)",
+      }}
+      onFocusCapture={() => isHovering(true)}
+      onBlur={() => isHovering(false)}
+    >
+      {component}
+    </ChakraLink>
   )
 }
 

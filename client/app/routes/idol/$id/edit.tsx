@@ -16,9 +16,8 @@ export const loader: LoaderFunction = ({ params }) => {
   return sdk.OnePerson({ id: decodeUriFriendly(params.id) })
 }
 
-const PersonEditPageWrapper = ({ id }: PersonEditPageWrapperProps) => {
+const PersonEditPageWrapper = () => {
   const data = useLoaderData<OnePersonQuery>()
-  console.log({ data })
   return (
     <WithNavbar noSpace>
       {data.person && <PersonEditPage person={data.person} />}

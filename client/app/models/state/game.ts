@@ -74,6 +74,7 @@ function buildSearchResult(
     const filtered = members
       ?.filter((member) => member.document.groups.includes(group.groupId))
       .map((e) => e.document)
+    // @ts-ignore
     out[group.id] = {
       group,
       members: filtered,

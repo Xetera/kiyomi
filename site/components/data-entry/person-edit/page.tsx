@@ -190,44 +190,46 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
             <Controller
               control={control}
               name="preferredAliasId"
-              render={({ field }) => (
-                <RadioGroup
-                  value={field.value}
-                  onChange={(val) => {
-                    const num = Number(val)
-                    if (Number.isNaN(num)) {
-                      makeToast({
-                        description:
-                          "You must submit changes before marking new aliases as preferred.",
-                      })
-                      return
-                    }
-                    field.onChange(num)
-                  }}
-                  spacing={4}
-                  name="preferredAliasId"
-                >
-                  <VStack spacing={4}>
-                    <HStack>
-                      <Radio value={-1}>No preferred alias</Radio>
-                    </HStack>
-                    {aliases.map((alias, index) => (
-                      <HStack key={alias.id}>
-                        <Radio
-                          value={alias.id}
-                          disabled={Number.isNaN(Number(alias.id))}
-                        >
-                          Preferred
-                        </Radio>
-                        <Input
-                          {...register(`aliases.${index}.name` as const)}
-                        />
-                        <RiDeleteBin2Fill onClick={() => remove(index)} />
+              render={({ field }) => {
+                return (
+                  <RadioGroup
+                    value={field.value}
+                    onChange={(val) => {
+                      const num = Number(val)
+                      if (Number.isNaN(num)) {
+                        makeToast({
+                          description:
+                            "You must submit changes before marking new aliases as preferred.",
+                        })
+                        return
+                      }
+                      field.onChange(num)
+                    }}
+                    spacing={4}
+                    name="preferredAliasId"
+                  >
+                    <VStack spacing={4}>
+                      <HStack>
+                        <Radio value={-1}>No preferred alias</Radio>
                       </HStack>
-                    ))}
-                  </VStack>
-                </RadioGroup>
-              )}
+                      {aliases.map((alias, index) => (
+                        <HStack key={alias.id}>
+                          <Radio
+                            value={alias.id}
+                            disabled={Number.isNaN(Number(alias.id))}
+                          >
+                            Preferred
+                          </Radio>
+                          <Input
+                            {...register(`aliases.${index}.name` as const)}
+                          />
+                          <RiDeleteBin2Fill onClick={() => remove(index)}/>
+                        </HStack>
+                      ))}
+                    </VStack>
+                  </RadioGroup>
+                );
+              }}
             />
             <HStack>
               <RiAddLine onClick={() => append({ name: "" })} />

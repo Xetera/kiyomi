@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from "react-redux"
-import type { Dispatch, RootState } from "@/models/store"
+import type { Dispatch, RootState } from "~/models/store"
 import { Flex, Heading, Text } from "@chakra-ui/layout"
 import { Navbar, WithNavbar } from "~/components/navbar"
 import GameLobbyRow, {
   GameLobbyRowSkeleton,
 } from "~/components/game/game-lobby-row"
 import { Button, VStack } from "@chakra-ui/react"
-import { GameServerContext } from "@/models/contexts"
+import { GameServerContext } from "~/models/contexts"
 import React from "react"
 import partition from "lodash/partition"
 

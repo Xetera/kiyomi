@@ -1,5 +1,9 @@
 import { Flex } from "@chakra-ui/react"
-import { LoaderFunction, Outlet, useLoaderData } from "remix"
+import { LoaderFunction, Outlet, useLoaderData, useParams } from "remix"
+import {
+  decodeUriFriendly,
+  encodeUriFriendly,
+} from "~/client/data-mappers/encoding"
 import { sdk } from "~/client/graphql"
 import {
   makePageBannerRoute,
@@ -9,46 +13,52 @@ import {
   PageBannerTopic,
 } from "~/components/banner"
 import { LinkedTabs } from "~/components/linked-tabs"
+import { WithNavbar } from "~/components/navbar/navbar-wrapper"
 import { get } from "~/data-fetching"
 import { getSdk, OneGroupQuery } from "~/__generated__/graphql"
 
 export const loader: LoaderFunction = ({ params }): Promise<OneGroupQuery> => {
-  return sdk.OneGroup({ id: Number(params.id) })
+  if (typeof params.id !== "string") {
+    throw Error("Invalid id")
+  }
+  return sdk.OneGroup({ id: decodeUriFriendly(params.id) })
 }
 
 export default function ProductInfo() {
   const data = useLoaderData<OneGroupQuery>()
-  console.log(data)
+  const params = useParams()
+  const friendlyUri = params.id
   return (
-    <Flex minH="100vh" flexDirection="column" h="100vh">
-      <PageBanner
-        topic={<PageBannerTopic>Girl Group</PageBannerTopic>}
-        title={<PageBannerTitle>{data?.group?.name}</PageBannerTitle>}
-        subtitle={<PageBannerSubtitle>1,000 Fans</PageBannerSubtitle>}
-        router={
-          <LinkedTabs
-            spacing={10}
-            tabs={[
-              {
-                path: `/group/1`,
-                component: makePageBannerRoute("Overview"),
-              },
-              {
-                path: `/group/1/members`,
-                component: makePageBannerRoute("Members"),
-              },
-              {
-                path: `/group/1/gallery`,
-                component: makePageBannerRoute("Gallery"),
-              },
-            ]}
-          />
-        }
-        backgroundUrl={data?.group?.banner?.rawUrl}
-      />
-      <Flex maxH="7xl" mx="auto">
-        <Outlet />
+    <WithNavbar noSpace>
+      <Flex minHeight="100vh" flexFlow="column nowrap" w="full" h="full">
+        <PageBanner
+          topic={<PageBannerTopic>Girl Group</PageBannerTopic>}
+          title={<PageBannerTitle>{data?.group?.name}</PageBannerTitle>}
+          router={
+            <LinkedTabs
+              spacing={10}
+              tabs={[
+                {
+                  path: `/group/${friendlyUri}`,
+                  component: makePageBannerRoute("Overview"),
+                },
+                {
+                  path: `/group/${friendlyUri}/members`,
+                  component: makePageBannerRoute("Members"),
+                },
+                {
+                  path: `/group/${friendlyUri}/gallery`,
+                  component: makePageBannerRoute("Gallery"),
+                },
+              ]}
+            />
+          }
+          backgroundUrl={data?.group?.banner?.rawUrl}
+        />
+        <Flex maxW="7xl" mx="auto" w="full">
+          <Outlet />
+        </Flex>
       </Flex>
-    </Flex>
+    </WithNavbar>
   )
 }

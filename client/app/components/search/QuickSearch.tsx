@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux"
-import { RootState, store } from "@/models/store"
+import { RootState, store } from "~/models/store"
 import {
   QuickSearchContainer,
   QuickSearchHeader,

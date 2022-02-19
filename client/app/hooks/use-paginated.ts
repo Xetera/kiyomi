@@ -27,17 +27,19 @@ export const usePaginated = <T, K>(
   fetcher: FetcherWithComponents<T>,
   opts: UsePaginatedOptions<T, K>
 ) => {
-  const transformedLoader = useLoaderData<T>()
+  const transformedLoader = opts.transform(useLoaderData<T>())
 
-  const [data, setData] = useState(opts.transform(transformedLoader))
-  const page = useRef(0)
+  const [data, setData] = useState(transformedLoader)
+  const page = useRef(transformedLoader.length > 0 ? 1 : 0)
   function loadMore() {
     if (fetcher.state === "loading") return
+
     const options = opts.fetchOptions ?? defaultFetchOptions
     const perPage = opts.perPage ?? DEFAULT_TAKE
     const qs = options(page.current * perPage, perPage)
 
-    fetcher.load(`${opts.href}?${qs}`)
+    const urlTarget = `${opts.href}?${qs}`
+    fetcher.load(urlTarget)
     page.current += 1
   }
   useEffect(() => {

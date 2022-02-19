@@ -18,6 +18,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useDebounce } from "react-use"
 import { SearchIdol, searchIdol } from "~/client/typesense"
 import { SearchResponse } from "typesense/lib/Typesense/Documents"
+import { useSdk } from "~/hooks/useSdk"
 
 function intersperse<T>(arr: T[], inter: T) {
   return flatMap(arr, (a, i) => (i ? [inter, a] : [a]))
@@ -37,6 +38,7 @@ type SearchResults = {
 }
 
 export function PersonSearchbar(props: PersonSearchbarProps) {
+  const sdk = useSdk()
   const [name, setName] = useState<string>("")
   // Create a ref that we add to the element for which we want to detect outside clicks
   const ref = useRef<HTMLDivElement>(null)

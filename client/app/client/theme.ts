@@ -70,7 +70,7 @@ const theme = extendTheme({
     // ...colors,
     lightTransparent: "rgba(60, 60, 60, 0.5)",
     bgPrimary: "hsla(222, 20%, 7%, 1)",
-    bgSecondary: "#11131d",
+    bgSecondary: "#121317",
     bgTertiary: "#161927",
     borderSubtle: "#131621",
     borderLight: "#272e34",
@@ -145,11 +145,11 @@ const theme = extendTheme({
       lineHeight: "110%",
     },
     heading: {
-      fontSize: ["14px", "18px"],
+      fontSize: ["16px", "18px"],
       fontWeight: "semibold",
     },
     "heading-sm": {
-      fontSize: ["12px", "14px"],
+      fontSize: ["14px"],
       fontWeight: "semibold",
     },
     "text-sm": {

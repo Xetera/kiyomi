@@ -1,6 +1,6 @@
 import { createModel } from "@rematch/core"
-import { RootModel } from "@/models/state/index"
-import { UserDataQuery } from "@/lib/__generated__/graphql"
+import { RootModel } from "~/models/state/index"
+import { UserDataQuery } from "~/__generated__/graphql"
 
 type UserModel = {
   cache: UserDataQuery["me"] | undefined
