@@ -1,0 +1,20 @@
+query GroupMembers($groupId: Int!) {
+  # TODO: fix this query
+  group(where: { id: $groupId }) {
+    members {
+      startDate
+      endDate
+      person {
+        name
+        aliases {
+          name
+        }
+        avatar {
+          thumbnail {
+            small
+          }
+        }
+      }
+    }
+  } 
+}

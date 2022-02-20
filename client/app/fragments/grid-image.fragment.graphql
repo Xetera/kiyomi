@@ -1,0 +1,40 @@
+fragment GridImage on Image {
+  id
+  slug
+  url
+  height
+  width
+  focus {
+    x
+    y
+  }
+  thumbnail {
+    small
+  }
+  rawUrl
+  aspectRatio
+  uploadedBy {
+    id
+    name
+  }
+  appearances {
+    id
+    person {
+      name
+    }
+  }
+  createdAt
+}
+
+fragment PersonGridImage on Person {
+    id
+    name
+    preferredAlias {
+        name
+    }
+    avatar {
+        thumbnail {
+            medium
+        }
+    }
+}

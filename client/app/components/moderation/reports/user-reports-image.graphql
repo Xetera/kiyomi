@@ -1,0 +1,27 @@
+mutation ImageReportAction($id: Int!, $action: ImageReportAction!) {
+    imageReportAction(action: $action, reportId: $id) {
+        id
+    }
+}
+
+query ImageReports {
+    imageReports(orderBy: [{ createdAt: desc }], where: { action: { equals: null } }) {
+        id
+        reason
+        image {
+            id
+            url
+            slug
+            width
+            height
+            thumbnail {
+                medium
+            }
+        }
+        reportedBy {
+            avatar
+            name
+        }
+        createdAt
+    }
+}
