@@ -32,19 +32,6 @@ export const BrowseIdols = () => {
   const pagination = usePaginated(fetcher, {
     href: "/browse/idols",
     transform: (data) => data.people,
-    // queryKey:
-    //   groupIds.length > 0
-    //     ? ["BrowsePageIdolsWithFilter", groupIds]
-    //     : ["BrowsePageIdols"],
-    // document:
-    //   groupIds.length > 0
-    //     ? BrowsePageIdolsWithFilterDocument
-    //     : BrowsePageIdolsDocument,
-    // : 30,
-    // variables() {
-    //   return {
-    //     groups: groupIds,
-    //   }
   })
   return (
     <>
