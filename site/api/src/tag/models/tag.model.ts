@@ -4,14 +4,14 @@ import { TagAliasModel } from "./tag-alias.model";
 @ObjectType("Tag")
 export class TagModel {
   @Field()
-  name: string
+  name!: string
 
   @Field(() => TagAliasModel)
-  aliases: TagAliasModel[]
+  aliases!: TagAliasModel[]
 
   @Field(() => GraphQLISODateTime)
-  createdAt: Date;
+  createdAt!: Date;
 
   @Field(() => GraphQLISODateTime)
-  updatedAt: Date;
+  updatedAt!: Date;
 }

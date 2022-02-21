@@ -3,15 +3,15 @@ import { Field, GraphQLISODateTime, ObjectType } from "@nestjs/graphql";
 @ObjectType("TagCategory")
 export class TagCategoryModel {
   @Field()
-  name: string
+  name!: string
 
   // @Field(() => User, { nullable: true })
   // addedBy: User
 
   @Field(() => GraphQLISODateTime)
-  createdAt: Date;
+  createdAt!: Date;
 
   @Field(() => GraphQLISODateTime)
-  updatedAt: Date;
+  updatedAt!: Date;
 }
 

@@ -1,6 +1,5 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
-import {Routing} from "../../../client/routing";
 
 @Injectable()
 export class ImageService {
@@ -19,14 +18,13 @@ export class ImageService {
       // @ts-ignore
       console.log("Duration: " + e.duration + "ms")
     })
-
   }
 
   async downloadImage(slug: string, discoveredImageId: string) {
     if (!slug && !discoveredImageId) {
       throw new HttpException('Nothing Found', HttpStatus.BAD_REQUEST);
     }
-    let imageUrl: string
+    let imageUrl: string | undefined
     if (discoveredImageId) {
       const id = Number(discoveredImageId)
       const image = await this.prismaService.discoveredImage.findUnique({
@@ -45,8 +43,7 @@ export class ImageService {
       if (!image) {
         throw new HttpException('no media found', HttpStatus.NOT_FOUND);
       }
-      return imageUrl
     }
+    return imageUrl
   }
-
 }

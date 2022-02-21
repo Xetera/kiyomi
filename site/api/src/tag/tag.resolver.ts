@@ -1,9 +1,7 @@
 import { TagService } from "./tag.service";
-import { MediaService } from "../media/media.service";
 import { TagModel } from "./models";
 import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import { Tag } from "@prisma/client";
-import { MediaModel } from "../media/models";
 import { TagAliasModel } from "./models/tag-alias.model";
 
 @Resolver(() => TagModel)

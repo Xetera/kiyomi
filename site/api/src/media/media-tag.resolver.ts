@@ -15,8 +15,13 @@ export class MediaTagResolver {
   ) {}
 
   @ResolveField(() => TagModel)
-  tag(@Parent() mediaTag: ImageTag): Promise<Tag> {
-    return this.tagService.tagByImageTagId(mediaTag.id)
+  async tag(@Parent() mediaTag: ImageTag): Promise<Tag> {
+    const tag = await this.tagService.tagByImageTagId(mediaTag.id)
+    if (!tag) {
+      // TODO: better unexpected error handling?
+      throw new Error("Tag not found")
+    }
+    return tag
   }
 
   @ResolveField(() => [MediaTagModel])

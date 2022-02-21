@@ -11,12 +11,14 @@ export class TagService {
     return this.prisma.tagAlias.findMany({ where: { tagId } })
   }
 
-  async tagByImageTagId(imageTagId: number): Promise<Tag | undefined> {
-    const { tag } = await this.prisma.imageTag.findUnique({
+  async tagByImageTagId(imageTagId: number) {
+    const imageTag = await this.prisma.imageTag.findUnique({
       where: { id: imageTagId },
       include: { tag: true },
     })
-    console.log({ tag })
-    return tag
+    if (!imageTag) {
+      return
+    }
+    return imageTag.tag
   }
 }

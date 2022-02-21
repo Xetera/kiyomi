@@ -1,88 +1,89 @@
-import { GraphQLISODateTime, Field, Int, ObjectType, ID } from "@nestjs/graphql";
-import { UploadDestination, UploadType, MimeType } from "@prisma/client";
-import { MediaTagModel } from "./media-tag.model";
+import { Field, GraphQLISODateTime, ID, Int, ObjectType } from "@nestjs/graphql"
+import { MimeType, UploadDestination, UploadType } from "@prisma/client"
+import { MediaTagModel } from "./media-tag.model"
+import { UserModel } from "../../user/models/user.model"
 
 @ObjectType("Media", {
-  description: "An image or a video on the site"
+  description: "An image or a video on the site",
 })
 export class MediaModel {
   @Field(() => Int)
-  id: number;
+  id!: number
 
   @Field(() => Int)
-  width: number;
+  width!: number
 
   @Field(() => Int)
-  height: number;
+  height!: number
 
   @Field(() => UploadType)
-  uploadType: UploadType
+  uploadType!: UploadType
 
   @Field()
-  hash: string
+  hash!: string
 
   @Field({ nullable: true })
-  fileName: string
+  fileName!: string
 
   @Field(() => [Int])
-  palette: number[]
+  palette!: number[]
 
   @Field({ nullable: true })
-  source: string
+  source!: string
 
-  // @Field(() => User, { nullable: true })
-  // uploadedBy: User
-  //
+  @Field(() => UserModel, { nullable: true })
+  uploadedBy!: UserModel
+
   @Field(() => [MediaTagModel], {
     description: "The tags associated with this media",
   })
-  tags: MediaTagModel[]
+  tags!: MediaTagModel[]
 
   @Field(() => UploadDestination, { nullable: true })
-  destination: UploadDestination
+  destination!: UploadDestination
 
   @Field(() => ID, {
-    description: "A randomly generated ID for the media"
+    description: "A randomly generated ID for the media",
   })
-  slug: string
+  slug!: string
 
   @Field()
-  public: number
+  public!: number
 
-  @Field({ nullable: true})
-  caption: string
+  @Field({ nullable: true })
+  caption!: string
 
   @Field(() => Int, {
-    description: "The number of times a user has visited the media page"
+    description: "The number of times a user has visited the media page",
   })
-  views: number
+  views!: number
 
   @Field((type) => MimeType)
-  mimetype: MimeType
+  mimetype!: MimeType
 
   @Field(() => Int)
-  bytes: number
+  bytes!: number
 
   // @Field(() => [Appearance])
   // appearances: [Appearance!]!
 
-  @Field(() =>  GraphQLISODateTime, { nullable: true })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   faceScanDate?: Date
 
   @Field(() => Int, { nullable: true })
-  ireneBotId: number
+  ireneBotId?: number
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   hiddenAt?: Date
 
   @Field(() => GraphQLISODateTime)
-  createdAt: Date
+  createdAt!: Date
 
   // @Field(() => GraphQLISODateTime)
   // thumbnail: Thumbnail!
 
   @Field({ nullable: true })
-  fileSize: string
+  fileSize?: string
 
   // @Field()
   // fileSize: string
@@ -93,5 +94,6 @@ export class MediaModel {
   // focus: ImageCoordinate!
   // unknownFaces: [Face!]!
   // connections(...): ImageConnections!
-  // reported: Boolean!
+  @Field(() => Boolean, { nullable: true })
+  reported!: boolean
 }

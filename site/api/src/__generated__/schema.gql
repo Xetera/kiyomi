@@ -29,6 +29,24 @@ type MediaTag {
   tags: [MediaTag!]!
 }
 
+type Role {
+  name: String!
+  createdAt: DateTime!
+}
+
+type User {
+  id: Float!
+  name: String
+  avatarUrl: String
+  roles: [Role!]!
+
+  """Whether this user is a bot account"""
+  bot: Boolean!
+
+  """User's experience points"""
+  xp: Int!
+}
+
 """An image or a video on the site"""
 type Media {
   id: Int!
@@ -39,6 +57,7 @@ type Media {
   fileName: String
   palette: [Int!]!
   source: String
+  uploadedBy: User
 
   """The tags associated with this media"""
   tags: [MediaTag!]!
@@ -58,6 +77,7 @@ type Media {
   hiddenAt: DateTime
   createdAt: DateTime!
   fileSize: String
+  reported: Boolean
 }
 
 enum UploadType {

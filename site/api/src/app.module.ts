@@ -7,6 +7,7 @@ import { GraphQLModule } from "@nestjs/graphql"
 import { PrismaModule } from "./prisma/prisma.module"
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo"
 import { ConfigModule } from "@nestjs/config"
+import { UserModule } from './user/user.module';
 import * as path from "node:path"
 
 @Module({
@@ -19,6 +20,7 @@ import * as path from "node:path"
     MediaModule,
     ImageModuleOld,
     ConfigModule,
+    UserModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,

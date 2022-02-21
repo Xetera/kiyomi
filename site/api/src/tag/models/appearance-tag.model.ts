@@ -4,11 +4,11 @@ import { TagModel } from "./tag.model";
 @ObjectType("AppearanceTag")
 export class AppearanceTagModel {
   @Field(() => TagModel)
-  tag: TagModel;
+  tag!: TagModel;
 
   @Field(() => GraphQLISODateTime)
-  createdAt: Date;
+  createdAt!: Date;
 
   @Field(() => GraphQLISODateTime)
-  updatedAt: Date;
+  updatedAt!: Date;
 }

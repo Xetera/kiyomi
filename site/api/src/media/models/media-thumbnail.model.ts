@@ -6,5 +6,5 @@ export class MediaThumbnailModel {
   @Field({
     description: "",
   })
-  xsmall: string;
+  xsmall!: string;
 }
