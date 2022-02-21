@@ -1,8 +1,11 @@
-import { Field, GraphQLISODateTime, ObjectType } from "@nestjs/graphql";
-import { TagModel } from "../../tag/models";
-import { MediaModel } from "./media.model";
+import { Field, GraphQLISODateTime, ObjectType } from "@nestjs/graphql"
+import { TagModel } from "../../tag/models"
+import { MediaModel } from "./media.model"
+import { UserModel } from "../../user/models/user.model"
 
-@ObjectType("MediaTag")
+@ObjectType("MediaTag", {
+  description: "A tag describing a media.",
+})
 export class MediaTagModel {
   @Field(() => TagModel, { nullable: true })
   tag!: TagModel
@@ -10,12 +13,15 @@ export class MediaTagModel {
   @Field(() => MediaModel)
   media!: MediaModel
 
-  // @Field(() => User, { nullable: true })
-  // addedBy: User
+  @Field(() => UserModel, {
+    nullable: true,
+    description: "The user who added the tag. Null if the user was deleted.",
+  })
+  addedBy?: UserModel
 
   @Field(() => GraphQLISODateTime)
-  createdAt!: Date;
+  createdAt!: Date
 
   @Field(() => GraphQLISODateTime)
-  updatedAt!: Date;
+  updatedAt!: Date
 }

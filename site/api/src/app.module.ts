@@ -8,6 +8,9 @@ import { PrismaModule } from "./prisma/prisma.module"
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo"
 import { ConfigModule } from "@nestjs/config"
 import { UserModule } from './user/user.module';
+import { AppearanceModule } from './appearance/appearance.module';
+import { PersonService } from './person/person.service';
+import { PersonModule } from './person/person.module';
 import * as path from "node:path"
 
 @Module({
@@ -21,14 +24,17 @@ import * as path from "node:path"
     ImageModuleOld,
     ConfigModule,
     UserModule,
+    AppearanceModule,
+    PersonModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
+      debug: true,
       autoSchemaFile: path.join(process.cwd(), "src/__generated__/schema.gql"),
     }),
   ],
   exports: [PrismaModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PersonService],
 })
 export class AppModule {}

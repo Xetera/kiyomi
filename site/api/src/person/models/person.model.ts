@@ -1,0 +1,37 @@
+import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql";
+
+@ObjectType("Person")
+export class PersonModel {
+  @Field(() => Int)
+  id!: number
+
+  // @Field(() => [AliasModel])
+  // aliases!: AliasModel[]
+
+  // @Field(() => AliasModel, {
+  //   nullable: true,
+  //   description: "The aliases of the person commonly goes by",
+  // })
+  // preferredAlias!: AliasModel[]
+
+  // @Field(() => [GroupMemberModel], )
+  // memberOf!: GroupMemberModel[]
+
+  // @Field(() => GroupMemberModel, {
+  //   nullable: true,
+  //   description: "The primary group member the person represents"
+  // })
+  // preferredMembership!: GroupMemberModel[]
+
+  @Field({ nullable: true })
+  name?: string
+
+  @Field(() => GraphQLISODateTime)
+  birthDate?: Date
+
+  @Field(() => GraphQLISODateTime)
+  createdAt!: Date
+
+  @Field(() => GraphQLISODateTime)
+  updatedAt!: Date
+}

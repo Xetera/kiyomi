@@ -21,14 +21,6 @@ type Tag {
   updatedAt: DateTime!
 }
 
-type MediaTag {
-  tag: Tag
-  media: Media!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  tags: [MediaTag!]!
-}
-
 type Role {
   name: String!
   createdAt: DateTime!
@@ -47,7 +39,43 @@ type User {
   xp: Int!
 }
 
-"""An image or a video on the site"""
+"""A tag describing a media."""
+type MediaTag {
+  tag: Tag
+  media: Media!
+
+  """The user who added the tag. Null if the user was deleted."""
+  addedBy: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Person {
+  id: Int!
+  name: String
+  birthDate: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A tag that describes a specific person in a media. For tags that describe media itself, see MediaTag.
+"""
+type AppearanceTag {
+  appearance: Appearance!
+  tag: Tag!
+  tags: [AppearanceTag!]!
+  addedBy: User!
+}
+
+"""The presence of a person in a media."""
+type Appearance {
+  person: Person!
+  tags: [AppearanceTag!]!
+  addedBy: User
+}
+
+"""An image or a video."""
 type Media {
   id: Int!
   width: Int!
@@ -72,12 +100,22 @@ type Media {
   views: Int!
   mimetype: MimeType!
   bytes: Int!
+  appearances: [Appearance!]!
   faceScanDate: DateTime
   ireneBotId: Int
   hiddenAt: DateTime
   createdAt: DateTime!
   fileSize: String
-  reported: Boolean
+  rawUrl: String!
+  aspectRatio: Float!
+
+  """Whether the current user has liked this media. Null if not logged in."""
+  liked: Boolean!
+
+  """
+  Whether the current user has reported the media. Null if not logged in.
+  """
+  reported: Boolean!
 }
 
 enum UploadType {

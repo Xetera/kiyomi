@@ -2,9 +2,11 @@ import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql"
 import { MediaModel } from "./models"
 import { MediaService } from "./media.service"
 import { TagService } from "../tag/tag.service"
-import { Image, ImageTag, User } from "@prisma/client"
+import { Appearance, Image, ImageTag } from "@prisma/client"
 import { MediaTagModel } from "./models/media-tag.model"
 import { UserService } from "../user/user.service"
+import { AppearanceModel } from "../appearance/models/appearance.model"
+import { AppearanceService } from "../appearance/appearance.service"
 
 @Resolver(() => MediaModel)
 export class MediaResolver {
@@ -12,6 +14,7 @@ export class MediaResolver {
     private readonly tagService: TagService,
     private readonly userService: UserService,
     private readonly mediaService: MediaService,
+    private readonly appearanceService: AppearanceService,
   ) {
   }
 
@@ -21,8 +24,13 @@ export class MediaResolver {
   }
 
   @ResolveField(() => [MediaTagModel])
-  tags(@Parent() media: Image){
+  tags(@Parent() media: Image): Promise<ImageTag[]> {
     return this.mediaService.tags(media.id)
+  }
+
+  @ResolveField(() => [AppearanceModel])
+  appearances(@Parent() media: Image): Promise<Appearance[]> {
+    return this.appearanceService.imageAppearances(media.id)
   }
 
   @ResolveField()

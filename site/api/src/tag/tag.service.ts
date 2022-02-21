@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../prisma/prisma.service"
-import { Tag } from "@prisma/client"
 
 @Injectable()
 export class TagService {
@@ -20,5 +19,16 @@ export class TagService {
       return
     }
     return imageTag.tag
+  }
+
+  async mediaTagAdder(mediaId: number) {
+    const imageTag = await this.prisma.imageTag.findUnique({
+      where: { id: mediaId },
+      include: { addedBy: true },
+    })
+    if (!imageTag) {
+      return
+    }
+    return imageTag.addedBy ?? undefined
   }
 }
