@@ -61,24 +61,24 @@ export const GraphDisplay = React.memo(
         ctx.fill()
       }
 
-      if (name === "This image") {
+      if (name === "This media") {
         if (isLoneGraph) {
           ctx.fillStyle = "#eeeeee"
           ctx.font = "5px Inter"
           ctx.textAlign = "center"
           ctx.textBaseline = "middle"
-          ctx.fillText("There's nobody in this image 😭", x, y + 20)
+          ctx.fillText("There's nobody in this media 😭", x, y + 20)
           ctx.fillStyle = opts.color
         } else {
           ctx.fillStyle = "#eeeeee"
           ctx.font = "5px Inter"
           ctx.textAlign = "center"
           ctx.textBaseline = "middle"
-          ctx.fillText("This image", x, y + 10)
+          ctx.fillText("This media", x, y + 10)
           ctx.fillStyle = opts.color
         }
         drawStar(opts.x, opts.y, 5, 2, 1)
-      } else if (name === "Another image") {
+      } else if (name === "Another media") {
         ctx.beginPath()
         ctx.fillStyle = "#13131d"
         ctx.arc(x, y, 5, 0, 2 * Math.PI, false)
@@ -154,7 +154,7 @@ export const GraphDisplay = React.memo(
                   currentImage: r.slug === slug,
                   imageSlug: r.slug,
                   id: `image-${r.id}`,
-                  name: r.slug === slug ? "This image" : `Another image`,
+                  name: r.slug === slug ? "This media" : `Another image`,
                 }))
                 .concat(
                   (graph.imageConnections.people ?? []).map((r) => ({

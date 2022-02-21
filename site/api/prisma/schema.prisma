@@ -259,7 +259,7 @@ model VerificationRequest {
   @@map("verification_requests")
 }
 
-/// An image uploaded by a user or bot
+/// An media uploaded by a user or bot
 model Image {
   slug                String               @unique(map: "images.slug_unique")
   width               Int

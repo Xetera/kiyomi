@@ -19,6 +19,7 @@ const publicTypes = Object.fromEntries(
 const sourceTypes = {
   modules: [{ module: ".prisma/client", alias: "PrismaClient" }],
 }
+
 const outBase = path.join(process.cwd(), "..", "shared")
 
 const contextType = {

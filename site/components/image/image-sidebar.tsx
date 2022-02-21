@@ -123,13 +123,13 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
       toast({
         ...toastProps,
         status: "info",
-        title: "You unliked this image",
+        title: "You unliked this media",
       })
     } else {
       toast({
         ...toastProps,
         status: "success",
-        title: "You liked this image",
+        title: "You liked this media",
       })
     }
     mutate({ id: image.id })
@@ -232,13 +232,13 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           <div />
         )}
         <Palette colors={image.palette} />
-        {/* {image.tags?.length > 0 ? (
-          <Tags tags={image.tags.map((tag) => tag.name)} />
+        {/* {media.tags?.length > 0 ? (
+          <Tags tags={media.tags.map((tag) => tag.name)} />
         ) : (
           <div />
         )}
         <div>
-          {image.source && <p className="text-gray-500">{image.source}</p>}
+          {media.source && <p className="text-gray-500">{media.source}</p>}
         </div>
         <Box>
           <Button
@@ -265,7 +265,7 @@ export default function ImageSidebar({ onEdit }: ImageSidebarProps) {
           >
             Edit Faces
           </Button>
-          <QueueButton slug={image.slug} scanDate={image.faceScanDate} />
+          <QueueButton slug={media.slug} scanDate={media.faceScanDate} />
         </Grid> */}
       </CascadeChildren>
     </Stack>

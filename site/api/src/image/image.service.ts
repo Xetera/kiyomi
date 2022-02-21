@@ -1,5 +1,5 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {PrismaService} from "../prisma.service";
+import {PrismaService} from "../prisma/prisma.service";
 import {Routing} from "../../../client/routing";
 
 @Injectable()
@@ -33,7 +33,7 @@ export class ImageService {
         where: { id },
       })
       if (!image) {
-        throw new HttpException('No image found', HttpStatus.NOT_FOUND);
+        throw new HttpException('No media found', HttpStatus.NOT_FOUND);
       }
       imageUrl = image.url
     } else {
@@ -43,7 +43,7 @@ export class ImageService {
         },
       })
       if (!image) {
-        throw new HttpException('no image found', HttpStatus.NOT_FOUND);
+        throw new HttpException('no media found', HttpStatus.NOT_FOUND);
       }
       return imageUrl
     }

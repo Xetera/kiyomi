@@ -1,7 +1,6 @@
 import "dotenv/config"
 
 export class ConfigService {
-
     constructor(private env: { [k: string]: string | undefined }) { }
 
     private getValue(key: string, throwOnMissing = true): string {
@@ -26,11 +25,7 @@ export class ConfigService {
 
 const configService = new ConfigService(process.env)
     .ensureValues([
-        'POSTGRES_HOST',
-        'POSTGRES_PORT',
-        'POSTGRES_USER',
-        'POSTGRES_PASSWORD',
-        'POSTGRES_DB'
+        'POSTGRES_URL',
     ]);
 
 export { configService };

@@ -45,7 +45,7 @@ export const ReportModal = ({
       })
       toast({
         status: "success",
-        title: "You reported this image",
+        title: "You reported this media",
         description: "Our moderators will take a look at this shortly",
       })
       await client.invalidateQueries(["OneImage", { slug }])

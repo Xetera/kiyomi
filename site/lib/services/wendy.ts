@@ -43,8 +43,8 @@ export function makeWendy({ prisma, amqp }: WendyOptions) {
     async me() {
       const wendyId = process.env.WENDY_USER_ID
       if (!wendyId) {
-        console.error("Tried to label an image with a missing WENDY_USER_ID")
-        throw Error("Cannot label image, wendy was not set up properly")
+        console.error("Tried to label an media with a missing WENDY_USER_ID")
+        throw Error("Cannot label media, wendy was not set up properly")
       }
       const user = await prisma.user.findUnique({
         where: {

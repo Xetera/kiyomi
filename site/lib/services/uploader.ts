@@ -82,7 +82,7 @@ export function makeUploader({ prisma, wasabi, wendy }: UploaderOptions) {
         wasabi.putImage({
           key: slugWithExtension,
           body: buffer,
-          mimetype: mime || "image/webp",
+          mimetype: mime || "media/webp",
         }),
       ])
       const status = uploadResult?.$metadata.httpStatusCode
@@ -162,7 +162,7 @@ export function makeUploader({ prisma, wasabi, wendy }: UploaderOptions) {
 
       // this should be asynchronous
       wendy.fullLabel(image.slug).catch((err) => {
-        console.error("Something went wrong trying to label an uploaded image")
+        console.error("Something went wrong trying to label an uploaded media")
         console.error(err)
       })
 

@@ -345,7 +345,7 @@ type AppearanceMap = Record<number, AppearanceItem>
 export const ImageEditEditor = () => {
   const image = useContext(ImageContext)
   if (!image) {
-    throw Error("Cannot use an image editor without an Image context")
+    throw Error("Cannot use an media editor without an Image context")
   }
   const { mutateAsync: removeAppearance } = useRemoveAppearanceMutation()
   const { mutateAsync: linkFace } = useLinkFaceMutation()
