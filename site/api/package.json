@@ -13,6 +13,7 @@
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "nodemon",
     "start:prod": "node dist/main.js",
+    "dev": "yarn start:dev",
     "typecheck": "tsc",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
@@ -27,6 +28,7 @@
     "@nestjs/swagger": "^5.2.0",
     "@prisma/client": "^3.9.2",
     "apollo-server-express": "^3.6.3",
+    "class-validator": "^0.13.2",
     "dotenv": "^16.0.0",
     "graphql": "^16.3.0",
     "reflect-metadata": "^0.1.13",

@@ -78,49 +78,114 @@ type Appearance {
 """An image or a video."""
 type Media {
   id: Int!
+
+  """Width of the media in pixels."""
   width: Int!
+
+  """Height of the media in pixels."""
   height: Int!
   uploadType: UploadType!
+
+  """SHA-256 hash of the media"""
   hash: String!
+
+  """
+  The name of the file when it was uploaded. Only valid for uploadType WEBSITE.
+  """
   fileName: String
+
+  """
+  The primary colors of the media in decimal format ordered by frequency. May not be present for animated formats like MP4s.
+  """
   palette: [Int!]!
-  source: String
+
+  """The website or other relevant source this media is from."""
+  source: String @deprecated(reason: "Use the `sources` field instead.")
   uploadedBy: User
 
-  """The tags associated with this media"""
-  tags: [MediaTag!]!
+  """The tags describing with this media."""
+  tags(
+    """Amount of items to view per page"""
+    take: Int = 10
+
+    """Amount of previously-seen items to skip"""
+    skip: Int = 0
+  ): [MediaTag!]!
+
+  """The location where this media is stored."""
   destination: UploadDestination
 
-  """A randomly generated ID for the media"""
+  """A randomly generated ID for the media."""
   slug: ID!
+
+  """
+  Whether this media is available for everyone to view. Only visible to the uploader and moderators if false.
+  """
   public: Float!
+
+  """Media description."""
   caption: String
 
-  """The number of times a user has visited the media page"""
+  """The number of times a user has visited the media page."""
   views: Int!
+
+  """The file extension of the media."""
   mimetype: MimeType!
+
+  """Size of the uploaded file in bytes."""
   bytes: Int!
-  appearances: [Appearance!]!
+
+  """The people who appear in this media."""
+  appearances(
+    """Amount of items to view per page"""
+    take: Int = 10
+
+    """Amount of previously-seen items to skip"""
+    skip: Int = 0
+  ): [Appearance!]!
+
+  """
+  The last date this media was scanned for faces. Usually represents the date it was uploaded unless manually re-scanned.
+  """
   faceScanDate: DateTime
+
+  """The ID of the media if taken from irenebot."""
   ireneBotId: Int
+
+  """The date the image was last hidden. Null if not hidden or unhidden."""
   hiddenAt: DateTime
-  createdAt: DateTime!
-  fileSize: String
-  rawUrl: String!
+
+  """Human readable file size."""
+  fileSize: String @deprecated(reason: "Use `bytes` instead.")
+
+  """
+  The source url of the full-size media. Use `thumbnail` for resized copies.
+  """
+  url: String!
+
+  """width / height + didn't ask + you fell off +"""
   aspectRatio: Float!
 
   """Whether the current user has liked this media. Null if not logged in."""
-  liked: Boolean!
+  liked: Boolean
 
   """
   Whether the current user has reported the media. Null if not logged in.
   """
   reported: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
+"""The way an upload took place."""
 enum UploadType {
+  """An item uploaded manually by a user"""
   WEBSITE
+
+  """An item added automatically through a token"""
   TOKEN
+
+  """An item discovered by an automatic content scanner"""
   AUTO_DISCOVERY
 }
 

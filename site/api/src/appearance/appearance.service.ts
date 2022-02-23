@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../prisma/prisma.service"
+import { PaginationArgs } from "../common-dto/pagination.args";
 
 @Injectable()
 export class AppearanceService {
@@ -31,9 +32,11 @@ export class AppearanceService {
     return appearanceTag.appearance
   }
 
-  async imageAppearances(imageId: number) {
+  async imageAppearances(imageId: number, pagination?: PaginationArgs) {
     return this.prisma.appearance.findMany({
       where: { imageId },
+      take: pagination?.take,
+      skip: pagination?.skip,
     })
   }
 }
