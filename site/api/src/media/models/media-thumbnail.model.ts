@@ -1,7 +1,7 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql"
 
 export const MediaThumbnailModelWidths = {
-  xsmall: 250,
+  xsmall: 200,
   small: 350,
   medium: 500,
   large: 900,
@@ -9,11 +9,30 @@ export const MediaThumbnailModelWidths = {
   full: 1920,
 } as const
 
-@ObjectType()
+@ObjectType("MediaThumbnail")
 export class MediaThumbnailModel {
   @Field({
-    description: "",
+    description: `A thumbnail of a fullsize image at ${MediaThumbnailModelWidths.xsmall}px width.`,
   })
-  xsmall!: string;
+  xsmall!: string
 
+  @Field({
+    description: `A thumbnail of a fullsize image at ${MediaThumbnailModelWidths.small}px width.`,
+  })
+  small!: string
+
+  @Field({
+    description: `A thumbnail of a fullsize image at ${MediaThumbnailModelWidths.medium}px width.`,
+  })
+  medium!: string
+
+  @Field({
+    description: `A thumbnail of a fullsize image at ${MediaThumbnailModelWidths.large}px width.`,
+  })
+  large!: string
+
+  @Field({
+    description: `A thumbnail of a fullsize image at ${MediaThumbnailModelWidths.xlarge}px width.`,
+  })
+  full!: string
 }

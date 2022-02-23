@@ -2,6 +2,23 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type MediaThumbnail {
+  """A thumbnail of a fullsize image at 200px width."""
+  xsmall: String!
+
+  """A thumbnail of a fullsize image at 350px width."""
+  small: String!
+
+  """A thumbnail of a fullsize image at 500px width."""
+  medium: String!
+
+  """A thumbnail of a fullsize image at 900px width."""
+  large: String!
+
+  """A thumbnail of a fullsize image at 1200px width."""
+  full: String!
+}
+
 type TagAlias {
   name: String!
   tag: Tag!
@@ -175,6 +192,7 @@ type Media {
   reported: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
+  thumbnail: MediaThumbnail!
 }
 
 """The way an upload took place."""

@@ -1,19 +1,31 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, Logger } from "@nestjs/common"
 import { Image } from "@prisma/client"
-import { Routing } from "../../../client/routing"
-import { ImgProxy } from "../../../lib/services/image-proxy"
-import { MediaThumbnailModel } from "../media/models";
+import { ImgProxy } from "./imgproxy"
+import { MediaThumbnailModel, MediaThumbnailModelWidths } from "../media/models"
+import { ConfigService } from "@nestjs/config"
+import { MediaService } from "../media/media.service"
+import { UploaderService } from "../uploader/uploader.service";
 
 @Injectable()
 export class ImgProxyService {
   readonly imgproxy: ImgProxy
+  readonly enabled: boolean
+  readonly logger = new Logger(ImgProxyService.name)
 
-  constructor() {
-    this.imgproxy = new ImgProxy({
-      key: process.env.IMGPROXY_KEY,
-      salt: process.env.IMGPROXY_SALT,
-      url: process.env.IMGPROXY_URL,
-    })
+  constructor(
+    private config: ConfigService,
+    private uploaderService: UploaderService,
+  ) {
+    const key = config.get("IMGPROXY_KEY")
+    const salt = config.get("IMGPROXY_SALT")
+    const url = config.get("IMGPROXY_URL")
+    this.enabled = key && salt && url
+    if (!this.enabled) {
+      this.logger.warn(
+        `Imgproxy is disabled because it's missing required configuration.`,
+      )
+    }
+    this.imgproxy = new ImgProxy({ key, salt, url })
   }
 
   /**
@@ -23,26 +35,39 @@ export class ImgProxyService {
    * @param img
    */
   thumbnails(img: Image): MediaThumbnailModel {
-    const rootImage = Routing.toRawImage(img)
+    const rootImage = this.uploaderService.mediaUrl(img)
     // we can't really do resizing for MP4s so this is
     // a decent alternative
-    if (img.mimetype === "MP4") {
+    if (img.mimetype === "MP4" || !this.enabled) {
       return {
+        xsmall: rootImage,
         small: rootImage,
         medium: rootImage,
         large: rootImage,
+        full: rootImage,
       }
     }
-    const base = this.imgproxy
+
+    let base = this.imgproxy
       .image(rootImage)
-      .width(0)
       .resizeType("fill")
       .extension("webp")
-    return {
-      xsmall: base.height(250).get(),
-      small: base.height(350).get(),
-      medium: base.height(500).get(),
-      large: base.height(900).get(),
+    const aspectRatio = img.width / img.height
+
+    // We want to scale by width if the image is wider than it is tall
+    if (aspectRatio > 1) {
+      base = base.height(0)
+    } else {
+      base = base.width(0)
     }
+
+    return Object.keys(MediaThumbnailModelWidths).reduce((acc, key) => {
+      if (aspectRatio > 1) {
+        acc[key] = base.width(MediaThumbnailModelWidths[key]).get()
+      } else {
+        acc[key] = base.height(MediaThumbnailModelWidths[key]).get()
+      }
+      return acc
+    }, {} as MediaThumbnailModel)
   }
 }

@@ -1,7 +1,11 @@
-import crypto from "node:crypto"
+import * as crypto from "node:crypto"
+
+export type ImgProxyOptions = {
+  key: string; salt: string; url: string
+}
 
 export class ImgProxy {
-  static settings = {
+  static DEFAULT_SETTINGS = {
     enlarge: 1,
     width: 1000,
     height: 1000,
@@ -11,71 +15,71 @@ export class ImgProxy {
     originalImage: undefined,
   }
   options: {
-    config: { key: string; salt: string; url: string }
-    settings: typeof ImgProxy.settings
+    config: ImgProxyOptions
+    settings: typeof ImgProxy.DEFAULT_SETTINGS
   }
 
-  constructor({ key, salt, url }) {
+  constructor({ key, salt, url }: ImgProxyOptions) {
     this.options = {
       config: { key, salt, url },
-      settings: { ...ImgProxy.settings },
+      settings: { ...ImgProxy.DEFAULT_SETTINGS },
     }
   }
 
-  setOption(option, value) {
+  setOption(option: string, value: any): void {
     this.options.settings[option] = value
   }
 
-  image(val) {
+  image(val: string): this {
     this.setOption("originalImage", val)
     return this
   }
 
-  width(val) {
+  width(val: number): this {
     this.setOption("width", val)
     return this
   }
 
-  height(val) {
+  height(val: number): this {
     this.setOption("height", val)
     return this
   }
 
-  gravity(val) {
+  gravity(val: number): this {
     this.setOption("gravity", val)
     return this
   }
 
-  enlarge(val) {
+  enlarge(val: boolean): this {
     this.setOption("enlarge", val)
     return this
   }
 
-  resizeType(val) {
+  resizeType(val: string): this {
     this.setOption("resizeType", val)
     return this
   }
 
-  extension(val) {
+  extension(val: string): this {
     this.setOption("extension", val)
     return this
   }
 
-  sign(target) {
-    const hexKey = this.hexDecode(this.options.config.key)
-    const hexSalt = this.hexDecode(this.options.config.salt)
+  sign(target: string): string {
+    const hexKey = ImgProxy.hexDecode(this.options.config.key)
+    const hexSalt = ImgProxy.hexDecode(this.options.config.salt)
 
     const hmac = crypto.createHmac("sha256", hexKey)
     hmac.update(hexSalt)
     hmac.update(target)
-    return this.urlSafeBase64(hmac.digest())
+    return ImgProxy.urlSafeBase64(hmac.digest())
   }
 
-  hexDecode(hex) {
+  private static hexDecode(hex: string): Buffer {
     return Buffer.from(hex, "hex")
   }
 
-  urlSafeBase64(string) {
+  static urlSafeBase64(string: Buffer): string {
     return Buffer.from(string)
       .toString("base64")
       .replace(/=/g, "")
@@ -83,15 +87,15 @@ export class ImgProxy {
       .replace(/\//g, "_")
   }
 
-  get() {
+  get(): string {
     const settings = this.options.settings
     const config = this.options.config
 
     if (!settings.originalImage) {
-      throw `Missing required param: image`
+      throw new Error(`Missing required param: image`)
     }
 
-    const encoded_url = this.urlSafeBase64(settings.originalImage)
+    const encoded_url = ImgProxy.urlSafeBase64(settings.originalImage)
     const path = `/resize:${settings.resizeType}:${settings.width}:${settings.height}:${settings.enlarge}/gravity:${settings.gravity}/${encoded_url}.${settings.extension}`
     return `${config.url}/${this.sign(path)}${path}`
   }
