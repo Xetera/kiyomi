@@ -1,0 +1,12 @@
+query OneGroup($id: Int!) {
+    group(where: { id: $id }) {
+        id
+        name
+        aliases {
+          name
+        }
+        banner {
+          rawUrl
+        }
+    }
+}

@@ -6,52 +6,51 @@ import {
   VStack,
   RadioGroup,
   Radio,
-  Link,
+  Link as ChakraLink,
   Box,
 } from "@chakra-ui/react"
+import { Link } from "remix"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
-import NextLink from "next/link"
-import {
-  OnePersonQuery,
-  usePersonEditMutation,
-} from "@/lib/__generated__/graphql"
+import { OnePersonQuery } from "~/__generated__/graphql"
 import { RiAddLine, RiArrowLeftLine, RiDeleteBin2Fill } from "react-icons/ri"
-import useToast from "@/hooks/useToast"
-import { Routing } from "@/client/routing"
-import { personPreferredName } from "@/client/data/person-mappers"
-import { Portrait } from "@/components/portrait"
-import { personPortraitDimensions } from "@/components/person/page"
-import React, { useEffect, useState } from "react"
-import { PersonImagePicker } from "@/components/data-entry/image-picker/person-image-picker"
-import { GenericModal } from "@/components/data-entry/generic-modal"
-import { LargeBanner } from "@/components/large-banner"
+import useToast from "~/hooks/useToast"
+import { Routing } from "~/client/routing"
+import { personPreferredName } from "~/client/data-mappers/person"
+import { Portrait } from "~/components/portrait"
+import { personPortraitDimensions } from "~/components/person/page"
+import React, { ReactNode, useEffect, useState } from "react"
+import { PersonImagePicker } from "~/components/data-entry/image-picker/person-image-picker"
+import { GenericModal } from "~/components/data-entry/generic-modal"
+import { LargeBanner } from "~/components/large-banner"
+import { useSdk } from "~/hooks/useSdk"
 
 export type PersonEditPageProps = {
   person: Exclude<OnePersonQuery["person"], undefined | null>
 }
 
-const Field = ({ name, children }) => (
+const Field: React.FC<{ name: ReactNode }> = ({ name, children }) => (
   <VStack>
     <Text textStyle="heading-sm">{name}</Text>
     {children}
   </VStack>
 )
 
-const mapAvatar = (avatar) => ({
+const mapAvatar = (avatar: any) => ({
   id: avatar?.id,
   src: avatar?.thumbnail.small,
 })
 
-const mapBanner = (banner) => ({
+const mapBanner = (banner: any) => ({
   id: banner?.id,
   src: banner?.rawUrl,
 })
 
 export const PersonEditPage = ({ person }: PersonEditPageProps) => {
-  const { mutateAsync, isLoading } = usePersonEditMutation()
+  const sdk = useSdk()
   const [isAvatarPickerOpen, setAvatarPickerOpen] = useState(false)
   const [isBannerPickerOpen, setBannerPickerOpen] = useState(false)
   const makeToast = useToast("warning")
+  console.log({ person })
   const { register, handleSubmit, control, reset, getValues, watch } = useForm({
     defaultValues: {
       name: person.name,
@@ -66,22 +65,20 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
   const watchAvatar = watch("avatar")
   const watchBanner = watch("banner")
 
-  useEffect(() => {
-    console.log(getValues())
-  })
-
   const { fields: aliases, remove, append } = useFieldArray({
     control,
     name: "aliases",
-    keyName: "id",
+    keyName: "key",
   })
 
-  async function onSubmit(data) {
-    const result = await mutateAsync({
+  console.log({ defAliases: person.aliases, aliases })
+
+  async function onSubmit(data: any) {
+    const result = await sdk.PersonEdit({
       id: person.id,
       input: {
         name: data.name,
-        aliases: data.aliases.map((alias) => alias.name),
+        aliases: data.aliases.map((alias: any) => alias.name),
         avatarId: data.avatar?.id,
         bannerId: data.banner?.id,
         description: "",
@@ -121,16 +118,19 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
           render={({ field }) => (
             <GenericModal
               isOpen={isBannerPickerOpen}
+              scrollBehavior="inside"
               onClose={() => setBannerPickerOpen(false)}
             >
-              <PersonImagePicker
-                onSelect={(e) => {
-                  console.log(e)
-                  field.onChange(mapBanner(e))
-                  setBannerPickerOpen(false)
-                }}
-                id={person.id}
-              />
+              {isBannerPickerOpen && (
+                <PersonImagePicker
+                  id={person.id}
+                  onSelect={(e) => {
+                    console.log(e)
+                    field.onChange(mapBanner(e))
+                    setBannerPickerOpen(false)
+                  }}
+                />
+              )}
             </GenericModal>
           )}
         />
@@ -153,17 +153,17 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
           )}
         />
         <VStack spacing={8} maxW="6xl" mx="auto" w="full" mt={6}>
-          <NextLink
-            href={Routing.toPerson(person.id, personPreferredName(person))}
-            passHref
+          <ChakraLink
+            as={Link}
+            to={Routing.toPerson(person.id, personPreferredName(person))}
+            display="flex"
+            alignItems="center"
           >
-            <Link display="flex" alignItems="center">
-              <RiArrowLeftLine />
-              <Text textStyle="heading-sm" ml={2}>
-                Back
-              </Text>
-            </Link>
-          </NextLink>
+            <RiArrowLeftLine />
+            <Text textStyle="heading-sm" ml={2}>
+              Back
+            </Text>
+          </ChakraLink>
           <Box onClick={() => setAvatarPickerOpen(true)}>
             <Portrait
               {...personPortraitDimensions}
@@ -191,10 +191,12 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
               control={control}
               name="preferredAliasId"
               render={({ field }) => {
+                console.log({ field })
                 return (
                   <RadioGroup
                     value={field.value}
                     onChange={(val) => {
+                      console.log({ val })
                       const num = Number(val)
                       if (Number.isNaN(num)) {
                         makeToast({
@@ -212,30 +214,33 @@ export const PersonEditPage = ({ person }: PersonEditPageProps) => {
                       <HStack>
                         <Radio value={-1}>No preferred alias</Radio>
                       </HStack>
-                      {aliases.map((alias, index) => (
-                        <HStack key={alias.id}>
-                          <Radio
-                            value={alias.id}
-                            disabled={Number.isNaN(Number(alias.id))}
-                          >
-                            Preferred
-                          </Radio>
-                          <Input
-                            {...register(`aliases.${index}.name` as const)}
-                          />
-                          <RiDeleteBin2Fill onClick={() => remove(index)}/>
-                        </HStack>
-                      ))}
+                      {aliases.map((alias, index) => {
+                        console.log({ alias, index })
+                        return (
+                          <HStack key={alias.id}>
+                            <Radio
+                              value={alias.id}
+                              disabled={Number.isNaN(Number(alias.id))}
+                            >
+                              Preferred
+                            </Radio>
+                            <Input
+                              {...register(`aliases.${index}.name` as const)}
+                            />
+                            <RiDeleteBin2Fill onClick={() => remove(index)} />
+                          </HStack>
+                        )
+                      })}
                     </VStack>
                   </RadioGroup>
-                );
+                )
               }}
             />
             <HStack>
               <RiAddLine onClick={() => append({ name: "" })} />
             </HStack>
           </Field>
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" isLoading={false}>
             Submit
           </Button>
         </VStack>

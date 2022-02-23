@@ -1,0 +1,10 @@
+fragment AppearanceData on Appearance {
+  id
+  person {
+    id
+    name
+    preferredAlias {
+      name
+    }
+  }
+}

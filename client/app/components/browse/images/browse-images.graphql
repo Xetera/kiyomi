@@ -1,0 +1,5 @@
+query BrowsePage($take: Int!, $skip: Int) {
+    images(orderBy: [{createdAt: desc}], take: $take, skip: $skip) {
+        ...GridImage
+    }
+}

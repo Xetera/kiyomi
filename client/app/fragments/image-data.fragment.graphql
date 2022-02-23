@@ -1,0 +1,31 @@
+
+fragment Focus on Image {
+  width
+  height
+  focus {
+    x
+    y
+  }
+}
+
+fragment ImageData on Image {
+  id
+  height
+  width
+  url
+  rawUrl
+  createdAt
+  caption
+  public
+  source
+  slug
+  bytes
+  mimetype
+  palette
+  destination
+  imageTags {
+    tag {
+      name
+    }
+  }
+}
