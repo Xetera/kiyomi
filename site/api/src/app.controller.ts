@@ -1,7 +1,7 @@
-import {Controller, Request, Get, UseGuards} from '@nestjs/common';
+import { Controller, Request, Get, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-import {ApiTags} from "@nestjs/swagger";
-import {DiscordAuthGuard} from "./authentication/discord-auth-guard";
+import { ApiTags } from "@nestjs/swagger";
+import { DiscordAuthGuard } from "./authentication/discord-auth-guard";
 
 @Controller()
 export class AppController {

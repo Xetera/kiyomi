@@ -18,8 +18,8 @@ jobs:
         with:
           username: xetera
           password: "${{ secrets.DOCKER_PASSWORD }}"
-          dockerfile: site/Dockerfile
+          dockerfile: client/Dockerfile
           context: .
-          image_name: xetera/simp-pics
+          image_name: xetera/kiyomi-renderer
           push_image_and_stages: false
-          build_extra_args: --build-arg NEXT_PUBLIC_BASE_URL=https://simp.pics --build-arg NEXT_PUBLIC_BASE_URL_CDN=https://img.kiyomi.io
+          build_extra_args: --build-arg GRAPHQL_API=https://kiyomi.io/api/graphql

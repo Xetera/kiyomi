@@ -1,0 +1,69 @@
+fragment OnePersonRelationshipImage on Image {
+    id
+    thumbnail {
+        small
+    }
+}
+
+fragment OnePersonRelationshipMembership on GroupMember {
+    id
+    startDate
+    group {
+        id
+        avatar {
+            width
+            height
+            focus {
+                x
+                y
+            }
+            thumbnail {
+                small
+            }
+        }
+        name
+    }
+}
+
+query OnePersonImages($id: Int!, $skip: Int!, $take: Int) {
+    person(where: {id: $id}) {
+        appearances(take: $take, skip: $skip) {
+            id
+            image {
+                ...GridImage
+            }
+        }
+    }
+}
+
+query OnePerson($id: Int!) {
+    person(where: {id: $id}) {
+        id
+        name
+        birthDate
+        memberOf {
+            ...OnePersonRelationshipMembership
+        }
+        preferredMembership {
+            ...OnePersonRelationshipMembership
+        }
+        aliases {
+            id
+            name
+        }
+        avatar {
+            ...Focus
+            ...OnePersonRelationshipImage
+        }
+        preferredAlias {
+            id
+            name
+        }
+        banner {
+            id
+            ...Focus
+            # Do we want this? idk
+            rawUrl
+        }
+    }
+}

@@ -117,7 +117,7 @@ async function memes(id, person) {
     }
     const imageLocation = res.headers.get("location")
     if (!imageLocation) {
-      console.log("uhhhh, no image?")
+      console.log("uhhhh, no media?")
       console.log(res)
       console.log(res.headers)
       return

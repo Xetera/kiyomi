@@ -29,7 +29,7 @@ export function hashStringToCube(hash: string): Uint8Array {
     // const a = await client.$executeRaw`${Prisma.raw(`
     //   UPDATE images SET p_hash_2 = CUBE(ARRAY[${code.join(
     //     ","
-    //   )}]) WHERE slug = '${image.slug}' RETURNING id
+    //   )}]) WHERE slug = '${media.slug}' RETURNING id
     // `)}`
     // console.log({ a })
   }

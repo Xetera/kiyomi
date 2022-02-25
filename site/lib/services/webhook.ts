@@ -110,7 +110,7 @@ export const makeWebhook = ({
       const username = user ? user.name : `Unknown User`
 
       if (!user || !image) {
-        console.log("no image or user?", user, image)
+        console.log("no media or user?", user, image)
         return
       }
 

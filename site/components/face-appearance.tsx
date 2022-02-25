@@ -11,7 +11,7 @@ import NextLink from "next/link"
 type PartialPerson = Pick<Person, "name" | "id">
 
 export type FaceAppearance = {
-  // image on the side
+  // media on the side
   appearance: {
     face?: FaceDataFragment
     person?: PartialPerson

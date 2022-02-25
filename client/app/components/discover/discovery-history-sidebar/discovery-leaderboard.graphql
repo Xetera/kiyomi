@@ -1,0 +1,12 @@
+query DiscoveryLeaderboard {
+    discoveryLeaderboard {
+        rank
+        xp
+        user {
+            id
+            avatar
+            name
+            bot
+        }
+    }
+}

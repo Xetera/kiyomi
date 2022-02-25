@@ -3,7 +3,7 @@ import {
   SearchParams,
   SearchResponse,
 } from "typesense/lib/Typesense/Documents"
-import { SearchClient } from "typesense"
+import type { SearchClient } from "typesense"
 
 export type ImageThumbnails = {
   small: string

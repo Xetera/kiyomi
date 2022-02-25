@@ -23,7 +23,7 @@ import { imageVisibleFor } from "@/client/data/image-mappers"
 
 export const Thumbnail = objectType({
   name: "Thumbnail",
-  description: "Preview urls of an image",
+  description: "Preview urls of an media",
   definition(t) {
     t.nonNull.string("large")
     t.nonNull.string("medium")
@@ -33,7 +33,7 @@ export const Thumbnail = objectType({
 
 export const ImageCoordinate = objectType({
   name: "ImageCoordinate",
-  description: "A coordinate representing a position on an image",
+  description: "A coordinate representing a position on an media",
   definition(t) {
     t.nonNull.int("x")
     t.nonNull.int("y")
@@ -46,28 +46,28 @@ export const Image = objectType({
     t.model
       .id()
       .width({
-        description: "Width of the image in pixels.",
+        description: "Width of the media in pixels.",
       })
       .height({
-        description: "Height of the image in pixels.",
+        description: "Height of the media in pixels.",
       })
       .uploadType()
       .hash({
-        description: "SHA256 checksum of the image.",
+        description: "SHA256 checksum of the media.",
       })
       .fileName({
-        description: "The name the image file was uploaded with.",
+        description: "The name the media file was uploaded with.",
       })
       .palette({
         description:
-          "Dominant colors in the image in decimal format, sorted by frequency.",
+          "Dominant colors in the media in decimal format, sorted by frequency.",
       })
       .isNsfw({
         deprecation: "Unused field, all images are SFW",
       })
       .source({
         description:
-          "The url the image was taken from (if applicable). Not guaranteed to be a direct image url.",
+          "The url the media was taken from (if applicable). Not guaranteed to be a direct media url.",
       })
       .user({
         alias: "uploadedBy",
@@ -76,16 +76,16 @@ export const Image = objectType({
       .destination()
       .appearanceTags()
       .slug({
-        description: "The unique url identifier of the image.",
+        description: "The unique url identifier of the media.",
       })
       .public({
-        description: "The visibility status of the image.",
+        description: "The visibility status of the media.",
       })
       .caption()
       .views()
       // @ts-ignore
       .mimetype({
-        description: "The IANA media type of the image.",
+        description: "The IANA media type of the media.",
       })
       .bytes()
       .appearances()
@@ -109,19 +109,19 @@ export const Image = objectType({
       },
     })
     t.nonNull.string("url", {
-      description: "Link to the image on the site",
+      description: "Link to the media on the site",
       resolve(p) {
         return Routing.toImage(p.slug)
       },
     })
     t.nonNull.string("rawUrl", {
-      description: "Direct link to the image on the CDN",
+      description: "Direct link to the media on the CDN",
       resolve(p) {
         return Routing.toRawImage(p)
       },
     })
     t.nonNull.float("aspectRatio", {
-      description: "The aspect ratio of the image",
+      description: "The aspect ratio of the media",
       resolve(p) {
         return p.width / p.height
       },
@@ -146,7 +146,7 @@ export const Image = objectType({
     t.field("focus", {
       type: nonNull(ImageCoordinate),
       description:
-        "The center of focus for the image. Calculated based on the position of the faces in the image.",
+        "The center of focus for the media. Calculated based on the position of the faces in the media.",
       async resolve(image, _, { prisma }) {
         const faces = await prisma.face.findMany({
           where: { imageId: image.id },
@@ -157,7 +157,7 @@ export const Image = objectType({
             y: Math.floor(image.height / 2),
           }
         }
-        // TODO: focus only one face if faces in the image are too far apart relative to the size of the image
+        // TODO: focus only one face if faces in the media are too far apart relative to the size of the media
         try {
           const coordinates = points(
             faces.map((f) => [
@@ -309,10 +309,10 @@ export const Query = queryField((t) => {
       )
     },
   })
-  // not t.crud.image because we don't want images to be searchable by ID
+  // not t.crud.media because we don't want images to be searchable by ID
   t.field("image", {
     type: "Image",
-    description: "Find a single image by its slug.",
+    description: "Find a single media by its slug.",
     args: {
       slug: nonNull(stringArg()),
     },
@@ -334,7 +334,7 @@ export const Query = queryField((t) => {
     async resolve(t, { slug, depth: maxDepth }, { prisma }) {
       const base = await prisma.image.findUnique({ where: { slug } })
       if (!base) {
-        throw Error("Invalid image slug")
+        throw Error("Invalid media slug")
       }
       return imageConnections(base, maxDepth, prisma)
     },
@@ -344,7 +344,7 @@ export const Query = queryField((t) => {
 export const Mutation = mutationField((t) => {
   t.field("scanFaces", {
     type: nonNull(QueueInformation),
-    description: "Queue an image to get scanned for faces",
+    description: "Queue an media to get scanned for faces",
     args: {
       slug: nonNull(stringArg()),
     },
@@ -367,7 +367,7 @@ export const Mutation = mutationField((t) => {
         },
       })
       if (!existingImage) {
-        throw Error("No such image")
+        throw Error("No such media")
       }
       const { faceScanRequestDate, faceScanDate } = existingImage
       const minuteThreshold = 30

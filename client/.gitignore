@@ -1,0 +1,6 @@
+node_modules
+.yarn
+/.cache
+/build
+/public/build
+.env

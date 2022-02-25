@@ -16,7 +16,7 @@ export const makeImageProxy = ({}: ImageProxyOptions) => {
   return {
     client: imgproxy,
     /**
-     * Generates a thumbnail for the given image
+     * Generates a thumbnail for the given media
      * IMPORTANT: the imageproxy client must not have an expiry set
      * as these thumbnails are cached in the search engine for a later date
      * @param img

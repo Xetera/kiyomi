@@ -1,0 +1,10 @@
+fragment UserData on User {
+  id
+  name
+  avatar
+  bot
+}
+
+fragment UserRoleData on Role {
+  name
+}

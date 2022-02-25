@@ -43,7 +43,7 @@ export const DiscoveredImage = objectType({
     })
     t.field("thumbnail", {
       type: nonNull("String"),
-      description: "A smaller thumbnail of the image",
+      description: "A smaller thumbnail of the media",
       resolve(root, _, { imageProxy }) {
         const base = imageProxy.client
           .image(root.url)
@@ -82,7 +82,7 @@ export const Mutation = mutationField((t) => {
           err instanceof PrismaClientKnownRequestError &&
           err.code === PrismaError.UniqueConstraintViolation
         ) {
-          throw new GraphQLError("Already voted on that image")
+          throw new GraphQLError("Already voted on that media")
         }
         throw err
       }

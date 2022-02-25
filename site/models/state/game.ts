@@ -172,7 +172,7 @@ export const gameModel = createModel<RootModel>()({
         Object.keys(room.selections) !== Object.keys(state.room.selections) &&
         room.coordination !== state.room.coordination
       ) {
-        // We received a new selection of idols, waiting for image count
+        // We received a new selection of idols, waiting for media count
         state.loadingImageCount = true
       }
       state.room = room

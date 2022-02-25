@@ -1,0 +1,17 @@
+query Me {
+  me {
+    ...UserData
+    images(orderBy: { createdAt: asc }) {
+      ...GridImage
+    }
+    roles {
+      ...UserRoleData
+    }
+  }
+}
+
+mutation ToggleLike($id: Int!) {
+  toggleLike(imageId: $id) {
+    liked
+  }
+}
