@@ -7,17 +7,20 @@ import { GraphQLModule } from "@nestjs/graphql"
 import { PrismaModule } from "./prisma/prisma.module"
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo"
 import { ConfigModule } from "@nestjs/config"
-import { UserModule } from './user/user.module';
-import { AppearanceModule } from './appearance/appearance.module';
-import { PersonService } from './person/person.service';
-import { PersonModule } from './person/person.module';
-import { UploaderService } from './uploader/uploader.service';
-import { UploaderModule } from './uploader/uploader.module';
-import { S3Module } from './s3/s3.module';
-import { ImgProxyModule } from './imgproxy/imgproxy.module';
+import { UserModule } from "./user/user.module"
+import { AppearanceModule } from "./appearance/appearance.module"
+import { PersonService } from "./person/person.service"
+import { PersonModule } from "./person/person.module"
+import { UploaderService } from "./uploader/uploader.service"
+import { UploaderModule } from "./uploader/uploader.module"
+import { S3Module } from "./s3/s3.module"
+import { ImgProxyModule } from "./imgproxy/imgproxy.module"
 import * as path from "node:path"
-import { GraphQLError } from "graphql"
-import { GraphQLFormattedError } from "graphql"
+import { GraphQLError, GraphQLFormattedError } from "graphql"
+import { GroupModule } from "./group/group.module"
+import { AliasModule } from "./alias/alias.module"
+import { GroupMemberModule } from './group-member/group-member.module';
+import { MediaReportService } from './media-report/media-report.service';
 
 @Module({
   imports: [
@@ -33,10 +36,15 @@ import { GraphQLFormattedError } from "graphql"
     UserModule,
     AppearanceModule,
     PersonModule,
+    GroupModule,
+    AliasModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
       debug: true,
+      cors: {
+        origin: "*",
+      },
       autoSchemaFile: path.join(process.cwd(), "src/__generated__/schema.gql"),
       formatError: (error: GraphQLError) => {
         if (error.extensions?.code === "INTERNAL_SERVER_ERROR") {
@@ -49,16 +57,17 @@ import { GraphQLFormattedError } from "graphql"
         // TODO: allow more detailed validation errors
         const graphQLFormattedError: GraphQLFormattedError = {
           message: error?.message,
-        };
-        return graphQLFormattedError;
+        }
+        return graphQLFormattedError
       },
     }),
     UploaderModule,
     S3Module,
     ImgProxyModule,
+    GroupMemberModule,
   ],
-  exports: [PrismaModule],
   controllers: [AppController],
-  providers: [AppService, PersonService, UploaderService],
+  providers: [AppService, PersonService, UploaderService, MediaReportService],
 })
-export class AppModule {}
+export class AppModule {
+}

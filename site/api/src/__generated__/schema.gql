@@ -67,10 +67,18 @@ type MediaTag {
   updatedAt: DateTime!
 }
 
+type Alias {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: Int!
+  name: String!
+}
+
 type Person {
   id: Int!
+  aliases: [Alias!]!
   name: String
-  birthDate: DateTime!
+  birthDate: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -87,6 +95,8 @@ type AppearanceTag {
 
 """The presence of a person in a media."""
 type Appearance {
+  createdAt: DateTime!
+  updatedAt: DateTime!
   person: Person!
   tags: [AppearanceTag!]!
   addedBy: User
@@ -223,6 +233,34 @@ enum MimeType {
   MP4
 }
 
+type Group {
+  id: Int!
+  name: String!
+  avatarUrl: Media
+  banner: Media
+  aliases: [Alias!]!
+  birthDate: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  avatar: Media
+  members: [GroupMember!]!
+}
+
+type GroupMember {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: Int!
+  group: Group!
+  person: Person!
+  startDate: DateTime
+  endDate: DateTime
+}
+
 type Query {
   media(slug: String!): Media
+
+  """Get the current logged in user. Null if not logged in."""
+  me: User
+  group(id: Int!): Group
+  groupMember(id: Int!): GroupMember
 }

@@ -1,10 +1,20 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql";
 import { AliasModel } from "../../alias/models/alias.model"
+import { MediaModel } from "../../media/models";
 
-@ObjectType("Person")
-export class PersonModel {
+@ObjectType("Group")
+export class GroupModel {
   @Field(() => Int)
   id!: number
+
+  @Field()
+  name!: string
+
+  @Field(() => MediaModel, { nullable: true })
+  avatarUrl?: MediaModel
+
+  @Field(() => MediaModel, { nullable: true })
+  banner?: MediaModel
 
   @Field(() => [AliasModel])
   aliases!: AliasModel[]
@@ -24,10 +34,7 @@ export class PersonModel {
   // })
   // preferredMembership!: GroupMemberModel[]
 
-  @Field({ nullable: true })
-  name?: string
-
-  @Field(() => GraphQLISODateTime, { nullable: true })
+  @Field(() => GraphQLISODateTime)
   birthDate?: Date
 
   @Field(() => GraphQLISODateTime)
