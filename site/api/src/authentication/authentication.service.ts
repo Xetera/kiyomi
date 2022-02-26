@@ -1,35 +1,49 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
-import {Prisma, Account as AccountModel} from '@prisma/client';
+import {Prisma, User as UserModel} from '@prisma/client';
+import {UserDetails} from "../utils/types";
+import {AuthenticationProvider} from "./auth";
 
 
 @Injectable()
-export class AuthenticationService {
+export class AuthenticationService implements AuthenticationProvider{
     constructor(private readonly prismaService: PrismaService) {}
 
-    async validateAccount(params: {
-        where: Prisma.AccountWhereUniqueInput;
-        data: Prisma.AccountCreateInput;
-    }) : Promise<AccountModel> {
+    async validateUser(details: UserDetails) {
+        const user = await this.prismaService.user.findUnique({ where: { id: Number(details.discordId)} });
+        if (user) {
+            await this.updateUser({
+                where: {
+                    token: details.accessToken
+                },
+                data: {}
+            })
+        }
+        return await this.createUser(details);
+    }
+
+    async createUser(details: UserDetails) {
+        return await this.prismaService.user.create({
+            data: {
+
+            }
+        });
+    }
+
+    async findUser(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<UserModel | null> {
+        return await this.prismaService.user.findUnique({
+            where: userWhereUniqueInput
+        });
+    }
+
+    async updateUser(params: {
+        where: Prisma.UserWhereUniqueInput;
+        data: Prisma.UserUpdateInput;
+    }): Promise<UserModel> {
         const { where, data } = params;
-        return await this.prismaService.account.upsert({
+        return this.prismaService.user.update({
+            data,
             where,
-            update: {},
-            create: data
         });
-    }
-
-
-    async createAccount(data: Prisma.AccountCreateInput): Promise<AccountModel> {
-        return await this.prismaService.account.create({
-            data
-        });
-    }
-
-
-    async findAccountById(accountWhereUniqueInput: Prisma.AccountWhereUniqueInput): Promise<AccountModel | undefined> {
-        return await this.prismaService.account.findFirst({
-            where: accountWhereUniqueInput
-        })
     }
 }
