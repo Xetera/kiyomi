@@ -15,13 +15,13 @@ export class PersonService {
 
   aliases(personId: number): Promise<Alias[]> {
     return this.prisma.alias.findMany({
-      where: { id: personId },
+      where: { personId },
     })
   }
 
-  preferredAlias(personId: number): Promise<Alias | null> {
+  preferredAlias(aliasId: number): Promise<Alias | null> {
     return this.prisma.alias.findUnique({
-      where: { id: personId }
+      where: { id: aliasId }
     })
   }
 

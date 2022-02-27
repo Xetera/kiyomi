@@ -22,8 +22,11 @@ export class PersonResolver {
   }
 
   @ResolveField(() => AliasModel, { nullable: true })
-  preferredAlias(@Parent() person: Person): Promise<Alias | null> {
-    return this.personService.preferredAlias(person.id)
+  async preferredAlias(@Parent() person: Person): Promise<Alias | null> {
+    if (!person.preferredAliasId) {
+      return null
+    }
+    return this.personService.preferredAlias(person.preferredAliasId)
   }
 
   @ResolveField(() => [AppearanceModel])
