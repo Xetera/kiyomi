@@ -77,10 +77,14 @@ type Alias {
 type Person {
   id: Int!
   aliases: [Alias!]!
+
+  """The aliases of the person commonly goes by"""
+  preferredAlias: Alias
   name: String
   birthDate: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
+  appearances: [Appearance!]!
 }
 
 """
@@ -97,9 +101,11 @@ type AppearanceTag {
 type Appearance {
   createdAt: DateTime!
   updatedAt: DateTime!
+  id: Float!
   person: Person!
   tags: [AppearanceTag!]!
   addedBy: User
+  media: Media!
 }
 
 """An image or a video."""
@@ -261,6 +267,7 @@ type Query {
 
   """Get the current logged in user. Null if not logged in."""
   me: User
+  person(id: Float!): Person
   group(id: Int!): Group
   groupMember(id: Int!): GroupMember
 }

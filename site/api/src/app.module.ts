@@ -20,7 +20,6 @@ import { GraphQLError, GraphQLFormattedError } from "graphql"
 import { GroupModule } from "./group/group.module"
 import { AliasModule } from "./alias/alias.module"
 import { GroupMemberModule } from './group-member/group-member.module';
-import { MediaReportService } from './media-report/media-report.service';
 import { PassportModule } from "@nestjs/passport"
 import { HttpModule } from "@nestjs/axios"
 
@@ -70,7 +69,7 @@ import { HttpModule } from "@nestjs/axios"
     GroupMemberModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PersonService, UploaderService, MediaReportService, ConfigService],
+  providers: [AppService, PersonService, UploaderService, ConfigService],
 })
 export class AppModule {
 }

@@ -1,11 +1,12 @@
 import { Parent, ResolveField, Resolver } from "@nestjs/graphql"
-import { Appearance, AppearanceTag, Person } from "@prisma/client"
+import { Appearance, AppearanceTag, Image, Person } from "@prisma/client"
 import { AppearanceService } from "./appearance.service"
 import { AppearanceTagModel } from "./models/appearance-tag.model"
 import { PersonModel } from "../person/models/person.model"
 import { UserService } from "../user/user.service"
 import { UserModel } from "../user/models/user.model"
 import { AppearanceModel } from "./models/appearance.model";
+import { MediaModel } from "../media/models";
 
 @Resolver(() => AppearanceModel)
 export class AppearanceResolver {
@@ -34,5 +35,14 @@ export class AppearanceResolver {
       return
     }
     return this.userService.getById(appearance.addedById)
+  }
+
+  @ResolveField(() => MediaModel)
+  async media(@Parent() appearance: Appearance): Promise<Image> {
+    const image = await this.appearanceService.appearanceImage(appearance.id)
+    if (!image) {
+      throw new Error(`No image found for ${appearance.id}`)
+    }
+    return image
   }
 }

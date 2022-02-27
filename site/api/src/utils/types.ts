@@ -1,3 +1,4 @@
-import {Account} from '@prisma/client';
+import { Account } from "@prisma/client"
 
-export type Done = (err: Error, account: Account) => void;
+export type Done =
+  | ((err: Error | null, account: Account | null) => void)

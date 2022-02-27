@@ -9,11 +9,11 @@ export class PersonModel {
   @Field(() => [AliasModel])
   aliases!: AliasModel[]
 
-  // @Field(() => AliasModel, {
-  //   nullable: true,
-  //   description: "The aliases of the person commonly goes by",
-  // })
-  // preferredAlias!: AliasModel[]
+  @Field(() => AliasModel, {
+    nullable: true,
+    description: "The aliases of the person commonly goes by",
+  })
+  preferredAlias!: AliasModel[]
 
   // @Field(() => [GroupMemberModel], )
   // memberOf!: GroupMemberModel[]
