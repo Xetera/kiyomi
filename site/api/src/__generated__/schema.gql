@@ -68,16 +68,47 @@ type MediaTag {
 }
 
 type Alias {
-  createdAt: DateTime!
-  updatedAt: DateTime!
   id: Int!
   name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Group {
+  id: Int!
+  name: String!
+  avatarUrl: Media
+  banner: Media
+  aliases: [Alias!]!
+  birthDate: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  avatar: Media
+  members: [GroupMember!]!
+}
+
+type GroupMember {
+  id: Int!
+  group: Group!
+  person: Person!
+  startDate: DateTime
+  endDate: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Person {
   id: Int!
   aliases: [Alias!]!
+
+  """The media-appearances of this person."""
   appearances: [Appearance!]!
+
+  """The aliases of the person commonly goes by"""
+  preferredAlias: Alias
+
+  """The groups that this person is a member of"""
+  groupMembers: [GroupMember!]!
   name: String
   birthDate: DateTime
   createdAt: DateTime!
@@ -96,12 +127,12 @@ type AppearanceTag {
 
 """The presence of a person in a media."""
 type Appearance {
-  createdAt: DateTime!
-  updatedAt: DateTime!
   person: Person!
   tags: [AppearanceTag!]!
   media: Media!
   addedBy: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 """An image or a video."""
@@ -233,29 +264,6 @@ enum MimeType {
   AVIF
   GIF
   MP4
-}
-
-type Group {
-  id: Int!
-  name: String!
-  avatarUrl: Media
-  banner: Media
-  aliases: [Alias!]!
-  birthDate: DateTime!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  avatar: Media
-  members: [GroupMember!]!
-}
-
-type GroupMember {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: Int!
-  group: Group!
-  person: Person!
-  startDate: DateTime
-  endDate: DateTime
 }
 
 type Query {

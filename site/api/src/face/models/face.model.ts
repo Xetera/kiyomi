@@ -1,13 +1,11 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql"
-import { AliasModel } from "../../alias/models/alias.model"
 import { MediaModel } from "../../media/models"
 import { UserModel } from "../../user/models/user.model"
 import { AppearanceModel } from "../../appearance/models/appearance.model"
-import { TimestampsModel } from "../../common-dto/models/timestamps.model";
 import { FaceSource } from "@prisma/client";
 
 @ObjectType("Face")
-export class FaceModel extends TimestampsModel{
+export class FaceModel {
   @Field(() => Int)
   id!: number
 
@@ -55,4 +53,10 @@ export class FaceModel extends TimestampsModel{
     description: "The method that was used to add this face.",
   })
   source!: FaceSource
+
+  @Field(() => GraphQLISODateTime)
+  createdAt!: Date;
+
+  @Field(() =>  GraphQLISODateTime)
+  updatedAt!: Date;
 }
