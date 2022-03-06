@@ -20,9 +20,15 @@ export class MediaService {
     })
   }
 
-  findBySlug(slug: string) {
+  findBySlug(slug: string): Promise<Image | null> {
     return this.prisma.image.findUnique({
       where: { slug },
+    })
+  }
+
+  findById(id: number): Promise<Image | null> {
+    return this.prisma.image.findUnique({
+      where: { id },
     })
   }
 }

@@ -18,6 +18,7 @@ import { UserModel } from "../user/models/user.model"
 import { PaginationArgs } from "../common-dto/pagination.args"
 import { ImgProxyService } from "../imgproxy/imgproxy.service"
 import { UploaderService } from "../uploader/uploader.service";
+import { forwardRef, Inject } from "@nestjs/common";
 
 @Resolver(() => MediaModel)
 export class MediaResolver {

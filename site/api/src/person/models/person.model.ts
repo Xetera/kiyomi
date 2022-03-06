@@ -1,5 +1,6 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql";
 import { AliasModel } from "../../alias/models/alias.model"
+import { AppearanceModel } from "../../appearance/models/appearance.model";
 
 @ObjectType("Person")
 export class PersonModel {
@@ -8,6 +9,9 @@ export class PersonModel {
 
   @Field(() => [AliasModel])
   aliases!: AliasModel[]
+
+  @Field(() => [AppearanceModel])
+  appearances!: AppearanceModel[]
 
   // @Field(() => AliasModel, {
   //   nullable: true,
