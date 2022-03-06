@@ -5,10 +5,13 @@ import { Alias, Appearance, GroupMember, Person } from "@prisma/client"
 import { PersonService } from "./person.service"
 import { AppearanceModel } from "../appearance/models/appearance.model"
 import { GroupMemberModel } from "../group-member/models/group-member.model"
+import { GroupMemberService } from "../group-member/group-member.service";
 
 @Resolver(() => PersonModel)
 export class PersonResolver {
-  constructor(private personService: PersonService) {
+  constructor(private personService: PersonService,
+    private groupMemberService: GroupMemberService,
+  ) {
   }
 
   @Query(() => PersonModel, { nullable: true })
@@ -39,5 +42,13 @@ export class PersonResolver {
   @ResolveField(() => [GroupMemberModel])
   groupMembers(@Parent() person: Person): Promise<GroupMember[]> {
     return this.personService.groupMembers(person.id)
+  }
+
+  @ResolveField(() => GroupMemberModel, { nullable: true})
+  async preferredGroupMember(@Parent() person: Person): Promise<GroupMember | null> {
+    if (!person.preferredMembershipId) {
+      return null
+    }
+    return this.groupMemberService.findById(person.preferredMembershipId)
   }
 }

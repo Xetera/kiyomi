@@ -1,6 +1,7 @@
 import {
   Args,
   Float,
+  Int,
   Parent,
   Query,
   ResolveField,
@@ -9,7 +10,7 @@ import {
 import { MediaModel, MediaThumbnailModel } from "./models"
 import { MediaService } from "./media.service"
 import { TagService } from "../tag/tag.service"
-import { Appearance, Image, ImageTag, User } from "@prisma/client"
+import { Appearance, Image, ImageReport, ImageTag, User } from "@prisma/client"
 import { MediaTagModel } from "./models/media-tag.model"
 import { UserService } from "../user/user.service"
 import { AppearanceModel } from "../appearance/models/appearance.model"
@@ -17,8 +18,8 @@ import { AppearanceService } from "../appearance/appearance.service"
 import { UserModel } from "../user/models/user.model"
 import { PaginationArgs } from "../common-dto/pagination.args"
 import { ImgProxyService } from "../imgproxy/imgproxy.service"
-import { UploaderService } from "../uploader/uploader.service";
-import { forwardRef, Inject } from "@nestjs/common";
+import { UploaderService } from "../uploader/uploader.service"
+import { MediaReportModel } from "./models/media-report.model"
 
 @Resolver(() => MediaModel)
 export class MediaResolver {
@@ -36,6 +37,18 @@ export class MediaResolver {
   @Query(() => MediaModel, { nullable: true })
   media(@Args("slug") slug: string): Promise<Image | null> {
     return this.mediaService.findBySlug(slug)
+  }
+
+  @Query(() => [MediaReportModel])
+  mediaReports(
+    @Args("cursor", {
+      description: "The id of the last seen report",
+      type: () => Int,
+      nullable: true,
+    })
+    cursor?: number,
+  ): Promise<ImageReport[]> {
+    return this.mediaService.reports(cursor)
   }
 
   @ResolveField(() => [MediaTagModel])

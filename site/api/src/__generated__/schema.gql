@@ -2,23 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type MediaThumbnail {
-  """A thumbnail of a fullsize image at 200px width."""
-  xsmall: String!
-
-  """A thumbnail of a fullsize image at 350px width."""
-  small: String!
-
-  """A thumbnail of a fullsize image at 500px width."""
-  medium: String!
-
-  """A thumbnail of a fullsize image at 900px width."""
-  large: String!
-
-  """A thumbnail of a fullsize image at 1200px width."""
-  full: String!
-}
-
 type TagAlias {
   name: String!
   tag: Tag!
@@ -109,6 +92,9 @@ type Person {
 
   """The groups that this person is a member of"""
   groupMembers: [GroupMember!]!
+
+  """The primary group member the person represents"""
+  preferredGroupMember: GroupMember
   name: String
   birthDate: DateTime
   createdAt: DateTime!
@@ -266,12 +252,55 @@ enum MimeType {
   MP4
 }
 
+"""A reported media item"""
+type MediaReport {
+  id: Int!
+  tag: Tag
+  media: Media!
+  reason: String
+  action: MediaReportAction
+
+  """The user who added the tag. Null if the user was deleted."""
+  addedBy: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum MediaReportAction {
+  DISMISS
+  DELETE_IMAGE
+  HIDE_IMAGE
+  RESTRICT_USER
+  OTHER
+}
+
+type MediaThumbnail {
+  """A thumbnail of a fullsize image at 200px width."""
+  xsmall: String!
+
+  """A thumbnail of a fullsize image at 350px width."""
+  small: String!
+
+  """A thumbnail of a fullsize image at 500px width."""
+  medium: String!
+
+  """A thumbnail of a fullsize image at 900px width."""
+  large: String!
+
+  """A thumbnail of a fullsize image at 1200px width."""
+  full: String!
+}
+
 type Query {
   media(slug: String!): Media
+  mediaReports(
+    """The id of the last seen report"""
+    cursor: Int
+  ): [MediaReport!]!
 
   """Get the current logged in user. Null if not logged in."""
   me: User
   person(id: Float!): Person
-  group(id: Int!): Group
   groupMember(id: Int!): GroupMember
+  group(id: Int!): Group
 }

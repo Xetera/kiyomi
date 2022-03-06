@@ -27,11 +27,11 @@ export class PersonModel {
   })
   groupMembers!: GroupMemberModel[]
 
-  // @Field(() => GroupMemberModel, {
-  //   nullable: true,
-  //   description: "The primary group member the person represents"
-  // })
-  // preferredMembership!: GroupMemberModel[]
+  @Field(() => GroupMemberModel, {
+    nullable: true,
+    description: "The primary group member the person represents"
+  })
+  preferredGroupMember!: GroupMemberModel[]
 
   @Field({ nullable: true })
   name?: string
