@@ -261,6 +261,7 @@ type Query {
 
   """Get the current logged in user. Null if not logged in."""
   me: User
+  person(id: Float!): Person
   group(id: Int!): Group
   groupMember(id: Int!): GroupMember
 }

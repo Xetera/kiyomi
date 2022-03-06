@@ -21,6 +21,7 @@ import { GroupModule } from "./group/group.module"
 import { AliasModule } from "./alias/alias.module"
 import { GroupMemberModule } from './group-member/group-member.module';
 import { MediaReportService } from './media-report/media-report.service';
+import { FaceModule } from './face/face.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { MediaReportService } from './media-report/media-report.service';
     S3Module,
     ImgProxyModule,
     GroupMemberModule,
+    FaceModule,
   ],
   controllers: [AppController],
   providers: [AppService, PersonService, UploaderService, MediaReportService],
