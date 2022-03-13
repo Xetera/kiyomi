@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../prisma/prisma.service"
-import { Alias, Appearance, Person } from "@prisma/client"
+import { Alias, Appearance, GroupMember, Person } from "@prisma/client"
 
 @Injectable()
 export class PersonService {
@@ -9,7 +9,9 @@ export class PersonService {
 
   findById(id: number): Promise<Person | null> {
     return this.prisma.person.findUnique({
-      where: { id },
+      where: {
+        id,
+      },
     })
   }
 
@@ -29,5 +31,9 @@ export class PersonService {
     return this.prisma.appearance.findMany({
       where: { id: personId },
     })
+  }
+
+  groupMembers(personId: number): Promise<GroupMember[]> {
+    return this.prisma.groupMember.findMany({ where: { personId } })
   }
 }

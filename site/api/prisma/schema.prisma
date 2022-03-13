@@ -49,7 +49,7 @@ model TagAlias {
   id        Int      @id @default(autoincrement())
   name      String
   tagId     Int      @map("tag_id")
-  tag       Tag      @relation(fields: [tagId], references: [id], map: "tagAlias")
+  tag       Tag      @relation(fields: [tagId], references: [id])
   addedById Int?     @map("added_by_id")
   addedBy   User?    @relation(fields: [addedById], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now()) @map("created_at")
@@ -116,10 +116,25 @@ model Alias {
   @@map("aliases")
 }
 
+model PersonNationality {
+  id        Int    @id @default(autoincrement())
+  country   String
+  personId  Int @map("person_id")
+  person    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  addedById Int?   @map("added_by_id")
+  addedBy   User?  @relation(fields: [addedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@index([personId])
+  @@map("person_nationalities")
+}
+
 model Person {
   id                    Int                  @id @default(autoincrement())
   description           String?
   name                  String
+  nativeName            String? @map("native_name")
   preferredAliasId      Int?                 @unique(map: "persons.preferred_alias_id_unique") @map("preferred_alias_id")
   createdAt             DateTime             @default(now()) @map("created_at")
   updatedAt             DateTime             @default(now()) @updatedAt @map("updated_at")
@@ -133,12 +148,31 @@ model Person {
   banner                Image?               @relation("person_banner", fields: [bannerId], references: [id], onUpdate: SetNull)
   preferredAlias        Alias?               @relation("preferred_alias", fields: [preferredAliasId], references: [id])
   preferredMembership   GroupMember?         @relation("preferred_membership", fields: [preferredMembershipId], references: [id])
+  height                Int?
+  eyeColor              String?              @map("eye_color")
   aliases               Alias[]
   appearances           Appearance[]
   appearsIn             Face[]               @relation("face_person")
   memberOf              GroupMember[]
+  // some people (ex: AleXa) can have more than 1 nationality
+  nationalities         PersonNationality[]
+  addedById             Int?                 @map("added_by_id")
+  addedBy               User?                @relation(fields: [addedById], references: [id], onDelete: SetNull)
   guessingGameTargets   GuessingGameTarget[] @relation("guessing_game_target_answers")
   guessingGameGuesses   GuessingGameGuess[]  @relation("guessing_game_person_guess")
+
+  // Socials
+  twitter   String?
+  instagram String?
+  tiktok    String?
+  discord   String?
+  melon     String?
+  spotify   String?
+  vlive     String?
+  youtube   String?
+  fanCafe   String? @map("fan_cafe")
+  website   String?
+  facebook  String?
 
   @@index([name], map: "person.name.index")
   @@map("persons")
@@ -147,10 +181,10 @@ model Person {
 model Appearance {
   id        Int             @id @default(autoincrement())
   personId  Int             @map("person_id")
-  addedById Int?            @map("added_by_id")
   imageId   Int             @map("image_id")
   createdAt DateTime        @default(now()) @map("created_at")
   updatedAt DateTime        @default(now()) @updatedAt @map("updated_at")
+  addedById Int?            @map("added_by_id")
   addedBy   User?           @relation(fields: [addedById], references: [id], onDelete: SetNull)
   image     Image           @relation("image_appearances", fields: [imageId], references: [id], onDelete: Cascade)
   person    Person          @relation(fields: [personId], references: [id], onDelete: Cascade)
@@ -162,23 +196,23 @@ model Appearance {
 }
 
 model Face {
-  id           Int                 @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   x            Float
   y            Float
   height       Float
   width        Float
-  appearanceId Int?                @map("appearance_id")
-  addedById    Int?                @map("added_by_id")
-  createdAt    DateTime            @default(now()) @map("created_at")
-  updatedAt    DateTime            @default(now()) @updatedAt @map("updated_at")
-  score        Float               @default(0)
-  imageId      Int                 @map("image_id")
-  source       FaceSource          @default(Manual)
-  personId     Int?                @map("person_id")
-  addedBy      User?               @relation(fields: [addedById], references: [id])
-  appearance   Appearance?         @relation("apperance_face", fields: [appearanceId], references: [id])
-  image        Image               @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  person       Person?             @relation("face_person", fields: [personId], references: [id])
+  appearanceId Int?        @map("appearance_id")
+  addedById    Int?        @map("added_by_id")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @default(now()) @updatedAt @map("updated_at")
+  score        Float       @default(0)
+  imageId      Int         @map("image_id")
+  source       FaceSource  @default(Manual)
+  personId     Int?        @map("person_id")
+  addedBy      User?       @relation(fields: [addedById], references: [id])
+  appearance   Appearance? @relation("apperance_face", fields: [appearanceId], references: [id])
+  image        Image       @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  person       Person?     @relation("face_person", fields: [personId], references: [id])
 
   @@index([appearanceId], map: "face.appearanceId.index")
   @@map("faces")
@@ -240,6 +274,9 @@ model User {
   guessingGameGuesses        GuessingGameGuess[]
   guessingGameParticipations GuessingGameParticipant[]
 
+  nationalitiesAdded PersonNationality[]
+  peopleAdded            Person[]
+  groupsAdded             Group[]
   @@index([token], map: "user.token.index")
   @@map("users")
 }
@@ -344,19 +381,52 @@ model GroupAlias {
   @@map("group_aliases")
 }
 
-model Group {
-  id         Int           @id @default(autoincrement())
-  name       String
-  bannerId   Int?          @unique(map: "groups.banner_id_unique") @map("banner_id")
-  avatarId   Int?          @unique(map: "groups.avatar_id_unique") @map("avatar_id")
-  ireneBotId Int?          @unique(map: "groups.irene_bot_id_unique") @map("irene_bot_id")
-  createdAt  DateTime      @default(now()) @map("created_at")
-  updatedAt  DateTime      @default(now()) @updatedAt @map("updated_at")
-  avatar     Image?        @relation("group_avatar", fields: [avatarId], references: [id])
-  banner     Image?        @relation("group_banner", fields: [bannerId], references: [id])
-  aliases    GroupAlias[]
-  members    GroupMember[]
+model Company {
+  id           Int       @id @default(autoincrement())
+  name         String
+  creationDate DateTime? @map("creation_date")
+  groups       Group[]
 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@map("companies")
+}
+
+model Group {
+  id           Int           @id @default(autoincrement())
+  name         String
+  bannerId     Int?          @unique(map: "groups.banner_id_unique") @map("banner_id")
+  avatarId     Int?          @unique(map: "groups.avatar_id_unique") @map("avatar_id")
+  ireneBotId   Int?          @unique(map: "groups.irene_bot_id_unique") @map("irene_bot_id")
+  avatar       Image?        @relation("group_avatar", fields: [avatarId], references: [id])
+  banner       Image?        @relation("group_banner", fields: [bannerId], references: [id])
+  creationDate DateTime?     @map("creation_date")
+  companyId    Int?           @map("company_id")
+  company      Company?      @relation(fields: [companyId], references: [id], map: "groups_company_id")
+  // Denormalized gender aggregating the genders of all group members.
+  // Must be kept in check through group member gender changes.
+  gender       GroupGender?
+  fanName      String?       @map("fan_name")
+  aliases      GroupAlias[]
+  members      GroupMember[]
+  addedById    Int?          @map("added_by_id")
+  addedBy      User?         @relation(fields: [addedById], references: [id], onDelete: SetNull)
+
+  // Socials. Storing only the relevant part of the url identifier
+  twitter   String?
+  instagram String?
+  tiktok    String?
+  discord   String?
+  melon     String?
+  spotify   String?
+  vlive     String?
+  youtube   String?
+  fanCafe   String? @map("fan_cafe")
+  website   String?
+  facebook  String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   @@map("groups")
 }
 
@@ -447,7 +517,7 @@ model UserRestriction {
   // This is a polymorphic relationship to some related field
   // Example:
   // NO_REPORT | associatedEnityId -> ImageReport.id
-  associatedEntityId Int?
+  associatedEntityId Int?            @map("associated_entity_id")
   createdAt          DateTime        @default(now()) @map("created_at")
   updatedAt          DateTime        @default(now()) @updatedAt @map("updated_at")
 
@@ -468,7 +538,7 @@ model ImageReport {
   reportedBy   User               @relation("image_reporter", fields: [reportedById], references: [id], onDelete: Cascade)
   // Theoretically, this needs to be normalized but there's just no need for it
   action       ImageReportAction?
-  actionedAt   DateTime?
+  actionedAt   DateTime?          @map("actioned_at")
   actionedById Int?               @map("actioned_by_id")
   actionedBy   User?              @relation("image_report_actioner", fields: [actionedById], references: [id], onDelete: SetNull)
   // Maybe make this an enum? Don't wanna tie database to business logic
@@ -599,6 +669,13 @@ enum GuessingGameHints {
   POINT_COST
   LIMITED
   DISABLED
+}
+
+// This is going to bite me in the ass later, isn't it?
+enum GroupGender {
+  MALE
+  FEMALE
+  COED
 }
 
 enum Gender {

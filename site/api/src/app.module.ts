@@ -22,6 +22,7 @@ import { AliasModule } from "./alias/alias.module"
 import { GroupMemberModule } from './group-member/group-member.module';
 import { PassportModule } from "@nestjs/passport"
 import { HttpModule } from "@nestjs/axios"
+import { FaceModule } from './face/face.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { HttpModule } from "@nestjs/axios"
     S3Module,
     ImgProxyModule,
     GroupMemberModule,
+    FaceModule,
   ],
   controllers: [AppController],
   providers: [AppService, PersonService, UploaderService, ConfigService],

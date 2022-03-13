@@ -6,12 +6,16 @@ import { PersonModel } from "../person/models/person.model"
 import { UserService } from "../user/user.service"
 import { UserModel } from "../user/models/user.model"
 import { AppearanceModel } from "./models/appearance.model";
+import { MediaService } from "../media/media.service";
+import { forwardRef, Inject } from "@nestjs/common";
 import { MediaModel } from "../media/models";
 
 @Resolver(() => AppearanceModel)
 export class AppearanceResolver {
   constructor(
     private readonly appearanceService: AppearanceService,
+    @Inject(forwardRef(() => MediaService))
+    private readonly mediaService: MediaService,
     private readonly userService: UserService,
   ) {}
 
@@ -39,9 +43,9 @@ export class AppearanceResolver {
 
   @ResolveField(() => MediaModel)
   async media(@Parent() appearance: Appearance): Promise<Image> {
-    const image = await this.appearanceService.appearanceImage(appearance.id)
+    const image = await this.mediaService.findById(appearance.imageId)
     if (!image) {
-      throw new Error(`No image found for ${appearance.id}`)
+      throw Error("No image")
     }
     return image
   }

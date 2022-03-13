@@ -2,23 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type MediaThumbnail {
-  """A thumbnail of a fullsize image at 200px width."""
-  xsmall: String!
-
-  """A thumbnail of a fullsize image at 350px width."""
-  small: String!
-
-  """A thumbnail of a fullsize image at 500px width."""
-  medium: String!
-
-  """A thumbnail of a fullsize image at 900px width."""
-  large: String!
-
-  """A thumbnail of a fullsize image at 1200px width."""
-  full: String!
-}
-
 type TagAlias {
   name: String!
   tag: Tag!
@@ -68,23 +51,54 @@ type MediaTag {
 }
 
 type Alias {
-  createdAt: DateTime!
-  updatedAt: DateTime!
   id: Int!
   name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Group {
+  id: Int!
+  name: String!
+  avatarUrl: Media
+  banner: Media
+  aliases: [Alias!]!
+  birthDate: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  avatar: Media
+  members: [GroupMember!]!
+}
+
+type GroupMember {
+  id: Int!
+  group: Group!
+  person: Person!
+  startDate: DateTime
+  endDate: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Person {
   id: Int!
   aliases: [Alias!]!
 
+  """The media-appearances of this person."""
+  appearances: [Appearance!]!
+
   """The aliases of the person commonly goes by"""
   preferredAlias: Alias
+
+  """The groups that this person is a member of"""
+  groupMembers: [GroupMember!]!
+
+  """The primary group member the person represents"""
+  preferredGroupMember: GroupMember
   name: String
   birthDate: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
-  appearances: [Appearance!]!
 }
 
 """
@@ -99,13 +113,12 @@ type AppearanceTag {
 
 """The presence of a person in a media."""
 type Appearance {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: Float!
   person: Person!
   tags: [AppearanceTag!]!
-  addedBy: User
   media: Media!
+  addedBy: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 """An image or a video."""
@@ -239,35 +252,55 @@ enum MimeType {
   MP4
 }
 
-type Group {
+"""A reported media item"""
+type MediaReport {
   id: Int!
-  name: String!
-  avatarUrl: Media
-  banner: Media
-  aliases: [Alias!]!
-  birthDate: DateTime!
+  tag: Tag
+  media: Media!
+  reason: String
+  action: MediaReportAction
+
+  """The user who added the tag. Null if the user was deleted."""
+  addedBy: User
   createdAt: DateTime!
   updatedAt: DateTime!
-  avatar: Media
-  members: [GroupMember!]!
 }
 
-type GroupMember {
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  id: Int!
-  group: Group!
-  person: Person!
-  startDate: DateTime
-  endDate: DateTime
+enum MediaReportAction {
+  DISMISS
+  DELETE_IMAGE
+  HIDE_IMAGE
+  RESTRICT_USER
+  OTHER
+}
+
+type MediaThumbnail {
+  """A thumbnail of a fullsize image at 200px width."""
+  xsmall: String!
+
+  """A thumbnail of a fullsize image at 350px width."""
+  small: String!
+
+  """A thumbnail of a fullsize image at 500px width."""
+  medium: String!
+
+  """A thumbnail of a fullsize image at 900px width."""
+  large: String!
+
+  """A thumbnail of a fullsize image at 1200px width."""
+  full: String!
 }
 
 type Query {
   media(slug: String!): Media
+  mediaReports(
+    """The id of the last seen report"""
+    cursor: Int
+  ): [MediaReport!]!
 
   """Get the current logged in user. Null if not logged in."""
   me: User
   person(id: Float!): Person
-  group(id: Int!): Group
   groupMember(id: Int!): GroupMember
+  group(id: Int!): Group
 }

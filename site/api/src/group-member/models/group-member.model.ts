@@ -1,10 +1,9 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql"
 import { GroupModel } from "../../group/models/group.model"
 import { PersonModel } from "../../person/models/person.model"
-import { TimestampsModel } from "../../common-dto/models/timestamps.model";
 
 @ObjectType("GroupMember")
-export class GroupMemberModel extends TimestampsModel {
+export class GroupMemberModel  {
   @Field(() => Int)
   id!: number
 
@@ -19,4 +18,10 @@ export class GroupMemberModel extends TimestampsModel {
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   endDate?: Date
+
+  @Field(() => GraphQLISODateTime)
+  createdAt!: Date
+
+  @Field(() => GraphQLISODateTime)
+  updatedAt!: Date
 }

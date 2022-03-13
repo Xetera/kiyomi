@@ -1,11 +1,16 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql";
-import { TimestampsModel } from "../../common-dto/models/timestamps.model";
 
 @ObjectType("Alias")
-export class AliasModel extends TimestampsModel {
+export class AliasModel {
   @Field(() => Int)
   id!: number
 
   @Field()
   name!: string
+
+  @Field(() => GraphQLISODateTime)
+  createdAt!: Date;
+
+  @Field(() =>  GraphQLISODateTime)
+  updatedAt!: Date;
 }
