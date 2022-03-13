@@ -278,9 +278,9 @@ model User {
   guessingGameGuesses        GuessingGameGuess[]
   guessingGameParticipations GuessingGameParticipant[]
 
-  PersonNationality PersonNationality[]
-  Person            Person[]
-  Group             Group[]
+  nationalitiesAdded PersonNationality[]
+  peopleAdded            Person[]
+  groupsAdded             Group[]
   @@index([token], map: "user.token.index")
   @@map("users")
 }
