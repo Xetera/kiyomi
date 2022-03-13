@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { PrismaService } from "../prisma/prisma.service"
 import { PaginationArgs } from "../common-dto/pagination.args";
+import { Image } from "@prisma/client";
 
 @Injectable()
 export class AppearanceService {
@@ -38,5 +39,16 @@ export class AppearanceService {
       take: pagination?.take,
       skip: pagination?.skip,
     })
+  }
+
+  async appearanceImage(apperanceId: number): Promise<Image | undefined> {
+    const appearance = await this.prisma.appearance.findUnique({
+      where: { id: apperanceId },
+      include: { image: true },
+    })
+    if (!appearance) {
+      return
+    }
+    return appearance.image
   }
 }
