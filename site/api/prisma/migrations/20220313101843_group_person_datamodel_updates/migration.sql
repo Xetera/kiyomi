@@ -1,9 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `associatedEntityId` on the `user_restrictions` table. All the data in the column will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "GroupGender" AS ENUM ('MALE', 'FEMALE', 'COED');
 
