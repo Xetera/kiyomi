@@ -1,34 +1,30 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
-import {AuthenticatedGuard, DiscordAuthGuard} from "./discord-auth-guard";
+import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common"
+import { Request, Response } from "express"
+import { AuthenticatedGuard, DiscordAuthGuard } from "./discord-auth-guard"
 
-
-@Controller('auth')
+@Controller("auth")
 export class AuthenticationController {
-    @Get('login')
-    @UseGuards(DiscordAuthGuard)
-    login() {
-        return;
-    }
+  @Get("login/discord")
+  @UseGuards(DiscordAuthGuard)
+  login() {
+    return
+  }
 
+  @Get("redirect/discord")
+  @UseGuards(DiscordAuthGuard)
+  redirect(@Res() res: Response) {
+    res.redirect("http://localhost:9000/")
+  }
 
-    @Get('redirect')
-    @UseGuards(DiscordAuthGuard)
-    redirect(@Res() res: Response) {
-        res.redirect('http://localhost:9000/');
-    }
+  @Get("status")
+  @UseGuards(AuthenticatedGuard)
+  status(@Req() req: Request) {
+    return req.user
+  }
 
-
-    @Get('status')
-    @UseGuards(AuthenticatedGuard)
-    status(@Req() req: Request) {
-        return req.user;
-    }
-
-
-    @Get('logout')
-    @UseGuards(AuthenticatedGuard)
-    logout(@Req() req: Request) {
-        req.logOut();
-    }
+  @Get("logout")
+  @UseGuards(AuthenticatedGuard)
+  logout(@Req() req: Request) {
+    req.logOut()
+  }
 }

@@ -113,6 +113,7 @@ type AppearanceTag {
 
 """The presence of a person in a media."""
 type Appearance {
+  id: Float!
   person: Person!
   tags: [AppearanceTag!]!
   media: Media!
