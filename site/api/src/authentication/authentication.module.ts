@@ -5,11 +5,12 @@ import { AuthenticationController } from "./authentication.controller"
 import { PrismaModule } from "../prisma/prisma.module"
 import { PassportModule } from "@nestjs/passport"
 import { ConfigModule } from "@nestjs/config"
+import { SessionSerializer } from "./utils/serialisers";
 
 @Module({
   controllers: [AuthenticationController],
   imports: [PrismaModule, PassportModule, ConfigModule],
-  providers: [AuthenticationService, DiscordStrategy],
+  providers: [AuthenticationService, SessionSerializer, DiscordStrategy],
   exports: [],
 })
 export class AuthenticationModule {}

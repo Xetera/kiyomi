@@ -8,6 +8,24 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
+model UserAccount {
+  id                 Int       @id @default(autoincrement())
+  providerType       String    @map("provider_type")
+  providerUserId     String    @map("provider_user_id")
+  accessTokenExpires DateTime? @map("access_token_expires")
+  accessToken        String?   @map("access_token")
+  refreshToken       String?   @map("refresh_token")
+  userId             Int       @map("user_id")
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@unique([providerUserId, providerType], name: "providerIdentity")
+  @@index([providerType], map: "user_account.provider_type")
+  @@index([userId], map: "user_account.user_id")
+  @@map("user_accounts")
+}
+
 model Account {
   id                 Int       @id @default(autoincrement())
   compoundId         String    @unique(map: "accounts.compound_id_unique") @map("compound_id")
@@ -119,7 +137,7 @@ model Alias {
 model PersonNationality {
   id        Int    @id @default(autoincrement())
   country   String
-  personId  Int @map("person_id")
+  personId  Int    @map("person_id")
   person    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
   addedById Int?   @map("added_by_id")
   addedBy   User?  @relation(fields: [addedById], references: [id], onDelete: SetNull)
@@ -134,7 +152,7 @@ model Person {
   id                    Int                  @id @default(autoincrement())
   description           String?
   name                  String
-  nativeName            String? @map("native_name")
+  nativeName            String?              @map("native_name")
   preferredAliasId      Int?                 @unique(map: "persons.preferred_alias_id_unique") @map("preferred_alias_id")
   createdAt             DateTime             @default(now()) @map("created_at")
   updatedAt             DateTime             @default(now()) @updatedAt @map("updated_at")
@@ -218,12 +236,11 @@ model Face {
   @@map("faces")
 }
 
-
 model Session {
   id        String   @id
   sid       String   @unique
   data      String
-  expiresAt   DateTime
+  expiresAt DateTime
 }
 
 /// A single role that a user has
@@ -275,8 +292,9 @@ model User {
   guessingGameParticipations GuessingGameParticipant[]
 
   nationalitiesAdded PersonNationality[]
-  peopleAdded            Person[]
-  groupsAdded             Group[]
+  peopleAdded        Person[]
+  groupsAdded        Group[]
+  UserAccount        UserAccount[]
   @@index([token], map: "user.token.index")
   @@map("users")
 }
@@ -401,7 +419,7 @@ model Group {
   avatar       Image?        @relation("group_avatar", fields: [avatarId], references: [id])
   banner       Image?        @relation("group_banner", fields: [bannerId], references: [id])
   creationDate DateTime?     @map("creation_date")
-  companyId    Int?           @map("company_id")
+  companyId    Int?          @map("company_id")
   company      Company?      @relation(fields: [companyId], references: [id], map: "groups_company_id")
   // Denormalized gender aggregating the genders of all group members.
   // Must be kept in check through group member gender changes.

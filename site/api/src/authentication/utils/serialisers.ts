@@ -1,26 +1,25 @@
-import {Inject, Injectable} from "@nestjs/common";
-import {UserModel} from "../../user/models/user.model";
-import {Done} from "../../utils/types";
-import {PassportSerializer} from "@nestjs/passport";
-import {AuthenticationService} from "../authentication.service";
-
+import { Injectable } from "@nestjs/common"
+import { User } from "@prisma/client"
+import { Done } from "../../utils/types"
+import { PassportSerializer } from "@nestjs/passport"
+import { AuthenticationService } from "../authentication.service"
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
-    constructor(
-      @Inject("AUTH_SERVICE")
-      private readonly authService: AuthenticationService,
-    ) {
-        super()
-    }
+  constructor(private readonly authService: AuthenticationService) {
+    super()
+  }
 
+  serializeUser(user: User, done: Done<number>) {
+    done(undefined, user.id)
+  }
 
-    serializeUser(user: UserModel, done: Done) {
-        done(null, user);
+  async deserializeUser(userId: number, done: Done<User>) {
+    const userDB = await this.authService.findUser(userId)
+    if (userDB) {
+      done(undefined, userDB)
+    } else {
+      done(new Error("Invalid User"), undefined)
     }
-
-    async deserializeUser(user: UserModel, done: Done) {
-        const userDB = await this.authService.findUser({id: user.id});
-        return userDB ? done(null, userDB) : done(null, null);
-    }
+  }
 }
