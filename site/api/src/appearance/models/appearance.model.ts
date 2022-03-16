@@ -8,6 +8,9 @@ import { MediaModel } from "../../media/models"
   description: "The presence of a person in a media.",
 })
 export class AppearanceModel {
+  @Field()
+  id!: number
+
   @Field(() => PersonModel)
   person!: PersonModel
 

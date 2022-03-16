@@ -6,7 +6,7 @@ import { MediaModule } from "./media/media.module"
 import { GraphQLModule } from "@nestjs/graphql"
 import { PrismaModule } from "./prisma/prisma.module"
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo"
-import { ConfigModule } from "@nestjs/config"
+import { ConfigModule, ConfigService } from "@nestjs/config"
 import { UserModule } from "./user/user.module"
 import { AppearanceModule } from "./appearance/appearance.module"
 import { PersonService } from "./person/person.service"
@@ -19,9 +19,11 @@ import * as path from "node:path"
 import { GraphQLError, GraphQLFormattedError } from "graphql"
 import { GroupModule } from "./group/group.module"
 import { AliasModule } from "./alias/alias.module"
-import { GroupMemberModule } from './group-member/group-member.module';
-import { MediaReportService } from './media-report/media-report.service';
-import { FaceModule } from './face/face.module';
+import { GroupMemberModule } from "./group-member/group-member.module"
+import { PassportModule } from "@nestjs/passport"
+import { HttpModule } from "@nestjs/axios"
+import { FaceModule } from "./face/face.module"
+import { AuthenticationModule } from "./authentication/authentication.module"
 
 @Module({
   imports: [
@@ -30,15 +32,17 @@ import { FaceModule } from './face/face.module';
       isGlobal: true,
       cache: true,
     }),
+    PassportModule.register({ session: true }),
+    HttpModule,
     PrismaModule,
     MediaModule,
     ImageModuleOld,
-    ConfigModule,
     UserModule,
     AppearanceModule,
     PersonModule,
     GroupModule,
     AliasModule,
+    AuthenticationModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
@@ -69,7 +73,6 @@ import { FaceModule } from './face/face.module';
     FaceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PersonService, UploaderService, MediaReportService],
+  providers: [AppService, PersonService, UploaderService, ConfigService],
 })
-export class AppModule {
-}
+export class AppModule {}

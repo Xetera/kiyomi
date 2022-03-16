@@ -7,8 +7,8 @@ import { UserService } from "../user/user.service"
 import { UserModel } from "../user/models/user.model"
 import { AppearanceModel } from "./models/appearance.model";
 import { MediaService } from "../media/media.service";
+import { forwardRef, Inject } from "@nestjs/common";
 import { MediaModel } from "../media/models";
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
 
 @Resolver(() => AppearanceModel)
 export class AppearanceResolver {

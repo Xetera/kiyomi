@@ -17,6 +17,10 @@ POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin
 POSTGRES_DB=kapi
 PORT=5000
+
+# Security
+JWT_ACCESS_SECRET=nestjsPrismaAccessSecret
+JWT_REFRESH_SECRET=nestjsPrismaRefreshSecret
 ```
 
 ### Create docker.env file
