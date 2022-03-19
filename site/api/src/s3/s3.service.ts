@@ -3,7 +3,6 @@ import { ConfigService } from "@nestjs/config"
 import { PutObjectCommandOutput, S3 } from "@aws-sdk/client-s3"
 import path from "path"
 import fs from "fs"
-import { UploadableImage } from "../../../lib/services/wasabi"
 
 @Injectable()
 export class S3Service {
@@ -65,12 +64,14 @@ export class S3Service {
         ContentType: image.mimetype,
       })
     } else {
-      const localPath = path.join(process.cwd(), S3Service.DISK_IMAGE_PREFIX, image.key)
+      const localPath = path.join(
+        process.cwd(),
+        S3Service.DISK_IMAGE_PREFIX,
+        image.key,
+      )
       await fs.promises.writeFile(localPath, image.body)
     }
   }
-
-,
 }
 
 type WasabiConfig = {
@@ -83,3 +84,11 @@ type WasabiConfig = {
 type ImageUploadStrategy =
   | { type: "s3"; client: S3; credentials: WasabiConfig }
   | { type: "disk" }
+
+export type UploadableImage = {
+  // if uploading through an media
+  fileName?: string
+  key: string
+  body: Buffer
+  mimetype: string
+}
