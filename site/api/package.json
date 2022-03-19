@@ -6,8 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "migrate:dev": "npx prisma migrate dev",
-    "migrate": "npx prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev --create-only",
+    "migrate": "prisma migrate deploy",
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.build.json",
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
