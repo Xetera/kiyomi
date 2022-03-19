@@ -44,7 +44,7 @@ Make sure to run `yarn migrate` to get all tables and seed some data :)
 
 ### Migrations
 Whenever you change the schema file inside the prisma folder in any way, we have to create a migration.
-We can do that with `npx prisma migrate dev --name <name_of_migraiton>`. Then you can run it with `npm run migrate` tio apply it
+We can do that with `yarn migrate:dev`. Then you can run it with `yarn migrate` to apply it.
 
 
 ### API Docs
