@@ -101,6 +101,6 @@ export class UploaderController {
       )
     }
 
-    return res.json(image)
+    return image
   }
 }
