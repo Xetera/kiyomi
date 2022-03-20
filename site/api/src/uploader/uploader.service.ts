@@ -131,6 +131,7 @@ export class UploaderService {
         hash: hash as string,
         public: opts.public,
         bytes: buffer.byteLength,
+        destination: this.uploadDestination(),
         // TODO: proper reference tracking
         source: opts.source,
         // TODO: deprecate NSFW
@@ -194,10 +195,15 @@ export class UploaderService {
     return image
   }
 
-  mediaUrl(media: Image) {
-    const destination: UploadDestination =
+  uploadDestination(): UploadDestination {
+    return (
       this.config.get("UPLOAD_DESTINATION") ??
       UploaderService.DEFAULT_UPLOAD_DESTINATION
+    )
+  }
+
+  mediaUrl(media: Image) {
+    const destination = this.uploadDestination()
     let base: string
     if (media.destination === UploadDestination.S3) {
       const baseUrl = this.config.get<string>("S3_BASE_URL")

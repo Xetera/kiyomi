@@ -2,11 +2,11 @@ import { Parent, Query, ResolveField, Resolver } from "@nestjs/graphql"
 import { UserModel } from "./models/user.model"
 import { UserService } from "./user.service"
 import { RoleModel } from "./models/role.model"
+import { MediaModel } from "../media/models"
 
 @Resolver(() => UserModel)
 export class UserResolver {
-  constructor(private userService: UserService) {
-  }
+  constructor(private userService: UserService) {}
 
   @ResolveField(() => [RoleModel])
   async roles(@Parent() user: UserModel) {

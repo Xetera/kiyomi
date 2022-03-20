@@ -54,7 +54,7 @@ with `yarn migrate:dev`. Then you can run it with `yarn migrate` to apply it.
 
 `GET /auth/login/discord` - Discord auth
 
-`POST /upload` - upload an image
+`POST /upload` - Upload an image. Requires auth through `Authorization` header found in `users.token` column.
 
 ```json
 {
