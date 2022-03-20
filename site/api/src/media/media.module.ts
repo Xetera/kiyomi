@@ -7,6 +7,7 @@ import { UserModule } from "../user/user.module"
 import { AppearanceModule } from "../appearance/appearance.module"
 import { UploaderModule } from "../uploader/uploader.module"
 import { ImgProxyModule } from "../imgproxy/imgproxy.module"
+import { MediaProcessorService } from "./media-processor.service"
 
 @Module({
   imports: [
@@ -16,7 +17,12 @@ import { ImgProxyModule } from "../imgproxy/imgproxy.module"
     UploaderModule,
     ImgProxyModule,
   ],
-  providers: [MediaService, MediaResolver, MediaTagResolver],
-  exports: [MediaService],
+  providers: [
+    MediaService,
+    MediaProcessorService,
+    MediaResolver,
+    MediaTagResolver,
+  ],
+  exports: [MediaService, MediaProcessorService],
 })
 export class MediaModule {}

@@ -10,5 +10,4 @@ import { MediaModule } from "../media/media.module"
   providers: [AppearanceService, AppearanceResolver, AppearanceTagResolver],
   exports: [AppearanceService],
 })
-export class AppearanceModule {
-}
+export class AppearanceModule {}

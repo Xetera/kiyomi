@@ -19,13 +19,18 @@ export class DiscordStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    return this.authService.validateUser({
+    const details = {
       username: profile.username,
       discordId: profile.id,
       avatar: profile.avatar ?? undefined,
       discriminator: profile.discriminator,
       refreshToken,
       accessToken,
-    })
+    }
+    const user = await this.authService.validateUser(details)
+    this.authService
+      .updateUserDiscordCredentials(user.id, details)
+      .catch(console.error)
+    return user
   }
 }

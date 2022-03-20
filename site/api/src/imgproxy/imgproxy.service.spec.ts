@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ImgproxyService } from './imgproxy.service';
+import { Test, TestingModule } from "@nestjs/testing"
+import { ImgProxyService } from "./imgproxy.service"
 
-describe('ImgproxyService', () => {
-  let service: ImgproxyService;
+describe("ImgproxyService", () => {
+  let service: ImgProxyService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ImgproxyService],
-    }).compile();
+      providers: [ImgProxyService],
+    }).compile()
 
-    service = module.get<ImgproxyService>(ImgproxyService);
-  });
+    service = module.get<ImgProxyService>(ImgProxyService)
+  })
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+  it("should be defined", () => {
+    expect(service).toBeDefined()
+  })
+})

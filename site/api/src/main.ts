@@ -1,10 +1,11 @@
 import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
-import * as expressSession from "express-session"
-import * as passport from "passport"
+import expressSession from "express-session"
+import passport from "passport"
 import { PrismaSessionStore } from "@quixo3/prisma-session-store"
 import { PrismaClient } from "@prisma/client"
+import { ValidationPipe } from "@nestjs/common"
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -25,6 +26,7 @@ async function bootstrap() {
     )
   }
   app.enableCors()
+  app.useGlobalPipes(new ValidationPipe())
   app.use(
     expressSession({
       cookie: {

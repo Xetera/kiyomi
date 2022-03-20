@@ -24,6 +24,7 @@ import { PassportModule } from "@nestjs/passport"
 import { HttpModule } from "@nestjs/axios"
 import { FaceModule } from "./face/face.module"
 import { AuthenticationModule } from "./authentication/authentication.module"
+import { ServeStaticModule } from "@nestjs/serve-static"
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { AuthenticationModule } from "./authentication/authentication.module"
     ImgProxyModule,
     GroupMemberModule,
     FaceModule,
+    ServeStaticModule.forRoot({ rootPath: "./public" }),
   ],
   controllers: [AppController],
   providers: [AppService, PersonService, UploaderService, ConfigService],

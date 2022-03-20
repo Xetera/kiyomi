@@ -1,6 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common"
 import { AuthGuard } from "@nestjs/passport"
 import { GqlExecutionContext } from "@nestjs/graphql"
+import { RoleKind } from "./role";
+import { ROLES_KEY } from "./roles.decorator";
 
 @Injectable()
 export class DiscordAuthGuard extends AuthGuard("discord") {

@@ -10,8 +10,6 @@ export class S3Service {
   private readonly logger = new Logger(S3Service.name)
   private static readonly DISK_IMAGE_PREFIX = "public/_images"
 
-  readonly imagePrefix: string
-
   constructor(private config: ConfigService) {
     const bucketName = config.get("WASABI_BUCKET_NAME")
     const accessKeyId = config.get("WASABI_ACCESS_KEY")
@@ -46,11 +44,6 @@ export class S3Service {
     this.logger.log(
       `Initializing uploader with strategy: [${this.strategy.type}]`,
     )
-
-    this.imagePrefix =
-      this.strategy.type === "disk"
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/${S3Service.DISK_IMAGE_PREFIX}`
-        : process.env.NEXT_PUBLIC_BASE_URL_CDN
   }
 
   async putImage(

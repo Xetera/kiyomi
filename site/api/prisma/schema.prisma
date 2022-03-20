@@ -240,7 +240,11 @@ model Session {
   id        String   @id
   sid       String   @unique
   data      String
-  expiresAt DateTime
+  expiresAt DateTime @map("expires_at")
+
+
+  @@map("sessions")
+  @@index([sid])
 }
 
 /// A single role that a user has
