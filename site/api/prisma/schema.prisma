@@ -243,8 +243,8 @@ model Session {
   expiresAt DateTime @map("expires_at")
 
 
-  @@map("sessions")
   @@index([sid])
+  @@map("sessions")
 }
 
 /// A single role that a user has
@@ -423,6 +423,8 @@ model Group {
   avatar       Image?        @relation("group_avatar", fields: [avatarId], references: [id])
   banner       Image?        @relation("group_banner", fields: [bannerId], references: [id])
   creationDate DateTime?     @map("creation_date")
+  debutDate    DateTime?     @map("debut_date")
+  disbandDate DateTime? @map("disband_date")
   companyId    Int?          @map("company_id")
   company      Company?      @relation(fields: [companyId], references: [id], map: "groups_company_id")
   // Denormalized gender aggregating the genders of all group members.
@@ -464,6 +466,7 @@ model Hiatus {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@index([groupId])
   @@map("hiatuses")
 }
 
