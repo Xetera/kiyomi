@@ -1,6 +1,7 @@
-import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql";
+import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql"
 import { AliasModel } from "../../alias/models/alias.model"
-import { MediaModel } from "../../media/models";
+import { MediaModel } from "../../media/models"
+import { GroupStatusModel } from "./group-status.model"
 
 @ObjectType("Group")
 export class GroupModel {
@@ -19,6 +20,8 @@ export class GroupModel {
   @Field(() => [AliasModel])
   aliases!: AliasModel[]
 
+  @Field(() => GroupStatusModel, { nullable: true })
+  status?: GroupStatusModel
   // @Field(() => AliasModel, {
   //   nullable: true,
   //   description: "The aliases of the person commonly goes by",

@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common"
 import { Group, GroupAlias, GroupMember, Image } from "@prisma/client"
 import { PrismaService } from "../prisma/prisma.service"
+import { GroupStatusModel } from "./models/group-status.model"
 
 @Injectable()
 export class GroupService {
-  constructor(private readonly prisma: PrismaService) {
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   async findById(id: number): Promise<Group | null> {
     return await this.prisma.group.findUnique({
@@ -57,5 +57,18 @@ export class GroupService {
     return await this.prisma.groupAlias.findMany({
       where: { groupId },
     })
+  }
+
+  async status(group: Group): Promise<GroupStatusModel | undefined> {
+    if (!group.creationDate) {
+      return
+    }
+    const hiatuses = await this.prisma.hiatus.findMany({
+      where: { groupId: group.id },
+    })
+    const ongoingHiatus = hiatuses.find((h) => !h.endDate)
+    if (ongoingHiatus) {
+      return GroupStatusModel.HIATUS
+    }
   }
 }

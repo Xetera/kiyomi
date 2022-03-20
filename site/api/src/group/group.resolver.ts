@@ -12,6 +12,7 @@ import { GroupModel } from "./models/group.model"
 import { GroupService } from "./group.service"
 import { GroupMemberModel } from "../group-member/models/group-member.model"
 import { AliasModel } from "../alias/models/alias.model"
+import { GroupStatusModel } from "./models/group-status.model";
 
 @Resolver(() => GroupModel)
 export class GroupResolver {
@@ -40,5 +41,10 @@ export class GroupResolver {
   @ResolveField(() => [GroupMemberModel])
   members(@Parent() group: Group): Promise<GroupMember[]> {
     return this.groupService.groupMembers(group.id)
+  }
+
+  @ResolveField(() => GroupStatusModel)
+  async status(@Parent() group: Group) {
+
   }
 }

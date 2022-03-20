@@ -447,9 +447,24 @@ model Group {
   website   String?
   facebook  String?
 
+  hiatuses Hiatus[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   @@map("groups")
+}
+
+model Hiatus {
+  id        Int       @id @default(autoincrement())
+  groupId   Int       @map("group_id")
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  startDate DateTime  @map("start_date")
+  // no end date = current hiatus
+  endDate   DateTime? @map("end_date")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  @@map("hiatuses")
 }
 
 model DiscoveredPost {
