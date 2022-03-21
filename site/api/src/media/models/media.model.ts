@@ -10,6 +10,7 @@ import { MimeType, UploadDestination, UploadType } from "@prisma/client"
 import { MediaTagModel } from "./media-tag.model"
 import { UserModel } from "../../user/models/user.model"
 import { AppearanceModel } from "../../appearance/models/appearance.model"
+import { MediaCoordinateModel } from "./media-coordinate.model"
 
 @ObjectType("Media", {
   description: "An image or a video.",
@@ -139,17 +140,22 @@ export class MediaModel {
   url!: string
 
   @Field(() => Float, {
-    description: "width / height + didn't ask + you fell off +"
+    description: "width / height + didn't ask + you fell off +",
   })
   aspectRatio!: number
 
   @Field({
     description:
       "Whether the current user has liked this media. Null if not logged in.",
-    nullable: true
+    nullable: true,
   })
   liked?: boolean
-  // focus: ImageCoordinate!
+
+  @Field({
+    description:
+      "The coordinate of an image that should be focused on when zooming in",
+  })
+  focus!: MediaCoordinateModel
   // unknownFaces: [Face!]!
   // connections(...): ImageConnections!
   @Field(() => Boolean, {

@@ -4,6 +4,9 @@ import { Image, Prisma } from "@prisma/client"
 import { ConfigService } from "@nestjs/config"
 import { UploaderService } from "../uploader/uploader.service"
 import { PaginationArgs } from "../common-dto/pagination.args"
+import { points } from "@turf/helpers"
+import centroid from "@turf/centroid"
+import { MediaCoordinateModel } from "./models/media-coordinate.model"
 
 @Injectable()
 export class MediaService {
@@ -39,7 +42,7 @@ export class MediaService {
       },
       take: perPage,
       orderBy: {
-        createdAt: "desc"
+        createdAt: "desc",
       },
     }
     if (cursor !== undefined) {
@@ -49,5 +52,39 @@ export class MediaService {
       }
     }
     return this.prisma.imageReport.findMany(opts)
+  }
+
+  async focus(media: Image): Promise<MediaCoordinateModel> {
+    const faces = await this.prisma.face.findMany({
+      where: { imageId: media.id },
+    })
+    if (faces.length === 0) {
+      return {
+        x: Math.floor(media.width / 2),
+        y: Math.floor(media.height / 2),
+      }
+    }
+    // TODO: focus only one face if faces in the image are too far apart relative to the size of the image
+    try {
+      const coordinates = points(
+        faces.map((f) => [
+          Math.floor(f.x + f.width / 2),
+          Math.floor(f.y + f.height / 2),
+        ]),
+      )
+      const polygon = centroid(coordinates)
+      const [x, y] = polygon.geometry.coordinates
+      if (!x || !y) {
+        return {
+          x: Math.floor(media.width / 2),
+          y: Math.floor(media.height / 2),
+        }
+      }
+      return { x: Math.floor(x), y: Math.floor(y) }
+    } catch (err) {
+      this.logger.error(err)
+      this.logger.log(faces)
+      throw err
+    }
   }
 }

@@ -130,6 +130,12 @@ type Appearance {
   updatedAt: DateTime!
 }
 
+"""A coordinate relative to the dimensions of an image"""
+type MediaCoordinate {
+  x: Float!
+  y: Float!
+}
+
 """An image or a video."""
 type Media {
   id: Int!
@@ -223,6 +229,9 @@ type Media {
 
   """Whether the current user has liked this media. Null if not logged in."""
   liked: Boolean
+
+  """The coordinate of an image that should be focused on when zooming in"""
+  focus: MediaCoordinate!
 
   """
   Whether the current user has reported the media. Null if not logged in.

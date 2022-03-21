@@ -20,6 +20,7 @@ import { PaginationArgs } from "../common-dto/pagination.args"
 import { ImgProxyService } from "../imgproxy/imgproxy.service"
 import { UploaderService } from "../uploader/uploader.service"
 import { MediaReportModel } from "./models/media-report.model"
+import { MediaCoordinateModel } from "./models/media-coordinate.model"
 
 @Resolver(() => MediaModel)
 export class MediaResolver {
@@ -92,5 +93,10 @@ export class MediaResolver {
   @ResolveField(() => MediaThumbnailModel)
   thumbnail(@Parent() image: Image): MediaThumbnailModel {
     return this.imgProxyService.thumbnails(image)
+  }
+
+  @ResolveField(() => MediaCoordinateModel)
+  async focus(@Parent() image: Image) {
+    return this.mediaService.focus(image)
   }
 }
