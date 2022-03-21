@@ -24,9 +24,11 @@ describe("GroupService", () => {
 
 describe("GroupService->status", () => {
   let groupService: GroupService
+
   beforeEach(() => {
     groupService = new GroupService(new PrismaService())
   })
+
   it("detects active groups with no disband date", async () => {
     const status = await groupService.status({
       debutDate: sub(new Date(), { days: 1 }),

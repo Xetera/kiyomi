@@ -63,11 +63,19 @@ type Group {
   avatarUrl: Media
   banner: Media
   aliases: [Alias!]!
+  status: GroupStatus
   birthDate: DateTime!
   createdAt: DateTime!
   updatedAt: DateTime!
   avatar: Media
   members: [GroupMember!]!
+}
+
+enum GroupStatus {
+  PRE_DEBUT
+  ACTIVE
+  HIATUS
+  DISBANDED
 }
 
 type GroupMember {
