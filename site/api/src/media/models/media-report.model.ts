@@ -1,8 +1,8 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from "@nestjs/graphql"
-import { TagModel } from "../../tag/models";
-import { MediaModel } from "./media.model";
-import { UserModel } from "../../user/models/user.model";
-import { ImageReportAction } from "@prisma/client";
+import { TagModel } from "../../tag/models"
+import { MediaModel } from "./media.model"
+import { UserModel } from "../../user/models/user.model"
+import { ImageReportAction } from "@prisma/client"
 
 @ObjectType("MediaReport", {
   description: "A reported media item",
@@ -10,7 +10,7 @@ import { ImageReportAction } from "@prisma/client";
 export class MediaReportModel {
   @Field(() => Int)
   id!: number
-  
+
   @Field(() => TagModel, { nullable: true })
   tag!: TagModel
 

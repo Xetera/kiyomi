@@ -20,6 +20,7 @@ import { PaginationArgs } from "../common-dto/pagination.args"
 import { ImgProxyService } from "../imgproxy/imgproxy.service"
 import { UploaderService } from "../uploader/uploader.service"
 import { MediaReportModel } from "./models/media-report.model"
+import { HomepageModel } from "./models/homepage.model"
 
 @Resolver(() => MediaModel)
 export class MediaResolver {
@@ -37,6 +38,11 @@ export class MediaResolver {
   @Query(() => MediaModel, { nullable: true })
   media(@Args("slug") slug: string): Promise<Image | null> {
     return this.mediaService.findBySlug(slug)
+  }
+
+  @Query(() => HomepageModel)
+  homepage(@Args("cursor", { nullable: true }) cursor: string) {
+    return this.mediaService.homepage(cursor)
   }
 
   @Query(() => [MediaReportModel])
