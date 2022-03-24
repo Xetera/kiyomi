@@ -8,6 +8,7 @@ import { points } from "@turf/helpers"
 import centroid from "@turf/centroid"
 import { Cursor, GraphqlService } from "../graphql/graphql.service"
 import { HomepageModel } from "./models/homepage.model"
+import { MediaCoordinateModel } from "./models/media-coordinates.model"
 
 @Injectable()
 export class MediaService {
