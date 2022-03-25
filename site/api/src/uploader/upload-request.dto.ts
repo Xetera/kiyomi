@@ -1,12 +1,11 @@
-import { z } from "zod"
 import {
   IsBoolean,
   IsDefined,
-  IsFQDN,
-  IsInt,
-  IsNumberString, IsOptional,
-  IsString, IsUrl
-} from "class-validator";
+  IsNumberString,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from "class-validator"
 
 export class UploadRequestDto {
   @IsDefined()

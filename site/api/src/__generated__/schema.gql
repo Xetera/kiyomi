@@ -300,8 +300,14 @@ type MediaThumbnail {
   full: String!
 }
 
+type Homepage {
+  cursor: String
+  media: [Media!]!
+}
+
 type Query {
   media(slug: String!): Media
+  homepage(cursor: String): Homepage!
   mediaReports(
     """The id of the last seen report"""
     cursor: Int

@@ -4,9 +4,9 @@ import { Image } from "@prisma/client"
 
 @ObjectType("Homepage")
 export class HomepageModel {
-  @Field()
+  @Field({ nullable: true })
   cursor?: string
 
-  @Field(() => MediaModel)
+  @Field(() => [MediaModel])
   media!: Image[]
 }

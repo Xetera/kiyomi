@@ -41,7 +41,9 @@ export class MediaResolver {
   }
 
   @Query(() => HomepageModel)
-  homepage(@Args("cursor", { nullable: true }) cursor: string) {
+  homepage(
+    @Args("cursor", { nullable: true }) cursor: string,
+  ): Promise<HomepageModel> {
     return this.mediaService.homepage(cursor)
   }
 

@@ -56,9 +56,9 @@ export class MediaService {
     return this.prisma.imageReport.findMany(opts)
   }
 
-  async homepage(cursor: string): Promise<HomepageModel> {
+  async homepage(cursor?: string): Promise<HomepageModel> {
     const PER_PAGE = 50
-    const id = GraphqlService.fromCursor(cursor)
+    const id = cursor ? GraphqlService.fromCursor(cursor) : undefined
     const opts: Prisma.ImageFindManyArgs = {
       ...GraphqlService.baseCursor(PER_PAGE, id),
       orderBy: { id: "desc" },
