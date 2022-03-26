@@ -17,8 +17,8 @@ jobs:
       run: |2
         docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_BUILDKIT=1 sudo docker buildx build -f site/api/Dockerfile \
-          . -t index.docker.io/xetera/kiyomi-api:$(git rev-parse --short HEAD)
-        sudo docker push index.docker.io/xetera/kiyomi-api:$(git rev-parse --short HEAD)
+          . -t xetera/kiyomi-api:$(git rev-parse --short HEAD)
+        sudo docker push xetera/kiyomi-api:$(git rev-parse --short HEAD)
     - name: Update Porter App
       timeout-minutes: 20
       uses: porter-dev/porter-update-action@v0.1.0
