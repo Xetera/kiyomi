@@ -15,6 +15,7 @@ jobs:
     - name: Docker build, push
       id: docker_build_push
       run: |2
+        docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_BUILDKIT=1 sudo docker buildx build -f site/api/Dockerfile \
           . -t index.docker.io/xetera/kiyomi-api:$(git rev-parse --short HEAD)
         sudo docker push index.docker.io/xetera/kiyomi-api:$(git rev-parse --short HEAD)
