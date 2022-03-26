@@ -46,6 +46,8 @@ import { ServeStaticModule } from "@nestjs/serve-static"
     AuthenticationModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      // Always allow introspection :)
+      introspection: true,
       playground: true,
       debug: true,
       cors: {
