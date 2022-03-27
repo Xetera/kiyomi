@@ -42,7 +42,7 @@ export const Mutation = mutationField((t) => {
   t.field("imageReportAction", {
     type: ImageReport,
     description:
-      "Action on an image reported by a user. Only usable by moderators",
+      "Action on an media reported by a user. Only usable by moderators",
     args: {
       reportId: nonNull("Int"),
       action: nonNull(ImageReportActionKind),
@@ -81,7 +81,7 @@ export const Mutation = mutationField((t) => {
         })
       )
       if (hasRestriction) {
-        throw Error("A moderator has removed your image reporting permissions")
+        throw Error("A moderator has removed your media reporting permissions")
       }
       return await report.reportImage({
         reason: args.reason ?? undefined,

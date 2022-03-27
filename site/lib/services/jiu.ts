@@ -110,7 +110,7 @@ export function makeJiu(opts: JiuServiceOptions) {
                 referenceUrl: image.referenceUrl,
                 providerType,
                 url: image.mediaUrl,
-                // kind of a gross way of doing it but the image can be duplicates of many things
+                // kind of a gross way of doing it but the media can be duplicates of many things
                 duplicateImageId: duplicateImageId ?? null,
                 duplicateDiscoveredImageId: duplicateDiscoveredImageId ?? null,
                 uniqueIdentifier: image.uniqueIdentifier,

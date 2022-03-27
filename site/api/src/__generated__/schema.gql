@@ -1,0 +1,332 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type TagAlias {
+  name: String!
+  tag: Tag!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Tag {
+  name: String!
+  aliases: TagAlias!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Role {
+  name: String!
+  createdAt: DateTime!
+}
+
+type User {
+  id: Float!
+  name: String
+  avatarUrl: String
+  roles: [Role!]!
+
+  """Whether this user is a bot account"""
+  bot: Boolean!
+
+  """User's experience points"""
+  xp: Int!
+}
+
+"""A tag describing a media."""
+type MediaTag {
+  tag: Tag
+  media: Media!
+
+  """The user who added the tag. Null if the user was deleted."""
+  addedBy: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Alias {
+  id: Int!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Group {
+  id: Int!
+  name: String!
+  avatarUrl: Media
+  banner: Media
+  aliases: [Alias!]!
+  status: GroupStatus
+  birthDate: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  avatar: Media
+  members: [GroupMember!]!
+}
+
+enum GroupStatus {
+  PRE_DEBUT
+  ACTIVE
+  HIATUS
+  DISBANDED
+}
+
+type GroupMember {
+  id: Int!
+  group: Group!
+  person: Person!
+  startDate: DateTime
+  endDate: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Person {
+  id: Int!
+  aliases: [Alias!]!
+
+  """The media-appearances of this person."""
+  appearances: [Appearance!]!
+
+  """The aliases of the person commonly goes by"""
+  preferredAlias: Alias
+
+  """The groups that this person is a member of"""
+  groupMembers: [GroupMember!]!
+
+  """The primary group member the person represents"""
+  preferredGroupMember: GroupMember
+  name: String
+  birthDate: DateTime
+
+  """
+  The nationalities of this person in ISO 3166-1 alpha-3 format. People with multiple nationalities may have more than one entry.
+  """
+  nationalities: [String!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A tag that describes a specific person in a media. For tags that describe media itself, see MediaTag.
+"""
+type AppearanceTag {
+  appearance: Appearance!
+  tag: Tag!
+  tags: [AppearanceTag!]!
+  addedBy: User!
+}
+
+"""The presence of a person in a media."""
+type Appearance {
+  id: Float!
+  person: Person!
+  tags: [AppearanceTag!]!
+  media: Media!
+  addedBy: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""An image or a video."""
+type Media {
+  id: Int!
+
+  """Width of the media in pixels."""
+  width: Int!
+
+  """Height of the media in pixels."""
+  height: Int!
+  uploadType: UploadType!
+
+  """SHA-256 hash of the media"""
+  hash: String!
+
+  """
+  The name of the file when it was uploaded. Only valid for uploadType WEBSITE.
+  """
+  fileName: String
+
+  """
+  The primary colors of the media in decimal format ordered by frequency. May not be present for animated formats like MP4s.
+  """
+  palette: [Int!]!
+
+  """The website or other relevant source this media is from."""
+  source: String @deprecated(reason: "Use the `sources` field instead.")
+  uploadedBy: User
+
+  """The tags describing with this media."""
+  tags(
+    """Amount of items to view per page"""
+    take: Int = 10
+
+    """Amount of previously-seen items to skip"""
+    skip: Int = 0
+  ): [MediaTag!]!
+
+  """The location where this media is stored."""
+  destination: UploadDestination
+
+  """A randomly generated ID for the media."""
+  slug: ID!
+
+  """
+  Whether this media is available for everyone to view. Only visible to the uploader and moderators if false.
+  """
+  public: Float!
+
+  """Media description."""
+  caption: String
+
+  """The number of times a user has visited the media page."""
+  views: Int!
+
+  """The file extension of the media."""
+  mimetype: MimeType!
+
+  """Size of the uploaded file in bytes."""
+  bytes: Int!
+
+  """The people who appear in this media."""
+  appearances(
+    """Amount of items to view per page"""
+    take: Int = 10
+
+    """Amount of previously-seen items to skip"""
+    skip: Int = 0
+  ): [Appearance!]!
+
+  """
+  The last date this media was scanned for faces. Usually represents the date it was uploaded unless manually re-scanned.
+  """
+  faceScanDate: DateTime
+
+  """The ID of the media if taken from irenebot."""
+  ireneBotId: Int
+
+  """The date the image was last hidden. Null if not hidden or unhidden."""
+  hiddenAt: DateTime
+
+  """Human readable file size."""
+  fileSize: String @deprecated(reason: "Use `bytes` instead.")
+
+  """
+  The source url of the full-size media. Use `thumbnail` for resized copies.
+  """
+  url: String!
+
+  """width / height + didn't ask + you fell off +"""
+  aspectRatio: Float!
+
+  """Whether the current user has liked this media. Null if not logged in."""
+  liked: Boolean
+
+  """
+  Whether the current user has reported the media. Null if not logged in.
+  """
+  reported: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  thumbnail: MediaThumbnail!
+}
+
+"""The way an upload took place."""
+enum UploadType {
+  """An item uploaded manually by a user"""
+  WEBSITE
+
+  """An item added automatically through a token"""
+  TOKEN
+
+  """An item discovered by an automatic content scanner"""
+  AUTO_DISCOVERY
+}
+
+enum UploadDestination {
+  Local
+  S3
+}
+
+enum MimeType {
+  PNG
+  JPG
+  SVG
+  WEBP
+  WEBM
+  AVIF
+  GIF
+  MP4
+}
+
+"""A reported media item"""
+type MediaReport {
+  id: Int!
+  tag: Tag
+  media: Media!
+  reason: String
+  action: MediaReportAction
+
+  """The user who added the tag. Null if the user was deleted."""
+  addedBy: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum MediaReportAction {
+  DISMISS
+  DELETE_IMAGE
+  HIDE_IMAGE
+  RESTRICT_USER
+  OTHER
+}
+
+type MediaThumbnail {
+  """A thumbnail of a fullsize image at 200px width."""
+  xsmall: String!
+
+  """A thumbnail of a fullsize image at 350px width."""
+  small: String!
+
+  """A thumbnail of a fullsize image at 500px width."""
+  medium: String!
+
+  """A thumbnail of a fullsize image at 900px width."""
+  large: String!
+
+  """A thumbnail of a fullsize image at 1200px width."""
+  full: String!
+}
+
+type Homepage {
+  cursor: String
+  media: [Media!]!
+}
+
+type PeopleList {
+  cursor: String
+  people: [Person!]!
+}
+
+type Query {
+  media(slug: String!): Media
+  homepage(cursor: String): Homepage!
+  mediaReports(
+    """The id of the last seen report"""
+    cursor: Int
+  ): [MediaReport!]!
+
+  """Get the current logged in user. Null if not logged in."""
+  me: User
+  person(id: Float!): Person
+  peopleList(cursor: String): PeopleList!
+  groupMember(id: Int!): GroupMember
+  group(id: Int!): Group
+}

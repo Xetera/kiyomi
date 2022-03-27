@@ -1,5 +1,7 @@
-import { generateUserToken } from "@/lib/auth"
+// @ts-ignore
+import { generateUserToken } from "@/lib/authentication"
 import { PrismaClient } from "@prisma/client"
+// @ts-ignore
 import { run as aliases } from "@/scripts/migrations/aliases"
 const prisma = new PrismaClient()
 

@@ -64,7 +64,7 @@ export const Mutation = mutationField((t) => {
   })
   t.field("addAppearance", {
     type: nonNull("Appearance"),
-    description: "Add an appearance relation on an image.",
+    description: "Add an appearance relation on an media.",
     args: {
       personId: nonNull(intArg()),
       imageId: nonNull(intArg()),
@@ -84,7 +84,7 @@ export const Mutation = mutationField((t) => {
   })
   t.field("removeAppearance", {
     type: nonNull("Appearance"),
-    description: "Removes an appearance from an image",
+    description: "Removes an appearance from an media",
     args: {
       appearanceId: nonNull(intArg()),
     },

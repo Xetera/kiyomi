@@ -112,7 +112,7 @@ export const ImageWithFaces = ({
   blurred,
   size,
 }: ImageWithFacesProps) => {
-  // const image = React.useContext(ImageContext)
+  // const media = React.useContext(ImageContext)
   const imageRef = React.useRef<HTMLImageElement | null>()
   const parentRef = React.useRef<HTMLDivElement | null>()
   const { face: activeFace } = React.useContext(FaceContext)
@@ -251,7 +251,7 @@ export default function ImageDisplay() {
   const [loaded, setLoaded] = React.useState(false)
   const facePredictions: any[] = []
   // const { data: facePredictions = [] } = useSWR<PredictionResponse>(
-  //   `/api/image/face/${image?.slug}`,
+  //   `/api/media/face/${media?.slug}`,
   //   fetcher,
   //   { refreshInterval: 0 }
   // );

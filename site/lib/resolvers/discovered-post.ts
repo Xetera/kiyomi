@@ -151,7 +151,7 @@ export const Mutation = mutationField((t) => {
           err.code === PrismaError.UniqueConstraintViolation
         ) {
           console.log(err)
-          throw new GraphQLError("Already voted on that image")
+          throw new GraphQLError("Already voted on that media")
         }
         throw err
       }

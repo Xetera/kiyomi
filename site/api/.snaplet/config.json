@@ -1,0 +1,4 @@
+{
+  "databaseId": "cl19lvpcy348778ftly3ehik0fu",
+  "dataTargetDbUrl": "postgres://postgres:test@localhost:5433/simp_pics"
+}

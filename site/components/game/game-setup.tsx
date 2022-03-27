@@ -109,7 +109,7 @@ const gameTypes: Array<
   {
     type: "nugu",
     name: "Nugu Game",
-    description: "Guess a person from an unknown face in an image.",
+    description: "Guess a person from an unknown face in an media.",
     available: true,
   },
   {

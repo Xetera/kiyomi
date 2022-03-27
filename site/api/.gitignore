@@ -1,0 +1,5 @@
+public/_images/*
+!public/_images/.gitkeep
+.env
+yarn-error.log
+node_modules

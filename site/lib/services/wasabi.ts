@@ -3,7 +3,7 @@ import * as fs from "fs"
 import * as path from "path"
 
 export type UploadableImage = {
-  // if uploading through an image
+  // if uploading through an media
   fileName?: string
   key: string
   body: Buffer
@@ -63,7 +63,7 @@ export function makeWasabi() {
   const methods = {
     imagePrefix,
     /**
-     * Upload an image, returns a put result if S3 is used for uploading
+     * Upload an media, returns a put result if S3 is used for uploading
      * @param image
      */
     async putImage(

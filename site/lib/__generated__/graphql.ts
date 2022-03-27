@@ -245,7 +245,7 @@ export type DiscoveredImage = {
   id: Scalars['Int'];
   providerType: Scalars['String'];
   referenceUrl?: Maybe<Scalars['String']>;
-  /** A smaller thumbnail of the image */
+  /** A smaller thumbnail of the media */
   thumbnail: Scalars['String'];
   uniqueIdentifier: Scalars['String'];
   updatedAt: Scalars['DateTime'];
@@ -962,25 +962,25 @@ export type Image = {
   __typename?: 'Image';
   appearanceTags: Array<AppearanceTag>;
   appearances: Array<Appearance>;
-  /** The aspect ratio of the image */
+  /** The aspect ratio of the media */
   aspectRatio: Scalars['Float'];
   bytes: Scalars['Int'];
   caption?: Maybe<Scalars['String']>;
-  /** A graph of connections people in this image share with others based on images they appear together in up to a depth of 4 */
+  /** A graph of connections people in this media share with others based on images they appear together in up to a depth of 4 */
   connections: ImageConnections;
   createdAt: Scalars['DateTime'];
-  /** Where the image is stored */
+  /** Where the media is stored */
   destination: UploadDestination;
   faceScanDate?: Maybe<Scalars['DateTime']>;
-  /** The name the image file was uploaded with. */
+  /** The name the media file was uploaded with. */
   fileName?: Maybe<Scalars['String']>;
   /** Human readable file size. Use `bytes` for a number representation. */
   fileSize: Scalars['String'];
-  /** The center of focus for the image. Calculated based on the position of the faces in the image. */
+  /** The center of focus for the media. Calculated based on the position of the faces in the media. */
   focus: ImageCoordinate;
-  /** SHA256 checksum of the image. */
+  /** SHA256 checksum of the media. */
   hash: Scalars['String'];
-  /** Height of the image in pixels. */
+  /** Height of the media in pixels. */
   height: Scalars['Int'];
   hiddenAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['Int'];
@@ -990,27 +990,27 @@ export type Image = {
   isNsfw: Scalars['Boolean'];
   /** False if not logged in */
   liked?: Maybe<Scalars['Boolean']>;
-  /** The IANA media type of the image. */
+  /** The IANA media type of the media. */
   mimetype: MimeType;
-  /** Dominant colors in the image in decimal format, sorted by frequency. */
+  /** Dominant colors in the media in decimal format, sorted by frequency. */
   palette: Array<Scalars['Int']>;
-  /** The visibility status of the image. */
+  /** The visibility status of the media. */
   public: Scalars['Boolean'];
-  /** Direct link to the image on the CDN */
+  /** Direct link to the media on the CDN */
   rawUrl: Scalars['String'];
   reported: Scalars['Boolean'];
-  /** The unique url identifier of the image. */
+  /** The unique url identifier of the media. */
   slug: Scalars['String'];
-  /** The url the image was taken from (if applicable). Not guaranteed to be a direct image url. */
+  /** The url the media was taken from (if applicable). Not guaranteed to be a direct media url. */
   source?: Maybe<Scalars['String']>;
   thumbnail: Thumbnail;
   unknownFaces: Array<Face>;
   uploadType: UploadType;
   uploadedBy?: Maybe<User>;
-  /** Link to the image on the site */
+  /** Link to the media on the site */
   url: Scalars['String'];
   views: Scalars['Int'];
-  /** Width of the image in pixels. */
+  /** Width of the media in pixels. */
   width: Scalars['Int'];
 };
 
@@ -1052,7 +1052,7 @@ export type ImageConnections = {
   people: Array<Person>;
 };
 
-/** A coordinate representing a position on an image */
+/** A coordinate representing a position on an media */
 export type ImageCoordinate = {
   __typename?: 'ImageCoordinate';
   x: Scalars['Int'];
@@ -1361,7 +1361,7 @@ export enum MimeType {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Add an appearance relation on an image. */
+  /** Add an appearance relation on an media. */
   addAppearance: Appearance;
   addProvider: Scalars['String'];
   createAppearanceTag: AppearanceTag;
@@ -1372,14 +1372,14 @@ export type Mutation = {
   discoveredImageVote: DiscoveredImageVote;
   /** Vote using the same verdict on all images in a post */
   discoveredPostVote: Array<DiscoveredImage>;
-  /** Action on an image reported by a user. Only usable by moderators */
+  /** Action on an media reported by a user. Only usable by moderators */
   imageReportAction?: Maybe<ImageReport>;
   /** Attach an existing face to an apperance. */
   linkFace: Appearance;
-  /** Removes an appearance from an image */
+  /** Removes an appearance from an media */
   removeAppearance: Appearance;
   reportImage?: Maybe<ImageReport>;
-  /** Queue an image to get scanned for faces */
+  /** Queue an media to get scanned for faces */
   scanFaces: QueueInfo;
   toggleLike: Image;
   /** Unlinks an existing face from an appearance. This dissociates the face from the appearance but does not remove the face data */
@@ -1791,7 +1791,7 @@ export type Query = {
   discoveryStats: Array<DiscoveryStatistic>;
   group?: Maybe<Group>;
   groups: Array<Group>;
-  /** Find a single image by its slug. */
+  /** Find a single media by its slug. */
   image?: Maybe<Image>;
   imageConnections?: Maybe<ImageConnections>;
   imageReports: Array<ImageReport>;
@@ -2108,7 +2108,7 @@ export type TagWhereInput = {
   updatedAt?: Maybe<DateTimeFilter>;
 };
 
-/** Preview urls of an image */
+/** Preview urls of an media */
 export type Thumbnail = {
   __typename?: 'Thumbnail';
   large: Scalars['String'];
