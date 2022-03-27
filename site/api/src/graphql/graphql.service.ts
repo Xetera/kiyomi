@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common"
 
 export enum Cursor {
   Homepage = "homepage",
+  PeopleList = "peopleList",
 }
 
 export type BasePrismaCursor = {

@@ -105,6 +105,11 @@ type Person {
   preferredGroupMember: GroupMember
   name: String
   birthDate: DateTime
+
+  """
+  The nationalities of this person in ISO 3166-1 alpha-3 format. People with multiple nationalities may have more than one entry.
+  """
+  nationalities: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -305,6 +310,11 @@ type Homepage {
   media: [Media!]!
 }
 
+type PeopleList {
+  cursor: String
+  people: [Person!]!
+}
+
 type Query {
   media(slug: String!): Media
   homepage(cursor: String): Homepage!
@@ -316,6 +326,7 @@ type Query {
   """Get the current logged in user. Null if not logged in."""
   me: User
   person(id: Float!): Person
+  peopleList(cursor: String): PeopleList!
   groupMember(id: Int!): GroupMember
   group(id: Int!): Group
 }

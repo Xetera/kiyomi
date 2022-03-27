@@ -5,18 +5,26 @@ import { Alias, Appearance, GroupMember, Person } from "@prisma/client"
 import { PersonService } from "./person.service"
 import { AppearanceModel } from "../appearance/models/appearance.model"
 import { GroupMemberModel } from "../group-member/models/group-member.model"
-import { GroupMemberService } from "../group-member/group-member.service";
+import { GroupMemberService } from "../group-member/group-member.service"
+import { PeopleListModel } from "./models/people-list.model"
 
 @Resolver(() => PersonModel)
 export class PersonResolver {
-  constructor(private personService: PersonService,
+  constructor(
+    private personService: PersonService,
     private groupMemberService: GroupMemberService,
-  ) {
-  }
+  ) {}
 
   @Query(() => PersonModel, { nullable: true })
   person(@Args("id") id: number): Promise<Person | null> {
     return this.personService.findById(id)
+  }
+
+  @Query(() => PeopleListModel)
+  peopleList(
+    @Args("cursor", { nullable: true }) cursor?: string,
+  ): Promise<PeopleListModel> {
+    return this.personService.persons(cursor)
   }
 
   @ResolveField(() => [AliasModel], {
@@ -44,8 +52,15 @@ export class PersonResolver {
     return this.personService.groupMembers(person.id)
   }
 
-  @ResolveField(() => GroupMemberModel, { nullable: true})
-  async preferredGroupMember(@Parent() person: Person): Promise<GroupMember | null> {
+  @ResolveField(() => [String])
+  nationalities(@Parent() person: Person): Promise<string[]> {
+    return this.personService.nationalities(person.id)
+  }
+
+  @ResolveField(() => GroupMemberModel, { nullable: true })
+  async preferredGroupMember(
+    @Parent() person: Person,
+  ): Promise<GroupMember | null> {
     if (!person.preferredMembershipId) {
       return null
     }

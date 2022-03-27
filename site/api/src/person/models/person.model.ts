@@ -29,7 +29,7 @@ export class PersonModel {
 
   @Field(() => GroupMemberModel, {
     nullable: true,
-    description: "The primary group member the person represents"
+    description: "The primary group member the person represents",
   })
   preferredGroupMember!: GroupMemberModel[]
 
@@ -38,6 +38,12 @@ export class PersonModel {
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   birthDate?: Date
+
+  @Field(() => [String], {
+    description:
+      "The nationalities of this person in ISO 3166-1 alpha-3 format. People with multiple nationalities may have more than one entry.",
+  })
+  nationalities!: string[]
 
   @Field(() => GraphQLISODateTime)
   createdAt!: Date
