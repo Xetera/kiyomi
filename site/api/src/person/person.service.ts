@@ -55,9 +55,9 @@ export class PersonService {
   }
 
   async nationalities(id: number): Promise<string[]> {
-    const nationalities = await this.prisma.personNationality.findMany({
-      where: { personId: id },
-    })
+    const nationalities = await this.prisma.person
+      .findUnique({ where: { id } })
+      .nationalities()
     return nationalities.map((n) => n.country)
   }
 }
